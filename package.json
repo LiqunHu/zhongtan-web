@@ -1,7 +1,7 @@
 {
-  "name": "node-web",
+  "name": "zhongtan",
   "version": "1.0.0",
-  "description": "anode-web",
+  "description": "a node-web",
   "author": "huliqun <huliquns@126.com>",
   "private": true,
   "scripts": {
