@@ -87,19 +87,11 @@ export default {
     let _self = this
 
     function initTable() {
-      window.tableEvents = {
-        'change .imageupload': function(e, value, row, index) {
-          common.imagesFileUpload(this, _self, row, apiUrl, 'billoading_id')
-        }
-      }
-
       $('#table').bootstrapTable({
         height: common.getTableHeight(),
         columns: [
-          common.BTRowFormat('shipv', '船名 / 航次'),
-          common.BTRowFormat('billLodingNo', '提单号'),
-          common.BTRowFormat('containerInfo', '箱型箱量'),
-          common.BTRowFormat('dischargePort', '卸港')
+          common.BTRowFormat('billloading_no', 'S/O'),
+          common.BTRowFormat('vessel_name', 'Vessel')
         ],
         idField: 'billoading_id',
         uniqueId: 'billoading_id',
@@ -124,8 +116,7 @@ export default {
 
     initPage()
   },
-  methods: {
-  }
+  methods: {}
 }
 </script>
 <style>
