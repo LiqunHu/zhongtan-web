@@ -71,8 +71,9 @@ export default {
           let token = response.headers.authorization
           if (token) {
             let userinfo = response.data.info
-            if (!userinfo.avatar)
+            if (!userinfo.avatar) {
               userinfo.avatar = '/static/images/base/head.jpg'
+            }
             common.clearStoreData()
             common.setStoreData('token', token)
             common.setStoreData('userinfo', userinfo)

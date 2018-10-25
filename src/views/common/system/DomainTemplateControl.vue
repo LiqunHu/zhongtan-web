@@ -491,8 +491,9 @@ export default {
 
         let nodeObj = $.fn.zTree.getZTreeObj('templatetree').getSelectedNodes()
         if (nodeObj && nodeObj.length > 0) {
-          if (nodeObj[0].node_type === '01')
+          if (nodeObj[0].node_type === '01') {
             return common.dealWarningCommon('菜单下不允许新增')
+          }
           _self.actNode = JSON.parse(JSON.stringify(nodeObj[0]))
         } else {
           return common.dealWarningCommon(

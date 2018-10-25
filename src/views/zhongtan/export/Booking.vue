@@ -6,7 +6,7 @@
                 <li class="active"> Booking</li>
             </ol>
         </section>
-        <section class="content" style="display:none;">
+        <section class="content">
             <div class="col-lg-12">
                 <div class="box box-info">
                     <div class="box-body">
@@ -17,13 +17,13 @@
                                         <i class="glyphicon glyphicon-save"></i> Booking
                                     </button>
                                 </div>
-                                <div class="form-group" style="display:none;">
+                                <div class="form-group">
                                     <button id="cancel" class="btn btn-danger" disabled>
                                         <i class="glyphicon glyphicon-remove"></i> Cancel
                                     </button>
                                 </div>
                                 <div class="form-group">
-                                    <input name="searchDate" v-model="searchDate" class="form-control" id="searchDate" placeholder="Application Date">
+                                    <input v-model="searchDate" class="form-control" id="searchDate" placeholder="Application Date">
                                 </div>
                             </div>
                         </div>
@@ -32,7 +32,7 @@
                 </div>
             </div>
         </section>
-        <div class="modal" id="applyModal" tabindex="-1" role="dialog">
+        <!-- <div class="modal" id="applyModal" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -68,7 +68,7 @@
                     </form>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 </template>
 <script>
@@ -79,8 +79,7 @@ export default {
   data: function() {
     return {
       pagePara: '',
-      stDate: moment().format('YYYY-MM-DD'),
-      edDate: moment().format('YYYY-MM-DD')
+      searchDate: ''
     }
   },
   name: 'Booking',
@@ -90,27 +89,20 @@ export default {
     function initTable() {
       window.tableEvents = {
         'change .imageupload': function(e, value, row, index) {
-          common.imagesFileUpload(this, _self, row, apiUrl, 'trunkListID')
+          common.imagesFileUpload(this, _self, row, apiUrl, 'billoading_id')
         }
       }
 
       $('#table').bootstrapTable({
         height: common.getTableHeight(),
         columns: [
-          {
-            field: 'trunkListID',
-            align: 'center',
-            valign: 'middle',
-            title: '申请编号',
-            visible: false
-          },
           common.BTRowFormat('shipv', '船名 / 航次'),
-          common.BTRowFormatAlign('billLodingNo', '提单号', 'left'),
+          common.BTRowFormat('billLodingNo', '提单号'),
           common.BTRowFormat('containerInfo', '箱型箱量'),
           common.BTRowFormat('dischargePort', '卸港')
         ],
-        idField: 'trunkListID',
-        uniqueId: 'trunkListID',
+        idField: 'billoading_id',
+        uniqueId: 'billoading_id',
         toolbar: '#toolbar',
         search: true,
         showColumns: true,
@@ -120,9 +112,7 @@ export default {
         pageSize: 25,
         pageList: [10, 15, 25, 50, 'All'],
         showFooter: false,
-        clickToSelect: true,
-        locale: 'zh-CN',
-        onPostBody: function(data) {}
+        clickToSelect: true
       })
 
       common.changeTableClass($('#table'))
@@ -134,7 +124,8 @@ export default {
 
     initPage()
   },
-  methods: {}
+  methods: {
+  }
 }
 </script>
 <style>

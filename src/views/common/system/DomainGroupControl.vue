@@ -143,8 +143,9 @@ export default {
       let _self = this
       let nodeObj = $.fn.zTree.getZTreeObj('tree').getSelectedNodes()
       if (nodeObj && nodeObj.length > 0) {
-        if (nodeObj[0].node_type === '01')
+        if (nodeObj[0].node_type === '01') {
           return common.dealWarningCommon('职位下不允许新增')
+        }
         _self.actNode = JSON.parse(JSON.stringify(nodeObj[0]))
       } else {
         return common.dealWarningCommon('请选择一个节点')
