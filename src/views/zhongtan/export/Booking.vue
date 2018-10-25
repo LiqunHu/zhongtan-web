@@ -72,589 +72,70 @@
     </div>
 </template>
 <script>
-const common = require("@/lib/common");
-const apiUrl = "/api/common/system/domainControl?method=";
+const common = require('@/lib/common')
+const apiUrl = '/api/zhongtan/expory/Booking?method='
 
 export default {
   data: function() {
     return {
-      pagePara: "",
-      stDate: moment().format("YYYY-MM-DD"),
-      edDate: moment().format("YYYY-MM-DD"),
-      useContainerDate: "",
-      shipName: "",
-      voyageNo: "",
-      shipInfo: "",
-      requirment: ""
-    };
+      pagePara: '',
+      stDate: moment().format('YYYY-MM-DD'),
+      edDate: moment().format('YYYY-MM-DD')
+    }
   },
-  name: "boxApplyControl",
-  route: {
-    canReuse: false
-  },
+  name: 'Booking',
   mounted: function() {
-    var _self = this;
-    function getData() {
-      _self.$http
-        .post(apiUrl + "search", { stDate: _self.stDate, edDate: _self.edDate })
-        .then(
-          response => {
-            var retData = response.data["data"];
-            $("#table").bootstrapTable("load", {
-              data: retData
-            });
-          },
-          response => {
-            // error callback
-            console.log("get data error");
-            common.dealErrorCommon(_self, response);
-          }
-        );
-    }
-
-    function operatorInfoFormatter(value, row, index) {
-      if (value) {
-        return [
-          '<a tabindex="operator' +
-            index +
-            '" role="button" data-toggle="popover" data-trigger="hover" data-placement="right" data-html="true" data-content="' +
-            "<div class=&quot;box&quot;>" +
-            "<div class=&quot;box-body&quot;>" +
-            "<div class=&quot;form-group&quot;>" +
-            "<label class=&quot;control-label&quot;>电话:</label>" +
-            "<div class=&quot;&quot;><span>" +
-            row.operatorInfo.mobile +
-            "</span></div>" +
-            "</div>" +
-            "<div class=&quot;form-group&quot;>" +
-            "<label class=&quot;control-label&quot;>邮箱:</label>" +
-            "<div class=&quot;&quot;><span>" +
-            row.operatorInfo.email +
-            "</span></div>" +
-            "</div>" +
-            "</div>" +
-            '</div>">' +
-            row.operatorInfo.name +
-            "</a>"
-        ].join("");
-      } else {
-        return "未分配";
-      }
-    }
-
-    function carrierFormatter(value, row) {
-      for (let i = 0; i < _self.pagePara["carrierInfo"].length; i++) {
-        if (_self.pagePara["carrierInfo"][i].id === value) {
-          return _self.pagePara["carrierInfo"][i].name;
-        }
-      }
-      return "";
-    }
-
-    function shipcoFormatter(value, row) {
-      for (let i = 0; i < _self.pagePara["shipcoInfo"].length; i++) {
-        if (_self.pagePara["shipcoInfo"][i].id === value) {
-          return _self.pagePara["shipcoInfo"][i].name;
-        }
-      }
-      return "";
-    }
-
-    function statusFormatter(value, row) {
-      for (let i = 0; i < _self.pagePara["statusInfo"].length; i++) {
-        if (_self.pagePara["statusInfo"][i].id === value) {
-          return (
-            '<span class="label ' +
-            _self.pagePara["statusInfo"][i].style +
-            '">' +
-            _self.pagePara["statusInfo"][i].text +
-            "</span>"
-          );
-        }
-      }
-      return "";
-    }
-
-    function yardIdFormatter(value, row, index) {
-      if (value) {
-        if (value.length > 1) {
-          var retString =
-            '<a tabindex="carManager' +
-            index +
-            '" role="button" data-toggle="popover" data-trigger="hover" data-placement="left" data-html="true" data-content="' +
-            "<div class=&quot;box&quot;>" +
-            "<div class=&quot;box-body&quot;>";
-          $(value).each(function() {
-            var _yard = this;
-            retString += "<div class=&quot;form-group&quot;>";
-            $(_self.pagePara["containerYard"]).each(function() {
-              if (this.id === _yard.containerYard) {
-                retString +=
-                  "<label class=&quot;control-label&quot;>" +
-                  this.text +
-                  " : " +
-                  _yard.containerCount.toString() +
-                  "</label>";
-                return;
-              }
-            });
-            retString += "</div>";
-          });
-          retString += '</div></div>">多个堆场</a>';
-          return retString;
-        } else if (value.length > 0) {
-          var retString = "";
-          $(_self.pagePara["containerYard"]).each(function() {
-            if (this.id === value[0].containerYard) {
-              retString = this.text;
-              return;
-            }
-          });
-          return retString;
-        }
-      }
-    }
-
-    function sumFeeFormater(value, row, index) {
-      // 非已对单、已完成和退单的状态,不显示费用
-      if (row.status != "4" && row.status != "5" && row.status != "3") {
-        return "";
-      } else {
-        return [
-          '<a tabindex="carManager' +
-            index +
-            '" role="button" data-toggle="popover" data-trigger="hover" data-placement="left" data-html="true" data-content="' +
-            "<div class=&quot;box&quot;>" +
-            "<div class=&quot;box-body&quot;>" +
-            "<div class=&quot;form-group&quot;>" +
-            "<label class=&quot;control-label&quot;>提箱费:</label>" +
-            "<div class=&quot;&quot;><span>" +
-            row.containerStuffingCharge +
-            "</span></div>" +
-            "</div>" +
-            "<div class=&quot;form-group&quot;>" +
-            "<label class=&quot;control-label&quot;>打单费:</label>" +
-            "<div class=&quot;&quot;><span>" +
-            row.logisticsHitCharge +
-            "</span></div>" +
-            "</div>" +
-            "<div class=&quot;form-group&quot;>" +
-            "<label class=&quot;control-label&quot;>服务费:</label>" +
-            "<div class=&quot;&quot;><span>" +
-            row.serviceCharge +
-            "</span></div>" +
-            "</div>" +
-            "<div class=&quot;form-group&quot;>" +
-            "<label class=&quot;control-label&quot;>其它:</label>" +
-            "<div class=&quot;&quot;><span>" +
-            row.otherFee +
-            "</span></div>" +
-            "</div>" +
-            "</div>" +
-            '</div>">' +
-            row.sumFee +
-            "</a>"
-        ].join("");
-      }
-    }
+    let _self = this
 
     function initTable() {
       window.tableEvents = {
-        "change .imageupload": function(e, value, row, index) {
-          common.imagesFileUpload(this, _self, row, apiUrl, "trunkListID");
+        'change .imageupload': function(e, value, row, index) {
+          common.imagesFileUpload(this, _self, row, apiUrl, 'trunkListID')
         }
-      };
+      }
 
-      $("#table").bootstrapTable({
+      $('#table').bootstrapTable({
         height: common.getTableHeight(),
         columns: [
           {
-            field: "trunkListID",
-            align: "center",
-            valign: "middle",
-            title: "申请编号",
+            field: 'trunkListID',
+            align: 'center',
+            valign: 'middle',
+            title: '申请编号',
             visible: false
           },
-          common.BTRowFormat("useContainerDate", "做箱日期"),
-          common.BTRowFormatWithFormatter("status", "状态", statusFormatter),
-          common.BTRowFormatWithFormatter(
-            "remark",
-            "备注",
-            common.remarkFormatter
-          ),
-          common.BTRowFormatWithFormatter(
-            "operatorID",
-            "操作员",
-            operatorInfoFormatter
-          ),
-          common.BTRowFormatWithFormatter(
-            "carrierID",
-            "船代",
-            carrierFormatter
-          ),
-          common.BTRowFormatWithFormatter(
-            "shipCoID",
-            "船公司",
-            shipcoFormatter
-          ),
-          common.BTRowFormat("shipv", "船名 / 航次"),
-          common.BTRowFormatAlign("billLodingNo", "提单号", "left"),
-          common.BTRowFormat("containerInfo", "箱型箱量"),
-          common.BTRowFormatWithFormatter("yardID", "堆场", yardIdFormatter),
-          common.BTRowFormat("dischargePort", "卸港"),
-          common.BTRowFormatWithFormatter(
-            "sumFee",
-            "总费用",
-            sumFeeFormater,
-            null,
-            "right"
-          ),
-          common.BTRowFormatWithFormatter(
-            "requirment",
-            "要求",
-            common.remarkFormatter
-          ),
-          common.BTRowFormatWithFE(
-            "images",
-            "图片",
-            common.imagesFormatter,
-            tableEvents
-          ),
-          common.BTRowFormatWithFormatter(
-            "files",
-            "文件",
-            common.pdfFileFormatterNoA
-          ),
-          {
-            field: "maketime",
-            align: "center",
-            valign: "middle",
-            title: "申请时间",
-            visible: false
-          },
-          {
-            field: "modifytime",
-            align: "center",
-            valign: "middle",
-            title: "末次更新日期",
-            visible: false
-          }
+          common.BTRowFormat('shipv', '船名 / 航次'),
+          common.BTRowFormatAlign('billLodingNo', '提单号', 'left'),
+          common.BTRowFormat('containerInfo', '箱型箱量'),
+          common.BTRowFormat('dischargePort', '卸港')
         ],
-        idField: "trunkListID",
-        uniqueId: "trunkListID",
-        toolbar: "#toolbar",
+        idField: 'trunkListID',
+        uniqueId: 'trunkListID',
+        toolbar: '#toolbar',
         search: true,
-        showRefresh: true,
         showColumns: true,
         showExport: true,
         striped: true,
         pagination: true,
         pageSize: 25,
-        pageList: [10, 15, 25, 50, "All"],
+        pageList: [10, 15, 25, 50, 'All'],
         showFooter: false,
         clickToSelect: true,
-        locale: "zh-CN",
-        onPostBody: function(data) {
-          $("td.bs-checkbox").css({
-            "text-align": "center",
-            "vertical-align": "middle"
-          });
-          $('[data-toggle="popover"]').each(function() {
-            $(this).popover();
-          });
-          $(".pdf-print").click(function() {
-            var doc = $(this).find("iframe");
-            try {
-              $(doc)[0].contentWindow.focus();
-              $(doc)[0].contentWindow.print();
-            } catch (ex) {
-              console.log(ex.message);
-              window.open($(doc).attr("src"));
-            }
-          });
-        },
-        onRefresh: function() {
-          getData();
-        }
-      });
+        locale: 'zh-CN',
+        onPostBody: function(data) {}
+      })
 
-      common.changeTableClass($("#table"));
+      common.changeTableClass($('#table'))
     }
 
     function initPage() {
-      _self.$http.post(apiUrl + "init", {}).then(
-        response => {
-          var retData = response.data["data"];
-          _self.pagePara = $.extend(true, {}, retData);
-          common.initSelect2($("#carrier"), retData["carrierInfo"]);
-          common.initSelect2($("#shipco"), retData["shipcoInfo"]);
-          common.initSelect2($("#EDIExportShipID"), retData["shipInfo"]);
-          $("#EDIExportShipID").on("select2:select", function(e) {
-            var shipid = parseInt(this.value);
-            $(_self.pagePara["shipInfo"]).each(function() {
-              if (this.id === shipid) {
-                _self.shipInfo =
-                  "离港: " + this.ETD + " 码头: " + this.wharfName;
-                return;
-              }
-            });
-          });
-          common.initSelect2Single(
-            $("#containerSize"),
-            retData["containerSizeInfo"]
-          );
-          $("#containerSize")
-            .val(null)
-            .trigger("change");
-          common.initSelect2Single(
-            $("#containerType"),
-            retData["containerTypeInfo"]
-          );
-          $("#containerType")
-            .val(null)
-            .trigger("change");
-          initTable();
-          getData();
-          $("#useContainerDate")
-            .datepicker({
-              language: "zh-CN",
-              autoclose: true,
-              todayHighlight: true,
-              format: "yyyy-mm-dd"
-            })
-            .on("changeDate", function(e) {
-              _self.useContainerDate = e.format("yyyy-mm-dd");
-            });
-          $("#useContainerDate").datepicker("setDate", null);
-
-          $("#searchDate").daterangepicker(
-            {
-              startDate: _self.stDate,
-              endDate: _self.edDate,
-              timePicker: false,
-              // dateLimit: { days: 30 },
-              ranges: {
-                最近7日: [
-                  moment()
-                    .subtract(6, "days")
-                    .format("YYYY-MM-DD"),
-                  moment().format("YYYY-MM-DD")
-                ],
-                最近14日: [
-                  moment()
-                    .subtract(13, "days")
-                    .format("YYYY-MM-DD"),
-                  moment().format("YYYY-MM-DD")
-                ],
-                最近30日: [
-                  moment()
-                    .subtract(29, "days")
-                    .format("YYYY-MM-DD"),
-                  moment().format("YYYY-MM-DD")
-                ],
-                至今日: [
-                  moment("2017-01-01", "YYYY-MM-DD"),
-                  moment().format("YYYY-MM-DD")
-                ]
-              },
-              locale: common.daterangepickerlocale
-            },
-            function(start, end, label) {
-              // 格式化日期显示框
-              _self.stDate = start.format("YYYY-MM-DD");
-              _self.edDate = end.format("YYYY-MM-DD");
-              getData();
-            }
-          );
-          common.reSizeCall();
-          console.log("init success");
-        },
-        response => {
-          common.dealErrorCommon(_self, response);
-        }
-      );
+      initTable()
     }
 
-    $(function() {
-      initPage();
-      $("#apply").click(function() {
-        containerInfoNum = 0;
-        $("#transcheck").prop("checked", true);
-        $("#applyModal").modal("show");
-      });
-
-      $("#cancel").click(function() {
-        var rows = $("#table").bootstrapTable("getSelections");
-        var ids = [];
-        for (let i = 0; i < rows.length; i++) {
-          if (rows[i].status !== "1") {
-            common.dealWarningCommon("只有已提交状态能够取消");
-            break;
-          } else {
-            ids.push(rows[i].trunkListID);
-          }
-        }
-        if (ids.length === rows.length) {
-          _self.$http.post(apiUrl + "delete", { cancelids: ids }).then(
-            response => {
-              $("#table").bootstrapTable("remove", {
-                field: "trunkListID",
-                values: ids
-              });
-              console.log("delete success");
-            },
-            response => {
-              console.log("delete error");
-              common.dealErrorCommon(this, response);
-            }
-          );
-        }
-      });
-    });
+    initPage()
   },
-  methods: {
-    add: function(event) {
-      var _self = this;
-      var yzFlag = false;
-      if (_self.useContainerDate < moment().format("YYYY-MM-DD")) {
-        common.dealPromptCommon("放箱日期不能小于当日!");
-        return false;
-      }
-      $('select[name="containerSize"]').each(function() {
-        if (!$(this).val()) {
-          yzFlag = true;
-          common.dealPromptCommon("尺寸不能为空, 请确认!");
-          return false;
-        }
-      });
-      if (yzFlag) {
-        return;
-      }
-      $('select[name="containerType"]').each(function() {
-        if (!$(this).val()) {
-          yzFlag = true;
-          common.dealPromptCommon("箱型不能为空, 请确认!");
-          return false;
-        }
-      });
-      if (yzFlag) {
-        return;
-      }
-      $('input[name="containerCount"]').each(function() {
-        if ($(this).val()) {
-          if (parseInt($(this).val()) === 0) {
-            yzFlag = true;
-            common.dealPromptCommon("箱量不能为0,请确认!");
-            return false;
-          } else if (parseInt($(this).val()) > 100) {
-            yzFlag = true;
-            common.dealPromptCommon("箱量不能大于100!");
-            return false;
-          }
-        } else {
-          yzFlag = true;
-          common.dealPromptCommon("箱量不能为空,请确认!");
-          return false;
-        }
-      });
-      if (yzFlag) {
-        return;
-      }
-
-      var workRow = desk2Json(this);
-      common.dealConfrimCommon("确定申请用箱？", function() {
-        _self.$http.post(apiUrl + "add", workRow).then(
-          response => {
-            var retdata = response.data["data"].serviceReData;
-            for (let i = 0; i < retdata.length; i++) {
-              $("#table").bootstrapTable("insertRow", {
-                index: 0,
-                row: retdata[i]
-              });
-            }
-            deskClean(_self);
-          },
-          response => {
-            console.log("add error");
-            common.dealAlertCommon(this, response);
-          }
-        );
-      });
-    },
-    clear: function(event) {
-      deskClean(this);
-      console.log("clear success");
-    },
-    addContainerInfo: function() {
-      containerInfoNum += 1;
-      var icons =
-        '<a class="form-control containersub" style="padding-right:12px;" containerindex="' +
-        containerInfoNum +
-        '" title="删除"><i class="glyphicon glyphicon-minus"></i></a>';
-
-      var tr =
-        '<tr data-index="' +
-        containerInfoNum +
-        '">' +
-        '<td style="text-align: center; width: 45%;"><input class="form-control" style="padding-right:12px" type="text" name="billLodingNo"></td>' +
-        '<td style="text-align: center; width: 15%;"><select id="containerSize' +
-        containerInfoNum +
-        '" name="containerSize" class="form-control select2"></select></td>' +
-        '<td style="text-align: center; width: 15%;"><select id="containerType' +
-        containerInfoNum +
-        '" name="containerType" class="form-control select2"></select></td>' +
-        '<td style="text-align: center; width: 15%;"><input class="form-control" style="padding-right:12px" type="number" min="0" name="containerCount"></td>' +
-        '<td style="text-align: center; width: 10%;">' +
-        icons +
-        "</td>" +
-        "</tr>";
-      $("#container_Table tbody").append(tr);
-
-      common.initSelect2Single(
-        $("#containerSize" + containerInfoNum),
-        this.pagePara["containerSizeInfo"]
-      );
-      $("#containerSize" + containerInfoNum)
-        .val(null)
-        .trigger("change");
-      common.initSelect2Single(
-        $("#containerType" + containerInfoNum),
-        this.pagePara["containerTypeInfo"]
-      );
-      $("#containerType" + containerInfoNum)
-        .val(null)
-        .trigger("change");
-
-      $(".containersub").click(function() {
-        var trIndex = $(this).attr("containerindex");
-        $("#container_Table tbody tr[data-index='" + trIndex + "']").remove();
-      });
-    },
-    getCarrierByBillNo: function() {
-      this.$http
-        .post(apiUrl + "grapCarrier", {
-          billLodingNo: $("#billLodingNo").val()
-        })
-        .then(
-          response => {
-            var IDs = response.data["data"];
-            if (IDs) {
-              $("#carrier")
-                .val(IDs["carrierID"])
-                .trigger("change");
-              $("#shipco")
-                .val(IDs["shipCoID"])
-                .trigger("change");
-            }
-          },
-          response => {
-            console.log("add error");
-            common.dealAlertCommon(this, response);
-          }
-        );
-    }
-  }
-};
+  methods: {}
+}
 </script>
 <style>
 </style>

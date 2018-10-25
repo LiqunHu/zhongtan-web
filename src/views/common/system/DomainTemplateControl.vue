@@ -1,152 +1,152 @@
 <template>
-<div>
-  <section class="content-header">
-    <ol class="breadcrumb">
-      <li><a href="#"><i class="fa fa-dashboard"></i> 系统管理</a></li>
-      <li class="active">机构模板维护</li>
-    </ol>
-  </section>
-  <section class="content">
-    <div class="row">
-      <div class="col-xs-12">
-        <div class="box box-info">
-          <div class="box-body">
-            <div class="margin form-inline">
-              <div class="form-group">
+  <div>
+    <section class="content-header">
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> 系统管理</a></li>
+        <li class="active">机构模板维护</li>
+      </ol>
+    </section>
+    <section class="content">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="box box-info">
+            <div class="box-body">
+              <div class="margin form-inline">
                 <div class="form-group">
-                  <button class="btn btn-primary btn-info" v-on:click="addT">
+                  <div class="form-group">
+                    <button class="btn btn-primary btn-info" v-on:click="addT">
                       <i class="glyphicon glyphicon-plus"></i> 增加模板
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-3">
-              <table class="table" id="templateTable"></table>
-            </div>
-            <div class="col-md-9">
-              <div class="col-md-5" style="overflow:hidden">
-                <h5>系统功能</h5>
-                <ul id="systemtree" class="ztree"></ul>
-              </div>
-              <div class="col-md-7">
-                <div class="col-md-2 modal-height vertical-container">
-                  <div class="btn-group-vertical">
-                    <button type="button" class="btn btn-primary btn-icon" @click="addMenu"><i class="glyphicon glyphicon-chevron-right"></i></button>
-                  </div>
-                </div>
-                <div class="col-md-10">
-                  <h5>模板功能</h5>
-                  <div class="btn-group">
-                    <a class="btn btn-block btn-default btn-sm" @click="addF"><span>增加目录</span></a>
-                  </div>
-                  <div>
-                    <ul id="templatetree" class="ztree"></ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  <div class="modal fade" id="TModal">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-          <h4 class="modal-title">模板</h4>
-        </div>
-        <form class="form-horizontal" @submit.prevent="submitT" id="formT">
-          <div class="modal-body">
-            <div class="form-group">
-              <label class="col-md-3 control-label">模板名称</label>
-              <div class="col-md-9">
-                <input class="form-control" v-model="workRow.domaintemplate_name" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-info">
-                <i class="fa fa-fw fa-plus"></i>提交
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <div class="modal fade" id="FModal">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-          <h4 class="modal-title">目录</h4>
-        </div>
-        <form class="form-horizontal" @submit.prevent="submitF" id="formF">
-          <div class="modal-body">
-            <div class="form-group">
-              <label class="col-md-3 control-label">目录名称</label>
-              <div class="col-md-9">
-                <input class="form-control" v-model="workRow.templatemenu_name" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-md-3 control-label">是否显示</label>
-              <div class="col-md-9">
-                <select class="form-control select2" multiple style="width:100%" id="root_show_flag"></select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="col-md-3 control-label">图标</label>
-              <div class="col-md-9">
-                <div class="input-group">
-                  <input class="form-control" id="iconName" data-parsley-required="true">
-                  <span class="input-group-btn">
-                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalTable" @click="showIcon">
-                        <i class="fa fa-fw fa-search"></i>选择
                     </button>
-                  </span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <table class="table" id="templateTable"></table>
+              </div>
+              <div class="col-md-9">
+                <div class="col-md-5" style="overflow:hidden">
+                  <h5>系统功能</h5>
+                  <ul id="systemtree" class="ztree"></ul>
+                </div>
+                <div class="col-md-7">
+                  <div class="col-md-2 modal-height vertical-container">
+                    <div class="btn-group-vertical">
+                      <button type="button" class="btn btn-primary btn-icon" @click="addMenu"><i class="glyphicon glyphicon-chevron-right"></i></button>
+                    </div>
+                  </div>
+                  <div class="col-md-10">
+                    <h5>模板功能</h5>
+                    <div class="btn-group">
+                      <a class="btn btn-block btn-default btn-sm" @click="addF"><span>增加目录</span></a>
+                    </div>
+                    <div>
+                      <ul id="templatetree" class="ztree"></ul>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-info">
-                <i class="fa fa-fw fa-plus"></i>提交
-            </button>
+        </div>
+      </div>
+    </section>
+    <div class="modal fade" id="TModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 class="modal-title">模板</h4>
           </div>
-        </form>
-      </div>
-    </div>
-  </div>
-  <div class="modal fade" id="modalTable">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-          <h4 class="modal-title">图标选择</h4>
-        </div>
-        <div class="modal-body">
-          <table id="iconTable" data-height="299" data-toggle="table">
-          </table>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-info" data-dismiss="modal"><i class="fa fa-fw fa-close"></i>关闭</button>
+          <form class="form-horizontal" @submit.prevent="submitT" id="formT">
+            <div class="modal-body">
+              <div class="form-group">
+                <label class="col-md-3 control-label">模板名称</label>
+                <div class="col-md-9">
+                  <input class="form-control" v-model="workRow.domaintemplate_name" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-info">
+                <i class="fa fa-fw fa-plus"></i>提交
+              </button>
+            </div>
+          </form>
         </div>
       </div>
-      <!-- /.modal-content -->
     </div>
-    <!-- /.modal-dialog -->
+    <div class="modal fade" id="FModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 class="modal-title">目录</h4>
+          </div>
+          <form class="form-horizontal" @submit.prevent="submitF" id="formF">
+            <div class="modal-body">
+              <div class="form-group">
+                <label class="col-md-3 control-label">目录名称</label>
+                <div class="col-md-9">
+                  <input class="form-control" v-model="workRow.templatemenu_name" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-md-3 control-label">是否显示</label>
+                <div class="col-md-9">
+                  <select class="form-control select2" multiple style="width:100%" id="root_show_flag"></select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-md-3 control-label">图标</label>
+                <div class="col-md-9">
+                  <div class="input-group">
+                    <input class="form-control" id="iconName" data-parsley-required="true">
+                    <span class="input-group-btn">
+                      <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalTable" @click="showIcon">
+                        <i class="fa fa-fw fa-search"></i>选择
+                      </button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-info">
+                <i class="fa fa-fw fa-plus"></i>提交
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="modalTable">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 class="modal-title">图标选择</h4>
+          </div>
+          <div class="modal-body">
+            <table id="iconTable" data-height="299" data-toggle="table">
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-info" data-dismiss="modal"><i class="fa fa-fw fa-close"></i>关闭</button>
+          </div>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
   </div>
-  <!-- /.modal -->
-</div>
 </template>
 <script>
 const common = require('@/lib/common')
 const apiUrl = '/api/common/system/DomainTemplateControl?method='
 
 export default {
-  data: function () {
+  data: function() {
     return {
       pagePara: {},
       workRow: {},
@@ -156,14 +156,22 @@ export default {
     }
   },
   name: 'DomainTemplateControl',
-  mounted: function () {
+  mounted: function() {
     let _self = this
     let $templateTable = $('#templateTable')
     window.tableEvents = {
-      'click .tableDelete': function (e, value, row, index) {
-        common.rowDeleteWithApi(_self, '删除模板', apiUrl + 'deleteTemplate', $templateTable, row, 'domaintemplate_id', function () { })
+      'click .tableDelete': function(e, value, row, index) {
+        common.rowDeleteWithApi(
+          _self,
+          '删除模板',
+          apiUrl + 'deleteTemplate',
+          $templateTable,
+          row,
+          'domaintemplate_id',
+          function() {}
+        )
       },
-      'click .templatechoose': async function (e, value, row, index) {
+      'click .templatechoose': async function(e, value, row, index) {
         _self.actTemplate = JSON.parse(JSON.stringify(row))
         _self.getTemplateMenu(row.domaintemplate_id)
       }
@@ -176,7 +184,11 @@ export default {
     }
 
     function templateNameFormatter(value, row) {
-      return `<button type="button" class="btn btn-primary btn-sm m-r-5 m-b-5 templatechoose">` + value + `</button>`
+      return (
+        `<button type="button" class="btn btn-primary btn-sm m-r-5 m-b-5 templatechoose">` +
+        value +
+        `</button>`
+      )
     }
 
     function iconDisplayFormatter(value, row) {
@@ -187,39 +199,49 @@ export default {
       $templateTable.bootstrapTable({
         classes: 'table-no-bordered',
         columns: [
-          common.BTRowFormatWithFE('domaintemplate_name', '模板名称', templateNameFormatter, tableEvents),
+          common.BTRowFormatWithFE(
+            'domaintemplate_name',
+            '模板名称',
+            templateNameFormatter,
+            tableEvents
+          ),
           common.actFormatter('act', common.operateFormatter, tableEvents)
         ],
         idField: 'domaintemplate_id',
         uniqueId: 'domaintemplate_id',
         rowStyle: rowStyle,
-        formatLoadingMessage: function () {
+        formatLoadingMessage: function() {
           return '请稍等，正在加载中...'
         },
-        formatNoMatches: function () {
+        formatNoMatches: function() {
           return ''
         }
       })
       common.changeTableClass($templateTable)
 
       $('#iconTable').bootstrapTable({
-        columns: [{
-          field: 'id',
-          align: 'center',
-          title: '序号'
-        },
-        common.BTRowFormatWithFormatter('iconDisplay', '图标', iconDisplayFormatter),
-        common.BTRowFormat('iconSource', '图标代码')
+        columns: [
+          {
+            field: 'id',
+            align: 'center',
+            title: '序号'
+          },
+          common.BTRowFormatWithFormatter(
+            'iconDisplay',
+            '图标',
+            iconDisplayFormatter
+          ),
+          common.BTRowFormat('iconSource', '图标代码')
         ],
-        onClickRow: function (row, $element) {
+        onClickRow: function(row, $element) {
           $('#iconName').val(row.iconSource)
 
           $('#modalTable').modal('hide')
         },
-        formatLoadingMessage: function () {
+        formatLoadingMessage: function() {
           return '请稍等，正在加载中...'
         },
-        formatNoMatches: function () {
+        formatNoMatches: function() {
           return '无符合条件的记录'
         }
       })
@@ -232,15 +254,19 @@ export default {
         let retData = response.data.info
         _self.pagePara = JSON.parse(JSON.stringify(retData))
         common.initSelect2($('#root_show_flag'), retData.tfInfo)
-        let treeObj = $.fn.zTree.init($('#systemtree'), {
-          check: {
-            enable: true,
-            chkboxType: {
-              'Y': 'ps',
-              'N': 'ps'
+        let treeObj = $.fn.zTree.init(
+          $('#systemtree'),
+          {
+            check: {
+              enable: true,
+              chkboxType: {
+                Y: 'ps',
+                N: 'ps'
+              }
             }
-          }
-        }, retData.sysmenus)
+          },
+          retData.sysmenus
+        )
         treeObj.expandAll(true)
 
         initTable()
@@ -256,15 +282,15 @@ export default {
     initPage()
   },
   methods: {
-    showIcon: function (event) {
+    showIcon: function(event) {
       let data = require('../../../components/data/icon.json')
-      $('#modalTable').on('shown.bs.modal', function () {
+      $('#modalTable').on('shown.bs.modal', function() {
         $('#iconTable').bootstrapTable('load', {
           data: data
         })
       })
     },
-    getTemplateData: async function (event) {
+    getTemplateData: async function(event) {
       let _self = this
       try {
         let response = await _self.$http.post(apiUrl + 'searchTemplate', {})
@@ -276,7 +302,7 @@ export default {
         common.dealErrorCommon(_self, error)
       }
     },
-    getTemplateMenu: async function (domaintemplateId) {
+    getTemplateMenu: async function(domaintemplateId) {
       let _self = this
 
       function zTreeBeforeEditName(treeId, treeNode) {
@@ -292,9 +318,13 @@ export default {
         _self.workRow = {}
         _self.workRow.templatemenu_id = treeNode.templatemenu_id
         _self.workRow.templatemenu_name = treeNode.templatemenu_name
-        $('#root_show_flag').val(treeNode.root_show_flag).trigger('change')
+        $('#root_show_flag')
+          .val(treeNode.root_show_flag)
+          .trigger('change')
         $('#iconName').val(treeNode.templatemenu_icon)
-        $('#formF').parsley().reset()
+        $('#formF')
+          .parsley()
+          .reset()
         $('#FModal').modal('show')
         return false
       }
@@ -304,7 +334,7 @@ export default {
           common.dealWarningCommon('根节点不能删除')
           return false
         }
-        common.dealConfrimCommon('确认要删除?', function () {
+        common.dealConfrimCommon('确认要删除?', function() {
           _self.deleteSelect(treeNode)
         })
         return false
@@ -314,11 +344,19 @@ export default {
         return nodes[0].parent_id === targetNode.parent_id
       }
 
-      async function zTreeOnDrop(event, treeId, treeNodes, targetNode, moveType) {
+      async function zTreeOnDrop(
+        event,
+        treeId,
+        treeNodes,
+        targetNode,
+        moveType
+      ) {
         let treeObj = $.fn.zTree.getZTreeObj('templatetree')
         let nodes = treeObj.getNodesByParam('parent_id', targetNode.parent_id)
         try {
-          await _self.$http.post(apiUrl + 'changeOrder', { menus: JSON.parse(JSON.stringify(nodes)) })
+          await _self.$http.post(apiUrl + 'changeOrder', {
+            menus: JSON.parse(JSON.stringify(nodes))
+          })
         } catch (error) {
           common.dealErrorCommon(_self, error)
         }
@@ -331,39 +369,49 @@ export default {
         let retData = response.data.info
 
         $.fn.zTree.destroy('templatetree')
-        let treeObj = $.fn.zTree.init($('#templatetree'), {
-          edit: {
-            enable: true,
-            drag: {
-              isCopy: false,
-              isMove: true,
-              prev: false,
-              inner: false,
-              next: canNext
+        let treeObj = $.fn.zTree.init(
+          $('#templatetree'),
+          {
+            edit: {
+              enable: true,
+              drag: {
+                isCopy: false,
+                isMove: true,
+                prev: false,
+                inner: false,
+                next: canNext
+              }
+            },
+            callback: {
+              beforeRemove: zTreeBeforeRemove,
+              beforeEditName: zTreeBeforeEditName,
+              onDrop: zTreeOnDrop
             }
           },
-          callback: {
-            beforeRemove: zTreeBeforeRemove,
-            beforeEditName: zTreeBeforeEditName,
-            onDrop: zTreeOnDrop
-          }
-        }, retData)
+          retData
+        )
         treeObj.expandAll(true)
       } catch (error) {
         common.dealErrorCommon(_self, error)
       }
     },
-    addT: function (event) {
+    addT: function(event) {
       let _self = this
       _self.workRow = {}
       _self.workRow.domaintemplate_name = ''
-      $('#formT').parsley().reset()
+      $('#formT')
+        .parsley()
+        .reset()
       $('#TModal').modal('show')
     },
-    submitT: async function (event) {
+    submitT: async function(event) {
       let _self = this
       try {
-        if ($('#formT').parsley().isValid()) {
+        if (
+          $('#formT')
+            .parsley()
+            .isValid()
+        ) {
           await _self.$http.post(apiUrl + 'addTemplate', _self.workRow)
           $('#TModal').modal('hide')
           _self.getTemplateData()
@@ -372,10 +420,12 @@ export default {
         common.dealErrorCommon(_self, error)
       }
     },
-    addF: function (event) {
+    addF: function(event) {
       let _self = this
       _self.workRow = {}
-      $('#root_show_flag').val('1').trigger('change')
+      $('#root_show_flag')
+        .val('1')
+        .trigger('change')
       _self.workRow.templatemenu_name = ''
       $('#iconName').val('')
       let nodeObj = $.fn.zTree.getZTreeObj('templatetree').getSelectedNodes()
@@ -390,14 +440,20 @@ export default {
       } else {
         return common.dealWarningCommon('请选择一个节点')
       }
-      $('#formF').parsley().reset()
+      $('#formF')
+        .parsley()
+        .reset()
       _self.act = '1'
       $('#FModal').modal('show')
     },
-    submitF: async function (event) {
+    submitF: async function(event) {
       let _self = this
       try {
-        if ($('#formF').parsley().isValid()) {
+        if (
+          $('#formF')
+            .parsley()
+            .isValid()
+        ) {
           _self.workRow.parent_id = _self.actNode.templatemenu_id
           _self.workRow.domaintemplate_id = _self.actTemplate.domaintemplate_id
           _self.workRow.root_show_flag = common.getSelect2Val('root_show_flag')
@@ -415,7 +471,7 @@ export default {
         common.dealErrorCommon(_self, error)
       }
     },
-    addMenu: async function (event) {
+    addMenu: async function(event) {
       let _self = this
       try {
         if (!_self.actTemplate) {
@@ -435,10 +491,13 @@ export default {
 
         let nodeObj = $.fn.zTree.getZTreeObj('templatetree').getSelectedNodes()
         if (nodeObj && nodeObj.length > 0) {
-          if (nodeObj[0].node_type === '01') return common.dealWarningCommon('菜单下不允许新增')
+          if (nodeObj[0].node_type === '01')
+            return common.dealWarningCommon('菜单下不允许新增')
           _self.actNode = JSON.parse(JSON.stringify(nodeObj[0]))
         } else {
-          return common.dealWarningCommon('请在模板功能中选择需要增加功能的目录')
+          return common.dealWarningCommon(
+            '请在模板功能中选择需要增加功能的目录'
+          )
         }
 
         await _self.$http.post(apiUrl + 'addMenus', {
@@ -453,7 +512,7 @@ export default {
         common.dealErrorCommon(_self, error)
       }
     },
-    deleteSelect: async function (treeNode, event) {
+    deleteSelect: async function(treeNode, event) {
       let _self = this
       try {
         await _self.$http.post(apiUrl + 'deleteSelect', {

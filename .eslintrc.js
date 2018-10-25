@@ -27,6 +27,7 @@ module.exports = {
     'no-undef': 0,
     // 函数定义时括号前面要不要有空格
     'space-before-function-paren': 0,
-    'handle-callback-err': 0
+    'handle-callback-err': 0,
+    'quotes': 0
   }
 }

@@ -24,6 +24,11 @@ export default new Router({
         { path: 'OperatorControl', component: resolve => require(['@/views/common/system/OperatorControl'], resolve) },
         { path: 'UserSetting', component: resolve => require(['@/views/common/system/UserSetting'], resolve) }
         // { path: 'ResetPassword', component: resolve => require(['@/views/common/system/ResetPassword'], resolve) }
+      ]},
+    { path: '/zhongtan/export',
+      component: resolve => require(['@/components/mainSystem'], resolve),
+      children: [
+        { path: 'Booking', component: resolve => require(['@/views/zhongtan/export/Booking'], resolve) }
       ]}
   ]
 })
