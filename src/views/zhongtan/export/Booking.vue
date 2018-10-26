@@ -73,7 +73,7 @@
 </template>
 <script>
 const common = require('@/lib/common')
-const apiUrl = '/api/zhongtan/expory/Booking?method='
+// const apiUrl = '/api/zhongtan/expory/Booking?method='
 
 export default {
   data: function() {
@@ -84,7 +84,7 @@ export default {
   },
   name: 'Booking',
   mounted: function() {
-    let _self = this
+    // let _self = this
 
     function initTable() {
       $('#table').bootstrapTable({
@@ -112,6 +112,39 @@ export default {
 
     function initPage() {
       initTable()
+      $('#searchDate').daterangepicker(
+        {
+          timePicker: false,
+          // dateLimit: { days: 30 },
+          ranges: {
+            '7 days': [
+              moment()
+                .subtract(6, 'days')
+                .format('YYYY-MM-DD'),
+              moment().format('YYYY-MM-DD')
+            ],
+            '14 days': [
+              moment()
+                .subtract(13, 'days')
+                .format('YYYY-MM-DD'),
+              moment().format('YYYY-MM-DD')
+            ],
+            '30 days': [
+              moment()
+                .subtract(29, 'days')
+                .format('YYYY-MM-DD'),
+              moment().format('YYYY-MM-DD')
+            ],
+            至今日: [
+              moment('2017-01-01', 'YYYY-MM-DD'),
+              moment().format('YYYY-MM-DD')
+            ]
+          }
+        },
+        function(start, end, label) {
+          // 格式化日期显示框
+        }
+      )
     }
 
     initPage()
