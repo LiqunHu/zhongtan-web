@@ -29,6 +29,7 @@
     "cropper": "^4.0.0",
     "mavon-editor": "^2.6.15",
     "moment": "^2.22.2",
+    "daterangepicker": "^3.0.3",
     "vue": "^2.5.16",
     "axios": "^0.18.0",
     "vue-router": "^3.0.1",

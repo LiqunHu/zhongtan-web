@@ -120,24 +120,24 @@ export default {
             '7 days': [
               moment()
                 .subtract(6, 'days')
-                .format('YYYY-MM-DD'),
-              moment().format('YYYY-MM-DD')
+                .format('MM/DD/YYYY'),
+              moment().format('MM/DD/YYYY')
             ],
             '14 days': [
               moment()
                 .subtract(13, 'days')
-                .format('YYYY-MM-DD'),
-              moment().format('YYYY-MM-DD')
+                .format('MM/DD/YYYY'),
+              moment().format('MM/DD/YYYY')
             ],
             '30 days': [
               moment()
                 .subtract(29, 'days')
-                .format('YYYY-MM-DD'),
-              moment().format('YYYY-MM-DD')
+                .format('MM/DD/YYYY'),
+              moment().format('MM/DD/YYYY')
             ],
-            至今日: [
-              moment('2017-01-01', 'YYYY-MM-DD'),
-              moment().format('YYYY-MM-DD')
+            'to now': [
+              moment('01/01/2017', 'MM/DD/YYYY'),
+              moment().format('MM/DD/YYYY')
             ]
           }
         },
