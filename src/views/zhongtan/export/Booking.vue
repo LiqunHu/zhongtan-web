@@ -13,12 +13,12 @@
                         <div id="toolbar">
                             <div class="form-inline" role="form">
                                 <div class="form-group">
-                                    <button id="apply" class="btn btn-block btn-primary">
+                                    <button class="btn btn-block btn-primary" @click="BookingMod">
                                         <i class="glyphicon glyphicon-save"></i> Booking
                                     </button>
                                 </div>
                                 <div class="form-group">
-                                    <button id="cancel" class="btn btn-danger" disabled>
+                                    <button class="btn btn-danger" disabled>
                                         <i class="glyphicon glyphicon-remove"></i> Cancel
                                     </button>
                                 </div>
@@ -32,35 +32,49 @@
                 </div>
             </div>
         </section>
-        <!-- <div class="modal" id="applyModal" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
+        <div class="modal" id="bookingModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog modal-book" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" v-on:click="clear"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="rowEditModalLabel"><i class="fa fa-pencil-square-o big-blue"></i>Booking</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title"><i class="fa fa-pencil-square-o big-blue"></i>Booking</h4>
                     </div>
-                    <form @submit.prevent="addOp" id="formA">
+                    <form @submit.prevent="bookingOp" id="formA">
                         <div class="modal-body">
-                            <div class="form-group">
-                                <label><span class="table-required">*</span>用户名</label>
-                                <input class="form-control" v-model="rowData.user_username" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
+                            <div class="row row-bordered">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Vessel</label>
+                                        <input class="form-control" placeholder="Enter Vessel">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Voyage</label>
+                                        <input class="form-control" placeholder="Enter Voyage">
+                                    </div>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label><span class="table-required">*</span>姓名</label>
-                                <input class="form-control" v-model="rowData.user_name" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
+                            <div class="row row-bordered">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Shipper (Name & Address)</label>
+                                        <input class="form-control" placeholder="Shipper name">
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="form-control" placeholder="Shipper Address">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5><b>CHINESE-TANZANIAN JOINT SHIPPING COMPANY. </b></h5>
+                                    31, KISUTU ROAD<br />
+                                    P. O. Box – 696, Dar Es Salaam, Tanzania.<br />
+                                    Tel: +255 (22) 2113389<br />
+                                    Fax: +255 (22) 2113388
+                                </div>
+                                
                             </div>
-                            <div class="form-group">
-                                <label>邮箱</label>
-                                <input type="emain" class="form-control" v-model="rowData.user_email" data-parsley-type="email">
-                            </div>
-                            <div class="form-group">
-                                <label>手机</label>
-                                <input class="form-control" v-model="rowData.user_phone" data-parsley-phone="true">
-                            </div>
-                            <div class="form-group">
-                                <label><span class="table-required">*</span>用户组</label>
-                                <select class="form-control select2" id="usergroup_id" data-parsley-required="true"></select>
-                            </div>
+
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary btn-info"><i class="fa fa-fw fa-plus"></i>确认</button>
@@ -68,11 +82,12 @@
                     </form>
                 </div>
             </div>
-        </div> -->
+        </div>
     </div>
 </template>
 <script>
 const common = require('@/lib/common')
+const moment = require('moment')
 // const apiUrl = '/api/zhongtan/expory/Booking?method='
 
 export default {
@@ -149,8 +164,21 @@ export default {
 
     initPage()
   },
-  methods: {}
+  methods: {
+    BookingMod: function(event) {
+      $('#bookingModal').modal('show')
+    },
+    bookingOp: function(event) {}
+  }
 }
 </script>
-<style>
+<style scoped>
+.modal-book {
+  width: 950px;
+}
+
+.row-bordered {
+  border: 3px double #eee;
+  margin: 3px;
+}
 </style>
