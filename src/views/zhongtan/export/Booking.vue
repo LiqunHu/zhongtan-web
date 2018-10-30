@@ -132,8 +132,17 @@
                                     </div>
                                 </div>
                                 <div class="row row-udline">
+                                    <h4 class="text-middle"><b>Cargo Description</b></h4>
+                                    <div class="margin form-inline">
+                                        <div class="form-group">
+                                            <button type="button" class="btn btn-block btn-primary">Add</button>
+                                        </div>
+                                    </div>
+                                    <table id="goodstable"></table>
+                                </div>
+                                <div class="row row-udline">
                                     <div class="col-md-6 form-horizontal">
-                                        <h4><b>Stuffing & Equipment</b></h4>
+                                        <h4 class="text-middle"><b>Stuffing & Equipment</b></h4>
                                         <div class="form-group">
                                             <label class="col-sm-4 control-label">Container Type</label>
                                             <div class="col-sm-8">
@@ -160,7 +169,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6 form-horizontal">
-                                        <h4><b>Payment</b></h4>
+                                        <h4 class="text-middle"><b>Payment</b></h4>
                                         <div class="form-group">
                                             <label class="col-sm-4 control-label">Forwarder</label>
                                             <div class="col-sm-8">
@@ -279,6 +288,21 @@ export default {
   },
   methods: {
     BookingMod: function(event) {
+      $('#goodstable').bootstrapTable('destroy')
+      $('#goodstable').bootstrapTable({
+        columns: [
+          common.BTRowFormatEditable('container_num', 'Vol.'),
+          common.BTRowFormatEditable('container_type', 'Type'),
+          common.BTRowFormatEditable('container_size', 'Size'),
+          common.BTRowFormatEditable('container_package_no', 'Package No'),
+          common.BTRowFormatEditable('container_volume', 'Volume'),
+          common.BTRowFormatEditable('container_volume_unit', 'Volume Unit'),
+          common.BTRowFormatEditable('container_weight', 'Weight'),
+          common.BTRowFormatEditable('container_weight_unit', 'Weight Unit')
+        ],
+        showFooter: false
+      })
+      $('#goodstable').bootstrapTable('append', {})
       $('#bookingModal').modal('show')
     },
     bookingOp: function(event) {}
@@ -299,5 +323,9 @@ export default {
   padding-bottom: 9px;
   margin: 10px 0 20px;
   border-bottom: 1px solid #eee;
+}
+
+.text-middle {
+  text-align: center;
 }
 </style>
