@@ -56,25 +56,138 @@
                                 </div>
                             </div>
                             <div class="row row-bordered">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Shipper (Name & Address)</label>
-                                        <input class="form-control" placeholder="Shipper name">
+                                <div class="row row-udline">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Shipper (Name & Address)</label>
+                                            <input class="form-control" placeholder="Shipper name">
+                                        </div>
+                                        <div class="form-group">
+                                            <input class="form-control" placeholder="Shipper Address">
+                                        </div>
                                     </div>
-                                    <div class="form-group">
-                                        <input class="form-control" placeholder="Shipper Address">
+                                    <div class="col-md-6">
+                                        <h5><b>CHINESE-TANZANIAN JOINT SHIPPING COMPANY. </b></h5>
+                                        31, KISUTU ROAD<br />
+                                        P. O. Box – 696, Dar Es Salaam, Tanzania.<br />
+                                        Tel: +255 (22) 2113389<br />
+                                        Fax: +255 (22) 2113388
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <h5><b>CHINESE-TANZANIAN JOINT SHIPPING COMPANY. </b></h5>
-                                    31, KISUTU ROAD<br />
-                                    P. O. Box – 696, Dar Es Salaam, Tanzania.<br />
-                                    Tel: +255 (22) 2113389<br />
-                                    Fax: +255 (22) 2113388
+                                <div class="row row-udline">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Consignee (Name & Address)</label>
+                                            <input class="form-control" placeholder="Consignee name">
+                                        </div>
+                                        <div class="form-group">
+                                            <input class="form-control" placeholder="Consignee Address">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label>Notify Party (Name & Address)</label>
+                                            <input class="form-control" placeholder="Notify Party name">
+                                        </div>
+                                        <div class="form-group">
+                                            <input class="form-control" placeholder="Notify Party Address">
+                                        </div>
+                                    </div>
                                 </div>
-                                
+                                <div class="row row-udline">
+                                    <div class="col-md-6 form-horizontal">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">Port of Loadin</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">Port of Discharg</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">Place of Deliver</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6  form-horizontal">
+                                        <label>No of B/L Required</label>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Original</label>
+                                            <div class="col-sm-10">
+                                                <input class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Copies</label>
+                                            <div class="col-sm-10">
+                                                <input class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row row-udline">
+                                    <div class="col-md-6 form-horizontal">
+                                        <h4><b>Stuffing & Equipment</b></h4>
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">Container Type</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">Place</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">Expected date</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">Special requirement</label>
+                                            <div class="col-sm-8">
+                                                <textarea class="form-control" rows="3"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 form-horizontal">
+                                        <h4><b>Payment</b></h4>
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">Forwarder</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">Pay type</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">Payable at</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label">Status</label>
+                                            <div class="col-sm-8">
+                                                <input class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary btn-info"><i class="fa fa-fw fa-plus"></i>确认</button>
@@ -180,5 +293,11 @@ export default {
 .row-bordered {
   border: 3px double #eee;
   margin: 3px;
+}
+
+.row-udline {
+  padding-bottom: 9px;
+  margin: 10px 0 20px;
+  border-bottom: 1px solid #eee;
 }
 </style>
