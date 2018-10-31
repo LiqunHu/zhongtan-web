@@ -123,7 +123,7 @@ export default {
             '用户组',
             _self.pagePara.groupInfo
           ),
-          common.actFormatter('act', common.operateFormatter, tableEvents)
+          common.actFormatter('act', common.deleteFormatter, tableEvents)
         ],
         idField: 'user_id',
         uniqueId: 'user_id',

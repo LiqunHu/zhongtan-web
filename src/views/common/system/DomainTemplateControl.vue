@@ -205,7 +205,7 @@ export default {
             templateNameFormatter,
             tableEvents
           ),
-          common.actFormatter('act', common.operateFormatter, tableEvents)
+          common.actFormatter('act', common.deleteFormatter, tableEvents)
         ],
         idField: 'domaintemplate_id',
         uniqueId: 'domaintemplate_id',

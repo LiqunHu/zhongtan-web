@@ -210,7 +210,7 @@
 <script>
 const common = require('@/lib/common')
 const moment = require('moment')
-// const apiUrl = '/api/zhongtan/expory/Booking?method='
+const apiUrl = '/api/zhongtan/export/Booking?method='
 
 export default {
   data: function() {
@@ -221,7 +221,7 @@ export default {
   },
   name: 'Booking',
   mounted: function() {
-    // let _self = this
+    let _self = this
 
     function initTable() {
       $('#table').bootstrapTable({
@@ -247,41 +247,51 @@ export default {
       common.changeTableClass($('#table'))
     }
 
-    function initPage() {
-      initTable()
-      $('#searchDate').daterangepicker(
-        {
-          timePicker: false,
-          // dateLimit: { days: 30 },
-          ranges: {
-            '7 days': [
-              moment()
-                .subtract(6, 'days')
-                .format('MM/DD/YYYY'),
-              moment().format('MM/DD/YYYY')
-            ],
-            '14 days': [
-              moment()
-                .subtract(13, 'days')
-                .format('MM/DD/YYYY'),
-              moment().format('MM/DD/YYYY')
-            ],
-            '30 days': [
-              moment()
-                .subtract(29, 'days')
-                .format('MM/DD/YYYY'),
-              moment().format('MM/DD/YYYY')
-            ],
-            'to now': [
-              moment('01/01/2017', 'MM/DD/YYYY'),
-              moment().format('MM/DD/YYYY')
-            ]
+    async function initPage() {
+      try {
+        let response = await _self.$http.post(apiUrl + 'init', {})
+        let retData = response.data.info
+        _self.pagePara = JSON.parse(JSON.stringify(retData))
+        $('#searchDate').daterangepicker(
+          {
+            timePicker: false,
+            // dateLimit: { days: 30 },
+            ranges: {
+              '7 days': [
+                moment()
+                  .subtract(6, 'days')
+                  .format('MM/DD/YYYY'),
+                moment().format('MM/DD/YYYY')
+              ],
+              '14 days': [
+                moment()
+                  .subtract(13, 'days')
+                  .format('MM/DD/YYYY'),
+                moment().format('MM/DD/YYYY')
+              ],
+              '30 days': [
+                moment()
+                  .subtract(29, 'days')
+                  .format('MM/DD/YYYY'),
+                moment().format('MM/DD/YYYY')
+              ],
+              'to now': [
+                moment('01/01/2017', 'MM/DD/YYYY'),
+                moment().format('MM/DD/YYYY')
+              ]
+            }
+          },
+          function(start, end, label) {
+            // 格式化日期显示框
           }
-        },
-        function(start, end, label) {
-          // 格式化日期显示框
-        }
-      )
+        )
+
+        initTable()
+        $('#formA').parsley()
+        console.log('init success')
+      } catch (error) {
+        common.dealErrorCommon(_self, error)
+      }
     }
 
     initPage()
@@ -289,8 +299,27 @@ export default {
   methods: {
     BookingMod: function(event) {
       $('#goodstable').bootstrapTable('destroy')
+      window.goodsTableEvents = {
+        'click .tableDelete': function(e, value, row, index) {
+          console.log(row)
+          console.log(index)
+          $('#goodstable').bootstrapTable('removeByUniqueId', index + 1)
+        }
+      }
+      function deleteFormatter(value, row, index) {
+        if (index !== 0) {
+          return [
+            '<a class="tableDelete" title="删除">',
+            '<i class="glyphicon glyphicon-remove"></i>',
+            '</a>'
+          ].join('')
+        } else {
+          return ''
+        }
+      }
       $('#goodstable').bootstrapTable({
         columns: [
+          common.BTRowFormatWithIndex('No'),
           common.BTRowFormatEditable('container_num', 'Vol.'),
           common.BTRowFormatEditable('container_type', 'Type'),
           common.BTRowFormatEditable('container_size', 'Size'),
@@ -298,8 +327,11 @@ export default {
           common.BTRowFormatEditable('container_volume', 'Volume'),
           common.BTRowFormatEditable('container_volume_unit', 'Volume Unit'),
           common.BTRowFormatEditable('container_weight', 'Weight'),
-          common.BTRowFormatEditable('container_weight_unit', 'Weight Unit')
+          common.BTRowFormatEditable('container_weight_unit', 'Weight Unit'),
+          common.actFormatter('act', deleteFormatter, goodsTableEvents)
         ],
+        idField: 'RowNumber',
+        uniqueId: 'RowNumber',
         showFooter: false
       })
       $('#goodstable').bootstrapTable('append', {})

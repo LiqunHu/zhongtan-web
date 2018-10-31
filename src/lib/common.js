@@ -871,7 +871,7 @@ exports.filesFormatter = function (value, row) {
   return retString
 }
 
-exports.operateFormatter = function (value, row, index) {
+exports.deleteFormatter = function (value, row, index) {
   return [
     '<a class="tableDelete" title="删除">',
     '<i class="glyphicon glyphicon-remove"></i>',
@@ -919,7 +919,7 @@ exports.BTRowFormatEditable = function (rowid, rowname, rFormatter) {
     valign: 'middle',
     editable: {
       type: 'text',
-      emptytext: '无'
+      emptytext: ''
     }
   }
 }
@@ -1356,9 +1356,10 @@ exports.BTRowFormatWithFormatterWidth = function (rowid, rowname, rFormatter, wi
 
 exports.BTRowFormatWithIndex = function (rowname) {
   return {
-    field: 'Number',
+    field: 'RowNumber',
     title: rowname,
     formatter: function (value, row, index) {
+      row.RowNumber = index + 1
       return index + 1
     },
     width: '30px',
