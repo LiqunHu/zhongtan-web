@@ -45,13 +45,13 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Vessel</label>
-                                        <input class="form-control" placeholder="Enter Vessel">
+                                        <input v-model="workRow.billloading_vessel" class="form-control" placeholder="Enter Vessel">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Voyage</label>
-                                        <input class="form-control" placeholder="Enter Voyage">
+                                        <input v-model="workRow.billloading_voyage" class="form-control" placeholder="Enter Voyage">
                                     </div>
                                 </div>
                             </div>
@@ -78,40 +78,46 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Consignee (Name & Address)</label>
-                                            <input class="form-control" placeholder="Consignee name">
+                                            <input v-model="workRow.billloading_consignee_name" class="form-control" placeholder="Consignee name">
                                         </div>
                                         <div class="form-group">
-                                            <input class="form-control" placeholder="Consignee Address">
+                                            <input v-model="workRow.billloading_consignee_address" class="form-control" placeholder="Consignee Address">
+                                        </div>
+                                        <div class="form-group">
+                                            <input v-model="workRow.billloading_consignee_tel" class="form-control" placeholder="Consignee Tel.">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Notify Party (Name & Address)</label>
-                                            <input class="form-control" placeholder="Notify Party name">
+                                            <input v-model="workRow.billloading_notify_name" class="form-control" placeholder="Notify Party name">
                                         </div>
                                         <div class="form-group">
-                                            <input class="form-control" placeholder="Notify Party Address">
+                                            <input v-model="workRow.billloading_notify_address" class="form-control" placeholder="Notify Party Address">
+                                        </div>
+                                        <div class="form-group">
+                                            <input v-model="workRow.billloading_notify_tel" class="form-control" placeholder="Notify Party Tel.">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row row-udline">
                                     <div class="col-md-6 form-horizontal">
                                         <div class="form-group">
-                                            <label class="col-sm-4 control-label">Port of Loadin</label>
+                                            <label class="col-sm-4 control-label">Port of Loading</label>
                                             <div class="col-sm-8">
-                                                <input class="form-control">
+                                                <input v-model="workRow.billloading_loading_port" class="form-control">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-4 control-label">Port of Discharg</label>
                                             <div class="col-sm-8">
-                                                <input class="form-control">
+                                                <input v-model="workRow.billloading_discharge_port" class="form-control">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-4 control-label">Place of Deliver</label>
                                             <div class="col-sm-8">
-                                                <input class="form-control">
+                                                <input v-model="workRow.billloading_delivery_place" class="form-control">
                                             </div>
                                         </div>
                                     </div>
@@ -120,13 +126,13 @@
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Original</label>
                                             <div class="col-sm-10">
-                                                <input class="form-control">
+                                                <input v-model="workRow.billloading_original_num" type="number" class="form-control">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Copies</label>
                                             <div class="col-sm-10">
-                                                <input class="form-control">
+                                                <input v-model="workRow.billloading_copys_num" type="number" class="form-control">
                                             </div>
                                         </div>
                                     </div>
@@ -135,7 +141,7 @@
                                     <h4 class="text-middle"><b>Cargo Description</b></h4>
                                     <div class="margin form-inline">
                                         <div class="form-group">
-                                            <button type="button" class="btn btn-block btn-primary">Add</button>
+                                            <button type="button" class="btn btn-block btn-primary" @click="AddCargo">Add</button>
                                         </div>
                                     </div>
                                     <table id="goodstable"></table>
@@ -144,21 +150,15 @@
                                     <div class="col-md-6 form-horizontal">
                                         <h4 class="text-middle"><b>Stuffing & Equipment</b></h4>
                                         <div class="form-group">
-                                            <label class="col-sm-4 control-label">Container Type</label>
-                                            <div class="col-sm-8">
-                                                <input class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
                                             <label class="col-sm-4 control-label">Place</label>
                                             <div class="col-sm-8">
-                                                <input class="form-control">
+                                                <input v-model="workRow.billloading_stuffing_place" class="form-control">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-4 control-label">Expected date</label>
                                             <div class="col-sm-8">
-                                                <input class="form-control">
+                                                <input id="stuffDate" class="form-control">
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -179,7 +179,7 @@
                                         <div class="form-group">
                                             <label class="col-sm-4 control-label">Pay type</label>
                                             <div class="col-sm-8">
-                                                <input class="form-control">
+                                                <select class="form-control select2" multiple id="payType"></select>
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -216,7 +216,8 @@ export default {
   data: function() {
     return {
       pagePara: '',
-      searchDate: ''
+      searchDate: '',
+      workRow: {}
     }
   },
   name: 'Booking',
@@ -227,6 +228,7 @@ export default {
       $('#table').bootstrapTable({
         height: common.getTableHeight(),
         columns: [
+          common.BTRowFormatWithIndex('No'),
           common.BTRowFormat('billloading_no', 'S/O'),
           common.BTRowFormat('vessel_name', 'Vessel')
         ],
@@ -252,6 +254,7 @@ export default {
         let response = await _self.$http.post(apiUrl + 'init', {})
         let retData = response.data.info
         _self.pagePara = JSON.parse(JSON.stringify(retData))
+
         $('#searchDate').daterangepicker(
           {
             timePicker: false,
@@ -287,6 +290,10 @@ export default {
         )
 
         initTable()
+
+        // model
+        common.initSelect2($('#payType'), retData.PayTypeINFO)
+        common.initDatepicker($('#stuffDate'))
         $('#formA').parsley()
         console.log('init success')
       } catch (error) {
@@ -298,6 +305,8 @@ export default {
   },
   methods: {
     BookingMod: function(event) {
+      let _self = this
+      _self.workRow = {}
       $('#goodstable').bootstrapTable('destroy')
       window.goodsTableEvents = {
         'click .tableDelete': function(e, value, row, index) {
@@ -317,25 +326,85 @@ export default {
           return ''
         }
       }
+
       $('#goodstable').bootstrapTable({
         columns: [
           common.BTRowFormatWithIndex('No'),
-          common.BTRowFormatEditable('container_num', 'Vol.'),
-          common.BTRowFormatEditable('container_type', 'Type'),
-          common.BTRowFormatEditable('container_size', 'Size'),
-          common.BTRowFormatEditable('container_package_no', 'Package No'),
-          common.BTRowFormatEditable('container_volume', 'Volume'),
-          common.BTRowFormatEditable('container_volume_unit', 'Volume Unit'),
-          common.BTRowFormatEditable('container_weight', 'Weight'),
-          common.BTRowFormatEditable('container_weight_unit', 'Weight Unit'),
+          common.BTRowFormatEnumber('billloading_container_number', 'Vol.'),
+          common.BTRowFormatEdSelect2(
+            'billloading_container_type',
+            'Type',
+            _self.pagePara.ContainerTypeINFO
+          ),
+          common.BTRowFormatEdSelect2(
+            'billloading_container_size',
+            'Size',
+            _self.pagePara.ContainerSizeINFO
+          ),
+          common.BTRowFormatEditable(
+            'billoading_container_goods_description',
+            'Description'
+          ),
+          common.BTRowFormatEnumber(
+            'billloading_container_package_number',
+            'Package No'
+          ),
+          common.BTRowFormatEdSelect2(
+            'billloading_container_package_unit',
+            'Package Unit',
+            _self.pagePara.PackageUnitINFO
+          ),
+          common.BTRowFormatEnumber(
+            'billloading_container_gross_volume',
+            'Volume'
+          ),
+          common.BTRowFormatEdSelect2(
+            'billloading_container_gross_volume_unit',
+            'Volume Unit',
+            _self.pagePara.VolumeUnitINFO
+          ),
+          common.BTRowFormatEnumber(
+            'billloading_container_gross_weight',
+            'Weight'
+          ),
+          common.BTRowFormatEdSelect2(
+            'billloading_container_gross_unit',
+            'Weight Unit',
+            _self.pagePara.WeightUnitINFO
+          ),
           common.actFormatter('act', deleteFormatter, goodsTableEvents)
         ],
         idField: 'RowNumber',
         uniqueId: 'RowNumber',
         showFooter: false
       })
-      $('#goodstable').bootstrapTable('append', {})
+      $('#goodstable').bootstrapTable('append', {
+        billloading_container_number: '',
+        billloading_container_type: '',
+        billloading_container_size: '',
+        billoading_container_goods_description: '',
+        billloading_container_package_number: '',
+        billloading_container_package_unit: 'BAG',
+        billloading_container_gross_volume: '',
+        billloading_container_gross_volume_unit: 'M3',
+        billloading_container_gross_weight: '',
+        billloading_container_gross_unit: 'KG'
+      })
       $('#bookingModal').modal('show')
+    },
+    AddCargo: function(event) {
+      $('#goodstable').bootstrapTable('append', {
+        billloading_container_number: '',
+        billloading_container_type: '',
+        billloading_container_size: '',
+        billoading_container_goods_description: '',
+        billloading_container_package_number: '',
+        billloading_container_package_unit: 'BAG',
+        billloading_container_gross_volume: '',
+        billloading_container_gross_volume_unit: 'M3',
+        billloading_container_gross_weight: '',
+        billloading_container_gross_unit: 'KG'
+      })
     },
     bookingOp: function(event) {}
   }

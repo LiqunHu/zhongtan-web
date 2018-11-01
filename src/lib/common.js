@@ -417,10 +417,9 @@ exports.initSelect2SingleWithSearchPlaceholder = function (jqItem, sdata, placeh
 
 exports.initDatepicker = function (jqItem) {
   jqItem.datepicker({
-    language: 'zh-CN',
     autoclose: true,
     todayHighlight: true,
-    format: 'yyyy-mm-dd'
+    format: 'dd-mm-yyyy'
   })
 }
 
@@ -918,8 +917,7 @@ exports.BTRowFormatEditable = function (rowid, rowname, rFormatter) {
     align: 'center',
     valign: 'middle',
     editable: {
-      type: 'text',
-      emptytext: ''
+      type: 'text'
     }
   }
 }
@@ -1046,6 +1044,19 @@ exports.BTRowFormatEditableW = function (rowid, rowname, width) {
   }
 }
 
+exports.BTRowFormatEnumber = function (rowid, rowname) {
+  return {
+    field: rowid,
+    title: rowname,
+    class: 'text-nowrap',
+    align: 'center',
+    valign: 'middle',
+    editable: {
+      type: 'number',
+      min: 0
+    }
+  }
+}
 exports.BTRowFormatEnumberW = function (rowid, rowname, width) {
   return {
     field: rowid,
@@ -1122,7 +1133,6 @@ exports.BTRowFormatEdSelect2 = function (rowid, rowname, paraDict, width = 200) 
     valign: 'middle',
     editable: {
       type: 'select2',
-      emptytext: '无',
       source: paraDict,
       select2: {
         width: width
