@@ -203,13 +203,15 @@
 </template>
 <script>
 const common = require('@/lib/common')
+const moment = require('moment')
 const apiUrl = '/api/zhongtan/export/Booking?method='
 
 export default {
   data: function() {
     return {
       pagePara: '',
-      searchDate: '',
+      stDate: moment().format('YYYY-MM-DD'),
+      edDate: moment().format('YYYY-MM-DD'),
       workRow: {}
     }
   },
@@ -217,16 +219,30 @@ export default {
   mounted: function() {
     let _self = this
 
+    function queryParams(params) {
+      params.start_date = _self.stDate
+      params.end_date = _self.edDate
+      return JSON.stringify(params)
+    }
+
     function initTable() {
       $('#table').bootstrapTable({
+        method: 'POST',
+        url: apiUrl + 'search',
+        queryParams: queryParams,
+        sidePagination: 'server',
+        ajaxOptions: common.bootstrapTableAjaxOtions,
+        responseHandler: function(res) {
+          return res.info
+        },
         height: common.getTableHeight(),
         columns: [
           common.BTRowFormatWithIndex('No'),
           common.BTRowFormat('billloading_no', 'S/O'),
           common.BTRowFormat('vessel_name', 'Vessel')
         ],
-        idField: 'billoading_id',
-        uniqueId: 'billoading_id',
+        idField: 'billloading_id',
+        uniqueId: 'billloading_id',
         toolbar: '#toolbar',
         search: true,
         showColumns: true,
@@ -258,6 +274,9 @@ export default {
           },
           function(start, end, label) {
             // 格式化日期显示框
+            _self.stDate = start.format('YYYY-MM-DD')
+            _self.edDate = end.format('YYYY-MM-DD')
+            $('#table').bootstrapTable('refresh')
           }
         )
 
@@ -388,13 +407,18 @@ export default {
             .parsley()
             .isValid()
         ) {
-          _self.workRow.billloading_containers = $('#goodstable').bootstrapTable('getData')
+          _self.workRow.billloading_containers = $(
+            '#goodstable'
+          ).bootstrapTable('getData')
           _self.workRow.billloading_stuffing_date = $('#stuffDate').val()
           _self.workRow.billloading_pay_date = $('#payat').val()
           _self.workRow.billloading_invoice_currency = common.getSelect2Val(
             'payStatus'
           )
-          let response = await _self.$http.post(apiUrl + 'booking', _self.workRow)
+          let response = await _self.$http.post(
+            apiUrl + 'booking',
+            _self.workRow
+          )
           let retData = response.data.info
           $('#table').bootstrapTable('insertRow', {
             index: 0,
