@@ -23,7 +23,7 @@
                                     </button>
                                 </div>
                                 <div class="form-group">
-                                    <input v-model="searchDate" class="form-control" id="searchDate" placeholder="Application Date">
+                                    <input class="form-control" id="searchDate" placeholder="Application Date">
                                 </div>
                             </div>
                         </div>
@@ -45,13 +45,13 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Vessel</label>
-                                        <input v-model="workRow.billloading_vessel" class="form-control" placeholder="Enter Vessel">
+                                        <input v-model="workRow.billloading_vessel" class="form-control" placeholder="Enter Vessel" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label>Voyage</label>
-                                        <input v-model="workRow.billloading_voyage" class="form-control" placeholder="Enter Voyage">
+                                        <input v-model="workRow.billloading_voyage" class="form-control" placeholder="Enter Voyage" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
                                     </div>
                                 </div>
                             </div>
@@ -78,10 +78,10 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Consignee (Name & Address)</label>
-                                            <input v-model="workRow.billloading_consignee_name" class="form-control" placeholder="Consignee name">
+                                            <input v-model="workRow.billloading_consignee_name" class="form-control" placeholder="Consignee name" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
                                         </div>
                                         <div class="form-group">
-                                            <input v-model="workRow.billloading_consignee_address" class="form-control" placeholder="Consignee Address">
+                                            <input v-model="workRow.billloading_consignee_address" class="form-control" placeholder="Consignee Address" data-parsley-required="true" maxlength="100" data-parsley-maxlength="100">
                                         </div>
                                         <div class="form-group">
                                             <input v-model="workRow.billloading_consignee_tel" class="form-control" placeholder="Consignee Tel.">
@@ -90,10 +90,10 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Notify Party (Name & Address)</label>
-                                            <input v-model="workRow.billloading_notify_name" class="form-control" placeholder="Notify Party name">
+                                            <input v-model="workRow.billloading_notify_name" class="form-control" placeholder="Notify Party name" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
                                         </div>
                                         <div class="form-group">
-                                            <input v-model="workRow.billloading_notify_address" class="form-control" placeholder="Notify Party Address">
+                                            <input v-model="workRow.billloading_notify_address" class="form-control" placeholder="Notify Party Address" data-parsley-required="true" maxlength="100" data-parsley-maxlength="100">
                                         </div>
                                         <div class="form-group">
                                             <input v-model="workRow.billloading_notify_tel" class="form-control" placeholder="Notify Party Tel.">
@@ -105,19 +105,19 @@
                                         <div class="form-group">
                                             <label class="col-sm-4 control-label">Port of Loading</label>
                                             <div class="col-sm-8">
-                                                <input v-model="workRow.billloading_loading_port" class="form-control">
+                                                <input v-model="workRow.billloading_loading_port" class="form-control" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-4 control-label">Port of Discharg</label>
                                             <div class="col-sm-8">
-                                                <input v-model="workRow.billloading_discharge_port" class="form-control">
+                                                <input v-model="workRow.billloading_discharge_port" class="form-control" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-4 control-label">Place of Deliver</label>
                                             <div class="col-sm-8">
-                                                <input v-model="workRow.billloading_delivery_place" class="form-control">
+                                                <input v-model="workRow.billloading_delivery_place" class="form-control" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
                                             </div>
                                         </div>
                                     </div>
@@ -126,13 +126,13 @@
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Original</label>
                                             <div class="col-sm-10">
-                                                <input v-model="workRow.billloading_original_num" type="number" class="form-control">
+                                                <input v-model="workRow.billloading_original_num" type="number" class="form-control" data-parsley-required="true">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-2 control-label">Copies</label>
                                             <div class="col-sm-10">
-                                                <input v-model="workRow.billloading_copys_num" type="number" class="form-control">
+                                                <input v-model="workRow.billloading_copys_num" type="number" class="form-control" data-parsley-required="true">
                                             </div>
                                         </div>
                                     </div>
@@ -152,7 +152,7 @@
                                         <div class="form-group">
                                             <label class="col-sm-4 control-label">Place</label>
                                             <div class="col-sm-8">
-                                                <input v-model="workRow.billloading_stuffing_place" class="form-control">
+                                                <input v-model="workRow.billloading_stuffing_place" class="form-control" data-parsley-required="true">
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -164,18 +164,12 @@
                                         <div class="form-group">
                                             <label class="col-sm-4 control-label">Special requirement</label>
                                             <div class="col-sm-8">
-                                                <textarea class="form-control" rows="3"></textarea>
+                                                <textarea v-model="workRow.billloading_stuffing_requirement" class="form-control" rows="3"></textarea>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-6 form-horizontal">
                                         <h4 class="text-middle"><b>Payment</b></h4>
-                                        <div class="form-group">
-                                            <label class="col-sm-4 control-label">Forwarder</label>
-                                            <div class="col-sm-8">
-                                                <input class="form-control">
-                                            </div>
-                                        </div>
                                         <div class="form-group">
                                             <label class="col-sm-4 control-label">Pay type</label>
                                             <div class="col-sm-8">
@@ -185,13 +179,13 @@
                                         <div class="form-group">
                                             <label class="col-sm-4 control-label">Payable at</label>
                                             <div class="col-sm-8">
-                                                <input class="form-control">
+                                                <input id="payat" class="form-control">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <label class="col-sm-4 control-label">Status</label>
                                             <div class="col-sm-8">
-                                                <input class="form-control">
+                                                <select class="form-control select2" multiple id="payStatus"></select>
                                             </div>
                                         </div>
                                     </div>
@@ -199,7 +193,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary btn-info"><i class="fa fa-fw fa-plus"></i>确认</button>
+                            <button type="submit" class="btn btn-primary btn-info"><i class="fa fa-fw fa-plus"></i>Submit</button>
                         </div>
                     </form>
                 </div>
@@ -209,7 +203,6 @@
 </template>
 <script>
 const common = require('@/lib/common')
-const moment = require('moment')
 const apiUrl = '/api/zhongtan/export/Booking?method='
 
 export default {
@@ -259,29 +252,8 @@ export default {
           {
             timePicker: false,
             // dateLimit: { days: 30 },
-            ranges: {
-              '7 days': [
-                moment()
-                  .subtract(6, 'days')
-                  .format('MM/DD/YYYY'),
-                moment().format('MM/DD/YYYY')
-              ],
-              '14 days': [
-                moment()
-                  .subtract(13, 'days')
-                  .format('MM/DD/YYYY'),
-                moment().format('MM/DD/YYYY')
-              ],
-              '30 days': [
-                moment()
-                  .subtract(29, 'days')
-                  .format('MM/DD/YYYY'),
-                moment().format('MM/DD/YYYY')
-              ],
-              'to now': [
-                moment('01/01/2017', 'MM/DD/YYYY'),
-                moment().format('MM/DD/YYYY')
-              ]
+            locale: {
+              format: 'YYYY-MM-DD'
             }
           },
           function(start, end, label) {
@@ -292,8 +264,10 @@ export default {
         initTable()
 
         // model
-        common.initSelect2($('#payType'), retData.PayTypeINFO)
         common.initDatepicker($('#stuffDate'))
+        common.initDatepicker($('#payat'))
+        common.initSelect2($('#payType'), retData.PayTypeINFO)
+        common.initSelect2($('#payStatus'), retData.PayStatusINFO)
         $('#formA').parsley()
         console.log('init success')
       } catch (error) {
@@ -342,7 +316,7 @@ export default {
             _self.pagePara.ContainerSizeINFO
           ),
           common.BTRowFormatEditable(
-            'billoading_container_goods_description',
+            'billloading_container_goods_description',
             'Description'
           ),
           common.BTRowFormatEnumber(
@@ -382,7 +356,7 @@ export default {
         billloading_container_number: '',
         billloading_container_type: '',
         billloading_container_size: '',
-        billoading_container_goods_description: '',
+        billloading_container_goods_description: '',
         billloading_container_package_number: '',
         billloading_container_package_unit: 'BAG',
         billloading_container_gross_volume: '',
@@ -397,7 +371,7 @@ export default {
         billloading_container_number: '',
         billloading_container_type: '',
         billloading_container_size: '',
-        billoading_container_goods_description: '',
+        billloading_container_goods_description: '',
         billloading_container_package_number: '',
         billloading_container_package_unit: 'BAG',
         billloading_container_gross_volume: '',
@@ -406,7 +380,34 @@ export default {
         billloading_container_gross_unit: 'KG'
       })
     },
-    bookingOp: function(event) {}
+    bookingOp: async function(event) {
+      let _self = this
+      try {
+        if (
+          $('#formA')
+            .parsley()
+            .isValid()
+        ) {
+          _self.workRow.billloading_containers = $('#goodstable').bootstrapTable('getData')
+          _self.workRow.billloading_stuffing_date = $('#stuffDate').val()
+          _self.workRow.billloading_pay_date = $('#payat').val()
+          _self.workRow.billloading_invoice_currency = common.getSelect2Val(
+            'payStatus'
+          )
+          let response = await _self.$http.post(apiUrl + 'booking', _self.workRow)
+          let retData = response.data.info
+          $('#table').bootstrapTable('insertRow', {
+            index: 0,
+            row: retData
+          })
+          common.dealSuccessCommon('增加成功')
+          $('#bookingModal').modal('hide')
+          console.log('add success')
+        }
+      } catch (error) {
+        common.dealErrorCommon(_self, error)
+      }
+    }
   }
 }
 </script>
