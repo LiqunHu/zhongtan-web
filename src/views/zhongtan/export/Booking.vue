@@ -225,6 +225,10 @@ export default {
       return JSON.stringify(params)
     }
 
+    function statusFormatter(value, row) {
+        
+    }
+
     function initTable() {
       $('#table').bootstrapTable({
         method: 'POST',
@@ -239,14 +243,14 @@ export default {
         columns: [
           common.BTRowFormatWithIndex('No'),
           common.BTRowFormat('billloading_no', 'S/O'),
-          common.BTRowFormat('vessel_name', 'Vessel')
+          common.BTRowFormatWithFormatter('billloading_state', 'Status', statusFormatter),
+          common.BTRowFormat('billloading_vessel', 'Vessel'),
+          common.BTRowFormat('billloading_voyage', 'voyage')
         ],
         idField: 'billloading_id',
         uniqueId: 'billloading_id',
         toolbar: '#toolbar',
-        search: true,
         showColumns: true,
-        showExport: true,
         striped: true,
         pagination: true,
         pageSize: 25,
