@@ -226,7 +226,18 @@ export default {
     }
 
     function statusFormatter(value, row) {
-        
+      for (let i = 0; i < _self.pagePara['statusInfo'].length; i++) {
+        if (_self.pagePara['statusInfo'][i].id === value) {
+          return (
+            '<span class="label ' +
+            _self.pagePara['statusInfo'][i].style +
+            '">' +
+            _self.pagePara['statusInfo'][i].text +
+            '</span>'
+          )
+        }
+      }
+      return ''
     }
 
     function initTable() {
@@ -243,7 +254,11 @@ export default {
         columns: [
           common.BTRowFormatWithIndex('No'),
           common.BTRowFormat('billloading_no', 'S/O'),
-          common.BTRowFormatWithFormatter('billloading_state', 'Status', statusFormatter),
+          common.BTRowFormatWithFormatter(
+            'billloading_state',
+            'Status',
+            statusFormatter
+          ),
           common.BTRowFormat('billloading_vessel', 'Vessel'),
           common.BTRowFormat('billloading_voyage', 'voyage')
         ],
