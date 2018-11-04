@@ -37,6 +37,9 @@
   line-height: inherit;
 }
 
+.label {
+  padding: .2em .3em .1em;
+}
 .label-purple {
   background-color: #8B2252
 }

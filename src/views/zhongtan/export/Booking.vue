@@ -226,13 +226,13 @@ export default {
     }
 
     function statusFormatter(value, row) {
-      for (let i = 0; i < _self.pagePara['statusInfo'].length; i++) {
-        if (_self.pagePara['statusInfo'][i].id === value) {
+      for (let i = 0; i < _self.pagePara['BLSTATUSINFO'].length; i++) {
+        if (_self.pagePara['BLSTATUSINFO'][i].id === value) {
           return (
             '<span class="label ' +
-            _self.pagePara['statusInfo'][i].style +
+            _self.pagePara['BLSTATUSINFO'][i].style +
             '">' +
-            _self.pagePara['statusInfo'][i].text +
+            _self.pagePara['BLSTATUSINFO'][i].text +
             '</span>'
           )
         }
@@ -260,11 +260,20 @@ export default {
             statusFormatter
           ),
           common.BTRowFormat('billloading_vessel', 'Vessel'),
-          common.BTRowFormat('billloading_voyage', 'voyage')
+          common.BTRowFormat('billloading_voyage', 'voyage'),
+          common.BTRowFormat('billloading_consignee', 'Consignee Info'),
+          common.BTRowFormat('billloading_notify', 'Notify Info'),
+          common.BTRowFormat('billloading_loading_port', 'Loading Poart'),
+          common.BTRowFormat('billloading_discharge_port', 'Discharge Poart'),
+          common.BTRowFormat('billloading_delivery_place', 'Delivery Place'),
+          common.BTRowFormat('billloading_stuffing_place', 'Stuffing Place'),
+          common.BTRowFormat('billloading_stuffing_date', 'Stuffing Date'),
+          common.BTRowFormat('billloading_stuffing_requirement', 'Stuffing requirement')
         ],
         idField: 'billloading_id',
         uniqueId: 'billloading_id',
         toolbar: '#toolbar',
+        showRefresh: true,
         showColumns: true,
         striped: true,
         pagination: true,
