@@ -259,16 +259,29 @@ export default {
             'Status',
             statusFormatter
           ),
-          common.BTRowFormat('billloading_vessel', 'Vessel'),
-          common.BTRowFormat('billloading_voyage', 'voyage'),
-          common.BTRowFormat('billloading_consignee', 'Consignee Info'),
+          common.BTRowFormatEditable('billloading_vessel', 'Vessel'),
+          common.BTRowFormatEditable('billloading_voyage', 'voyage'),
+          common.BTRowFormatEditable('billloading_consignee', '1111'),
+          {
+            field: 'billloading_consignee',
+            title: 'Consignee Info',
+            class: 'text-nowrap',
+            align: 'center',
+            valign: 'middle',
+            editable: {
+              type: 'contractInfo'
+            }
+          },
           common.BTRowFormat('billloading_notify', 'Notify Info'),
           common.BTRowFormat('billloading_loading_port', 'Loading Poart'),
           common.BTRowFormat('billloading_discharge_port', 'Discharge Poart'),
           common.BTRowFormat('billloading_delivery_place', 'Delivery Place'),
           common.BTRowFormat('billloading_stuffing_place', 'Stuffing Place'),
           common.BTRowFormat('billloading_stuffing_date', 'Stuffing Date'),
-          common.BTRowFormat('billloading_stuffing_requirement', 'Stuffing requirement')
+          common.BTRowFormat(
+            'billloading_stuffing_requirement',
+            'Stuffing requirement'
+          )
         ],
         idField: 'billloading_id',
         uniqueId: 'billloading_id',
