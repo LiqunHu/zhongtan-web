@@ -33,7 +33,8 @@ module.exports = {
     new VueLoaderPlugin(),
     new webpack.ProvidePlugin({
             $: "jquery",
-            jQuery: "jquery"
+            jQuery: "jquery",
+            moment: "moment"
         })
   ],
   module: {

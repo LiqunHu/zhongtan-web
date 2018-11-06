@@ -22,10 +22,11 @@ $(function(){
 </script>
 **/
 
-;(function($) {
+;
+(function ($) {
   'use strict'
 
-  let contractInfo = function(options) {
+  let contractInfo = function (options) {
     this.init('contractInfo', options, contractInfo.defaults)
   }
 
@@ -38,8 +39,11 @@ $(function(){
 
     @method render()
     **/
-    render: function() {
+    render: function () {
       this.$input = this.$tpl.find('input')
+      this.$input.filter('[name="name"]').val(this.options.source.name)
+      this.$input.filter('[name="address"]').val(this.options.source.address)
+      this.$input.filter('[name="telephone"]').val(this.options.source.telephone)
     },
 
     /**
@@ -47,24 +51,19 @@ $(function(){
 
     @method value2html(value, element)
     **/
-    value2html: function(value, element) {
-      console.log(value)
-      if (!value) {
-        $(element).empty()
-        return '-'
-      }
+    value2html: function (value, element) {
       var html =
         $('<div>')
-          .text(value.name)
-          .html() +
+        .text(this.options.source.name)
+        .html() +
         '<br/>' +
         $('<div>')
-          .text(value.address)
-          .html() +
+        .text(this.options.source.address)
+        .html() +
         '<br/>' +
         $('<div>')
-          .text(value.telephone)
-          .html()
+        .text(this.options.source.telephone)
+        .html()
       $(element).html(html)
     },
 
@@ -73,7 +72,7 @@ $(function(){
 
     @method html2value(html)
     **/
-    html2value: function(html) {
+    html2value: function (html) {
       /*
         you may write parsing method to get value by element's html
         e.g. "Moscow, st. Lenina, bld. 15" => {city: "Moscow", street: "Lenina", building: "15"}
@@ -96,8 +95,7 @@ $(function(){
 
      @method value2str(value)
     **/
-    value2str: function(value) {
-      console.log(value)
+    value2str: function (value) {
       var str = ''
       if (value) {
         for (var k in value) {
@@ -112,7 +110,7 @@ $(function(){
 
      @method str2value(str)
     */
-    str2value: function(str) {
+    str2value: function (str) {
       /*
       this is mainly for parsing value defined in data-value attribute.
       If you will always set value by javascript, no need to overwrite it
@@ -126,22 +124,14 @@ $(function(){
      @method value2input(value)
      @param {mixed} value
     **/
-    value2input: function(value) {
-      console.log(value)
-      if (!value) {
-        return
-      }
-      this.$input.filter('[name="name"]').val(value.name)
-      this.$input.filter('[name="address"]').val(value.address)
-      this.$input.filter('[name="telephone"]').val(value.telephone)
-    },
+    value2input: function (value) {},
 
     /**
      Returns value of input.
 
      @method input2value()
     **/
-    input2value: function() {
+    input2value: function () {
       return {
         name: this.$input.filter('[name="name"]').val(),
         address: this.$input.filter('[name="address"]').val(),
@@ -154,7 +144,7 @@ $(function(){
 
         @method activate()
        **/
-    activate: function() {
+    activate: function () {
       this.$input.filter('[name="name"]').focus()
     },
 
@@ -163,8 +153,8 @@ $(function(){
 
      @method autosubmit()
     **/
-    autosubmit: function() {
-      this.$input.keydown(function(e) {
+    autosubmit: function () {
+      this.$input.keydown(function (e) {
         if (e.which === 13) {
           $(this)
             .closest('form')
@@ -175,8 +165,7 @@ $(function(){
   })
 
   contractInfo.defaults = $.extend({}, $.fn.editabletypes.select.defaults, {
-    tpl:
-      '<div class="editable-contract"><label><span>Name: </span><input type="text" name="name" class="input-small"></label></div>' +
+    tpl: '<div class="editable-contract"><label><span>Name: </span><input type="text" name="name" class="input-small"></label></div>' +
       '<div class="editable-contract"><label><span>Address: </span><input type="text" name="address" class="input-small"></label></div>' +
       '<div class="editable-contract"><label><span>Telephone: </span><input type="text" name="telephone" class="input-mini"></label></div>',
     inputclass: ''

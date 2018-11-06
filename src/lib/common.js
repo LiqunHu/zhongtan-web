@@ -977,7 +977,6 @@ exports.BTRowFormatEditableDatePicker = function (rowid, rowname, placement = 't
       viewformat: 'YYYY-MM-DD',
       template: 'YYYY / MMMM / D',
       combodate: {
-        language: 'zh-CN',
         minYear: new Date().getFullYear(),
         maxYear: new Date().getFullYear() + 1,
         minuteStep: 1
