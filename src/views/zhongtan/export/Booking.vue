@@ -212,7 +212,8 @@ export default {
       pagePara: '',
       stDate: moment().format('YYYY-MM-DD'),
       edDate: moment().format('YYYY-MM-DD'),
-      workRow: {}
+      workRow: {},
+      oldRow: {}
     }
   },
   name: 'Booking',
@@ -319,7 +320,19 @@ export default {
         pageSize: 25,
         pageList: [10, 15, 25, 50, 'All'],
         showFooter: false,
-        clickToSelect: true
+        clickToSelect: true,
+        onEditableShown: function(field, row, $el, editable) {
+          _self.oldRow = $.extend(true, {}, row)
+        },
+        onEditableSave: function(field, row, oldValue, $el) {
+          common.rowModifyWithT(
+            _self,
+            apiUrl + 'modify',
+            row,
+            'billloading_id',
+            $('#table')
+          )
+        }
       })
 
       common.changeTableClass($('#table'))
