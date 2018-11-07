@@ -151,6 +151,9 @@
   color: black;
 }
 
+.select2-dropdown {
+  z-index: 1060;
+}
 /* Parsley */
 
 .parsley-errors-list {

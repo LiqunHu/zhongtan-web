@@ -240,6 +240,27 @@ export default {
       return ''
     }
 
+    function BTRowFormatContractInfo(rowid, rowname) {
+      return {
+        field: rowid,
+        title: rowname,
+        formatter: function(value, row, index) {
+          if (typeof value === 'object') {
+            return JSON.stringify(value).replace(/"/g, "&quot;")
+          } else {
+            return value
+          }
+        },
+        class: 'text-nowrap',
+        align: 'center',
+        valign: 'middle',
+        editable: {
+          type: 'contractInfo',
+          emptytext: '无'
+        }
+      }
+    }
+
     function initTable() {
       $('#table').bootstrapTable({
         method: 'POST',
@@ -261,13 +282,28 @@ export default {
           ),
           common.BTRowFormatEditable('billloading_vessel', 'Vessel'),
           common.BTRowFormatEditable('billloading_voyage', 'voyage'),
-          common.BTRowFormatEditable('billloading_consignee', 'Consignee Info'),
-          common.BTRowFormatEditable('billloading_notify', 'Notify Info'),
-          common.BTRowFormatEditable('billloading_loading_port', 'Loading Poart'),
-          common.BTRowFormatEditable('billloading_discharge_port', 'Discharge Poart'),
-          common.BTRowFormatEditable('billloading_delivery_place', 'Delivery Place'),
-          common.BTRowFormatEditable('billloading_stuffing_place', 'Stuffing Place'),
-          common.BTRowFormatEditableDatePicker('billloading_stuffing_date', 'Stuffing Date'),
+          BTRowFormatContractInfo('billloading_consignee', 'Consignee Info'),
+          BTRowFormatContractInfo('billloading_notify', 'Notify Info'),
+          common.BTRowFormatEditable(
+            'billloading_loading_port',
+            'Loading Poart'
+          ),
+          common.BTRowFormatEditable(
+            'billloading_discharge_port',
+            'Discharge Poart'
+          ),
+          common.BTRowFormatEditable(
+            'billloading_delivery_place',
+            'Delivery Place'
+          ),
+          common.BTRowFormatEditable(
+            'billloading_stuffing_place',
+            'Stuffing Place'
+          ),
+          common.BTRowFormatEditableDatePicker(
+            'billloading_stuffing_date',
+            'Stuffing Date'
+          ),
           common.BTRowFormatEditablePop(
             'billloading_stuffing_requirement',
             'Stuffing requirement'
@@ -283,32 +319,7 @@ export default {
         pageSize: 25,
         pageList: [10, 15, 25, 50, 'All'],
         showFooter: false,
-        clickToSelect: true,
-        onPostBody: function() {
-          $('[data-name="billloading_consignee"]').each(function() {
-            let actrow = $('#table').bootstrapTable(
-              'getRowByUniqueId',
-              this.getAttribute('data-pk')
-            )
-            $(this).editable({
-              type: 'contractInfo',
-              source: actrow.billloading_consignee,
-              disabled: false
-            })
-          })
-
-          $('[data-name="billloading_notify"]').each(function() {
-            let actrow = $('#table').bootstrapTable(
-              'getRowByUniqueId',
-              this.getAttribute('data-pk')
-            )
-            $(this).editable({
-              type: 'contractInfo',
-              source: actrow.billloading_notify,
-              disabled: false
-            })
-          })
-        }
+        clickToSelect: true
       })
 
       common.changeTableClass($('#table'))

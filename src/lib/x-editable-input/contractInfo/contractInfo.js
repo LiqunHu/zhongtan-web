@@ -41,9 +41,6 @@ $(function(){
     **/
     render: function () {
       this.$input = this.$tpl.find('input')
-      this.$input.filter('[name="name"]').val(this.options.source.name)
-      this.$input.filter('[name="address"]').val(this.options.source.address)
-      this.$input.filter('[name="telephone"]').val(this.options.source.telephone)
     },
 
     /**
@@ -54,15 +51,15 @@ $(function(){
     value2html: function (value, element) {
       var html =
         $('<div>')
-        .text(this.options.source.name)
+        .text(value.name)
         .html() +
         '<br/>' +
         $('<div>')
-        .text(this.options.source.address)
+        .text(value.address)
         .html() +
         '<br/>' +
         $('<div>')
-        .text(this.options.source.telephone)
+        .text(value.telephone)
         .html()
       $(element).html(html)
     },
@@ -124,8 +121,11 @@ $(function(){
      @method value2input(value)
      @param {mixed} value
     **/
-    value2input: function (value) {},
-
+    value2input: function (value) {
+      this.$input.filter('[name="name"]').val(value.name)
+      this.$input.filter('[name="address"]').val(value.address)
+      this.$input.filter('[name="telephone"]').val(value.telephone)
+    },
     /**
      Returns value of input.
 
