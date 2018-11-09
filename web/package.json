@@ -1,7 +1,7 @@
 {
-  "name": "shenhui",
+  "name": "zhongtan",
   "version": "1.0.0",
-  "description": "Nuxt.js project",
+  "description": "ZhongTan HomePage",
   "author": "LiqunHu <huliquns@126.com>",
   "private": true,
   "scripts": {

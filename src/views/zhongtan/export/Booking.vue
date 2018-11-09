@@ -500,10 +500,7 @@ export default {
             _self.workRow
           )
           let retData = response.data.info
-          $('#table').bootstrapTable('insertRow', {
-            index: 0,
-            row: retData
-          })
+          $('#table').bootstrapTable('refresh')
           common.dealSuccessCommon('增加成功')
           $('#bookingModal').modal('hide')
           console.log('add success')

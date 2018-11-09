@@ -12,21 +12,21 @@ module.exports = {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      { rel: 'stylesheet', href: '/static/plugins/bootstrap/css/bootstrap.css' },
-      { rel: 'stylesheet', href: '/static/plugins/font-awesome/css/font-awesome.min.css' },
-      { rel: 'stylesheet', href: '/static/css/style.css' },
-      { rel: 'stylesheet', href: '/static/css/style-responsive.css' },
-      { rel: 'stylesheet', href: '/static/css/theme/default.css' },
-      { rel: 'stylesheet', href: '/static/plugins/github-markdown-css/github-markdown.css' }
+      // { rel: 'stylesheet', href: '/static/plugins/bootstrap/css/bootstrap.css' },
+      // { rel: 'stylesheet', href: '/static/plugins/font-awesome/css/font-awesome.min.css' },
+      // { rel: 'stylesheet', href: '/static/css/style.css' },
+      // { rel: 'stylesheet', href: '/static/css/style-responsive.css' },
+      // { rel: 'stylesheet', href: '/static/css/theme/default.css' },
+      // { rel: 'stylesheet', href: '/static/plugins/github-markdown-css/github-markdown.css' }
     ]
   },
   css: [
-    // '~/static/plugins/bootstrap/css/bootstrap.css',
-    // '~/static/plugins/font-awesome/css/font-awesome.min.css',
-    // '~/static/css/style.css',
-    // '~/static/css/style-responsive.css',
-    // '~/static/css/theme/default.css',
-    // '~/static/plugins/github-markdown-css/github-markdown.css'
+    '~/static/plugins/bootstrap/css/bootstrap.css',
+    '~/static/plugins/font-awesome/css/font-awesome.min.css',
+    '~/static/css/style.css',
+    '~/static/css/style-responsive.css',
+    '~/static/css/theme/default.css',
+    '~/static/plugins/github-markdown-css/github-markdown.css'
   ],
   plugins: [
     // ssr: false to only include it on client-side
