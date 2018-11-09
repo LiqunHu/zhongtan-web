@@ -5,7 +5,7 @@
         <div class="container">
           <article class="page">
             <header class="border-left entry-header">
-              <h1 class="entry-title">{{data.article_title}}</h1>
+              <h1 class="entry-title">{{data.web_article_id}}</h1>
               <div class="blog-meta metabox">
                 <span class="entry-elem">
                   <i class="fa fa-calendar"></i>
@@ -13,12 +13,12 @@
                 <span class="separator">|</span>
                 <span class="entry-elem"> 
                   <i class="fa fa-comment"></i>
-                {{data.article_author}} 							</span>
+                {{data.web_article_author}} 							</span>
               </div>
             </header><!-- .entry-header -->
 
             <div class="entry-content">
-              <blockquote  class="markdown-body" v-html="data.article_markdown">
+              <blockquote  class="markdown-body" v-html="data.web_article_markdown">
               </blockquote>
              </div><!-- .entry-content -->
 
@@ -35,11 +35,11 @@ import request from '~/plugins/request'
 import CommonHeader from '~/components/CommonHeader.vue'
 import PageFooter from '~/components/PageFooter.vue'
 
-const apiUrl = '/api/shenhui/shenhuiControl?method='
+const apiUrl = '/api/zhongtan/web/Web?method='
 
 export default {
   async asyncData({ params }) {
-    let { data } = await request.post(apiUrl + 'getArticle', {article_id: params.id})
+    let { data } = await request.post(apiUrl + 'getArticle', {web_article_id: params.id})
     return { data: data.info }
   },
   components: {
