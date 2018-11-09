@@ -54,12 +54,11 @@
                     <!-- begin col-4 -->
                     <div class="col-md-4 col-sm-12">
                         <h3>Message</h3>
-                        <!-- <ul class="sidebar-list">
-                            <li v-for="c in data.cases" :key="c.article_id"><nuxt-link :to="'/casedetail/'+c.article_id">{{c.article_title}}</nuxt-link></li>
-                        </ul> -->
-                        111111
+                        <ul class="sidebar-list">
+                            <li v-for="m in data.message" :key="m.web_article_id"><nuxt-link :to="'/messagedetail/'+m.web_article_id">{{m.web_article_title}}</nuxt-link></li>
+                        </ul>
                         <p class="read-btn-container">
-                            <nuxt-link to="/cases">More<i class="fa fa-angle-double-right"></i></nuxt-link>
+                            <nuxt-link to="/messages">More<i class="fa fa-angle-double-right"></i></nuxt-link>
                         </p>
                     </div>
                     <!-- end col-4 -->
@@ -78,12 +77,12 @@ import request from '~/plugins/request'
 import PageHeader from '~/components/PageHeader.vue'
 import PageFooter from '~/components/PageFooter.vue'
 
-// const apiUrl = '/api/shenhui/shenhuiControl?method='
+const apiUrl = '/api/zhongtan/web/Web?method='
 
 export default {
   async asyncData({ params }) {
-    // let { data } = await request.post(apiUrl + 'getIndex', {})
-    // return { data: data.info.data }
+    let { data } = await request.post(apiUrl + 'getHomePageBoard', {})
+    return { data: data.info.data }
   },
   head () {
     return {

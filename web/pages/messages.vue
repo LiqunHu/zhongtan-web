@@ -5,18 +5,18 @@
         <div class="container">
           <div class="vertical-box color-salve">
             <div class="vertical-box-column width-250 color-gray show-pannel">
-              <p><b>经典案例</b></p>
+              <p><b>Message</b></p>
               <div class="media">
-                <img src="/gallery-2.jpg" alt="" class="media-object">
+                <img src="/gallery.jpg" alt="" class="media-object">
               </div>
             </div>
             <div class="vertical-box-column">
               <ul class="list-group list-group-lg no-radius list-info">
-                  <li v-for="c in data.cases" :key="c.article_id" :class="'list-group-item inverse style'+c.article_id%5">
+                  <li v-for="m in data.messages" :key="m.web_article_id" :class="'list-group-item inverse style'+m.web_article_id%5">
                       <div class="info-data">
-                          <span class="info-time">{{c.created_at}}</span>
+                          <span class="info-time">{{m.created_at}}</span>
                           <h5 class="info-title">
-                            <nuxt-link :to="'/casedetail/'+c.article_id">{{c.article_title}}</nuxt-link>
+                            <nuxt-link :to="'/messagedetail/'+m.web_article_id">{{m.web_article_title}}</nuxt-link>
                           </h5>
                       </div>
                   </li>
@@ -34,16 +34,16 @@ import request from '~/plugins/request'
 import CommonHeader from '~/components/CommonHeader.vue'
 import PageFooter from '~/components/PageFooter.vue'
 
-const apiUrl = '/api/shenhui/shenhuiControl?method='
+const apiUrl = '/api/zhongtan/web/Web?method='
 
 export default {
   async asyncData({ params }) {
-    let { data } = await request.post(apiUrl + 'getCases', {})
+    let { data } = await request.post(apiUrl + 'getMessages', {})
     return { data: data.info.data }
   },
   head () {
     return {
-      title: '上海市申汇律师事务所经典案例',
+      title: 'Message',
     }
   },
   components: {
