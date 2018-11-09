@@ -76,7 +76,7 @@ var app
     @method value2html(value, element)
     **/
     value2html: function (value, element) {
-      var showText = '详情'
+      var showText = 'Detail'
       $(element).html(showText)
       return true
     },
@@ -171,7 +171,7 @@ var app
 
   mavonEdit.defaults = $.extend({}, $.fn.editabletypes.select.defaults, {
     tpl: '<div id="editormain" style="width: 800px;">' +
-         '<mavon-editor ref=me v-model="mdvalue"></mavon-editor>' +
+         '<mavon-editor ref=me v-model="mdvalue" language="en"></mavon-editor>' +
          '</div>',
     inputclass: ''
   })

@@ -29,6 +29,11 @@ export default new Router({
       component: resolve => require(['@/components/mainSystem'], resolve),
       children: [
         { path: 'Booking', component: resolve => require(['@/views/zhongtan/export/Booking'], resolve) }
+      ]},
+    { path: '/zhongtan/web',
+      component: resolve => require(['@/components/mainSystem'], resolve),
+      children: [
+        { path: 'WebControl', component: resolve => require(['@/views/zhongtan/web/WebControl'], resolve) }
       ]}
   ]
 })

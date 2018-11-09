@@ -247,7 +247,7 @@ export default {
         title: rowname,
         formatter: function(value, row, index) {
           if (typeof value === 'object') {
-            return JSON.stringify(value).replace(/"/g, "&quot;")
+            return JSON.stringify(value).replace(/"/g, '&quot;')
           } else {
             return value
           }
@@ -500,6 +500,7 @@ export default {
             _self.workRow
           )
           let retData = response.data.info
+          console.log(retData)
           $('#table').bootstrapTable('refresh')
           common.dealSuccessCommon('增加成功')
           $('#bookingModal').modal('hide')
