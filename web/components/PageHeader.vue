@@ -19,21 +19,6 @@
 					<li>
 						<nuxt-link to="/">Home</nuxt-link>
 					</li>
-					<!-- <li>
-						<nuxt-link to="/about">律所简介</nuxt-link>
-					</li>
-					<li>
-						<nuxt-link to="/dynamic">律所动态</nuxt-link>
-					</li>
-					<li>
-						<nuxt-link to="/scope">业务范畴</nuxt-link>
-					</li>
-					<li>
-						<nuxt-link to="/attornys">律师简介</nuxt-link>
-					</li>
-					<li>
-						<nuxt-link to="/cases">经典案例</nuxt-link>
-					</li> -->
 					<li>
 						<nuxt-link to="/contact">Contract us</nuxt-link>
 					</li>
