@@ -20,7 +20,13 @@
 						<nuxt-link to="/">Home</nuxt-link>
 					</li>
 					<li>
-						<nuxt-link to="/contact">Contract us</nuxt-link>
+						<nuxt-link to="/about">About</nuxt-link>
+					</li>
+					<li>
+						<nuxt-link to="/contact">Contract</nuxt-link>
+					</li>
+					<li>
+						<a href="/admin/">Login</a>
 					</li>
 				</ul>
 			</div>
