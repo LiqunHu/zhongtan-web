@@ -8,7 +8,7 @@ export default new Router({
   scrollBehavior: () => ({y: 0}),
   routes: [
     { path: '*', component: resolve => require(['@/components/err404'], resolve) },
-    { path: '/', component: resolve => require(['@/views/login'], resolve) },
+    { path: '/admin/', component: resolve => require(['@/views/login'], resolve) },
     { path: '/error404', component: resolve => require(['@/components/err404'], resolve) },
     { path: '/error', component: resolve => require(['@/components/errpage'], resolve) },
     { path: '/common/system',
