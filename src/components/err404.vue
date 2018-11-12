@@ -1,27 +1,46 @@
 <template>
 <div>
-  <!-- begin #page-loader -->
-  <div id="page-loader" class="fade in"><span class="spinner"></span></div>
-  <!-- end #page-loader -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="#">error</a></li>
+        <li class="active">401 error</li>
+      </ol>
+    </section>
 
-  <!-- begin #page-container -->
-  <div id="page-container" class="fade">
-    <!-- begin error -->
-    <div class="error">
-      <div class="error-code m-b-10">404 <i class="fa fa-warning"></i></div>
-      <div class="error-content">
-        <div class="error-message">We couldn't find it...</div>
-        <div class="error-desc m-b-20">
-          The page you're looking for doesn't exist. <br /> Perhaps, there pages will help find what you're looking for.
+    <!-- Main content -->
+    <section class="content">
+      <div class="error-page">
+        <h2 class="headline text-yellow"> 404</h2>
+
+        <div class="error-content">
+          <h3><i class="fa fa-warning text-yellow"></i> Oops! Page not found.</h3>
+
+          <p>
+            We could not find the page you were looking for.
+            Meanwhile, you may <a href="../../index.html">return to dashboard</a> or try using the search form.
+          </p>
+
+          <form class="search-form">
+            <div class="input-group">
+              <input type="text" name="search" class="form-control" placeholder="Search">
+
+              <div class="input-group-btn">
+                <button type="submit" name="submit" class="btn btn-warning btn-flat"><i class="fa fa-search"></i>
+                </button>
+              </div>
+            </div>
+            <!-- /.input-group -->
+          </form>
         </div>
-        <div>
-          <a href="/" class="btn btn-success">Go Back to Home Page</a>
-        </div>
+        <!-- /.error-content -->
       </div>
-    </div>
-    <!-- end error -->
+      <!-- /.error-page -->
+    </section>
+    <!-- /.content -->
   </div>
-  <!-- end page container -->
 </div>
 </template>
 <script>
