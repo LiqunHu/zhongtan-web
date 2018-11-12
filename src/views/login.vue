@@ -78,7 +78,7 @@ export default {
             common.setStoreData('token', token)
             common.setStoreData('userinfo', userinfo)
             _self.$router.push({
-              path: '/common/system/home'
+              path: '/admin/common/system/home'
             })
           } else {
             _self.errorMessage = '系统错误'
