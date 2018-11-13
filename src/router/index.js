@@ -11,7 +11,7 @@ export default new Router({
     { path: '/admin/', component: resolve => require(['@/views/login'], resolve) },
     { path: '/error404', component: resolve => require(['@/components/err404'], resolve) },
     { path: '/error', component: resolve => require(['@/components/errpage'], resolve) },
-    { path: '/common/system',
+    { path: '/admin/common/system',
       component: resolve => require(['@/components/mainSystem'], resolve),
       children: [
         { path: 'home', component: resolve => require(['@/views/home'], resolve) },
@@ -25,12 +25,12 @@ export default new Router({
         { path: 'UserSetting', component: resolve => require(['@/views/common/system/UserSetting'], resolve) }
         // { path: 'ResetPassword', component: resolve => require(['@/views/common/system/ResetPassword'], resolve) }
       ]},
-    { path: '/zhongtan/export',
+    { path: '/admin/zhongtan/export',
       component: resolve => require(['@/components/mainSystem'], resolve),
       children: [
         { path: 'Booking', component: resolve => require(['@/views/zhongtan/export/Booking'], resolve) }
       ]},
-    { path: '/zhongtan/web',
+    { path: '/admin/zhongtan/web',
       component: resolve => require(['@/components/mainSystem'], resolve),
       children: [
         { path: 'WebControl', component: resolve => require(['@/views/zhongtan/web/WebControl'], resolve) }
