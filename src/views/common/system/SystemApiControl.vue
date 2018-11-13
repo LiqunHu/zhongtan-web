@@ -96,7 +96,7 @@
 </template>
 <script>
 const common = require('@/lib/common')
-const apiUrl = '/api/common/system/SystemApiControl?method='
+const apiUrl = '/api/common/system/SystemApiControl/'
 
 export default {
   data: function() {

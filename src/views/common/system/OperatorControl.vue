@@ -69,7 +69,7 @@
 </template>
 <script>
 const common = require('@/lib/common')
-const apiUrl = '/api/common/system/OperatorControl?method='
+const apiUrl = '/api/common/system/OperatorControl/'
 
 export default {
   data: function() {
@@ -87,15 +87,7 @@ export default {
     function initTable() {
       window.tableEvents = {
         'click .tableDelete': function(e, value, row, index) {
-          common.rowDeleteWithApi(
-            _self,
-            '用户删除',
-            apiUrl + 'delete',
-            $table,
-            row,
-            'user_id',
-            function() {}
-          )
+          common.rowDeleteWithApi(_self, '用户删除', apiUrl + 'delete', $table, row, 'user_id', function() {})
         }
       }
 
@@ -118,11 +110,7 @@ export default {
           common.BTRowFormatEditable('user_name', '姓名'),
           common.BTRowFormatEditable('user_phone', '电话'),
           common.BTRowFormatEditable('user_email', '邮箱'),
-          common.BTRowFormatEdSelect2(
-            'usergroup_id',
-            '用户组',
-            _self.pagePara.groupInfo
-          ),
+          common.BTRowFormatEdSelect2('usergroup_id', '用户组', _self.pagePara.groupInfo),
           common.actFormatter('act', common.deleteFormatter, tableEvents)
         ],
         idField: 'user_id',
@@ -137,13 +125,7 @@ export default {
           _self.oldRow = $.extend(true, {}, row)
         },
         onEditableSave: function(field, row, oldValue, $el) {
-          common.rowModifyWithT(
-            _self,
-            apiUrl + 'modify',
-            row,
-            'user_id',
-            $table
-          )
+          common.rowModifyWithT(_self, apiUrl + 'modify', row, 'user_id', $table)
         }
       })
       common.changeTableClass($table)

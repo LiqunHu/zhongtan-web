@@ -143,7 +143,7 @@
 </template>
 <script>
 const common = require('@/lib/common')
-const apiUrl = '/api/common/system/DomainTemplateControl?method='
+const apiUrl = '/api/common/system/DomainTemplateControl/'
 
 export default {
   data: function() {
@@ -161,15 +161,7 @@ export default {
     let $templateTable = $('#templateTable')
     window.tableEvents = {
       'click .tableDelete': function(e, value, row, index) {
-        common.rowDeleteWithApi(
-          _self,
-          '删除模板',
-          apiUrl + 'deleteTemplate',
-          $templateTable,
-          row,
-          'domaintemplate_id',
-          function() {}
-        )
+        common.rowDeleteWithApi(_self, '删除模板', apiUrl + 'deleteTemplate', $templateTable, row, 'domaintemplate_id', function() {})
       },
       'click .templatechoose': async function(e, value, row, index) {
         _self.actTemplate = JSON.parse(JSON.stringify(row))
@@ -184,11 +176,7 @@ export default {
     }
 
     function templateNameFormatter(value, row) {
-      return (
-        `<button type="button" class="btn btn-primary btn-sm m-r-5 m-b-5 templatechoose">` +
-        value +
-        `</button>`
-      )
+      return `<button type="button" class="btn btn-primary btn-sm m-r-5 m-b-5 templatechoose">` + value + `</button>`
     }
 
     function iconDisplayFormatter(value, row) {
@@ -198,15 +186,7 @@ export default {
     function initTable() {
       $templateTable.bootstrapTable({
         classes: 'table-no-bordered',
-        columns: [
-          common.BTRowFormatWithFE(
-            'domaintemplate_name',
-            '模板名称',
-            templateNameFormatter,
-            tableEvents
-          ),
-          common.actFormatter('act', common.deleteFormatter, tableEvents)
-        ],
+        columns: [common.BTRowFormatWithFE('domaintemplate_name', '模板名称', templateNameFormatter, tableEvents), common.actFormatter('act', common.deleteFormatter, tableEvents)],
         idField: 'domaintemplate_id',
         uniqueId: 'domaintemplate_id',
         rowStyle: rowStyle,
@@ -226,11 +206,7 @@ export default {
             align: 'center',
             title: '序号'
           },
-          common.BTRowFormatWithFormatter(
-            'iconDisplay',
-            '图标',
-            iconDisplayFormatter
-          ),
+          common.BTRowFormatWithFormatter('iconDisplay', '图标', iconDisplayFormatter),
           common.BTRowFormat('iconSource', '图标代码')
         ],
         onClickRow: function(row, $element) {
@@ -344,13 +320,7 @@ export default {
         return nodes[0].parent_id === targetNode.parent_id
       }
 
-      async function zTreeOnDrop(
-        event,
-        treeId,
-        treeNodes,
-        targetNode,
-        moveType
-      ) {
+      async function zTreeOnDrop(event, treeId, treeNodes, targetNode, moveType) {
         let treeObj = $.fn.zTree.getZTreeObj('templatetree')
         let nodes = treeObj.getNodesByParam('parent_id', targetNode.parent_id)
         try {
@@ -496,9 +466,7 @@ export default {
           }
           _self.actNode = JSON.parse(JSON.stringify(nodeObj[0]))
         } else {
-          return common.dealWarningCommon(
-            '请在模板功能中选择需要增加功能的目录'
-          )
+          return common.dealWarningCommon('请在模板功能中选择需要增加功能的目录')
         }
 
         await _self.$http.post(apiUrl + 'addMenus', {

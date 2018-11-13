@@ -204,7 +204,7 @@
 <script>
 const common = require('@/lib/common')
 const moment = require('moment')
-const apiUrl = '/api/zhongtan/export/Booking?method='
+const apiUrl = '/api/zhongtan/export/Booking/'
 
 export default {
   data: function() {
@@ -229,13 +229,7 @@ export default {
     function statusFormatter(value, row) {
       for (let i = 0; i < _self.pagePara['BLSTATUSINFO'].length; i++) {
         if (_self.pagePara['BLSTATUSINFO'][i].id === value) {
-          return (
-            '<span class="label ' +
-            _self.pagePara['BLSTATUSINFO'][i].style +
-            '">' +
-            _self.pagePara['BLSTATUSINFO'][i].text +
-            '</span>'
-          )
+          return '<span class="label ' + _self.pagePara['BLSTATUSINFO'][i].style + '">' + _self.pagePara['BLSTATUSINFO'][i].text + '</span>'
         }
       }
       return ''
@@ -276,39 +270,17 @@ export default {
         columns: [
           common.BTRowFormatWithIndex('No'),
           common.BTRowFormat('billloading_no', 'S/O'),
-          common.BTRowFormatWithFormatter(
-            'billloading_state',
-            'Status',
-            statusFormatter
-          ),
+          common.BTRowFormatWithFormatter('billloading_state', 'Status', statusFormatter),
           common.BTRowFormatEditable('billloading_vessel', 'Vessel'),
           common.BTRowFormatEditable('billloading_voyage', 'voyage'),
           BTRowFormatContractInfo('billloading_consignee', 'Consignee Info'),
           BTRowFormatContractInfo('billloading_notify', 'Notify Info'),
-          common.BTRowFormatEditable(
-            'billloading_loading_port',
-            'Loading Poart'
-          ),
-          common.BTRowFormatEditable(
-            'billloading_discharge_port',
-            'Discharge Poart'
-          ),
-          common.BTRowFormatEditable(
-            'billloading_delivery_place',
-            'Delivery Place'
-          ),
-          common.BTRowFormatEditable(
-            'billloading_stuffing_place',
-            'Stuffing Place'
-          ),
-          common.BTRowFormatEditableDatePicker(
-            'billloading_stuffing_date',
-            'Stuffing Date'
-          ),
-          common.BTRowFormatEditablePop(
-            'billloading_stuffing_requirement',
-            'Stuffing requirement'
-          )
+          common.BTRowFormatEditable('billloading_loading_port', 'Loading Poart'),
+          common.BTRowFormatEditable('billloading_discharge_port', 'Discharge Poart'),
+          common.BTRowFormatEditable('billloading_delivery_place', 'Delivery Place'),
+          common.BTRowFormatEditable('billloading_stuffing_place', 'Stuffing Place'),
+          common.BTRowFormatEditableDatePicker('billloading_stuffing_date', 'Stuffing Date'),
+          common.BTRowFormatEditablePop('billloading_stuffing_requirement', 'Stuffing requirement')
         ],
         idField: 'billloading_id',
         uniqueId: 'billloading_id',
@@ -325,13 +297,7 @@ export default {
           _self.oldRow = $.extend(true, {}, row)
         },
         onEditableSave: function(field, row, oldValue, $el) {
-          common.rowModifyWithT(
-            _self,
-            apiUrl + 'modify',
-            row,
-            'billloading_id',
-            $('#table')
-          )
+          common.rowModifyWithT(_self, apiUrl + 'modify', row, 'billloading_id', $('#table'))
         }
       })
 
@@ -390,11 +356,7 @@ export default {
       }
       function deleteFormatter(value, row, index) {
         if (index !== 0) {
-          return [
-            '<a class="tableDelete" title="删除">',
-            '<i class="glyphicon glyphicon-remove"></i>',
-            '</a>'
-          ].join('')
+          return ['<a class="tableDelete" title="删除">', '<i class="glyphicon glyphicon-remove"></i>', '</a>'].join('')
         } else {
           return ''
         }
@@ -404,47 +366,15 @@ export default {
         columns: [
           common.BTRowFormatWithIndex('No'),
           common.BTRowFormatEnumber('billloading_container_number', 'Vol.'),
-          common.BTRowFormatEdSelect2(
-            'billloading_container_type',
-            'Type',
-            _self.pagePara.ContainerTypeINFO
-          ),
-          common.BTRowFormatEdSelect2(
-            'billloading_container_size',
-            'Size',
-            _self.pagePara.ContainerSizeINFO
-          ),
-          common.BTRowFormatEditable(
-            'billloading_container_goods_description',
-            'Description'
-          ),
-          common.BTRowFormatEnumber(
-            'billloading_container_package_number',
-            'Package No'
-          ),
-          common.BTRowFormatEdSelect2(
-            'billloading_container_package_unit',
-            'Package Unit',
-            _self.pagePara.PackageUnitINFO
-          ),
-          common.BTRowFormatEnumber(
-            'billloading_container_gross_volume',
-            'Volume'
-          ),
-          common.BTRowFormatEdSelect2(
-            'billloading_container_gross_volume_unit',
-            'Volume Unit',
-            _self.pagePara.VolumeUnitINFO
-          ),
-          common.BTRowFormatEnumber(
-            'billloading_container_gross_weight',
-            'Weight'
-          ),
-          common.BTRowFormatEdSelect2(
-            'billloading_container_gross_unit',
-            'Weight Unit',
-            _self.pagePara.WeightUnitINFO
-          ),
+          common.BTRowFormatEdSelect2('billloading_container_type', 'Type', _self.pagePara.ContainerTypeINFO),
+          common.BTRowFormatEdSelect2('billloading_container_size', 'Size', _self.pagePara.ContainerSizeINFO),
+          common.BTRowFormatEditable('billloading_container_goods_description', 'Description'),
+          common.BTRowFormatEnumber('billloading_container_package_number', 'Package No'),
+          common.BTRowFormatEdSelect2('billloading_container_package_unit', 'Package Unit', _self.pagePara.PackageUnitINFO),
+          common.BTRowFormatEnumber('billloading_container_gross_volume', 'Volume'),
+          common.BTRowFormatEdSelect2('billloading_container_gross_volume_unit', 'Volume Unit', _self.pagePara.VolumeUnitINFO),
+          common.BTRowFormatEnumber('billloading_container_gross_weight', 'Weight'),
+          common.BTRowFormatEdSelect2('billloading_container_gross_unit', 'Weight Unit', _self.pagePara.WeightUnitINFO),
           common.actFormatter('act', deleteFormatter, goodsTableEvents)
         ],
         idField: 'RowNumber',
@@ -487,18 +417,11 @@ export default {
             .parsley()
             .isValid()
         ) {
-          _self.workRow.billloading_containers = $(
-            '#goodstable'
-          ).bootstrapTable('getData')
+          _self.workRow.billloading_containers = $('#goodstable').bootstrapTable('getData')
           _self.workRow.billloading_stuffing_date = $('#stuffDate').val()
           _self.workRow.billloading_pay_date = $('#payat').val()
-          _self.workRow.billloading_invoice_currency = common.getSelect2Val(
-            'payStatus'
-          )
-          let response = await _self.$http.post(
-            apiUrl + 'booking',
-            _self.workRow
-          )
+          _self.workRow.billloading_invoice_currency = common.getSelect2Val('payStatus')
+          let response = await _self.$http.post(apiUrl + 'booking', _self.workRow)
           let retData = response.data.info
           console.log(retData)
           $('#table').bootstrapTable('refresh')

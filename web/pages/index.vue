@@ -77,7 +77,7 @@ import request from '~/plugins/request'
 import PageHeader from '~/components/PageHeader.vue'
 import PageFooter from '~/components/PageFooter.vue'
 
-const apiUrl = '/api/zhongtan/web/Web?method='
+const apiUrl = '/api/zhongtan/web/Web/'
 
 export default {
   async asyncData({ params }) {

@@ -183,7 +183,7 @@
 <script>
 const common = require('@/lib/common')
 const CryptoJS = require('crypto-js')
-const apiUrl = '/api/common/system/UserSetting?method='
+const apiUrl = '/api/common/system/UserSetting/'
 
 export default {
   data: function() {
@@ -386,13 +386,7 @@ export default {
             preview: this.$avatarPreview.selector,
             strict: false,
             crop: function(data) {
-              let json = [
-                '{"x":' + data.detail.x,
-                '"y":' + data.detail.y,
-                '"height":' + data.detail.height,
-                '"width":' + data.detail.width,
-                '"rotate":' + data.detail.rotate + '}'
-              ].join()
+              let json = ['{"x":' + data.detail.x, '"y":' + data.detail.y, '"height":' + data.detail.height, '"width":' + data.detail.width, '"rotate":' + data.detail.rotate + '}'].join()
 
               _this.$avatarData.val(json)
             }
@@ -490,12 +484,7 @@ export default {
       },
 
       alert: function(msg) {
-        let $alert = [
-          '<div class="alert alert-danger avater-alert">',
-          '<button type="button" class="close" data-dismiss="alert">&times;</button>',
-          msg,
-          '</div>'
-        ].join('')
+        let $alert = ['<div class="alert alert-danger avater-alert">', '<button type="button" class="close" data-dismiss="alert">&times;</button>', msg, '</div>'].join('')
 
         this.$avatarUpload.after($alert)
       }
@@ -674,8 +663,7 @@ export default {
   right: 0;
   bottom: 0;
   left: 0;
-  background: #fff url('/static/images/base/loading.gif') no-repeat center
-    center;
+  background: #fff url('/static/images/base/loading.gif') no-repeat center center;
   opacity: 0.75;
   filter: alpha(opacity=75);
   z-index: 20140628;
