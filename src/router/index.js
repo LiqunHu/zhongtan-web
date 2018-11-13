@@ -7,8 +7,8 @@ export default new Router({
   mode: 'history',
   scrollBehavior: () => ({y: 0}),
   routes: [
-    { path: '/admin/*', component: resolve => require(['@/components/err404'], resolve) },
-    { path: '/admin/', component: resolve => require(['@/views/login'], resolve) },
+    { path: '*', component: resolve => require(['@/components/err404'], resolve) },
+    { path: '/', component: resolve => require(['@/views/login'], resolve) },
     { path: '/admin/error404', component: resolve => require(['@/components/err404'], resolve) },
     { path: '/admin/error', component: resolve => require(['@/components/errpage'], resolve) },
     { path: '/admin/common/system',
