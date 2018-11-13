@@ -89,6 +89,18 @@ instance.interceptors.response.use(function (response) {
 })
 Vue.prototype.$http = instance
 
+router.beforeEach(function(to, from, next) {
+  const toPath = to.path
+  const fromPath = from.path
+  console.log('to: ' + toPath + ' from: ' + fromPath)
+  console.log('to: ' + toPath.replace('.html', ''))
+  next()
+})
+
+router.afterEach(route => {
+  console.log(`成功浏览到: ${route.path}`)
+})
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
