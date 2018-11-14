@@ -47,17 +47,16 @@
 </template>
 <script>
 const common = require('@/lib/common')
-const apiUrl = '/api/zhongtan/web/WebControl/'
+const apiUrl = '/api/zhongtan/web/SailScheduleControl/'
 
 export default {
   data: function() {
     return {
-      imgurl: '',
       rowData: {},
-      articleImgs: []
+      imgs: []
     }
   },
-  name: 'WebControl',
+  name: 'SailScheduleControl',
   mounted: function() {
     let _self = this
     let $table = $('#table')
@@ -145,7 +144,7 @@ export default {
     addM: function(event) {
       let _self = this
       _self.rowData = {}
-      _self.articleImgs = []
+      _self.imgs = []
       $('#AddModal').modal('show')
     },
     addOp: function(event) {
@@ -175,21 +174,7 @@ export default {
           }
         )
       }
-    },
-    // 绑定@imgAdd event
-    $imgAdd(pos, $file) {
-      let _self = this
-      // 第一步.将图片上传到服务器.
-      let formdata = new FormData()
-      formdata.append('file', $file)
-      _self.$http.post(apiUrl + 'mdupload', formdata).then(response => {
-        // 第二步.将返回的url替换到文本原位置![...](0) -> ![...](url)
-        // $vm.$img2Url 详情见本页末尾
-        _self.$refs.md.$img2Url(pos, response.data.info.uploadurl)
-        _self.articleImgs.push(response.data.info.uploadurl)
-      })
-    },
-    $imgDel(pos) {}
+    }
   }
 }
 </script>

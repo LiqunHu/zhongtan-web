@@ -452,9 +452,15 @@ export default {
       async function zTreeOnDrop(event, treeId, treeNodes, targetNode, moveType) {
         let treeObj = $.fn.zTree.getZTreeObj('domaintree')
         let nodes = treeObj.getNodesByParam('parent_id', targetNode.parent_id)
+        let menus = []
+        for (let n of nodes) {
+          menus.push({
+            domainmenu_id: n.domainmenu_id
+          })
+        }
         try {
           await _self.$http.post(apiUrl + 'changeOrder', {
-            menus: JSON.parse(JSON.stringify(nodes))
+            menus: menus
           })
         } catch (error) {
           common.dealErrorCommon(_self, error)
@@ -551,7 +557,11 @@ export default {
         let menus = []
         for (let i = 0; i < nodes.length; i++) {
           if (nodes[i].node_type === '01') {
-            menus.push(nodes[i])
+            menus.push({
+              api_id: nodes[i].api_id,
+              systemmenu_name: nodes[i].systemmenu_name,
+              api_function: nodes[i].api_function
+            })
           }
         }
         if (menus.length < 1) {
@@ -563,6 +573,7 @@ export default {
           if (nodeObj[0].node_type === '01') {
             return common.dealWarningCommon('菜单下不允许新增')
           }
+
           _self.actNode = JSON.parse(JSON.stringify(nodeObj[0]))
         } else {
           return common.dealWarningCommon('请在机构功能中选择需要增加功能的目录')

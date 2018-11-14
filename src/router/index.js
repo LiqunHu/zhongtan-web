@@ -33,7 +33,8 @@ export default new Router({
     { path: '/admin/zhongtan/web',
       component: resolve => require(['@/components/mainSystem'], resolve),
       children: [
-        { path: 'WebControl', component: resolve => require(['@/views/zhongtan/web/WebControl'], resolve) }
+        { path: 'WebControl', component: resolve => require(['@/views/zhongtan/web/WebControl'], resolve) },
+        { path: 'SailScheduleControl', component: resolve => require(['@/views/zhongtan/web/SailScheduleControl'], resolve) }
       ]}
   ]
 })
