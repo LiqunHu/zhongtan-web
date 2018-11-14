@@ -3,7 +3,7 @@
     <section class="content-header">
       <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Web Control</a></li>
-        <li class="active">Messages</li>
+        <li class="active">Sai Schedule</li>
       </ol>
     </section>
     <section class="content">
@@ -27,21 +27,13 @@
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h4 class="modal-title">New Message</h4>
+            <h4 class="modal-title">New</h4>
           </div>
           <form @submit.prevent="addOp" id="formA">
             <div class="modal-body">
               <div class="form-group">
                 <label><span class="table-required">*</span>Title</label>
                 <input class="form-control" v-model="rowData.web_article_title" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
-              </div>
-              <div class="form-group">
-                <label><span class="table-required">*</span>Author</label>
-                <input class="form-control" v-model="rowData.web_article_author" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
-              </div>
-              <div class="form-group">
-                <label>Content</label>
-                <mavon-editor ref=md v-model="rowData.web_article_body" @imgAdd="$imgAdd" @imgDel="$imgDel" />
               </div>
             </div>
             <div class="modal-footer">
@@ -91,32 +83,17 @@ export default {
         },
         height: common.getTableHeight(),
         columns: [
-          common.BTRowFormatEditable('web_article_title', 'Title'),
-          common.BTRowFormatEditable('web_article_author', 'Author'),
-          common.BTRowFormatEditable('web_article_body', 'Content'),
+          common.BTRowFormat('publish_date', 'Publish Date'),
+          common.BTRowFormatWithFormatter('files', 'Files'),
           common.actFormatter('act', common.deleteFormatter, tableEvents)
         ],
-        idField: 'web_article_id',
-        uniqueId: 'web_article_id',
+        idField: 'sail_schedule_upload_id',
+        uniqueId: 'sail_schedule_upload_id',
         striped: true,
         clickToSelect: true,
         pagination: true,
         pageSize: 10,
-        pageList: [10, 15, 25, 50, 100],
-        onEditableShown: function(field, row, $el, editable) {
-          _self.oldRow = $.extend(true, {}, row)
-        },
-        onEditableSave: function(field, row, oldValue, $el) {
-          common.rowModifyWithT(_self, apiUrl + 'modify', row, 'web_article_id', $table)
-        },
-        onPostBody: function() {
-          $('[data-name="web_article_body"]').each(function() {
-            $(this).editable({
-              type: 'mavonEdit',
-              placement: 'auto'
-            })
-          })
-        }
+        pageList: [10, 15, 25, 50, 100]
       })
       common.changeTableClass($table)
     }
