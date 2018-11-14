@@ -73,7 +73,15 @@ export default {
     function initTable() {
       window.tableEvents = {
         'click .tableDelete': function(e, value, row, index) {
-          common.rowDeleteWithApi(_self, 'DeleteArticle', apiUrl + 'delete', $table, row, 'web_article_id', function() {})
+          common.rowDeleteWithApi(
+            _self,
+            'DeleteArticle',
+            apiUrl + 'delete',
+            $table,
+            row,
+            'web_article_id',
+            function() {}
+          )
         }
       }
 
@@ -122,46 +130,6 @@ export default {
     }
 
     initTable()
-
-    $('.imageupload').change(function() {
-      let maxsize = 2 * 1024 * 1024 // 2M
-      let files = this.files
-      let fileTypes = ['jpg', 'jpeg', 'png', 'gif', 'bmp']
-      if (files.length > 0) {
-        for (let i = 0; i < files.length; i++) {
-          let filename = files[i].name
-          let nameSplit = filename.split('.')
-          let postfix = nameSplit[nameSplit.length - 1]
-          let fileTypeFlag = '0'
-          for (let idx = 0; idx < fileTypes.length; idx++) {
-            if (fileTypes[idx] === postfix) {
-              fileTypeFlag = '1'
-            }
-          }
-          if (fileTypeFlag === '0') {
-            alert('图片文件必须是jpg、jpeg、png、gif、bmp')
-            return
-          }
-          if (files[i].size > maxsize) {
-            alert('最大只允许上传2M的文件')
-            return
-          }
-          let formData = new FormData()
-          formData.append('file', files[i])
-
-          _self.$http.post(apiUrl + 'mdupload', formData).then(
-            response => {
-              _self.rowData.article_img = response.data.info.uploadurl
-              _self.imgurl = response.data.info.uploadurl
-            },
-            response => {
-              // error callback
-              exports.dealErrorCommon(obj, response)
-            }
-          )
-        }
-      }
-    })
     // initPage()
   },
   methods: {
@@ -212,7 +180,11 @@ export default {
         _self.articleImgs.push(response.data.info.uploadurl)
       })
     },
-    $imgDel(pos) {}
+    $imgDel(pos) {
+      let _self = this
+      _self.$http.post(apiUrl + 'mddelete').then(response => {
+      })
+    }
   }
 }
 </script>

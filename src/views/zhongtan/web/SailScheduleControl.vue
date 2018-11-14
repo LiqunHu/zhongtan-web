@@ -31,9 +31,21 @@
           </div>
           <form @submit.prevent="addOp" id="formA">
             <div class="modal-body">
+              <h4>Desc</h4>
               <div class="form-group">
-                <label><span class="table-required">*</span>Title</label>
-                <input class="form-control" v-model="rowData.web_article_title" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
+                <input class="form-control" v-model="rowData.sail_schedule_upload_desc" data-parsley-required="true" maxlength="100" data-parsley-maxlength="100">
+              </div>
+              <h4>Files</h4>
+              <div class="row">
+                <a v-for="f in files" v-bind:key="f.name" class="btn bg-navy btn-app">
+                  <i class="fa fa-file .btn-flat"></i> {{f.name}}
+                </a>
+                <span class="fileupload-button">
+                  <a class="btn btn-app">
+                    <i class="fa fa-plus"></i> Add
+                  </a>
+                  <input class="fileupload" type="file" id="fileupload">
+                </span>
               </div>
             </div>
             <div class="modal-footer">
@@ -53,7 +65,7 @@ export default {
   data: function() {
     return {
       rowData: {},
-      imgs: []
+      files: []
     }
   },
   name: 'SailScheduleControl',
@@ -64,7 +76,15 @@ export default {
     function initTable() {
       window.tableEvents = {
         'click .tableDelete': function(e, value, row, index) {
-          common.rowDeleteWithApi(_self, 'DeleteArticle', apiUrl + 'delete', $table, row, 'web_article_id', function() {})
+          common.rowDeleteWithApi(
+            _self,
+            'Delete',
+            apiUrl + 'delete',
+            $table,
+            row,
+            'sail_schedule_upload_id',
+            function() {}
+          )
         }
       }
 
@@ -83,7 +103,8 @@ export default {
         height: common.getTableHeight(),
         columns: [
           common.BTRowFormat('publish_date', 'Publish Date'),
-          common.BTRowFormatWithFormatter('files', 'Files'),
+          common.BTRowFormat('sail_schedule_upload_desc', 'Desc'),
+          common.BTRowFormatWithFormatter('files', 'Files', common.filesFormatter),
           common.actFormatter('act', common.deleteFormatter, tableEvents)
         ],
         idField: 'sail_schedule_upload_id',
@@ -98,53 +119,24 @@ export default {
     }
 
     initTable()
-
-    $('.imageupload').change(function() {
-      let maxsize = 2 * 1024 * 1024 // 2M
-      let files = this.files
-      let fileTypes = ['jpg', 'jpeg', 'png', 'gif', 'bmp']
-      if (files.length > 0) {
-        for (let i = 0; i < files.length; i++) {
-          let filename = files[i].name
-          let nameSplit = filename.split('.')
-          let postfix = nameSplit[nameSplit.length - 1]
-          let fileTypeFlag = '0'
-          for (let idx = 0; idx < fileTypes.length; idx++) {
-            if (fileTypes[idx] === postfix) {
-              fileTypeFlag = '1'
-            }
-          }
-          if (fileTypeFlag === '0') {
-            alert('图片文件必须是jpg、jpeg、png、gif、bmp')
-            return
-          }
-          if (files[i].size > maxsize) {
-            alert('最大只允许上传2M的文件')
-            return
-          }
-          let formData = new FormData()
-          formData.append('file', files[i])
-
-          _self.$http.post(apiUrl + 'mdupload', formData).then(
-            response => {
-              _self.rowData.article_img = response.data.info.uploadurl
-              _self.imgurl = response.data.info.uploadurl
-            },
-            response => {
-              // error callback
-              exports.dealErrorCommon(obj, response)
-            }
-          )
-        }
+    common.fileUpload(
+      _self,
+      $('#fileupload'),
+      apiUrl + 'upload',
+      function(fileInfo) {
+        _self.files.push(fileInfo)
+        $('#fileupload').val('')
+      },
+      response => {
+        common.dealErrorCommon(_self, response)
       }
-    })
-    // initPage()
+    )
   },
   methods: {
     addM: function(event) {
       let _self = this
       _self.rowData = {}
-      _self.imgs = []
+      _self.files = []
       $('#AddModal').modal('show')
     },
     addOp: function(event) {
@@ -154,19 +146,10 @@ export default {
           .parsley()
           .isValid()
       ) {
-        _self.rowData.article_type = 3
+        _self.rowData.files = _self.files
         _self.$http.post(apiUrl + 'add', _self.rowData).then(
           response => {
-            let retData = response.data.info
-            $('#table').bootstrapTable('insertRow', {
-              index: 0,
-              row: retData
-            })
-            $('#table').bootstrapTable('resetView')
-            _self.rowData = {}
-            $('#formA')
-              .parsley()
-              .reset()
+            $('#table').bootstrapTable('refresh')
             common.dealSuccessCommon('Add Success')
           },
           response => {

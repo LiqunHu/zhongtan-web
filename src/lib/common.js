@@ -657,7 +657,7 @@ exports.deleteFilesRRefresh = function (_self, obj, row, url, method, table, key
   }
 }
 
-exports.fileUpload = function (_self, obj, url, callback) {
+exports.fileUpload = function (_self, obj, method, callback) {
   obj.unbind()
   obj.change(function () {
     let files = this.files
@@ -665,7 +665,7 @@ exports.fileUpload = function (_self, obj, url, callback) {
       for (let i = 0; i < files.length; i++) {
         let formData = new FormData()
         formData.append('file', files[i])
-        _self.$http.post(url + 'upload', formData).then((response) => {
+        _self.$http.post(method, formData).then((response) => {
           let fileInfo = response.data.info
           callback(fileInfo)
         }, (response) => {
@@ -816,12 +816,12 @@ exports.filesFormatterWithUpload = function (value, row) {
     retString += '<ul class="dropdown-menu" style="min-width: 0; border:2px solid #3c8dbc;">'
     for (let i = 0; i < value.length; i++) {
       // 获取后缀
-      if (value[i].file_url) {
-        let a = getFileExt(value[i].file_url).toLowerCase()
+      if (value[i].url) {
+        let a = getFileExt(value[i].url).toLowerCase()
         if (a === 'jpg' || a === 'jpeg' || a === 'png') {
-          retString += '<li><a href="' + value[i].file_url + '" target="_blank"><img src="' + value[i].file_url + '?width=30&height=30&quality=10' + '"></i>'
+          retString += '<li><a href="' + value[i].url + '" target="_blank"><img src="' + value[i].url + '?width=30&height=30&quality=10' + '"></i>'
         } else {
-          retString += '<li><a href="' + value[i].file_url + '" target="_blank"><i class="glyphicon glyphicon-save-file"></i>'
+          retString += '<li><a href="' + value[i].url + '" target="_blank"><i class="glyphicon glyphicon-save-file"></i>'
         }
       }
       retString += '</a></li>'
@@ -859,12 +859,12 @@ exports.filesFormatter = function (value, row) {
     retString += '<ul class="dropdown-menu" style="min-width: 0; border:2px solid #3c8dbc;">'
     for (let i = 0; i < value.length; i++) {
       // 获取后缀
-      if (value[i].file_url) {
-        let a = getFileExt(value[i].file_url).toLowerCase()
+      if (value[i].url) {
+        let a = getFileExt(value[i].url).toLowerCase()
         if (a === 'jpg' || a === 'jpeg' || a === 'png') {
-          retString += '<li><a href="' + value[i].file_url + '" target="_blank"><img src="' + value[i].file_url + '?width=30&height=30&quality=10' + '"></i>'
+          retString += '<li><a href="' + value[i].url + '" target="_blank"><img src="' + value[i].url + '?width=30&height=30&quality=10' + '"></i>'
         } else {
-          retString += '<li><a href="' + value[i].file_url + '" target="_blank"><i class="glyphicon glyphicon-save-file"></i>'
+          retString += '<li><a href="' + value[i].url + '" target="_blank"><i class="glyphicon glyphicon-save-file"></i>'
         }
       }
       retString += '</a></li>'
