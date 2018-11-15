@@ -1,5 +1,5 @@
 <template>
-  <!-- begin #page-container -->
+    <!-- begin #page-container -->
     <div>
         <page-header></page-header>
         <!-- begin #about -->
@@ -9,12 +9,12 @@
                 <h2 class="content-title">About us</h2>
                 <div class="content-desc">
                     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx<br />
-                    xxxxxxxxxxxxxxxxxxxxxxxxxxx...<br/>
+                    xxxxxxxxxxxxxxxxxxxxxxxxxxx...<br />
                     <p class="read-btn-container">
                         <nuxt-link to="/about">More<i class="fa fa-angle-double-right"></i></nuxt-link>
                     </p>
                 </div>
-                
+
                 <!-- begin row -->
                 <div class="row">
                     <!-- begin col-4 -->
@@ -36,18 +36,26 @@
                     <div class="col-md-4 col-sm-6">
                         <h3>Sail Schedule </h3>
                         <div class="case-quote">
-                          <!-- <ul class="sidebar-recent-post">
-                              <li v-for="d in data.dynamic" :key="d.article_id">
-                                  <div class="info">
-                                      <h4 class="title"><nuxt-link :to="'/dynamicdetail/'+d.article_id">{{d.article_title}}</nuxt-link></h4>
-                                      <div class="date">{{d.created_at}}</div>
-                                  </div>
-                              </li>
-                          </ul> -->
-                          222222
-                          <p class="read-btn-container">
-                              <nuxt-link to="/dynamic">More<i class="fa fa-angle-double-right"></i></nuxt-link>
-                          </p>
+                            <ul class="sidebar-recent-post">
+                                <li v-for="s in data.schedule" :key="s.sail_schedule_upload_id">
+                                    <div class="info">
+                                        <h4 class="title">{{s.sail_schedule_upload_desc}}
+                                            <div class="btn-group pull-right">
+                                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                                    <span class="caret"></span>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                    <li v-for="f in s.files" :key="f.uploadfile_id"><a :href="f.uploadfile_url">{{f.uploadfile_name}}</a></li>
+                                                </ul>
+                                            </div>
+                                        </h4>
+                                        <div class="date">{{s.created_at}}</div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <p class="read-btn-container">
+                                <nuxt-link to="/schedule">More<i class="fa fa-angle-double-right"></i></nuxt-link>
+                            </p>
                         </div>
                     </div>
                     <!-- end col-4 -->
@@ -55,7 +63,9 @@
                     <div class="col-md-4 col-sm-12">
                         <h3>Message</h3>
                         <ul class="sidebar-list">
-                            <li v-for="m in data.message" :key="m.web_article_id"><nuxt-link :to="'/messagedetail/'+m.web_article_id">{{m.web_article_title}}</nuxt-link></li>
+                            <li v-for="m in data.message" :key="m.web_article_id">
+                                <nuxt-link :to="'/messagedetail/'+m.web_article_id">{{m.web_article_title}}</nuxt-link>
+                            </li>
                         </ul>
                         <p class="read-btn-container">
                             <nuxt-link to="/messages">More<i class="fa fa-angle-double-right"></i></nuxt-link>
@@ -84,17 +94,16 @@ export default {
     let { data } = await request.post(apiUrl + 'getHomePageBoard', {})
     return { data: data.info.data }
   },
-  head () {
+  head() {
     return {
-      title: 'ZhongTan',
+      title: 'ZhongTan'
     }
   },
   components: {
     PageHeader,
     PageFooter
   },
-  mounted() {
-  },
+  mounted() {}
 }
 </script>
 <style scoped>

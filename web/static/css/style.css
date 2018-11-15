@@ -1480,7 +1480,7 @@ a.text-white:focus {
 /* 16.1 Component - Button */
 
 .btn {
-    padding: 15px 30px;
+    /* padding: 15px 30px; */
     font-size: 14px;
     font-weight: 500;
     -webkit-border-radius: 3px;
