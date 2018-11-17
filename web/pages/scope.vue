@@ -18,7 +18,11 @@
         </header><!-- .entry-header -->
 
         <div class="entry-content">
-          <blockquote>SINOTASHIP owns ocean going bulk carriers with professional operating & management team, engaged in bulk & dry cargo transport, routes covering the far east and south east Asia to Africa, Red Sea, Persian Gulf, and other areas of the globe. The company will give full play to half a century of professional experience, continuously strengthen cooperation with clients and charters, provide sea transport services and door-to-door logistics solutions with the highest quality</blockquote>
+          <blockquote class="clearfix">
+            <img class="attachment-img" src="/scope1.jpg">
+            中坦公司拥有自营散货船舶和专业的经营管理队伍，长期从事散杂货运输，航线覆盖远东和东南亚至非洲、红海、波斯湾以及其它区域。公司将充分发挥半个世纪的航运专业经验，不断加强与货主和租家的合作，提供优质的海上运输服务和全程物流解决方案。<br />
+            SINOTASHIP owns ocean going bulk carriers with professional operating & management team, engaged in bulk & dry cargo transport, routes covering the far east and south east Asia to Africa, Red Sea, Persian Gulf, and other areas of the globe. The company will give full play to half a century of professional experience, continuously strengthen cooperation with clients and charters, provide sea transport services and door-to-door logistics solutions with the highest quality.
+          </blockquote>
           <blockquote>As the exclusive agent of China COSCO SHIPPING Corporation Limited (who ranks no.1 in the world in terms of total fleet size and DWT capacity) and its subordinate enterprises in Tanzania, relying on China COSCO SHIPPING’s brand advantage, large-scale, quick-response, global logistics network (which consists of more than 1000 branches all over the world), with foothold in Tanzania and East Africa, SINOTASHIP provides below services to global clients:<br />
             <ol>
               <li>Containerized Cargo Transportation Service.</li>

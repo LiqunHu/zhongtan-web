@@ -24,14 +24,14 @@
                         <div class="about">
                             <h3>Scope</h3>
                             <p>
-                                <ol>
+                                <ul>
                                     <li>Containerized Cargo Transportation Service.</li>
                                     <li>Transportation Services of Bulk&General Cargo、Car&Vehicle、Timber&Log、Oversized&Overweight Cargo.</li>
                                     <li>Shipping Agency Service.</li>
                                     <li>Freight Forwarding & Customs Clearance.</li>
                                     <li>Depot & Warehousing Services.</li>
                                     <li>One-Stop Logistics Solutions.</li>
-                                </ol>
+                                </ul>
                             </p>
                             <p class="read-btn-container">
                                 <nuxt-link to="/scope">More<i class="fa fa-angle-double-right"></i></nuxt-link>

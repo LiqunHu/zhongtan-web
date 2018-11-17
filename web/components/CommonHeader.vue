@@ -6,7 +6,8 @@
 			<!-- begin navbar-header -->
 			<div class="navbar-header">
 				<a href="/" class="navbar-brand">
-					<span class="brand-logo-law"></span>
+					<!-- <span class="brand-logo-ship"></span> -->
+					<img src="/logo.png" class="brand-logo-ship">
 					<span class="brand-text">
 						<span class="text-theme">SINOTASHIP</span>
 					</span>
@@ -20,10 +21,10 @@
 						<nuxt-link to="/">Home</nuxt-link>
 					</li>
 					<li>
-						<nuxt-link to="/messages">Messages</nuxt-link>
+						<nuxt-link to="/schedule">Sail Schedule</nuxt-link>
 					</li>
 					<li>
-						<nuxt-link to="/schedule">Sail Schedule</nuxt-link>
+						<nuxt-link to="/messages">Messages</nuxt-link>
 					</li>
 					<li>
 						<nuxt-link to="/scope">Scope</nuxt-link>
@@ -61,5 +62,13 @@ export default {
   /* background-position: 0px -100px; */
   background-size: cover;
   /* -moz-background-size: 100% 100%; */
+}
+
+.brand-logo-ship {
+  float: left !important;
+  width: 100%;
+  max-width: 50px;
+  height: auto;
+  margin-top: -14px;
 }
 </style>
