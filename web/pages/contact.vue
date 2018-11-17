@@ -74,7 +74,7 @@ import PageFooter from '~/components/PageFooter.vue'
 export default {
   head() {
     return {
-      title: 'SINOTASHIPCONTACT'
+      title: 'SINOTASHIP CONTACT'
     }
   },
   components: {

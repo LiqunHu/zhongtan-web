@@ -24,12 +24,14 @@
                         <div class="about">
                             <h3>Scope</h3>
                             <p>
-                                1、Containerized Cargo Transportation Service.<br/>
-                                2、Transportation Services of Bulk&General Cargo、Car&Vehicle、Timber&Log、Oversized&Overweight Cargo.<br/>
-                                3、Shipping Agency Service.<br/>
-                                4、Freight Forwarding & Customs Clearance.<br/>
-                                5、Depot & Warehousing Services.<br/>
-                                6、One-Stop Logistics Solutions.<br/>
+                                <ol>
+                                    <li>Containerized Cargo Transportation Service.</li>
+                                    <li>Transportation Services of Bulk&General Cargo、Car&Vehicle、Timber&Log、Oversized&Overweight Cargo.</li>
+                                    <li>Shipping Agency Service.</li>
+                                    <li>Freight Forwarding & Customs Clearance.</li>
+                                    <li>Depot & Warehousing Services.</li>
+                                    <li>One-Stop Logistics Solutions.</li>
+                                </ol>
                             </p>
                             <p class="read-btn-container">
                                 <nuxt-link to="/scope">More<i class="fa fa-angle-double-right"></i></nuxt-link>
@@ -40,7 +42,7 @@
                     <!-- end col-4 -->
                     <!-- begin col-4 -->
                     <div class="col-md-4 col-sm-6">
-                        <h3>Sail Schedule </h3>
+                        <h3>Sail Schedule</h3>
                         <div class="case-quote">
                             <ul class="sidebar-recent-post">
                                 <li v-for="s in data.schedule" :key="s.sail_schedule_upload_id">
@@ -102,7 +104,7 @@ export default {
   },
   head() {
     return {
-      title: 'ZhongTan'
+      title: 'Chinese-Tanzanian Joint Shipping Company'
     }
   },
   components: {

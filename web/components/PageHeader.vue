@@ -8,7 +8,7 @@
 				<a href="/" class="navbar-brand">
 					<span class="brand-logo-law"></span>
 					<span class="brand-text">
-						<span class="text-theme">COSCO</span> SHIPPING
+						<span class="text-theme">SINOTASHIP</span>
 					</span>
 				</a>
 			</div>
@@ -18,6 +18,15 @@
 				<ul class="nav navbar-nav navbar-right" style="margin-right: 0px;">
 					<li>
 						<nuxt-link to="/">Home</nuxt-link>
+					</li>
+					<li>
+						<nuxt-link to="/messages">Messages</nuxt-link>
+					</li>
+					<li>
+						<nuxt-link to="/schedule">Sail Schedule</nuxt-link>
+					</li>
+					<li>
+						<nuxt-link to="/scope">Scope</nuxt-link>
 					</li>
 					<li>
 						<nuxt-link to="/about">About</nuxt-link>

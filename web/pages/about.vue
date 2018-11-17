@@ -41,7 +41,7 @@ export default {
   },
   head () {
     return {
-      title: '关于上海市申汇律师事务所',
+      title: 'About SINOTASHIP',
     }
   },
   mounted() {
