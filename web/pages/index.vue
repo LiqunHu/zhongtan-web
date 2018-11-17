@@ -8,8 +8,9 @@
             <div class="container">
                 <h2 class="content-title">About us</h2>
                 <div class="content-desc">
-                    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx<br />
-                    xxxxxxxxxxxxxxxxxxxxxxxxxxx...<br />
+                    <h3>Chinese-Tanzanian Joint Shipping Company</h3><br />
+                    SINOTASHIP, a grand bridge between East Africa and the rest of the world.<br />
+                    SINOTASHIP, your most reliable logistics service provider in East Africa.<br />
                     <p class="read-btn-container">
                         <nuxt-link to="/about">More<i class="fa fa-angle-double-right"></i></nuxt-link>
                     </p>
@@ -23,7 +24,12 @@
                         <div class="about">
                             <h3>Scope</h3>
                             <p>
-                                xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+                                1、Containerized Cargo Transportation Service.<br/>
+                                2、Transportation Services of Bulk&General Cargo、Car&Vehicle、Timber&Log、Oversized&Overweight Cargo.<br/>
+                                3、Shipping Agency Service.<br/>
+                                4、Freight Forwarding & Customs Clearance.<br/>
+                                5、Depot & Warehousing Services.<br/>
+                                6、One-Stop Logistics Solutions.<br/>
                             </p>
                             <p class="read-btn-container">
                                 <nuxt-link to="/scope">More<i class="fa fa-angle-double-right"></i></nuxt-link>

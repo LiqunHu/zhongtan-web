@@ -8,7 +8,7 @@
 				<a href="/" class="navbar-brand">
 					<span class="brand-logo-law"></span>
 					<span class="brand-text">
-						T<span class="text-theme">es</span>t
+						<span class="text-theme">COSCO</span> SHIPPING
 					</span>
 				</a>
 			</div>
