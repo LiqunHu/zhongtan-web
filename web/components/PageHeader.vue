@@ -43,7 +43,7 @@
 			<!-- begin container -->
 			<div class="overlay">
 				<div class="home-content" style="margin-top: -70px;">
-					<h1>ZHONGTAN</h1>
+					<h1>SINOTASHIP</h1>
 					<h3>PROFESSIONAL</h3>
 					<p>
 						WE TAKE CARE OF YOUR GOODS<br />
