@@ -41,6 +41,19 @@
                     </div>
                     <!-- end col-4 -->
                     <!-- begin col-4 -->
+                    <div class="col-md-4 col-sm-12">
+                        <h3>Message</h3>
+                        <ul class="sidebar-list">
+                            <li v-for="m in data.message" :key="m.web_article_id">
+                                <nuxt-link :to="'/messagedetail/'+m.web_article_id">{{m.web_article_title}}</nuxt-link>
+                            </li>
+                        </ul>
+                        <p class="read-btn-container">
+                            <nuxt-link to="/messages">More<i class="fa fa-angle-double-right"></i></nuxt-link>
+                        </p>
+                    </div>
+                    <!-- end col-4 -->
+                    <!-- begin col-4 -->
                     <div class="col-md-4 col-sm-6">
                         <h3>Sail Schedule</h3>
                         <div class="case-quote">
@@ -65,19 +78,6 @@
                                 <nuxt-link to="/schedule">More<i class="fa fa-angle-double-right"></i></nuxt-link>
                             </p>
                         </div>
-                    </div>
-                    <!-- end col-4 -->
-                    <!-- begin col-4 -->
-                    <div class="col-md-4 col-sm-12">
-                        <h3>Message</h3>
-                        <ul class="sidebar-list">
-                            <li v-for="m in data.message" :key="m.web_article_id">
-                                <nuxt-link :to="'/messagedetail/'+m.web_article_id">{{m.web_article_title}}</nuxt-link>
-                            </li>
-                        </ul>
-                        <p class="read-btn-container">
-                            <nuxt-link to="/messages">More<i class="fa fa-angle-double-right"></i></nuxt-link>
-                        </p>
                     </div>
                     <!-- end col-4 -->
                 </div>
