@@ -2,7 +2,7 @@ import axios from 'axios'
 
 // axios
 let axiosConfig = {
-  // baseURL: 'http://localhost:9090',
+  baseURL: 'http://119.3.9.128:8081/',
   // baseURL: 'http://119.3.22.172/',
   timeout: 20000 // request timeout
 }
