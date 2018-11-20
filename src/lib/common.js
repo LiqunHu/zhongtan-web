@@ -968,11 +968,11 @@ exports.BTRowFormatEditableDatePicker = function (rowid, rowname, placement = 't
     align: 'center',
     valign: 'middle',
     editable: {
-      title: '选择签约日期',
+      title: 'Date',
       type: 'combodate',
       placement: placement,
       emptytext: '无',
-      clear: '清除',
+      clear: 'clear',
       format: 'YYYY-MM-DD',
       viewformat: 'YYYY-MM-DD',
       template: 'YYYY / MMMM / D',
