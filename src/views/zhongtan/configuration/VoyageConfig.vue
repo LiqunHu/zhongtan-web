@@ -19,7 +19,7 @@
               </div>
               <div class="form-group  pull-right">
                 <button id="addM" class="btn btn-info" v-on:click="addM">
-                  <i class="glyphicon glyphicon-plus"></i> Add Vessel
+                  <i class="glyphicon glyphicon-plus"></i> Add Voyage
                 </button>
               </div>
             </div>
@@ -33,25 +33,21 @@
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h4 class="modal-title">Add Vessel</h4>
+            <h4 class="modal-title">Add Voyage</h4>
           </div>
           <form @submit.prevent="addOp" id="formA">
             <div class="modal-body">
               <div class="form-group">
-                <label><span class="table-required">*</span>Vessel Service</label>
-                <select class="form-control select2" id="vessel_service_name" data-parsley-required="true"></select>
+                <label><span class="table-required">*</span>Vessel Name</label>
+                <select class="form-control select2" id="vessel_id" data-parsley-required="true"></select>
               </div>
               <div class="form-group">
-                <label><span class="table-required">*</span>Vessel Name</label>
+                <label><span class="table-required">*</span>Voyage Number</label>
                 <input class="form-control" v-model="rowData.vessel_name" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
               </div>
               <div class="form-group">
-                <label><span class="table-required">*</span>Vessel Operator</label>
-                <input class="form-control" v-model="rowData.vessel_operator" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
-              </div>
-              <div class="form-group">
-                <label><span class="table-required">*</span>Vessel Code</label>
-                <input type="emain" class="form-control" v-model="rowData.vessel_code" data-parsley-required="true" maxlength="20" data-parsley-maxlength="20">
+                <label><span class="table-required">*</span>ETA Date</label>
+                <input class="form-control" id="voyage_eta_date" data-parsley-required="true">
               </div>
             </div>
             <div class="modal-footer">
@@ -65,7 +61,7 @@
 </template>
 <script>
 const common = require('@/lib/common')
-const apiUrl = '/api/zhongtan/configuration/VesselConfig/'
+const apiUrl = '/api/zhongtan/configuration/VoyageConfig/'
 
 export default {
   data: function() {
@@ -75,7 +71,7 @@ export default {
       oldRow: {}
     }
   },
-  name: 'VesselConfig',
+  name: 'VoyageConfig',
   mounted: function() {
     let _self = this
     let $table = $('#table')
@@ -85,11 +81,11 @@ export default {
         'click .tableDelete': function(e, value, row, index) {
           common.rowDeleteWithApi(
             _self,
-            'delete vessel',
+            'delete Voyage',
             apiUrl + 'delete',
             $table,
             row,
-            'vessel_id',
+            'voyage_id',
             function() {}
           )
         }
@@ -111,13 +107,12 @@ export default {
         height: common.getTableHeight(),
         columns: [
           common.BTRowFormatEdSelect2(
-            'vessel_service_name',
-            'Vessel Service',
-            _self.pagePara.VesselServiceINFO
+            'vessel_id',
+            'Vessel Name',
+            _self.pagePara.VesselINFO
           ),
-          common.BTRowFormatEditable('vessel_name', 'Vessel Name'),
-          common.BTRowFormatEditable('vessel_operator', 'Vessel Operator'),
-          common.BTRowFormatEditable('vessel_code', 'Vessel Code'),
+          common.BTRowFormatEditable('voyage_number', 'Voyage Number'),
+          common.BTRowFormatEditableDatePicker('voyage_eta_date', 'ETA DATE'),
           common.actFormatter('act', common.deleteFormatter, tableEvents)
         ],
         idField: 'vessel_id',
@@ -132,7 +127,7 @@ export default {
           _self.oldRow = $.extend(true, {}, row)
         },
         onEditableSave: function(field, row, oldValue, $el) {
-          common.rowModifyWithT(_self, apiUrl + 'modify', row, 'vessel_id', $table)
+          common.rowModifyWithT(_self, apiUrl + 'modify', row, 'voyage_id', $table)
         }
       })
       common.changeTableClass($table)
@@ -143,7 +138,7 @@ export default {
         response => {
           let retData = response.data.info
           _self.pagePara = $.extend(true, {}, retData)
-          common.initSelect2($('#vessel_service_name'), retData.VesselServiceINFO)
+          common.initSelect2($('#vessel_id'), retData.VesselINFO)
           initTable()
           $('#formA').parsley()
           console.log('init success')
@@ -165,7 +160,7 @@ export default {
     },
     addM: function(event) {
       let _self = this
-      $('#vessel_service_name')
+      $('#vessel_id')
         .val(null)
         .trigger('change')
       _self.rowData = {}
@@ -178,7 +173,7 @@ export default {
           .parsley()
           .isValid()
       ) {
-        _self.rowData.vessel_service_name = common.getSelect2Val('vessel_service_name')
+        _self.rowData.vessel_id = common.getSelect2Val('vessel_id')
         _self.$http.post(apiUrl + 'add', _self.rowData).then(
           response => {
             let retData = response.data.info
@@ -191,7 +186,7 @@ export default {
             $('#formA')
               .parsley()
               .reset()
-            common.dealSuccessCommon('增加成功')
+            common.dealSuccessCommon('Add Success')
           },
           response => {
             common.dealErrorCommon(_self, response)
