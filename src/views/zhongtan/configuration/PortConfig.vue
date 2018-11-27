@@ -12,7 +12,7 @@
           <div class="box-body">
             <div class="margin form-inline">
               <div class="form-group">
-                <input class="form-control" id="search_text" placeholder="搜索用户名、姓名、电话" style="width: 200px;">
+                <input class="form-control" id="search_text" placeholder="search port name, port name cn, number" style="width: 200px;">
               </div>
               <div class="form-group">
                 <button class="btn btn-info" v-on:click="search"><i class="fa fa-search"></i></button>
@@ -46,8 +46,8 @@
                 <input class="form-control" v-model="rowData.portinfo_name_cn" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
               </div>
               <div class="form-group">
-                <label>Port Code</label>
-                <input type="emain" class="form-control" v-model="rowData.portinfo_code"  data-parsley-required="true" maxlength="20" data-parsley-maxlength="20">
+                <label><span class="table-required">*</span>Port Code</label>
+                <input type="emain" class="form-control" v-model="rowData.portinfo_code" data-parsley-required="true" maxlength="20" data-parsley-maxlength="20">
               </div>
               <div class="form-group">
                 <label><span class="table-required">*</span>Port Country</label>
@@ -83,7 +83,15 @@ export default {
     function initTable() {
       window.tableEvents = {
         'click .tableDelete': function(e, value, row, index) {
-          common.rowDeleteWithApi(_self, 'delete port', apiUrl + 'delete', $table, row, 'portinfo_id', function() {})
+          common.rowDeleteWithApi(
+            _self,
+            'delete port',
+            apiUrl + 'delete',
+            $table,
+            row,
+            'portinfo_id',
+            function() {}
+          )
         }
       }
 
@@ -102,7 +110,11 @@ export default {
         },
         height: common.getTableHeight(),
         columns: [
-          common.BTRowFormatEdSelect2('portinfo_country', 'Port Country', _self.pagePara.PortCountryInfo),
+          common.BTRowFormatEdSelect2(
+            'portinfo_country',
+            'Port Country',
+            _self.pagePara.PortCountryINFO
+          ),
           common.BTRowFormatEditable('portinfo_name', 'Port Name'),
           common.BTRowFormatEditable('portinfo_name_cn', 'CN Port Name'),
           common.BTRowFormatEditable('portinfo_code', 'Port Code'),
@@ -131,7 +143,7 @@ export default {
         response => {
           let retData = response.data.info
           _self.pagePara = $.extend(true, {}, retData)
-          common.initSelect2($('#usergroup_id'), retData.groupInfo)
+          common.initSelect2($('#portinfo_country'), retData.PortCountryINFO)
           initTable()
           $('#formA').parsley()
           console.log('init success')
@@ -154,7 +166,7 @@ export default {
     addM: function(event) {
       let _self = this
       _self.rowData = {}
-      $('#usergroup_id')
+      $('#portinfo_country')
         .val(null)
         .trigger('change')
       $('#AddModal').modal('show')
@@ -166,7 +178,7 @@ export default {
           .parsley()
           .isValid()
       ) {
-        _self.rowData.usergroup_id = common.getSelect2Val('usergroup_id')
+        _self.rowData.portinfo_country = common.getSelect2Val('portinfo_country')
         _self.$http.post(apiUrl + 'add', _self.rowData).then(
           response => {
             let retData = response.data.info
