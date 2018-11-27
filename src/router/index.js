@@ -55,6 +55,10 @@ export default new Router({
         {
           path: 'PortConfig',
           component: resolve => require(['@/views/zhongtan/configuration/PortConfig'], resolve)
+        },
+        {
+          path: 'VesselConfig',
+          component: resolve => require(['@/views/zhongtan/configuration/VesselConfig'], resolve)
         }
       ]
     },
