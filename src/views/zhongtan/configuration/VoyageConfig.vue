@@ -43,7 +43,7 @@
               </div>
               <div class="form-group">
                 <label><span class="table-required">*</span>Voyage Number</label>
-                <input class="form-control" v-model="rowData.vessel_name" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
+                <input class="form-control" v-model="rowData.voyage_number" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
               </div>
               <div class="form-group">
                 <label><span class="table-required">*</span>ETA Date</label>
@@ -139,6 +139,7 @@ export default {
           let retData = response.data.info
           _self.pagePara = $.extend(true, {}, retData)
           common.initSelect2($('#vessel_id'), retData.VesselINFO)
+          common.initDatepicker($('#voyage_eta_date'))
           initTable()
           $('#formA').parsley()
           console.log('init success')
@@ -174,6 +175,7 @@ export default {
           .isValid()
       ) {
         _self.rowData.vessel_id = common.getSelect2Val('vessel_id')
+        _self.rowData.voyage_eta_date = $('#voyage_eta_date').val()
         _self.$http.post(apiUrl + 'add', _self.rowData).then(
           response => {
             let retData = response.data.info
