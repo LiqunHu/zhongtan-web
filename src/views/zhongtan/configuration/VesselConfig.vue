@@ -132,7 +132,13 @@ export default {
           _self.oldRow = $.extend(true, {}, row)
         },
         onEditableSave: function(field, row, oldValue, $el) {
-          common.rowModifyWithT(_self, apiUrl + 'modify', row, 'vessel_id', $table)
+          common.rowModifyWithT(
+            _self,
+            apiUrl + 'modify',
+            row,
+            'vessel_id',
+            $table
+          )
         }
       })
       common.changeTableClass($table)
@@ -143,7 +149,10 @@ export default {
         response => {
           let retData = response.data.info
           _self.pagePara = $.extend(true, {}, retData)
-          common.initSelect2($('#vessel_service_name'), retData.VesselServiceINFO)
+          common.initSelect2(
+            $('#vessel_service_name'),
+            retData.VesselServiceINFO
+          )
           initTable()
           $('#formA').parsley()
           console.log('init success')
@@ -178,7 +187,9 @@ export default {
           .parsley()
           .isValid()
       ) {
-        _self.rowData.vessel_service_name = common.getSelect2Val('vessel_service_name')
+        _self.rowData.vessel_service_name = common.getSelect2Val(
+          'vessel_service_name'
+        )
         _self.$http.post(apiUrl + 'add', _self.rowData).then(
           response => {
             let retData = response.data.info

@@ -132,7 +132,13 @@ export default {
           _self.oldRow = $.extend(true, {}, row)
         },
         onEditableSave: function(field, row, oldValue, $el) {
-          common.rowModifyWithT(_self, apiUrl + 'modify', row, 'portinfo_id', $table)
+          common.rowModifyWithT(
+            _self,
+            apiUrl + 'modify',
+            row,
+            'portinfo_id',
+            $table
+          )
         }
       })
       common.changeTableClass($table)
@@ -178,7 +184,9 @@ export default {
           .parsley()
           .isValid()
       ) {
-        _self.rowData.portinfo_country = common.getSelect2Val('portinfo_country')
+        _self.rowData.portinfo_country = common.getSelect2Val(
+          'portinfo_country'
+        )
         _self.$http.post(apiUrl + 'add', _self.rowData).then(
           response => {
             let retData = response.data.info

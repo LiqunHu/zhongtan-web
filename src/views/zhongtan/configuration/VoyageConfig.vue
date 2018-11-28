@@ -127,7 +127,13 @@ export default {
           _self.oldRow = $.extend(true, {}, row)
         },
         onEditableSave: function(field, row, oldValue, $el) {
-          common.rowModifyWithT(_self, apiUrl + 'modify', row, 'voyage_id', $table)
+          common.rowModifyWithT(
+            _self,
+            apiUrl + 'modify',
+            row,
+            'voyage_id',
+            $table
+          )
         }
       })
       common.changeTableClass($table)
