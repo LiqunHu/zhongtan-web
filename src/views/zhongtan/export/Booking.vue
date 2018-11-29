@@ -289,7 +289,7 @@ export default {
           common.BTRowFormat('billloading_no', 'S/O'),
           common.BTRowFormatWithFormatter('billloading_state', 'Status', statusFormatter),
           common.BTRowFormatEdSelect2('billloading_vessel_id', 'Vessel', _self.pagePara.VesselINFO),
-          common.BTRowFormatEditable('voyage_number', 'voyage'),
+          common.BTRowFormatEditable('billloading_voyage_id', 'voyage'),
           BTRowFormatContractInfo('billloading_consignee', 'Consignee Info'),
           BTRowFormatContractInfo('billloading_notify', 'Notify Info'),
           common.BTRowFormatEdSelect2('billloading_loading_port_id', 'Loading Poart', _self.pagePara.PortINFO),
@@ -315,6 +315,15 @@ export default {
         },
         onEditableSave: function(field, row, oldValue, $el) {
           common.rowModifyWithT(_self, apiUrl + 'modify', row, 'billloading_id', $('#table'))
+        },
+        onPostBody: function() {
+          $('[data-name="billloading_voyage_id"]').each(function() {
+            let actrow = $('#table').bootstrapTable('getRowByUniqueId', this.getAttribute('data-pk'))
+            $(this).editable({
+              type: 'select2',
+              source: actrow.VoyageINFO
+            })
+          })
         }
       })
 
@@ -329,7 +338,7 @@ export default {
         common.initSelect2($('#billloading_vessel_id'), retData.VesselINFO)
         $('#billloading_vessel_id').on('change', async function(evt) {
           $('#billloading_voyage_id').html('')
-          let rsp = await _self.$http.post(apiUrl + 'searchVoyage', {vessel_id: common.getSelect2Val('billloading_vessel_id')})
+          let rsp = await _self.$http.post(apiUrl + 'searchVoyage', { vessel_id: common.getSelect2Val('billloading_vessel_id') })
           let retD = rsp.data.info
           common.initSelect2($('#billloading_voyage_id'), retD.VoyageINFO)
         })
@@ -386,8 +395,6 @@ export default {
       $('#goodstable').bootstrapTable('destroy')
       window.goodsTableEvents = {
         'click .tableDelete': function(e, value, row, index) {
-          console.log(row)
-          console.log(index)
           $('#goodstable').bootstrapTable('removeByUniqueId', index + 1)
         }
       }
@@ -457,12 +464,12 @@ export default {
           _self.workRow.billloading_vessel_id = common.getSelect2Val('billloading_vessel_id')
           _self.workRow.billloading_voyage_id = common.getSelect2Val('billloading_voyage_id')
           _self.workRow.billloading_containers = $('#goodstable').bootstrapTable('getData')
+          _self.workRow.billloading_vessel_id = common.getSelect2Val('billloading_loading_port_id')
+          _self.workRow.billloading_vessel_id = common.getSelect2Val('billloading_discharge_port_id')
           _self.workRow.billloading_stuffing_date = $('#stuffDate').val()
           _self.workRow.billloading_pay_date = $('#payat').val()
           _self.workRow.billloading_invoice_currency = common.getSelect2Val('payStatus')
-          let response = await _self.$http.post(apiUrl + 'booking', _self.workRow)
-          let retData = response.data.info
-          console.log(retData)
+          await _self.$http.post(apiUrl + 'booking', _self.workRow)
           $('#table').bootstrapTable('refresh')
           common.dealSuccessCommon('增加成功')
           $('#bookingModal').modal('hide')
