@@ -114,13 +114,13 @@
                     <div class="form-group">
                       <label class="col-sm-4 control-label">Port of Loading</label>
                       <div class="col-sm-8">
-                        <input v-model="workRow.billloading_loading_port" class="form-control" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
+                        <select class="form-control select2" id="billloading_loading_port_id"></select>
                       </div>
                     </div>
                     <div class="form-group">
                       <label class="col-sm-4 control-label">Port of Discharg</label>
                       <div class="col-sm-8">
-                        <input v-model="workRow.billloading_discharge_port" class="form-control" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
+                        <select class="form-control select2" id="billloading_discharge_port_id"></select>
                       </div>
                     </div>
                     <div class="form-group">
@@ -246,13 +246,7 @@ export default {
     function statusFormatter(value, row) {
       for (let i = 0; i < _self.pagePara['BLSTATUSINFO'].length; i++) {
         if (_self.pagePara['BLSTATUSINFO'][i].id === value) {
-          return (
-            '<span class="label ' +
-            _self.pagePara['BLSTATUSINFO'][i].style +
-            '">' +
-            _self.pagePara['BLSTATUSINFO'][i].text +
-            '</span>'
-          )
+          return '<span class="label ' + _self.pagePara['BLSTATUSINFO'][i].style + '">' + _self.pagePara['BLSTATUSINFO'][i].text + '</span>'
         }
       }
       return ''
@@ -293,43 +287,17 @@ export default {
         columns: [
           common.BTRowFormatWithIndex('No'),
           common.BTRowFormat('billloading_no', 'S/O'),
-          common.BTRowFormatWithFormatter(
-            'billloading_state',
-            'Status',
-            statusFormatter
-          ),
-          common.BTRowFormatEdSelect2(
-            'billloading_vessel_id',
-            'Vessel',
-            _self.pagePara.VesselINFO
-          ),
+          common.BTRowFormatWithFormatter('billloading_state', 'Status', statusFormatter),
+          common.BTRowFormatEdSelect2('billloading_vessel_id', 'Vessel', _self.pagePara.VesselINFO),
           common.BTRowFormatEditable('voyage_number', 'voyage'),
           BTRowFormatContractInfo('billloading_consignee', 'Consignee Info'),
           BTRowFormatContractInfo('billloading_notify', 'Notify Info'),
-          common.BTRowFormatEditable(
-            'billloading_loading_port',
-            'Loading Poart'
-          ),
-          common.BTRowFormatEditable(
-            'billloading_discharge_port',
-            'Discharge Poart'
-          ),
-          common.BTRowFormatEditable(
-            'billloading_delivery_place',
-            'Delivery Place'
-          ),
-          common.BTRowFormatEditable(
-            'billloading_stuffing_place',
-            'Stuffing Place'
-          ),
-          common.BTRowFormatEditableDatePicker(
-            'billloading_stuffing_date',
-            'Stuffing Date'
-          ),
-          common.BTRowFormatEditablePop(
-            'billloading_stuffing_requirement',
-            'Stuffing requirement'
-          )
+          common.BTRowFormatEdSelect2('billloading_loading_port_id', 'Loading Poart', _self.pagePara.PortINFO),
+          common.BTRowFormatEdSelect2('billloading_discharge_port_id', 'Discharge Poart', _self.pagePara.PortINFO),
+          common.BTRowFormatEditable('billloading_delivery_place', 'Delivery Place'),
+          common.BTRowFormatEditable('billloading_stuffing_place', 'Stuffing Place'),
+          common.BTRowFormatEditableDatePicker('billloading_stuffing_date', 'Stuffing Date'),
+          common.BTRowFormatEditablePop('billloading_stuffing_requirement', 'Stuffing requirement')
         ],
         idField: 'billloading_id',
         uniqueId: 'billloading_id',
@@ -346,13 +314,7 @@ export default {
           _self.oldRow = $.extend(true, {}, row)
         },
         onEditableSave: function(field, row, oldValue, $el) {
-          common.rowModifyWithT(
-            _self,
-            apiUrl + 'modify',
-            row,
-            'billloading_id',
-            $('#table')
-          )
+          common.rowModifyWithT(_self, apiUrl + 'modify', row, 'billloading_id', $('#table'))
         }
       })
 
@@ -365,9 +327,14 @@ export default {
         let retData = response.data.info
         _self.pagePara = JSON.parse(JSON.stringify(retData))
         common.initSelect2($('#billloading_vessel_id'), retData.VesselINFO)
-        $('#billloading_vessel_id').on('change', function(evt) {
-          console.log(3331)
+        $('#billloading_vessel_id').on('change', async function(evt) {
+          $('#billloading_voyage_id').html('')
+          let rsp = await _self.$http.post(apiUrl + 'searchVoyage', {vessel_id: common.getSelect2Val('billloading_vessel_id')})
+          let retD = rsp.data.info
+          common.initSelect2($('#billloading_voyage_id'), retD.VoyageINFO)
         })
+        common.initSelect2($('#billloading_loading_port_id'), retData.PortINFO)
+        common.initSelect2($('#billloading_discharge_port_id'), retData.PortINFO)
         $('#searchDate').daterangepicker(
           {
             timePicker: false,
@@ -407,6 +374,15 @@ export default {
       $('#billloading_vessel_id')
         .val(null)
         .trigger('change')
+      $('#billloading_voyage_id')
+        .val(null)
+        .trigger('change')
+      $('#billloading_loading_port_id')
+        .val(null)
+        .trigger('change')
+      $('#billloading_discharge_port_id')
+        .val(null)
+        .trigger('change')
       $('#goodstable').bootstrapTable('destroy')
       window.goodsTableEvents = {
         'click .tableDelete': function(e, value, row, index) {
@@ -417,11 +393,7 @@ export default {
       }
       function deleteFormatter(value, row, index) {
         if (index !== 0) {
-          return [
-            '<a class="tableDelete" title="删除">',
-            '<i class="glyphicon glyphicon-remove"></i>',
-            '</a>'
-          ].join('')
+          return ['<a class="tableDelete" title="删除">', '<i class="glyphicon glyphicon-remove"></i>', '</a>'].join('')
         } else {
           return ''
         }
@@ -431,47 +403,15 @@ export default {
         columns: [
           common.BTRowFormatWithIndex('No'),
           common.BTRowFormatEnumber('billloading_container_number', 'Vol.'),
-          common.BTRowFormatEdSelect2(
-            'billloading_container_type',
-            'Type',
-            _self.pagePara.ContainerTypeINFO
-          ),
-          common.BTRowFormatEdSelect2(
-            'billloading_container_size',
-            'Size',
-            _self.pagePara.ContainerSizeINFO
-          ),
-          common.BTRowFormatEditable(
-            'billloading_container_goods_description',
-            'Description'
-          ),
-          common.BTRowFormatEnumber(
-            'billloading_container_package_number',
-            'Package No'
-          ),
-          common.BTRowFormatEdSelect2(
-            'billloading_container_package_unit',
-            'Package Unit',
-            _self.pagePara.PackageUnitINFO
-          ),
-          common.BTRowFormatEnumber(
-            'billloading_container_gross_volume',
-            'Volume'
-          ),
-          common.BTRowFormatEdSelect2(
-            'billloading_container_gross_volume_unit',
-            'Volume Unit',
-            _self.pagePara.VolumeUnitINFO
-          ),
-          common.BTRowFormatEnumber(
-            'billloading_container_gross_weight',
-            'Weight'
-          ),
-          common.BTRowFormatEdSelect2(
-            'billloading_container_gross_unit',
-            'Weight Unit',
-            _self.pagePara.WeightUnitINFO
-          ),
+          common.BTRowFormatEdSelect2('billloading_container_type', 'Type', _self.pagePara.ContainerTypeINFO),
+          common.BTRowFormatEdSelect2('billloading_container_size', 'Size', _self.pagePara.ContainerSizeINFO),
+          common.BTRowFormatEditable('billloading_container_goods_description', 'Description'),
+          common.BTRowFormatEnumber('billloading_container_package_number', 'Package No'),
+          common.BTRowFormatEdSelect2('billloading_container_package_unit', 'Package Unit', _self.pagePara.PackageUnitINFO),
+          common.BTRowFormatEnumber('billloading_container_gross_volume', 'Volume'),
+          common.BTRowFormatEdSelect2('billloading_container_gross_volume_unit', 'Volume Unit', _self.pagePara.VolumeUnitINFO),
+          common.BTRowFormatEnumber('billloading_container_gross_weight', 'Weight'),
+          common.BTRowFormatEdSelect2('billloading_container_gross_unit', 'Weight Unit', _self.pagePara.WeightUnitINFO),
           common.actFormatter('act', deleteFormatter, goodsTableEvents)
         ],
         idField: 'RowNumber',
@@ -514,21 +454,13 @@ export default {
             .parsley()
             .isValid()
         ) {
-          _self.workRow.billloading_vessel_id = common.getSelect2Val(
-            'billloading_vessel_id'
-          )
-          _self.workRow.billloading_containers = $(
-            '#goodstable'
-          ).bootstrapTable('getData')
+          _self.workRow.billloading_vessel_id = common.getSelect2Val('billloading_vessel_id')
+          _self.workRow.billloading_voyage_id = common.getSelect2Val('billloading_voyage_id')
+          _self.workRow.billloading_containers = $('#goodstable').bootstrapTable('getData')
           _self.workRow.billloading_stuffing_date = $('#stuffDate').val()
           _self.workRow.billloading_pay_date = $('#payat').val()
-          _self.workRow.billloading_invoice_currency = common.getSelect2Val(
-            'payStatus'
-          )
-          let response = await _self.$http.post(
-            apiUrl + 'booking',
-            _self.workRow
-          )
+          _self.workRow.billloading_invoice_currency = common.getSelect2Val('payStatus')
+          let response = await _self.$http.post(apiUrl + 'booking', _self.workRow)
           let retData = response.data.info
           console.log(retData)
           $('#table').bootstrapTable('refresh')
