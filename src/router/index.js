@@ -73,6 +73,10 @@ export default new Router({
         {
           path: 'Booking',
           component: resolve => require(['@/views/zhongtan/export/Booking'], resolve)
+        },
+        {
+          path: 'BookingWork',
+          component: resolve => require(['@/views/zhongtan/export/BookingWork'], resolve)
         }
       ]
     },

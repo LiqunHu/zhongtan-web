@@ -293,7 +293,7 @@ export default {
       oldRow: {}
     }
   },
-  name: 'Booking',
+  name: 'BookingWork',
   mounted: function() {
     let _self = this
 
