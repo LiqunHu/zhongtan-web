@@ -40,16 +40,16 @@
 .label {
   padding: .2em .3em .1em;
 }
-.label-purple {
-  background-color: #8B2252
+.label-booking {
+  background-color: #a8ebfb
 }
 
-.label-brown {
-  background-color: #993300
+.label-putbox-apply {
+  background-color: #44aac3
 }
 
-.label-gray {
-  background-color: #CC9933
+.label-putbox-confirm {
+  background-color: #1089a7
 }
 
 .label-black {

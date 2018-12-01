@@ -234,12 +234,12 @@ exports.dealAlertCommon = function (obj, response) {
 
 exports.dealConfrimCommon = function (message, callbackFunc) {
   BootstrapDialog.confirm({
-    title: '<i class= "fa fa-fw fa-info-circle"></i><strong>确认信息</strong>',
+    title: '<i class= "fa fa-fw fa-info-circle"></i><strong>Confirm Message</strong>',
     message: '<i class="text-warning fa fa-fw fa-question-circle" style="font-size: 40px"></i>' + message,
     cssClass: 'modal-primary',
-    btnOKLabel: '确认',
+    btnOKLabel: 'OK',
     btnOKClass: 'btn-info',
-    btnCancelLabel: '取消',
+    btnCancelLabel: 'Cancel',
     btnCancelClass: 'btn-cancel',
     callback: function (result) {
       if (result) {

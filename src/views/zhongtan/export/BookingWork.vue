@@ -17,16 +17,6 @@
             <div id="toolbar">
               <div class="form-inline" role="form">
                 <div class="form-group">
-                  <button class="btn btn-block btn-primary" @click="BookingMod">
-                    <i class="glyphicon glyphicon-save"></i>Booking
-                  </button>
-                </div>
-                <div class="form-group">
-                  <button class="btn btn-danger" disabled>
-                    <i class="glyphicon glyphicon-remove"></i>Cancel
-                  </button>
-                </div>
-                <div class="form-group">
                   <input class="form-control" id="searchDate" placeholder="Application Date">
                 </div>
               </div>
@@ -36,241 +26,47 @@
         </div>
       </div>
     </section>
-    <div class="modal" id="bookingModal" tabindex="-1" role="dialog">
-      <div class="modal-dialog modal-book" role="document">
+    <div class="modal fade" id="bookingConfirmModal">
+      <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-            <h4 class="modal-title">
-              <i class="fa fa-pencil-square-o big-blue"></i>Booking
-            </h4>
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 class="modal-title">booking Confirm</h4>
           </div>
-          <form @submit.prevent="bookingOp" id="formA">
+          <form @submit.prevent="BookingConfirmAct" id="formBookingConfirm">
             <div class="modal-body">
-              <div class="row row-bordered">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label>Vessel</label>
-                    <select class="form-control select2" id="billloading_vessel_id"></select>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label>Voyage</label>
-                    <select class="form-control select2" id="billloading_voyage_id"></select>
-                  </div>
-                </div>
+              <div class="form-group">
+                <label>Freight Currency</label>
+                <select class="form-control select2" id="billloading_freight_currency" data-parsley-required="true" disabled></select>
               </div>
-              <div class="row row-bordered">
-                <div class="row row-udline">
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label>Shipper (Name & Address)</label>
-                      <input class="form-control" placeholder="Shipper name">
-                    </div>
-                    <div class="form-group">
-                      <input class="form-control" placeholder="Shipper Address">
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <h5>
-                      <b>CHINESE-TANZANIAN JOINT SHIPPING COMPANY.</b>
-                    </h5>31, KISUTU ROAD
-                    <br>P. O. Box – 696, Dar Es Salaam, Tanzania.
-                    <br>Tel: +255 (22) 2113389
-                    <br>Fax: +255 (22) 2113388
-                  </div>
-                </div>
-                <div class="row row-udline">
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label>Consignee (Name & Address)</label>
-                      <input
-                        v-model="workRow.billloading_consignee_name"
-                        class="form-control"
-                        placeholder="Consignee name"
-                        data-parsley-required="true"
-                        maxlength="50"
-                        data-parsley-maxlength="50"
-                      >
-                    </div>
-                    <div class="form-group">
-                      <input
-                        v-model="workRow.billloading_consignee_address"
-                        class="form-control"
-                        placeholder="Consignee Address"
-                        data-parsley-required="true"
-                        maxlength="100"
-                        data-parsley-maxlength="100"
-                      >
-                    </div>
-                    <div class="form-group">
-                      <input
-                        v-model="workRow.billloading_consignee_tel"
-                        class="form-control"
-                        placeholder="Consignee Tel."
-                      >
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label>Notify Party (Name & Address)</label>
-                      <input
-                        v-model="workRow.billloading_notify_name"
-                        class="form-control"
-                        placeholder="Notify Party name"
-                        data-parsley-required="true"
-                        maxlength="50"
-                        data-parsley-maxlength="50"
-                      >
-                    </div>
-                    <div class="form-group">
-                      <input
-                        v-model="workRow.billloading_notify_address"
-                        class="form-control"
-                        placeholder="Notify Party Address"
-                        data-parsley-required="true"
-                        maxlength="100"
-                        data-parsley-maxlength="100"
-                      >
-                    </div>
-                    <div class="form-group">
-                      <input
-                        v-model="workRow.billloading_notify_tel"
-                        class="form-control"
-                        placeholder="Notify Party Tel."
-                      >
-                    </div>
-                  </div>
-                </div>
-                <div class="row row-udline">
-                  <div class="col-md-6 form-horizontal">
-                    <div class="form-group">
-                      <label class="col-sm-4 control-label">Port of Loading</label>
-                      <div class="col-sm-8">
-                        <select class="form-control select2" id="billloading_loading_port_id"></select>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="col-sm-4 control-label">Port of Discharg</label>
-                      <div class="col-sm-8">
-                        <select class="form-control select2" id="billloading_discharge_port_id"></select>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="col-sm-4 control-label">Place of Deliver</label>
-                      <div class="col-sm-8">
-                        <input
-                          v-model="workRow.billloading_delivery_place"
-                          class="form-control"
-                          data-parsley-required="true"
-                          maxlength="50"
-                          data-parsley-maxlength="50"
-                        >
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-6 form-horizontal">
-                    <label>No of B/L Required</label>
-                    <div class="form-group">
-                      <label class="col-sm-2 control-label">Original</label>
-                      <div class="col-sm-10">
-                        <input
-                          v-model="workRow.billloading_original_num"
-                          type="number"
-                          class="form-control"
-                          data-parsley-required="true"
-                        >
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="col-sm-2 control-label">Copies</label>
-                      <div class="col-sm-10">
-                        <input
-                          v-model="workRow.billloading_copys_num"
-                          type="number"
-                          class="form-control"
-                          data-parsley-required="true"
-                        >
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="row row-udline">
-                  <h4 class="text-middle">
-                    <b>Cargo Description</b>
-                  </h4>
-                  <div class="margin form-inline">
-                    <div class="form-group">
-                      <button type="button" class="btn btn-block btn-primary" @click="AddCargo">Add</button>
-                    </div>
-                  </div>
-                  <table id="goodstable"></table>
-                </div>
-                <div class="row row-udline">
-                  <div class="col-md-6 form-horizontal">
-                    <h4 class="text-middle">
-                      <b>Stuffing & Equipment</b>
-                    </h4>
-                    <div class="form-group">
-                      <label class="col-sm-4 control-label">Place</label>
-                      <div class="col-sm-8">
-                        <input
-                          v-model="workRow.billloading_stuffing_place"
-                          class="form-control"
-                          data-parsley-required="true"
-                        >
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="col-sm-4 control-label">Expected date</label>
-                      <div class="col-sm-8">
-                        <input id="stuffDate" class="form-control">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="col-sm-4 control-label">Special requirement</label>
-                      <div class="col-sm-8">
-                        <textarea
-                          v-model="workRow.billloading_stuffing_requirement"
-                          class="form-control"
-                          rows="3"
-                        ></textarea>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-6 form-horizontal">
-                    <h4 class="text-middle">
-                      <b>Payment</b>
-                    </h4>
-                    <div class="form-group">
-                      <label class="col-sm-4 control-label">Pay type</label>
-                      <div class="col-sm-8">
-                        <select class="form-control select2" multiple id="payType"></select>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="col-sm-4 control-label">Payable at</label>
-                      <div class="col-sm-8">
-                        <input id="payat" class="form-control">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="col-sm-4 control-label">Status</label>
-                      <div class="col-sm-8">
-                        <select class="form-control select2" multiple id="payStatus"></select>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              <div class="form-group">
+                <label><span class="table-required">*</span>Freight Charge</label>
+                <input class="form-control" v-model="workRow.billloading_freight_charge" data-parsley-required="true" data-parsley-type="number">
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-primary btn-info">
-                <i class="fa fa-fw fa-plus"></i>Submit
-              </button>
+              <button type="submit" class="btn btn-primary btn-info"><i class="fa fa-fw fa-plus"></i>Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="putboxConfirmModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 class="modal-title">putbox Confirm</h4>
+          </div>
+          <form @submit.prevent="BookingConfirmAct" id="formBookingConfirm">
+            <div class="modal-body">
+              <div class="form-group">
+                <label>Continer Yard</label>
+                <select class="form-control select2" id="container_yard_id" data-parsley-required="true"></select>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary btn-info"><i class="fa fa-fw fa-plus"></i>Submit</button>
             </div>
           </form>
         </div>
@@ -281,13 +77,15 @@
 <script>
 const common = require('@/lib/common')
 const moment = require('moment')
-const apiUrl = '/api/zhongtan/export/Booking/'
+const apiUrl = '/api/zhongtan/export/BookingWork/'
 
 export default {
   data: function() {
     return {
       pagePara: '',
-      stDate: moment().format('YYYY-MM-DD'),
+      stDate: moment()
+        .subtract(10, 'days')
+        .format('YYYY-MM-DD'),
       edDate: moment().format('YYYY-MM-DD'),
       workRow: {},
       oldRow: {}
@@ -296,6 +94,39 @@ export default {
   name: 'BookingWork',
   mounted: function() {
     let _self = this
+
+    window.tableEvents = {
+      'click .cancelb': function(e, value, row, index) {
+        common.rowDeleteWithApi(_self, 'Cancle?', apiUrl + 'cancel', $('#table'), row, 'billloading_id', function() {})
+      },
+      'click .booking': function(e, value, row, index) {
+        _self.workRow = row
+        $('#billloading_freight_currency')
+          .val(row.billloading_freight_currency)
+          .trigger('change')
+        _self.workRow.billloading_freight_charge = '0.00'
+        $('#bookingConfirmModal').modal('show')
+      },
+      'click .putbox-confirm': function(e, value, row, index) {
+        _self.workRow = row
+        $('#container_yard_id')
+          .val(null)
+          .trigger('change')
+        $('#putboxConfirmModal').modal('show')
+      }
+    }
+
+    function actFormatter(value, row) {
+      let retrunString = ['<div class="btn-group">']
+      if (row.billloading_state === 'PBK') {
+        retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 booking">Booking</button>')
+        retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 cancelb">Cancel</button>')
+      } else if(row.billloading_state === 'PA') {
+        retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 putbox-confirm">Confirm</button>')
+      }
+      retrunString.push('</div>')
+      return retrunString.join('')
+    }
 
     function queryParams(params) {
       params.start_date = _self.stDate
@@ -346,6 +177,7 @@ export default {
         height: common.getTableHeight(),
         columns: [
           common.BTRowFormatWithIndex('No'),
+          common.actFormatter('act', actFormatter, tableEvents),
           common.BTRowFormat('billloading_no', 'S/O'),
           common.BTRowFormatWithFormatter('billloading_state', 'Status', statusFormatter),
           common.BTRowFormatEdSelect2('billloading_vessel_id', 'Vessel', _self.pagePara.VesselINFO),
@@ -407,7 +239,8 @@ export default {
         $('#searchDate').daterangepicker(
           {
             timePicker: false,
-            // dateLimit: { days: 30 },
+            startDate: _self.stDate,
+            endDate: _self.edDate,
             locale: {
               format: 'YYYY-MM-DD'
             }
@@ -423,11 +256,11 @@ export default {
         initTable()
 
         // model
-        common.initDatepicker($('#stuffDate'))
-        common.initDatepicker($('#payat'))
-        common.initSelect2($('#payType'), retData.PayTypeINFO)
-        common.initSelect2($('#payStatus'), retData.PayStatusINFO)
-        $('#formA').parsley()
+        common.initSelect2($('#billloading_freight_currency'), retData.PayCurrencyINFO)
+        $('#formBookingConfirm').parsley()
+
+        common.initSelect2($('#container_yard_id'), retData.ContainerYardINFO)
+        $('#putboxConfirmModal').parsley()
         console.log('init success')
       } catch (error) {
         common.dealErrorCommon(_self, error)
@@ -437,103 +270,34 @@ export default {
     initPage()
   },
   methods: {
-    BookingMod: function(event) {
-      let _self = this
-      _self.workRow = {}
-      $('#billloading_vessel_id')
-        .val(null)
-        .trigger('change')
-      $('#billloading_voyage_id')
-        .val(null)
-        .trigger('change')
-      $('#billloading_loading_port_id')
-        .val(null)
-        .trigger('change')
-      $('#billloading_discharge_port_id')
-        .val(null)
-        .trigger('change')
-      $('#goodstable').bootstrapTable('destroy')
-      window.goodsTableEvents = {
-        'click .tableDelete': function(e, value, row, index) {
-          $('#goodstable').bootstrapTable('removeByUniqueId', index + 1)
-        }
-      }
-      function deleteFormatter(value, row, index) {
-        if (index !== 0) {
-          return ['<a class="tableDelete" title="删除">', '<i class="glyphicon glyphicon-remove"></i>', '</a>'].join('')
-        } else {
-          return ''
-        }
-      }
-
-      $('#goodstable').bootstrapTable({
-        columns: [
-          common.BTRowFormatWithIndex('No'),
-          common.BTRowFormatEnumber('billloading_container_number', 'Vol.'),
-          common.BTRowFormatEdSelect2('billloading_container_type', 'Type', _self.pagePara.ContainerTypeINFO),
-          common.BTRowFormatEdSelect2('billloading_container_size', 'Size', _self.pagePara.ContainerSizeINFO),
-          common.BTRowFormatEditable('billloading_container_goods_description', 'Description'),
-          common.BTRowFormatEnumber('billloading_container_package_number', 'Package No'),
-          common.BTRowFormatEdSelect2('billloading_container_package_unit', 'Package Unit', _self.pagePara.PackageUnitINFO),
-          common.BTRowFormatEnumber('billloading_container_gross_volume', 'Volume'),
-          common.BTRowFormatEdSelect2('billloading_container_gross_volume_unit', 'Volume Unit', _self.pagePara.VolumeUnitINFO),
-          common.BTRowFormatEnumber('billloading_container_gross_weight', 'Weight'),
-          common.BTRowFormatEdSelect2('billloading_container_gross_unit', 'Weight Unit', _self.pagePara.WeightUnitINFO),
-          common.actFormatter('act', deleteFormatter, goodsTableEvents)
-        ],
-        idField: 'RowNumber',
-        uniqueId: 'RowNumber',
-        showFooter: false
-      })
-      $('#goodstable').bootstrapTable('append', {
-        billloading_container_number: '',
-        billloading_container_type: '',
-        billloading_container_size: '',
-        billloading_container_goods_description: '',
-        billloading_container_package_number: '',
-        billloading_container_package_unit: 'BAG',
-        billloading_container_gross_volume: '',
-        billloading_container_gross_volume_unit: 'M3',
-        billloading_container_gross_weight: '',
-        billloading_container_gross_unit: 'KG'
-      })
-      $('#bookingModal').modal('show')
-    },
-    AddCargo: function(event) {
-      $('#goodstable').bootstrapTable('append', {
-        billloading_container_number: '',
-        billloading_container_type: '',
-        billloading_container_size: '',
-        billloading_container_goods_description: '',
-        billloading_container_package_number: '',
-        billloading_container_package_unit: 'BAG',
-        billloading_container_gross_volume: '',
-        billloading_container_gross_volume_unit: 'M3',
-        billloading_container_gross_weight: '',
-        billloading_container_gross_unit: 'KG'
-      })
-    },
-    bookingOp: async function(event) {
+    BookingConfirmAct: async function() {
       let _self = this
       try {
         if (
-          $('#formA')
+          $('#formBookingConfirm')
             .parsley()
             .isValid()
         ) {
-          _self.workRow.billloading_vessel_id = common.getSelect2Val('billloading_vessel_id')
-          _self.workRow.billloading_voyage_id = common.getSelect2Val('billloading_voyage_id')
-          _self.workRow.billloading_containers = $('#goodstable').bootstrapTable('getData')
-          _self.workRow.billloading_vessel_id = common.getSelect2Val('billloading_loading_port_id')
-          _self.workRow.billloading_vessel_id = common.getSelect2Val('billloading_discharge_port_id')
-          _self.workRow.billloading_stuffing_date = $('#stuffDate').val()
-          _self.workRow.billloading_pay_date = $('#payat').val()
-          _self.workRow.billloading_invoice_currency = common.getSelect2Val('payStatus')
-          await _self.$http.post(apiUrl + 'booking', _self.workRow)
+          await _self.$http.post(apiUrl + 'bookingConfirm', _self.workRow)
           $('#table').bootstrapTable('refresh')
-          common.dealSuccessCommon('增加成功')
-          $('#bookingModal').modal('hide')
-          console.log('add success')
+          $('#bookingConfirmModal').modal('hide')
+        }
+      } catch (error) {
+        common.dealErrorCommon(_self, error)
+      }
+    },
+    PutboxConfirmAct: async function() {
+      let _self = this
+      try {
+        if (
+          $('#putboxConfirmModal')
+            .parsley()
+            .isValid()
+        ) {
+          _self.workRow.container_yard_id = common.getSelect2Val('container_yard_id')
+          await _self.$http.post(apiUrl + 'putboxConfirm', _self.workRow)
+          $('#table').bootstrapTable('refresh')
+          $('#bookingConfirmModal').modal('hide')
         }
       } catch (error) {
         common.dealErrorCommon(_self, error)

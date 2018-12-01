@@ -22,11 +22,6 @@
                   </button>
                 </div>
                 <div class="form-group">
-                  <button class="btn btn-danger" disabled>
-                    <i class="glyphicon glyphicon-remove"></i>Cancel
-                  </button>
-                </div>
-                <div class="form-group">
                   <input class="form-control" id="searchDate" placeholder="Application Date">
                 </div>
               </div>
@@ -87,61 +82,25 @@
                   <div class="col-md-6">
                     <div class="form-group">
                       <label>Consignee (Name & Address)</label>
-                      <input
-                        v-model="workRow.billloading_consignee_name"
-                        class="form-control"
-                        placeholder="Consignee name"
-                        data-parsley-required="true"
-                        maxlength="50"
-                        data-parsley-maxlength="50"
-                      >
+                      <input v-model="workRow.billloading_consignee_name" class="form-control" placeholder="Consignee name" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
                     </div>
                     <div class="form-group">
-                      <input
-                        v-model="workRow.billloading_consignee_address"
-                        class="form-control"
-                        placeholder="Consignee Address"
-                        data-parsley-required="true"
-                        maxlength="100"
-                        data-parsley-maxlength="100"
-                      >
+                      <input v-model="workRow.billloading_consignee_address" class="form-control" placeholder="Consignee Address" data-parsley-required="true" maxlength="100" data-parsley-maxlength="100">
                     </div>
                     <div class="form-group">
-                      <input
-                        v-model="workRow.billloading_consignee_tel"
-                        class="form-control"
-                        placeholder="Consignee Tel."
-                      >
+                      <input v-model="workRow.billloading_consignee_tel" class="form-control" placeholder="Consignee Tel.">
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
                       <label>Notify Party (Name & Address)</label>
-                      <input
-                        v-model="workRow.billloading_notify_name"
-                        class="form-control"
-                        placeholder="Notify Party name"
-                        data-parsley-required="true"
-                        maxlength="50"
-                        data-parsley-maxlength="50"
-                      >
+                      <input v-model="workRow.billloading_notify_name" class="form-control" placeholder="Notify Party name" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
                     </div>
                     <div class="form-group">
-                      <input
-                        v-model="workRow.billloading_notify_address"
-                        class="form-control"
-                        placeholder="Notify Party Address"
-                        data-parsley-required="true"
-                        maxlength="100"
-                        data-parsley-maxlength="100"
-                      >
+                      <input v-model="workRow.billloading_notify_address" class="form-control" placeholder="Notify Party Address" data-parsley-required="true" maxlength="100" data-parsley-maxlength="100">
                     </div>
                     <div class="form-group">
-                      <input
-                        v-model="workRow.billloading_notify_tel"
-                        class="form-control"
-                        placeholder="Notify Party Tel."
-                      >
+                      <input v-model="workRow.billloading_notify_tel" class="form-control" placeholder="Notify Party Tel.">
                     </div>
                   </div>
                 </div>
@@ -162,13 +121,7 @@
                     <div class="form-group">
                       <label class="col-sm-4 control-label">Place of Deliver</label>
                       <div class="col-sm-8">
-                        <input
-                          v-model="workRow.billloading_delivery_place"
-                          class="form-control"
-                          data-parsley-required="true"
-                          maxlength="50"
-                          data-parsley-maxlength="50"
-                        >
+                        <input v-model="workRow.billloading_delivery_place" class="form-control" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
                       </div>
                     </div>
                   </div>
@@ -177,23 +130,13 @@
                     <div class="form-group">
                       <label class="col-sm-2 control-label">Original</label>
                       <div class="col-sm-10">
-                        <input
-                          v-model="workRow.billloading_original_num"
-                          type="number"
-                          class="form-control"
-                          data-parsley-required="true"
-                        >
+                        <input v-model="workRow.billloading_original_num" type="number" class="form-control" data-parsley-required="true">
                       </div>
                     </div>
                     <div class="form-group">
                       <label class="col-sm-2 control-label">Copies</label>
                       <div class="col-sm-10">
-                        <input
-                          v-model="workRow.billloading_copys_num"
-                          type="number"
-                          class="form-control"
-                          data-parsley-required="true"
-                        >
+                        <input v-model="workRow.billloading_copys_num" type="number" class="form-control" data-parsley-required="true">
                       </div>
                     </div>
                   </div>
@@ -217,11 +160,7 @@
                     <div class="form-group">
                       <label class="col-sm-4 control-label">Place</label>
                       <div class="col-sm-8">
-                        <input
-                          v-model="workRow.billloading_stuffing_place"
-                          class="form-control"
-                          data-parsley-required="true"
-                        >
+                        <input v-model="workRow.billloading_stuffing_place" class="form-control" data-parsley-required="true">
                       </div>
                     </div>
                     <div class="form-group">
@@ -233,11 +172,7 @@
                     <div class="form-group">
                       <label class="col-sm-4 control-label">Special requirement</label>
                       <div class="col-sm-8">
-                        <textarea
-                          v-model="workRow.billloading_stuffing_requirement"
-                          class="form-control"
-                          rows="3"
-                        ></textarea>
+                        <textarea v-model="workRow.billloading_stuffing_requirement" class="form-control" rows="3"></textarea>
                       </div>
                     </div>
                   </div>
@@ -260,7 +195,7 @@
                     <div class="form-group">
                       <label class="col-sm-4 control-label">Status</label>
                       <div class="col-sm-8">
-                        <select class="form-control select2" multiple id="payStatus"></select>
+                        <select class="form-control select2" multiple id="billloading_freight_currency"></select>
                       </div>
                     </div>
                   </div>
@@ -287,7 +222,9 @@ export default {
   data: function() {
     return {
       pagePara: '',
-      stDate: moment().format('YYYY-MM-DD'),
+      stDate: moment()
+        .subtract(10, 'days')
+        .format('YYYY-MM-DD'),
       edDate: moment().format('YYYY-MM-DD'),
       workRow: {},
       oldRow: {}
@@ -296,6 +233,29 @@ export default {
   name: 'Booking',
   mounted: function() {
     let _self = this
+
+    window.tableEvents = {
+      'click .cancelb': function(e, value, row, index) {
+        common.rowDeleteWithApi(_self, 'Cancle?', apiUrl + 'cancel', $('#table'), row, 'billloading_id', function() {})
+      },
+      'click .putbox': function(e, value, row, index) {
+        common.dealConfrimCommon('Putbox Apply?', async function() {
+          await _self.$http.post(apiUrl + 'putboxApply', row)
+          $('#table').bootstrapTable('refresh')
+        })
+      }
+    }
+
+    function actFormatter(value, row) {
+      let retrunString = ['<div class="btn-group">']
+      if (row.billloading_state === 'PBK') {
+        retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 cancelb">Cancel</button>')
+      } else if (row.billloading_state === 'BK') {
+        retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 putbox">Putbox</button>')
+      }
+      retrunString.push('</div>')
+      return retrunString.join('')
+    }
 
     function queryParams(params) {
       params.start_date = _self.stDate
@@ -346,6 +306,7 @@ export default {
         height: common.getTableHeight(),
         columns: [
           common.BTRowFormatWithIndex('No'),
+          common.actFormatter('act', actFormatter, tableEvents),
           common.BTRowFormat('billloading_no', 'S/O'),
           common.BTRowFormatWithFormatter('billloading_state', 'Status', statusFormatter),
           common.BTRowFormatEdSelect2('billloading_vessel_id', 'Vessel', _self.pagePara.VesselINFO),
@@ -407,7 +368,8 @@ export default {
         $('#searchDate').daterangepicker(
           {
             timePicker: false,
-            // dateLimit: { days: 30 },
+            startDate: _self.stDate,
+            endDate: _self.edDate,
             locale: {
               format: 'YYYY-MM-DD'
             }
@@ -426,7 +388,7 @@ export default {
         common.initDatepicker($('#stuffDate'))
         common.initDatepicker($('#payat'))
         common.initSelect2($('#payType'), retData.PayTypeINFO)
-        common.initSelect2($('#payStatus'), retData.PayStatusINFO)
+        common.initSelect2($('#billloading_freight_currency'), retData.PayCurrencyINFO)
         $('#formA').parsley()
         console.log('init success')
       } catch (error) {
@@ -450,6 +412,9 @@ export default {
         .val(null)
         .trigger('change')
       $('#billloading_discharge_port_id')
+        .val(null)
+        .trigger('change')
+      $('#billloading_freight_currency')
         .val(null)
         .trigger('change')
       $('#goodstable').bootstrapTable('destroy')
@@ -528,7 +493,7 @@ export default {
           _self.workRow.billloading_vessel_id = common.getSelect2Val('billloading_discharge_port_id')
           _self.workRow.billloading_stuffing_date = $('#stuffDate').val()
           _self.workRow.billloading_pay_date = $('#payat').val()
-          _self.workRow.billloading_invoice_currency = common.getSelect2Val('payStatus')
+          _self.workRow.billloading_freight_currency = common.getSelect2Val('billloading_freight_currency')
           await _self.$http.post(apiUrl + 'booking', _self.workRow)
           $('#table').bootstrapTable('refresh')
           common.dealSuccessCommon('增加成功')
