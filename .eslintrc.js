@@ -29,6 +29,7 @@ module.exports = {
     'space-before-function-paren': 0,
     'handle-callback-err': 0,
     'quotes': 0,
-    'indent': 0
+    'indent': 0,
+    'space-in-parens': 0
   }
 }

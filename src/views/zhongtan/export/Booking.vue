@@ -42,7 +42,7 @@
               <i class="fa fa-pencil-square-o big-blue"></i>Booking
             </h4>
           </div>
-          <form @submit.prevent="bookingOp" id="formA">
+          <form @submit.prevent="bookingOp" id="formBook">
             <div class="modal-body">
               <div class="row row-bordered">
                 <div class="col-md-6">
@@ -211,20 +211,16 @@
         </div>
       </div>
     </div>
-    <div class="modal fade" id="declarationModal">
+    <div class="modal fade" id="submitloadingModal">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h4 class="modal-title">Declaration</h4>
+            <h4 class="modal-title">Submit Loading List</h4>
           </div>
-          <form @submit.prevent="PutboxConfirmAct" id="formDeclaration">
+          <form @submit.prevent="submitloadingOp" id="formSubmitloading">
             <div class="modal-body">
-              <h4>Declare Number</h4>
-              <div class="form-group">
-                <input class="form-control" v-model="workRow.billloading_declare_number" data-parsley-required="true" maxlength="50" data-parsley-maxlength="5=">
-              </div>
-              <h4>Loading Permission</h4>
+              <h4>Loading List</h4>
               <div class="row">
                 <a v-for="f in files" v-bind:key="f.name" class="btn bg-navy btn-app">
                   <i class="fa fa-file .btn-flat"></i> {{f.name}}
@@ -233,7 +229,7 @@
                   <a class="btn btn-app">
                     <i class="fa fa-plus"></i> Add
                   </a>
-                  <input class="fileupload" type="file" id="permissionupload">
+                  <input class="fileupload" type="file" id="loadinglistupload">
                 </span>
               </div>
             </div>
@@ -278,9 +274,10 @@ export default {
           $('#table').bootstrapTable('refresh')
         })
       },
-      'click .declaration': function(e, value, row, index) {
+      'click .submitloading': function(e, value, row, index) {
         _self.workRow = row
-        $('#declarationModal').modal('show')
+        _self.files = []
+        $('#submitloadingModal').modal('show')
       }
     }
 
@@ -290,8 +287,8 @@ export default {
         retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 cancelb">Cancel</button>')
       } else if (row.billloading_state === 'BK') {
         retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 putbox">Putbox</button>')
-      } else if (row.billloading_state === 'PC') {
-        retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 declaration">Declaration</button>')
+      } else if (row.billloading_state === 'PC' || row.billloading_state === 'RL') {
+        retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 submitloading">SUBMIT Loading</button>')
       }
       retrunString.push('</div>')
       return retrunString.join('')
@@ -353,12 +350,15 @@ export default {
           common.BTRowFormatEditable('billloading_voyage_id', 'voyage'),
           BTRowFormatContractInfo('billloading_consignee', 'Consignee Info'),
           BTRowFormatContractInfo('billloading_notify', 'Notify Info'),
-          common.BTRowFormatEdSelect2('billloading_loading_port_id', 'Loading Poart', _self.pagePara.PortINFO),
-          common.BTRowFormatEdSelect2('billloading_discharge_port_id', 'Discharge Poart', _self.pagePara.PortINFO),
+          common.BTRowFormatEdSelect2('billloading_loading_port_id', 'Loading Port', _self.pagePara.PortINFO),
+          common.BTRowFormatEdSelect2('billloading_discharge_port_id', 'Discharge Port', _self.pagePara.PortINFO),
           common.BTRowFormatEditable('billloading_delivery_place', 'Delivery Place'),
           common.BTRowFormatEditable('billloading_stuffing_place', 'Stuffing Place'),
           common.BTRowFormatEditableDatePicker('billloading_stuffing_date', 'Stuffing Date'),
-          common.BTRowFormatEditablePop('billloading_stuffing_requirement', 'Stuffing requirement')
+          common.BTRowFormatEditablePop('billloading_stuffing_requirement', 'Stuffing requirement'),
+          common.BTRowFormatWithFormatter('loading_files', 'Loading list', common.filesFormatter),
+          common.BTRowFormat('billloading_declare_number', 'Feclare Number'),
+          common.BTRowFormatWithFormatter('permission_files', 'Permission File', common.filesFormatter)
         ],
         idField: 'billloading_id',
         uniqueId: 'billloading_id',
@@ -429,20 +429,22 @@ export default {
         common.initDatepicker($('#payat'))
         common.initSelect2($('#payType'), retData.PayTypeINFO)
         common.initSelect2($('#billloading_freight_currency'), retData.PayCurrencyINFO)
-        $('#formA').parsley()
+        $('#formBook').parsley()
 
         common.fileUpload(
           _self,
-          $('#permissionupload'),
+          $('#loadinglistupload'),
           apiUrl + 'upload',
           function(fileInfo) {
             _self.files.push(fileInfo)
-            $('#permissionupload').val('')
+            $('#loadinglistupload').val('')
           },
           response => {
             common.dealErrorCommon(_self, response)
           }
         )
+        $('#formSubmitloading').parsley()
+
         console.log('init success')
       } catch (error) {
         common.dealErrorCommon(_self, error)
@@ -535,7 +537,7 @@ export default {
       let _self = this
       try {
         if (
-          $('#formA')
+          $('#formBook')
             .parsley()
             .isValid()
         ) {
@@ -552,6 +554,28 @@ export default {
           common.dealSuccessCommon('增加成功')
           $('#bookingModal').modal('hide')
           console.log('add success')
+        }
+      } catch (error) {
+        common.dealErrorCommon(_self, error)
+      }
+    },
+    submitloadingOp: async function(event) {
+      let _self = this
+      try {
+        if (
+          $('#formSubmitloading')
+            .parsley()
+            .isValid()
+        ) {
+          if (_self.files.length <= 0) {
+            return common.dealWarningCommon('Please upload loading list')
+          }
+
+          _self.workRow.loading_files = _self.files
+          await _self.$http.post(apiUrl + 'submitloading', _self.workRow)
+          $('#table').bootstrapTable('refresh')
+          common.dealSuccessCommon('submit loading success')
+          $('#submitloadingModal').modal('hide')
         }
       } catch (error) {
         common.dealErrorCommon(_self, error)

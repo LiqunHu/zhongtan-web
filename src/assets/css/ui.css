@@ -41,19 +41,27 @@
   padding: .2em .3em .1em;
 }
 .label-booking {
-  background-color: #a8ebfb
+  background-color: #81b5d4
 }
 
 .label-putbox-apply {
-  background-color: #44aac3
+  background-color: #3c8dbc
 }
 
 .label-putbox-confirm {
-  background-color: #1089a7
+  background-color: #357ca5
 }
 
-.label-black {
-  background-color: #515151
+.label-submit-loading {
+  background-color: #5ad6f5
+}
+
+.label-reject-loading {
+  background-color: #f39c12
+}
+
+.label-declaration {
+  background-color: #00c0ef
 }
 
 .image-set {

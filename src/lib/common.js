@@ -16,7 +16,7 @@ import BootstrapDialog from 'bootstrap3-dialog'
 //         }
 //     })
 
-exports.convertBase64StrToArray = function (base64Str) {
+exports.convertBase64StrToArray = function(base64Str) {
   let bytes = window.atob(base64Str) // 去掉url的头，并转换为byte
   // 处理异常,将ascii码小于0的转换为大于0
   let ab = new ArrayBuffer(bytes.length)
@@ -27,7 +27,7 @@ exports.convertBase64StrToArray = function (base64Str) {
   return ab
 }
 
-exports.aesEncryptModeCFB = function (msg, pwd) {
+exports.aesEncryptModeCFB = function(msg, pwd) {
   let magicNo = exports.generateRandomAlphaNum(32)
 
   let key = CryptoJS.enc.Hex.parse(CryptoJS.MD5(pwd).toString())
@@ -41,16 +41,18 @@ exports.aesEncryptModeCFB = function (msg, pwd) {
   return [magicNo, identifyCode]
 }
 
-exports.generateRandomAlphaNum = function (len) {
+exports.generateRandomAlphaNum = function(len) {
   let rdmString = ''
   // toSting接受的参数表示进制，默认为10进制。36进制为0-9 a-z
-  for (; rdmString.length < len;) {
-    rdmString += Math.random().toString(16).substr(2)
+  for (; rdmString.length < len; ) {
+    rdmString += Math.random()
+      .toString(16)
+      .substr(2)
   }
   return rdmString.substr(0, len)
 }
 
-exports.BrowserType = function () {
+exports.BrowserType = function() {
   let userAgent = navigator.userAgent // 取得浏览器的userAgent字符串
   let isOpera = userAgent.indexOf('Opera') > -1 // 判断是否Opera浏览器
   let isIE = userAgent.indexOf('compatible') > -1 && userAgent.indexOf('MSIE') > -1 && !isOpera // 判断是否IE浏览器
@@ -121,17 +123,15 @@ exports.daterangepickerlocaletime = {
   toLabel: '结束时间',
   customRangeLabel: '自定义',
   daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
-  monthNames: ['一月', '二月', '三月', '四月', '五月', '六月',
-    '七月', '八月', '九月', '十月', '十一月', '十二月'
-  ],
+  monthNames: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
   firstDay: 1
 }
 
-exports.clearStoreData = function (key, value) {
+exports.clearStoreData = function(key, value) {
   store.clearAll()
 }
 
-exports.setStoreData = function (key, value) {
+exports.setStoreData = function(key, value) {
   store.set(key, value)
 }
 
@@ -140,11 +140,11 @@ function getStoreData(key) {
 }
 exports.getStoreData = getStoreData
 
-exports.removeStoreData = function (key) {
+exports.removeStoreData = function(key) {
   store.remove(key)
 }
 
-exports.createWebSocket = function () {
+exports.createWebSocket = function() {
   let domain = document.domain
   let protocol = window.location.protocol
   let websocket
@@ -164,7 +164,7 @@ exports.createWebSocket = function () {
   return websocket
 }
 
-exports.dealErrorCommon = function (obj, res) {
+exports.dealErrorCommon = function(obj, res) {
   let response = res.response
   if (response) {
     if (response.status > 699 && response.status < 800) {
@@ -173,13 +173,15 @@ exports.dealErrorCommon = function (obj, res) {
         title: '<i class= "fa fa-fw fa-info-circle"></i><strong>错误信息</strong>',
         cssClass: 'modal-danger',
         message: '<i class="text-warning fa fa-fw fa-warning" style="font-size: 40px"></i>' + response.data.msg,
-        buttons: [{
-          label: '<i class= "fa fa-fw fa-close"></i>关闭',
-          cssClass: 'btn-outline',
-          action: function (dialogItself) {
-            dialogItself.close()
+        buttons: [
+          {
+            label: '<i class= "fa fa-fw fa-close"></i>关闭',
+            cssClass: 'btn-outline',
+            action: function(dialogItself) {
+              dialogItself.close()
+            }
           }
-        }]
+        ]
       })
     } else if (response.status === 404) {
       obj.$router.push({
@@ -215,7 +217,7 @@ exports.dealErrorCommon = function (obj, res) {
   }
 }
 
-exports.dealAlertCommon = function (obj, response) {
+exports.dealAlertCommon = function(obj, response) {
   if (response.status > 699 && response.status < 800) {
     console.log('700 error')
     alert(response.data.msg)
@@ -232,7 +234,7 @@ exports.dealAlertCommon = function (obj, response) {
   }
 }
 
-exports.dealConfrimCommon = function (message, callbackFunc) {
+exports.dealConfrimCommon = function(message, callbackFunc) {
   BootstrapDialog.confirm({
     title: '<i class= "fa fa-fw fa-info-circle"></i><strong>Confirm Message</strong>',
     message: '<i class="text-warning fa fa-fw fa-question-circle" style="font-size: 40px"></i>' + message,
@@ -241,7 +243,7 @@ exports.dealConfrimCommon = function (message, callbackFunc) {
     btnOKClass: 'btn-info',
     btnCancelLabel: 'Cancel',
     btnCancelClass: 'btn-cancel',
-    callback: function (result) {
+    callback: function(result) {
       if (result) {
         callbackFunc()
       }
@@ -249,80 +251,87 @@ exports.dealConfrimCommon = function (message, callbackFunc) {
   })
 }
 
-exports.dealSuccessCommon = function (message) {
+exports.dealSuccessCommon = function(message) {
   var dlg = BootstrapDialog.show({
     title: '<i class= "fa fa-fw fa-info-circle"></i><strong>提示信息</strong>',
     cssClass: 'modal-success',
     message: '<i class="tex t-warning glyphicon glyphicon-ok" style="font-size: 40px"></i>' + message,
-    buttons: [{
-      label: '<i class= "fa fa-fw fa-close"></i>关闭',
-      cssClass: 'btn-info ',
-      action: function (dialogItself) {
-        dialogItself.close()
+    buttons: [
+      {
+        label: '<i class= "fa fa-fw fa-close"></i>关闭',
+        cssClass: 'btn-info ',
+        action: function(dialogItself) {
+          dialogItself.close()
+        }
       }
-    }]
+    ]
   })
 }
 
-exports.dealPromptCommon = function (message) {
+exports.dealPromptCommon = function(message) {
   BootstrapDialog.show({
     title: '<i class= "fa fa-fw fa-info-circle"></i><strong>提示信息</strong>',
     cssClass: 'msg-dialog',
     message: '<i class="text-warning fa fa-fw fa-warning" style="font-size: 40px"></i>' + message,
-    buttons: [{
-      label: '<i class= "fa fa-fw fa-close"></i>关闭',
-      cssClass: 'btn-info',
-      action: function (dialogItself) {
-        dialogItself.close()
+    buttons: [
+      {
+        label: '<i class= "fa fa-fw fa-close"></i>关闭',
+        cssClass: 'btn-info',
+        action: function(dialogItself) {
+          dialogItself.close()
+        }
       }
-    }]
+    ]
   })
 }
 
-exports.dealWarningCommon = function (message) {
+exports.dealWarningCommon = function(message) {
   BootstrapDialog.show({
     title: '<i class= "fa fa-fw fa-info-circle"></i><strong>警告信息</strong>',
     cssClass: 'modal-warning',
     message: '<i class="text-warning fa fa-fw fa-warning" style="font-size: 40px"></i>' + message,
-    buttons: [{
-      label: '<i class= "fa fa-fw fa-close"></i>关闭',
-      cssClass: 'btn-outline',
-      action: function (dialogItself) {
-        dialogItself.close()
+    buttons: [
+      {
+        label: '<i class= "fa fa-fw fa-close"></i>关闭',
+        cssClass: 'btn-outline',
+        action: function(dialogItself) {
+          dialogItself.close()
+        }
       }
-    }]
+    ]
   })
 }
 
-exports.changeTableClass = function (tableObj) {
-  tableObj.on('click-row.bs.table', function (e, row, $element) {
+exports.changeTableClass = function(tableObj) {
+  tableObj.on('click-row.bs.table', function(e, row, $element) {
     $('.success').removeClass('success')
     $($element).addClass('success')
   })
 }
 
-exports.getTableHeight = function () {
+exports.getTableHeight = function() {
   let topOffset = 150
   let height = $(window).height()
-  let toolbar = $('.margin')
-  let toolbarHeight = 0
-  if (toolbar) {
-    toolbarHeight = toolbar.height()
-  }
+  // let toolbar = $('.margin')
+  // let toolbarHeight = 0
+  // if (toolbar) {
+  //   toolbarHeight = toolbar.height()
+  // }
   // let navtabs = $('.nav-tabs')
   // let navtabsHeight = 0
   // if (navtabs) {
   //   navtabsHeight = 40
   // }
-  height = height - toolbarHeight - topOffset
+  // height = height - toolbarHeight - topOffset
+  height = height - topOffset
   return height
 }
 
-exports.initCkeditor = function (textareaID) {
+exports.initCkeditor = function(textareaID) {
   CKEDITOR.replace(textareaID)
 }
 
-exports.selectCheck = function (_self, key, msg) {
+exports.selectCheck = function(_self, key, msg) {
   let item = $('#' + key).val()
   if (!item) {
     alert(msg)
@@ -333,7 +342,7 @@ exports.selectCheck = function (_self, key, msg) {
   }
 }
 
-exports.initSelect2 = function (jqItem, sdata) {
+exports.initSelect2 = function(jqItem, sdata) {
   jqItem.select2({
     maximumSelectionLength: 1,
     language: 'zh-CN',
@@ -343,7 +352,7 @@ exports.initSelect2 = function (jqItem, sdata) {
     multiple: true
   })
 }
-exports.initSelect2Editable = function (jqItem, sdata) {
+exports.initSelect2Editable = function(jqItem, sdata) {
   jqItem.select2({
     maximumSelectionLength: 1,
     language: 'zh-CN',
@@ -354,7 +363,7 @@ exports.initSelect2Editable = function (jqItem, sdata) {
   })
 }
 
-exports.getSelect2Val = function (key) {
+exports.getSelect2Val = function(key) {
   let item = $('#' + key).val()
   if (!item || item.length !== 1) {
     return ''
@@ -363,11 +372,13 @@ exports.getSelect2Val = function (key) {
   }
 }
 
-exports.getSelect2Text = function (key) {
-  return $('#' + key).find('option:selected').text()
+exports.getSelect2Text = function(key) {
+  return $('#' + key)
+    .find('option:selected')
+    .text()
 }
 
-exports.initSelect2Width = function (jqItem, sdata, width) {
+exports.initSelect2Width = function(jqItem, sdata, width) {
   jqItem.select2({
     maximumSelectionLength: 1,
     language: 'zh-CN',
@@ -378,7 +389,7 @@ exports.initSelect2Width = function (jqItem, sdata, width) {
   })
 }
 
-exports.initSelect2Placeholder = function (jqItem, sdata, placeholder) {
+exports.initSelect2Placeholder = function(jqItem, sdata, placeholder) {
   jqItem.select2({
     maximumSelectionLength: 1,
     language: 'zh-CN',
@@ -390,7 +401,7 @@ exports.initSelect2Placeholder = function (jqItem, sdata, placeholder) {
   })
 }
 
-exports.initSelect2Single = function (jqItem, sdata) {
+exports.initSelect2Single = function(jqItem, sdata) {
   jqItem.select2({
     minimumResultsForSearch: Infinity,
     language: 'zh-CN',
@@ -401,7 +412,7 @@ exports.initSelect2Single = function (jqItem, sdata) {
   jqItem.val('')
 }
 
-exports.initSelect2SingleWithSearch = function (jqItem, sdata) {
+exports.initSelect2SingleWithSearch = function(jqItem, sdata) {
   jqItem.select2({
     language: 'zh-CN',
     tags: false,
@@ -410,7 +421,7 @@ exports.initSelect2SingleWithSearch = function (jqItem, sdata) {
   jqItem.val('')
 }
 
-exports.initSelect2SingleWithSearchPlaceholder = function (jqItem, sdata, placeholder) {
+exports.initSelect2SingleWithSearchPlaceholder = function(jqItem, sdata, placeholder) {
   jqItem.select2({
     language: 'zh-CN',
     placeholder: placeholder,
@@ -418,17 +429,19 @@ exports.initSelect2SingleWithSearchPlaceholder = function (jqItem, sdata, placeh
   })
 }
 
-exports.initDatepicker = function (jqItem) {
-  jqItem.daterangepicker({
-    singleDatePicker: true,
-    locale: {
-      format: 'YYYY-MM-DD'
-    }
-  }, function(start, end, label) {
-  })
+exports.initDatepicker = function(jqItem) {
+  jqItem.daterangepicker(
+    {
+      singleDatePicker: true,
+      locale: {
+        format: 'YYYY-MM-DD'
+      }
+    },
+    function(start, end, label) {}
+  )
 }
 
-exports.initDateTimepicker = function (jqItem) {
+exports.initDateTimepicker = function(jqItem) {
   jqItem.datetimepicker({
     language: 'zh-CN',
     autoclose: true,
@@ -439,7 +452,7 @@ exports.initDateTimepicker = function (jqItem) {
   })
 }
 
-exports.initDatepickerStart = function (jqItem) {
+exports.initDatepickerStart = function(jqItem) {
   jqItem.datepicker({
     language: 'zh-CN',
     autoclose: true,
@@ -449,34 +462,38 @@ exports.initDatepickerStart = function (jqItem) {
   })
 }
 
-exports.initStartDatepicker = function (start, end) {
-  start.datepicker({
-    language: 'zh-CN',
-    autoclose: true,
-    todayHighlight: true,
-    format: 'yyyy-mm-dd'
-  }).on('changeDate', function (e) {
-    var startTime = e.date
-    end.datepicker('setStartDate', startTime)
-  })
+exports.initStartDatepicker = function(start, end) {
+  start
+    .datepicker({
+      language: 'zh-CN',
+      autoclose: true,
+      todayHighlight: true,
+      format: 'yyyy-mm-dd'
+    })
+    .on('changeDate', function(e) {
+      var startTime = e.date
+      end.datepicker('setStartDate', startTime)
+    })
 }
-exports.initEndDatepicker = function (end, start) {
-  end.datepicker({
-    language: 'zh-CN',
-    autoclose: true,
-    todayHighlight: true,
-    format: 'yyyy-mm-dd'
-  }).on('changeDate', function (e) {
-    var endTime = e.date
-    start.datepicker('setEndDate', endTime)
-  })
+exports.initEndDatepicker = function(end, start) {
+  end
+    .datepicker({
+      language: 'zh-CN',
+      autoclose: true,
+      todayHighlight: true,
+      format: 'yyyy-mm-dd'
+    })
+    .on('changeDate', function(e) {
+      var endTime = e.date
+      start.datepicker('setEndDate', endTime)
+    })
 }
 
-exports.NCAPrint = function (printPara) {
+exports.NCAPrint = function(printPara) {
   printJS('/api/nca/print?' + $.param(printPara))
 }
 
-exports.imagesFileUpload = function (_self, obj, row, url, key, method, tbobj) {
+exports.imagesFileUpload = function(_self, obj, row, url, key, method, tbobj) {
   let maxsize = 2 * 1024 * 1024 // 2M
   let files = _self.files
   let oldRow = $.extend(true, {}, row)
@@ -503,44 +520,52 @@ exports.imagesFileUpload = function (_self, obj, row, url, key, method, tbobj) {
       let formData = new FormData()
       formData.append('file', files[i])
 
-      obj.$http.post(url + 'upload', formData).then((response) => {
-        let fileInfo = response.data.info
-        row.images.push(fileInfo)
-        let modUrl = ''
-        if (method) {
-          modUrl = url + method
-        } else {
-          modUrl = url + 'modify'
-        }
-        obj.$http.post(modUrl, {
-          'old': oldRow,
-          'new': row
-        }).then((response) => {
-          let uprow = response.data.info
-          let tb = null
-          if (tbobj) {
-            tb = tbobj
+      obj.$http.post(url + 'upload', formData).then(
+        response => {
+          let fileInfo = response.data.info
+          row.images.push(fileInfo)
+          let modUrl = ''
+          if (method) {
+            modUrl = url + method
           } else {
-            tb = $('#table')
+            modUrl = url + 'modify'
           }
-          tb.bootstrapTable('updateByUniqueId', {
-            id: row[key],
-            row: uprow
-          })
-          console.log('modify success')
-        }, (response) => {
-          console.log('modify error')
+          obj.$http
+            .post(modUrl, {
+              old: oldRow,
+              new: row
+            })
+            .then(
+              response => {
+                let uprow = response.data.info
+                let tb = null
+                if (tbobj) {
+                  tb = tbobj
+                } else {
+                  tb = $('#table')
+                }
+                tb.bootstrapTable('updateByUniqueId', {
+                  id: row[key],
+                  row: uprow
+                })
+                console.log('modify success')
+              },
+              response => {
+                console.log('modify error')
+                exports.dealErrorCommon(obj, response)
+              }
+            )
+        },
+        response => {
+          // error callback
           exports.dealErrorCommon(obj, response)
-        })
-      }, (response) => {
-        // error callback
-        exports.dealErrorCommon(obj, response)
-      })
+        }
+      )
     }
   }
 }
 
-exports.fileFileUpload = function (_self, obj, row, url, method, table, key) {
+exports.fileFileUpload = function(_self, obj, row, url, method, table, key) {
   let files = _self.files
   let maxsize = 2 * 1024 * 1024 // 2M
   let oldRow = $.extend(true, {}, row)
@@ -554,32 +579,40 @@ exports.fileFileUpload = function (_self, obj, row, url, method, table, key) {
       let formData = new FormData()
       formData.append('file', files[i])
 
-      obj.$http.post(url + 'upload', formData).then((response) => {
-        row.files.push(response.data.info)
-        obj.$http.post(url + method, {
-          'old': oldRow,
-          'new': row
-        }).then((response) => {
-          // let uprow = response.data.info
-          // table.bootstrapTable('updateByUniqueId', {
-          //     id: row[key],
-          //     row: uprow
-          // })
-          // console.log('modify success')
-          obj.$parent.refreshOrder()
-        }, (response) => {
-          console.log('modify error')
+      obj.$http.post(url + 'upload', formData).then(
+        response => {
+          row.files.push(response.data.info)
+          obj.$http
+            .post(url + method, {
+              old: oldRow,
+              new: row
+            })
+            .then(
+              response => {
+                // let uprow = response.data.info
+                // table.bootstrapTable('updateByUniqueId', {
+                //     id: row[key],
+                //     row: uprow
+                // })
+                // console.log('modify success')
+                obj.$parent.refreshOrder()
+              },
+              response => {
+                console.log('modify error')
+                exports.dealErrorCommon(obj, response)
+              }
+            )
+        },
+        response => {
+          // error callback
           exports.dealErrorCommon(obj, response)
-        })
-      }, (response) => {
-        // error callback
-        exports.dealErrorCommon(obj, response)
-      })
+        }
+      )
     }
   }
 }
 
-exports.fileFileUploadRefresh = function (_self, obj, row, url, method, table, key) {
+exports.fileFileUploadRefresh = function(_self, obj, row, url, method, table, key) {
   let files = _self.files
   let maxsize = 2 * 1024 * 1024 // 2M
   let oldRow = $.extend(true, {}, row)
@@ -593,30 +626,38 @@ exports.fileFileUploadRefresh = function (_self, obj, row, url, method, table, k
       let formData = new FormData()
       formData.append('file', files[i])
 
-      obj.$http.post(url + 'upload', formData).then((response) => {
-        row.files.push(response.data.info)
-        obj.$http.post(url + method, {
-          'old': oldRow,
-          'new': row
-        }).then((response) => {
-          let uprow = response.data.info
-          table.bootstrapTable('updateByUniqueId', {
-            id: row[key],
-            row: uprow
-          })
-          console.log('modify success')
-        }, (response) => {
-          console.log('modify error')
+      obj.$http.post(url + 'upload', formData).then(
+        response => {
+          row.files.push(response.data.info)
+          obj.$http
+            .post(url + method, {
+              old: oldRow,
+              new: row
+            })
+            .then(
+              response => {
+                let uprow = response.data.info
+                table.bootstrapTable('updateByUniqueId', {
+                  id: row[key],
+                  row: uprow
+                })
+                console.log('modify success')
+              },
+              response => {
+                console.log('modify error')
+                exports.dealErrorCommon(obj, response)
+              }
+            )
+        },
+        response => {
+          // error callback
           exports.dealErrorCommon(obj, response)
-        })
-      }, (response) => {
-        // error callback
-        exports.dealErrorCommon(obj, response)
-      })
+        }
+      )
     }
   }
 }
-exports.deleteFiles = function (_self, obj, row, url, method, table, key) {
+exports.deleteFiles = function(_self, obj, row, url, method, table, key) {
   let files = row.files
   let params = {
     fileIds: []
@@ -625,21 +666,24 @@ exports.deleteFiles = function (_self, obj, row, url, method, table, key) {
     params.fileIds.push(file.file_id)
   }
   if (files.length > 0) {
-    obj.$http.post(url + method, params).then((response) => {
-      obj.$parent.refreshOrder()
-      // let uprow = response.data.info
-      // table.bootstrapTable('updateByUniqueId', {
-      //     id: row[key],
-      //     row: uprow
-      // })
-    }, (response) => {
-      // error callback
-      exports.dealErrorCommon(obj, response)
-    })
+    obj.$http.post(url + method, params).then(
+      response => {
+        obj.$parent.refreshOrder()
+        // let uprow = response.data.info
+        // table.bootstrapTable('updateByUniqueId', {
+        //     id: row[key],
+        //     row: uprow
+        // })
+      },
+      response => {
+        // error callback
+        exports.dealErrorCommon(obj, response)
+      }
+    )
   }
 }
 
-exports.deleteFilesRRefresh = function (_self, obj, row, url, method, table, key) {
+exports.deleteFilesRRefresh = function(_self, obj, row, url, method, table, key) {
   let files = row.files
   let params = {
     fileIds: []
@@ -648,79 +692,93 @@ exports.deleteFilesRRefresh = function (_self, obj, row, url, method, table, key
     params.fileIds.push(file.file_id)
   }
   if (files.length > 0) {
-    obj.$http.post(url + method, params).then((response) => {
-      table.bootstrapTable('refresh')
-    }, (response) => {
-      // error callback
-      exports.dealErrorCommon(obj, response)
-    })
+    obj.$http.post(url + method, params).then(
+      response => {
+        table.bootstrapTable('refresh')
+      },
+      response => {
+        // error callback
+        exports.dealErrorCommon(obj, response)
+      }
+    )
   }
 }
 
-exports.fileUpload = function (_self, obj, method, callback) {
+exports.fileUpload = function(_self, obj, method, callback) {
   obj.unbind()
-  obj.change(function () {
+  obj.change(function() {
     let files = this.files
     if (files.length > 0) {
       for (let i = 0; i < files.length; i++) {
         let formData = new FormData()
         formData.append('file', files[i])
-        _self.$http.post(method, formData).then((response) => {
-          let fileInfo = response.data.info
-          callback(fileInfo)
-        }, (response) => {
-          // error callback
-          exports.dealErrorCommon(_self, response)
-        })
+        _self.$http.post(method, formData).then(
+          response => {
+            let fileInfo = response.data.info
+            callback(fileInfo)
+          },
+          response => {
+            // error callback
+            exports.dealErrorCommon(_self, response)
+          }
+        )
       }
     }
   })
 }
 
-exports.rowModifyWithT = function (_self, act, row, key, tb) {
-  _self.$http.post(act, {
-    'old': _self.oldRow,
-    'new': row
-  }).then((response) => {
-    let updaterow = response.data.info
-    tb.bootstrapTable('updateByUniqueId', {
-      id: row[key],
-      row: updaterow
+exports.rowModifyWithT = function(_self, act, row, key, tb) {
+  _self.$http
+    .post(act, {
+      old: _self.oldRow,
+      new: row
     })
-    tb.bootstrapTable('resetView')
-    console.log('modify success')
-  }, (response) => {
-    console.log('modify error')
-    exports.dealErrorCommon(this, response)
+    .then(
+      response => {
+        let updaterow = response.data.info
+        tb.bootstrapTable('updateByUniqueId', {
+          id: row[key],
+          row: updaterow
+        })
+        tb.bootstrapTable('resetView')
+        console.log('modify success')
+      },
+      response => {
+        console.log('modify error')
+        exports.dealErrorCommon(this, response)
 
-    tb.bootstrapTable('updateByUniqueId', {
-      id: row[key],
-      row: _self.oldRow
-    })
-    tb.bootstrapTable('resetView')
-  })
-}
-
-exports.rowDeleteWithApi = function (_self, msg, apiUrl, table, row, key, callback) {
-  exports.dealConfrimCommon(msg, function () {
-    _self.$http.post(apiUrl, row).then((response) => {
-      table.bootstrapTable('remove', {
-        field: key,
-        values: [row[key]]
-      })
-      if (callback) {
-        callback()
+        tb.bootstrapTable('updateByUniqueId', {
+          id: row[key],
+          row: _self.oldRow
+        })
+        tb.bootstrapTable('resetView')
       }
-      exports.dealSuccessCommon('删除成功')
-      console.log('delete success')
-    }, (response) => {
-      console.log('delete error')
-      exports.dealErrorCommon(_self, response)
-    })
+    )
+}
+
+exports.rowDeleteWithApi = function(_self, msg, apiUrl, table, row, key, callback) {
+  exports.dealConfrimCommon(msg, function() {
+    _self.$http.post(apiUrl, row).then(
+      response => {
+        table.bootstrapTable('remove', {
+          field: key,
+          values: [row[key]]
+        })
+        if (callback) {
+          callback()
+        }
+        exports.dealSuccessCommon('删除成功')
+        console.log('delete success')
+      },
+      response => {
+        console.log('delete error')
+        exports.dealErrorCommon(_self, response)
+      }
+    )
   })
 }
 
-exports.bootstrapTableAjaxOtions = function () {
+exports.bootstrapTableAjaxOtions = function() {
   let headers = {}
   headers.authorization = getStoreData('token')
   return {
@@ -728,23 +786,27 @@ exports.bootstrapTableAjaxOtions = function () {
   }
 }
 
-exports.remarkFormatter = function (value, row, index) {
+exports.remarkFormatter = function(value, row, index) {
   if (value) {
-    let displayName = (value.length > 10) ? (value.substring(0, 7) + '...') : value
+    let displayName = value.length > 10 ? value.substring(0, 7) + '...' : value
     return [
       '<a role="button" data-toggle="popover" data-trigger="hover" data-placement="left" data-html="true" data-content="' +
-      '<div class=&quot;box&quot;>' +
-      '<div class=&quot;box-body&quot;>' +
-      '<div class=&quot;form-group&quot;>' +
-      '<div class=&quot;&quot;><span>' + value + '</span></div>' +
-      '</div>' +
-      '</div>' +
-      '</div>">' + displayName + '</a>'
+        '<div class=&quot;box&quot;>' +
+        '<div class=&quot;box-body&quot;>' +
+        '<div class=&quot;form-group&quot;>' +
+        '<div class=&quot;&quot;><span>' +
+        value +
+        '</span></div>' +
+        '</div>' +
+        '</div>' +
+        '</div>">' +
+        displayName +
+        '</a>'
     ].join('')
   }
 }
 
-exports.linkFormatter = function (value, row, index) {
+exports.linkFormatter = function(value, row, index) {
   let retString = '<div class="form-inline" role="form">'
   if (value) {
     retString += '<div class="form-group image-set">'
@@ -756,7 +818,7 @@ exports.linkFormatter = function (value, row, index) {
   return retString
 }
 
-exports.fileFormatter = function (value, row, index) {
+exports.fileFormatter = function(value, row, index) {
   let retString = '<div class="form-inline" role="form">'
   if (value) {
     retString += '<div class="form-group image-set">'
@@ -768,7 +830,7 @@ exports.fileFormatter = function (value, row, index) {
   return retString
 }
 
-exports.imageViewerFormatter = function (value, row, index) {
+exports.imageViewerFormatter = function(value, row, index) {
   let retString = '<div class="form-inline" role="form">'
   if (value) {
     retString += '<img class="icon-size image" src="' + value + '">'
@@ -777,7 +839,7 @@ exports.imageViewerFormatter = function (value, row, index) {
   return retString
 }
 
-exports.imagesFormatter = function (value, row, index) {
+exports.imagesFormatter = function(value, row, index) {
   var retString = '<div class="form-inline" role="form">'
   if (value.length > 0) {
     retString += '<div class="form-group image-set">'
@@ -794,7 +856,7 @@ exports.imagesFormatter = function (value, row, index) {
   return retString
 }
 
-exports.imagesFormatterNoA = function (value, row, index) {
+exports.imagesFormatterNoA = function(value, row, index) {
   var retString = '<div class="form-inline" role="form">'
   if (value.length > 0) {
     retString += '<div class="form-group image-set">'
@@ -808,11 +870,12 @@ exports.imagesFormatterNoA = function (value, row, index) {
   return retString
 }
 
-exports.filesFormatterWithUpload = function (value, row) {
+exports.filesFormatterWithUpload = function(value, row) {
   var retString = '<div class="form-inline" role="form">'
   if (value.length > 0) {
     retString += '<div class="btn-group">'
-    retString += '<button type="button" class="btn btn-xs btn-success dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>&nbsp;&nbsp;&nbsp;'
+    retString +=
+      '<button type="button" class="btn btn-xs btn-success dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>&nbsp;&nbsp;&nbsp;'
     retString += '<ul class="dropdown-menu" style="min-width: 0; border:2px solid #3c8dbc;">'
     for (let i = 0; i < value.length; i++) {
       // 获取后缀
@@ -851,21 +914,17 @@ function getFileExt(str) {
   return postf
 }
 
-exports.filesFormatter = function (value, row) {
+exports.filesFormatter = function(value, row) {
   var retString = '<div class="form-inline" role="form">'
   if (value.length > 0) {
     retString += '<div class="btn-group">'
-    retString += '<button type="button" class="btn btn-xs btn-success dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>&nbsp;&nbsp;&nbsp;'
+    retString +=
+      '<button type="button" class="btn btn-xs btn-success dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>&nbsp;&nbsp;&nbsp;'
     retString += '<ul class="dropdown-menu" style="min-width: 0; border:2px solid #3c8dbc;">'
     for (let i = 0; i < value.length; i++) {
       // 获取后缀
       if (value[i].url) {
-        let a = getFileExt(value[i].url).toLowerCase()
-        if (a === 'jpg' || a === 'jpeg' || a === 'png') {
-          retString += '<li><a href="' + value[i].url + '" target="_blank"><img src="' + value[i].url + '?width=30&height=30&quality=10' + '"></i>'
-        } else {
-          retString += '<li><a href="' + value[i].url + '" target="_blank"><i class="glyphicon glyphicon-save-file"></i>'
-        }
+        retString += '<li><a href="' + value[i].url + '" target="_blank"><i class="glyphicon glyphicon-save-file"></i>'
       }
       retString += '</a></li>'
     }
@@ -875,7 +934,7 @@ exports.filesFormatter = function (value, row) {
   return retString
 }
 
-exports.deleteFormatter = function (value, row, index) {
+exports.deleteFormatter = function(value, row, index) {
   return [
     '<a class="tableDelete" title="删除">',
     '<i class="glyphicon glyphicon-remove"></i>',
@@ -884,7 +943,7 @@ exports.deleteFormatter = function (value, row, index) {
   ].join('')
 }
 
-exports.BTRowFormat = function (rowid, rowname) {
+exports.BTRowFormat = function(rowid, rowname) {
   return {
     field: rowid,
     title: rowname,
@@ -894,7 +953,7 @@ exports.BTRowFormat = function (rowid, rowname) {
   }
 }
 
-exports.BTRowFormatAlignLeft = function (rowid, rowname) {
+exports.BTRowFormatAlignLeft = function(rowid, rowname) {
   return {
     field: rowid,
     title: rowname,
@@ -904,7 +963,7 @@ exports.BTRowFormatAlignLeft = function (rowid, rowname) {
   }
 }
 
-exports.BTRowFormatWrap = function (rowid, rowname) {
+exports.BTRowFormatWrap = function(rowid, rowname) {
   return {
     field: rowid,
     title: rowname,
@@ -913,7 +972,7 @@ exports.BTRowFormatWrap = function (rowid, rowname) {
   }
 }
 
-exports.BTRowFormatEditable = function (rowid, rowname, rFormatter) {
+exports.BTRowFormatEditable = function(rowid, rowname, rFormatter) {
   return {
     field: rowid,
     title: rowname,
@@ -927,7 +986,7 @@ exports.BTRowFormatEditable = function (rowid, rowname, rFormatter) {
   }
 }
 
-exports.BTRowFormatEditableOpt = function (rowid, rowname, enabled = true, rFormatter) {
+exports.BTRowFormatEditableOpt = function(rowid, rowname, enabled = true, rFormatter) {
   let element = {
     field: rowid,
     title: rowname,
@@ -945,7 +1004,7 @@ exports.BTRowFormatEditableOpt = function (rowid, rowname, enabled = true, rForm
   return element
 }
 
-exports.BTRowFormatEditablePop = function (rowid, rowname) {
+exports.BTRowFormatEditablePop = function(rowid, rowname) {
   return {
     field: rowid,
     title: rowname,
@@ -959,7 +1018,7 @@ exports.BTRowFormatEditablePop = function (rowid, rowname) {
   }
 }
 
-exports.BTRowFormatEditableDatePicker = function (rowid, rowname, placement = 'top', rFormatter) {
+exports.BTRowFormatEditableDatePicker = function(rowid, rowname, placement = 'top', rFormatter) {
   return {
     field: rowid,
     title: rowname,
@@ -985,7 +1044,7 @@ exports.BTRowFormatEditableDatePicker = function (rowid, rowname, placement = 't
   }
 }
 
-exports.BTRowFormatEditableWF = function (rowid, rowname, width) {
+exports.BTRowFormatEditableWF = function(rowid, rowname, width) {
   return {
     field: rowid,
     title: rowname,
@@ -1000,7 +1059,7 @@ exports.BTRowFormatEditableWF = function (rowid, rowname, width) {
   }
 }
 
-exports.BTRowFormatEdSelect = function (_self, rowid, rowname, paraIndex) {
+exports.BTRowFormatEdSelect = function(_self, rowid, rowname, paraIndex) {
   return {
     field: rowid,
     title: rowname,
@@ -1011,9 +1070,9 @@ exports.BTRowFormatEdSelect = function (_self, rowid, rowname, paraIndex) {
       type: 'select',
       emptytext: '无',
       source: _self.pagePara[paraIndex],
-      display: function (value, sourceData) {
+      display: function(value, sourceData) {
         let showText = ''
-        $(sourceData).each(function () {
+        $(sourceData).each(function() {
           if (this.id === value) {
             showText = this.text
             return false
@@ -1025,7 +1084,7 @@ exports.BTRowFormatEdSelect = function (_self, rowid, rowname, paraIndex) {
   }
 }
 
-exports.BTRowFormatEditableW = function (rowid, rowname, width) {
+exports.BTRowFormatEditableW = function(rowid, rowname, width) {
   return {
     field: rowid,
     title: rowname,
@@ -1041,14 +1100,14 @@ exports.BTRowFormatEditableW = function (rowid, rowname, width) {
       showbuttons: false,
       onblur: 'submit',
       clear: false,
-      display: function (value, sourceData) {
+      display: function(value, sourceData) {
         $(this).html('<div class="form-control">' + value + '</div>')
       }
     }
   }
 }
 
-exports.BTRowFormatEnumber = function (rowid, rowname) {
+exports.BTRowFormatEnumber = function(rowid, rowname) {
   return {
     field: rowid,
     title: rowname,
@@ -1061,7 +1120,7 @@ exports.BTRowFormatEnumber = function (rowid, rowname) {
     }
   }
 }
-exports.BTRowFormatEnumberW = function (rowid, rowname, width) {
+exports.BTRowFormatEnumberW = function(rowid, rowname, width) {
   return {
     field: rowid,
     title: rowname,
@@ -1077,13 +1136,13 @@ exports.BTRowFormatEnumberW = function (rowid, rowname, width) {
       showbuttons: false,
       onblur: 'submit',
       clear: false,
-      display: function (value, sourceData) {
+      display: function(value, sourceData) {
         $(this).html('<div class="form-control">' + value + '</div>')
       }
     }
   }
 }
-exports.BTRowFormatEnumberWMin = function (rowid, rowname, width) {
+exports.BTRowFormatEnumberWMin = function(rowid, rowname, width) {
   return {
     field: rowid,
     title: rowname,
@@ -1099,13 +1158,13 @@ exports.BTRowFormatEnumberWMin = function (rowid, rowname, width) {
       onblur: 'submit',
       clear: false,
       min: 0,
-      display: function (value, sourceData) {
+      display: function(value, sourceData) {
         $(this).html(value)
       }
     }
   }
 }
-exports.BTRowFormatEnumberWMinEnable = function (rowid, rowname, rFormatter) {
+exports.BTRowFormatEnumberWMinEnable = function(rowid, rowname, rFormatter) {
   return {
     field: rowid,
     title: rowname,
@@ -1121,14 +1180,14 @@ exports.BTRowFormatEnumberWMinEnable = function (rowid, rowname, rFormatter) {
       onblur: 'submit',
       clear: false,
       min: 0,
-      display: function (value, sourceData) {
+      display: function(value, sourceData) {
         $(this).html(value)
       }
     }
   }
 }
 
-exports.BTRowFormatEdSelect2 = function (rowid, rowname, paraDict, width = 200) {
+exports.BTRowFormatEdSelect2 = function(rowid, rowname, paraDict, width = 200) {
   return {
     field: rowid,
     title: rowname,
@@ -1141,9 +1200,9 @@ exports.BTRowFormatEdSelect2 = function (rowid, rowname, paraDict, width = 200) 
       select2: {
         width: width
       },
-      display: function (value) {
+      display: function(value) {
         let showText = ''
-        $(paraDict).each(function () {
+        $(paraDict).each(function() {
           if (this.id === value) {
             if (this.name) {
               showText = this.name
@@ -1159,7 +1218,7 @@ exports.BTRowFormatEdSelect2 = function (rowid, rowname, paraDict, width = 200) 
   }
 }
 
-exports.BTRowFormatEdSelect2Disabled = function (rowid, rowname, paraDict, width = 200) {
+exports.BTRowFormatEdSelect2Disabled = function(rowid, rowname, paraDict, width = 200) {
   return {
     field: rowid,
     title: rowname,
@@ -1174,9 +1233,9 @@ exports.BTRowFormatEdSelect2Disabled = function (rowid, rowname, paraDict, width
       select2: {
         width: width
       },
-      display: function (value) {
+      display: function(value) {
         let showText = ''
-        $(paraDict).each(function () {
+        $(paraDict).each(function() {
           if (this.id === value) {
             if (this.name) {
               showText = this.name
@@ -1192,7 +1251,7 @@ exports.BTRowFormatEdSelect2Disabled = function (rowid, rowname, paraDict, width
   }
 }
 
-exports.BTRowFormatEdNum = function (rowid, rowname) {
+exports.BTRowFormatEdNum = function(rowid, rowname) {
   return {
     field: rowid,
     title: rowname,
@@ -1202,7 +1261,7 @@ exports.BTRowFormatEdNum = function (rowid, rowname) {
     editable: {
       type: 'text',
       emptytext: '无',
-      validate: function (value) {
+      validate: function(value) {
         value = $.trim(value)
         if (!value) {
           return '请输入金额'
@@ -1217,7 +1276,7 @@ exports.BTRowFormatEdNum = function (rowid, rowname) {
   }
 }
 
-exports.BTRowFormatEdTextarea = function (rowid, rowname) {
+exports.BTRowFormatEdTextarea = function(rowid, rowname) {
   return {
     field: rowid,
     title: rowname,
@@ -1229,10 +1288,10 @@ exports.BTRowFormatEdTextarea = function (rowid, rowname) {
       type: 'textarea',
       disabled: false,
       emptytext: '无',
-      display: function (value, sourceData) {
+      display: function(value, sourceData) {
         let ele = value.toString()
         if (ele) {
-          let displayName = (ele.length > 10) ? (ele.substring(0, 7) + '...') : ele
+          let displayName = ele.length > 10 ? ele.substring(0, 7) + '...' : ele
           $(this).html(displayName)
         }
       }
@@ -1240,7 +1299,7 @@ exports.BTRowFormatEdTextarea = function (rowid, rowname) {
   }
 }
 
-exports.BTRowFormatEdTextareaWidth = function (rowid, rowname, witdth, n) {
+exports.BTRowFormatEdTextareaWidth = function(rowid, rowname, witdth, n) {
   return {
     field: rowid,
     title: rowname,
@@ -1252,10 +1311,10 @@ exports.BTRowFormatEdTextareaWidth = function (rowid, rowname, witdth, n) {
       type: 'textarea',
       disabled: false,
       emptytext: '无',
-      display: function (value, sourceData) {
+      display: function(value, sourceData) {
         let ele = value.toString()
         if (ele) {
-          let displayName = (ele.length > 10) ? (ele.substring(0, n) + '...') : ele
+          let displayName = ele.length > 10 ? ele.substring(0, n) + '...' : ele
           $(this).html(displayName)
         }
       }
@@ -1263,7 +1322,7 @@ exports.BTRowFormatEdTextareaWidth = function (rowid, rowname, witdth, n) {
   }
 }
 
-exports.BTRowFormatWidth = function (rowid, rowname, width) {
+exports.BTRowFormatWidth = function(rowid, rowname, width) {
   return {
     field: rowid,
     title: rowname,
@@ -1274,7 +1333,7 @@ exports.BTRowFormatWidth = function (rowid, rowname, width) {
   }
 }
 
-exports.BTRowFormatWithFormatter = function (rowid, rowname, rFormatter) {
+exports.BTRowFormatWithFormatter = function(rowid, rowname, rFormatter) {
   return {
     field: rowid,
     title: rowname,
@@ -1285,7 +1344,7 @@ exports.BTRowFormatWithFormatter = function (rowid, rowname, rFormatter) {
   }
 }
 
-exports.BTRowFormatWithFormatterAlignLeft = function (rowid, rowname, rFormatter) {
+exports.BTRowFormatWithFormatterAlignLeft = function(rowid, rowname, rFormatter) {
   return {
     field: rowid,
     title: rowname,
@@ -1296,7 +1355,7 @@ exports.BTRowFormatWithFormatterAlignLeft = function (rowid, rowname, rFormatter
   }
 }
 
-exports.BTRowFormatWithFW = function (rowid, rowname, rFormatter, width) {
+exports.BTRowFormatWithFW = function(rowid, rowname, rFormatter, width) {
   return {
     field: rowid,
     title: rowname,
@@ -1308,7 +1367,7 @@ exports.BTRowFormatWithFW = function (rowid, rowname, rFormatter, width) {
   }
 }
 
-exports.BTRowFormatWithFE = function (rowid, rowname, rFormatter, e) {
+exports.BTRowFormatWithFE = function(rowid, rowname, rFormatter, e) {
   return {
     field: rowid,
     title: rowname,
@@ -1320,7 +1379,7 @@ exports.BTRowFormatWithFE = function (rowid, rowname, rFormatter, e) {
   }
 }
 
-exports.BTRowFormatWithFEW = function (rowid, rowname, rFormatter, e, width) {
+exports.BTRowFormatWithFEW = function(rowid, rowname, rFormatter, e, width) {
   return {
     field: rowid,
     title: rowname,
@@ -1333,7 +1392,7 @@ exports.BTRowFormatWithFEW = function (rowid, rowname, rFormatter, e, width) {
   }
 }
 
-exports.BTRowFormatEvent = function (rowid, rowname, rFormatter, tableEvents) {
+exports.BTRowFormatEvent = function(rowid, rowname, rFormatter, tableEvents) {
   return {
     field: rowid,
     title: rowname,
@@ -1345,7 +1404,7 @@ exports.BTRowFormatEvent = function (rowid, rowname, rFormatter, tableEvents) {
   }
 }
 
-exports.actFormatter = function (rowid, rFormatter, e) {
+exports.actFormatter = function(rowid, rFormatter, e) {
   return {
     field: rowid,
     events: e,
@@ -1356,7 +1415,7 @@ exports.actFormatter = function (rowid, rFormatter, e) {
   }
 }
 
-exports.BTRowFormatWithFormatterWidth = function (rowid, rowname, rFormatter, width = '60px') {
+exports.BTRowFormatWithFormatterWidth = function(rowid, rowname, rFormatter, width = '60px') {
   return {
     field: rowid,
     title: rowname,
@@ -1368,11 +1427,11 @@ exports.BTRowFormatWithFormatterWidth = function (rowid, rowname, rFormatter, wi
   }
 }
 
-exports.BTRowFormatWithIndex = function (rowname) {
+exports.BTRowFormatWithIndex = function(rowname) {
   return {
     field: 'RowNumber',
     title: rowname,
-    formatter: function (value, row, index) {
+    formatter: function(value, row, index) {
       row.RowNumber = index + 1
       return index + 1
     },
@@ -1383,7 +1442,7 @@ exports.BTRowFormatWithIndex = function (rowname) {
   }
 }
 
-exports.BTRowFormatFooter = function (rowid, rowname, footerForamte) {
+exports.BTRowFormatFooter = function(rowid, rowname, footerForamte) {
   return {
     field: rowid,
     title: rowname,
@@ -1394,20 +1453,22 @@ exports.BTRowFormatFooter = function (rowid, rowname, footerForamte) {
   }
 }
 
-exports.DynamicEditableByDomain = function (_self, table) {
-  $('[data-uniqueid]').each(function () {
+exports.DynamicEditableByDomain = function(_self, table) {
+  $('[data-uniqueid]').each(function() {
     let actrow = table.bootstrapTable('getRowByUniqueId', this.getAttribute('data-uniqueid'))
     if (actrow.domain_id) {
       if (actrow.domain_id !== _self.userinfo.domain_id) {
-        $(this).find('[data-name]').each(function () {
-          $(this).attr('data-disabled', true)
-        })
+        $(this)
+          .find('[data-name]')
+          .each(function() {
+            $(this).attr('data-disabled', true)
+          })
       }
     }
   })
 }
 
-exports.getApiName = function (apiUrl) {
+exports.getApiName = function(apiUrl) {
   let path = apiUrl.substr(0, apiUrl.indexOf('?'))
   let patha = path.split('/')
   let func = patha[patha.length - 1].toUpperCase()
@@ -1415,7 +1476,7 @@ exports.getApiName = function (apiUrl) {
 }
 
 // 取浏览器参数值
-exports.getUrlParams = function (name) {
+exports.getUrlParams = function(name) {
   var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)')
   var r = window.location.search.substr(1).match(reg)
   if (r != null) return unescape(r[2])
@@ -1423,17 +1484,23 @@ exports.getUrlParams = function (name) {
 }
 
 // table当前选中页样式（解决跳转到指定页，页数不能选中问题）
-exports.setTablePageActive = function (nowPage) {
-  $('.pagination').find('.page-number').each(function () {
-    let val = parseInt($(this).children().html())
-    if (val === nowPage) {
-      $(this).addClass('active')
-      return false
-    }
-  })
+exports.setTablePageActive = function(nowPage) {
+  $('.pagination')
+    .find('.page-number')
+    .each(function() {
+      let val = parseInt(
+        $(this)
+          .children()
+          .html()
+      )
+      if (val === nowPage) {
+        $(this).addClass('active')
+        return false
+      }
+    })
 }
 
-exports.getUrl = function () {
+exports.getUrl = function() {
   return window.location.protocol + '//' + window.location.host
 }
 
@@ -1455,13 +1522,13 @@ let checkAuth = (auth, menulist) => {
 exports.checkAuth = checkAuth
 
 // 初始化图片浏览插件
-exports.initImageViewer = function () {
-  window.setTimeout(function () {
+exports.initImageViewer = function() {
+  window.setTimeout(function() {
     $('.image').viewer()
   }, 500)
 }
 // 分转元
-exports.unitConversion = function (value, row) {
+exports.unitConversion = function(value, row) {
   let returnData = 0
   if (!isNaN(value)) {
     returnData = value / 100
@@ -1469,7 +1536,7 @@ exports.unitConversion = function (value, row) {
   return returnData
 }
 
-exports.importLoading = function (status) {
+exports.importLoading = function(status) {
   if (status === 'show') {
     if ($('body  *').hasClass('loading-model')) {
       $('.loading-model').css('display', 'block')
@@ -1478,14 +1545,16 @@ exports.importLoading = function (status) {
       retString += '<div class="overlay" style="">'
       retString += '<i class="fa fa-refresh fa-spin"></i>'
       retString += '</div>  </div>'
-      $(document).find('body').append(retString)
+      $(document)
+        .find('body')
+        .append(retString)
     }
   } else {
     $('.loading-model').css('display', 'none')
   }
 }
 
-exports.getCityInfo = function (city) {
+exports.getCityInfo = function(city) {
   if (city) {
     let cityInfo = city.split('/')
     if (cityInfo) {
