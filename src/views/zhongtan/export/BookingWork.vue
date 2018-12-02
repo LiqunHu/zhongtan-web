@@ -259,7 +259,7 @@ export default {
           common.BTRowFormatEditablePop('billloading_stuffing_requirement', 'Stuffing requirement'),
           common.BTRowFormatWithFormatter('loading_files', 'Loading list', common.filesFormatter),
           common.BTRowFormat('billloading_declare_number', 'Feclare Number'),
-          common.BTRowFormatWithFormatter('permission_files', 'Permission File', common.filesFormatter)
+          common.BTRowFormatWithFormatter('permission_files', 'Permission', common.filesFormatter)
         ],
         idField: 'billloading_id',
         uniqueId: 'billloading_id',
