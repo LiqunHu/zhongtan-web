@@ -58,11 +58,11 @@
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
             <h4 class="modal-title">putbox Confirm</h4>
           </div>
-          <form @submit.prevent="BookingConfirmAct" id="formBookingConfirm">
+          <form @submit.prevent="PutboxConfirmAct" id="formPutboxConfirm">
             <div class="modal-body">
               <div class="form-group">
-                <label>Continer Yard</label>
-                <select class="form-control select2" id="container_yard_id" data-parsley-required="true"></select>
+                <label>Continer Manager</label>
+                <select class="form-control select2" id="container_manager_id" data-parsley-required="true"></select>
               </div>
             </div>
             <div class="modal-footer">
@@ -109,7 +109,7 @@ export default {
       },
       'click .putbox-confirm': function(e, value, row, index) {
         _self.workRow = row
-        $('#container_yard_id')
+        $('#container_manager_id')
           .val(null)
           .trigger('change')
         $('#putboxConfirmModal').modal('show')
@@ -121,7 +121,7 @@ export default {
       if (row.billloading_state === 'PBK') {
         retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 booking">Booking</button>')
         retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 cancelb">Cancel</button>')
-      } else if(row.billloading_state === 'PA') {
+      } else if (row.billloading_state === 'PA') {
         retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 putbox-confirm">Confirm</button>')
       }
       retrunString.push('</div>')
@@ -259,8 +259,8 @@ export default {
         common.initSelect2($('#billloading_freight_currency'), retData.PayCurrencyINFO)
         $('#formBookingConfirm').parsley()
 
-        common.initSelect2($('#container_yard_id'), retData.ContainerYardINFO)
-        $('#putboxConfirmModal').parsley()
+        common.initSelect2($('#container_manager_id'), retData.ContainerManagerINFO)
+        $('#formPutboxConfirm').parsley()
         console.log('init success')
       } catch (error) {
         common.dealErrorCommon(_self, error)
@@ -290,14 +290,14 @@ export default {
       let _self = this
       try {
         if (
-          $('#putboxConfirmModal')
+          $('#formPutboxConfirm')
             .parsley()
             .isValid()
         ) {
-          _self.workRow.container_yard_id = common.getSelect2Val('container_yard_id')
+          _self.workRow.container_manager_id = common.getSelect2Val('container_manager_id')
           await _self.$http.post(apiUrl + 'putboxConfirm', _self.workRow)
           $('#table').bootstrapTable('refresh')
-          $('#bookingConfirmModal').modal('hide')
+          $('#putboxConfirmModal').modal('hide')
         }
       } catch (error) {
         common.dealErrorCommon(_self, error)

@@ -211,6 +211,39 @@
         </div>
       </div>
     </div>
+    <div class="modal fade" id="declarationModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 class="modal-title">Declaration</h4>
+          </div>
+          <form @submit.prevent="PutboxConfirmAct" id="formDeclaration">
+            <div class="modal-body">
+              <h4>Declare Number</h4>
+              <div class="form-group">
+                <input class="form-control" v-model="workRow.billloading_declare_number" data-parsley-required="true" maxlength="50" data-parsley-maxlength="5=">
+              </div>
+              <h4>Loading Permission</h4>
+              <div class="row">
+                <a v-for="f in files" v-bind:key="f.name" class="btn bg-navy btn-app">
+                  <i class="fa fa-file .btn-flat"></i> {{f.name}}
+                </a>
+                <span class="fileupload-button">
+                  <a class="btn btn-app">
+                    <i class="fa fa-plus"></i> Add
+                  </a>
+                  <input class="fileupload" type="file" id="permissionupload">
+                </span>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary btn-info"><i class="fa fa-fw fa-plus"></i>Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -227,7 +260,8 @@ export default {
         .format('YYYY-MM-DD'),
       edDate: moment().format('YYYY-MM-DD'),
       workRow: {},
-      oldRow: {}
+      oldRow: {},
+      files: []
     }
   },
   name: 'Booking',
@@ -243,6 +277,10 @@ export default {
           await _self.$http.post(apiUrl + 'putboxApply', row)
           $('#table').bootstrapTable('refresh')
         })
+      },
+      'click .declaration': function(e, value, row, index) {
+        _self.workRow = row
+        $('#declarationModal').modal('show')
       }
     }
 
@@ -252,6 +290,8 @@ export default {
         retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 cancelb">Cancel</button>')
       } else if (row.billloading_state === 'BK') {
         retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 putbox">Putbox</button>')
+      } else if (row.billloading_state === 'PC') {
+        retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 declaration">Declaration</button>')
       }
       retrunString.push('</div>')
       return retrunString.join('')
@@ -390,6 +430,19 @@ export default {
         common.initSelect2($('#payType'), retData.PayTypeINFO)
         common.initSelect2($('#billloading_freight_currency'), retData.PayCurrencyINFO)
         $('#formA').parsley()
+
+        common.fileUpload(
+          _self,
+          $('#permissionupload'),
+          apiUrl + 'upload',
+          function(fileInfo) {
+            _self.files.push(fileInfo)
+            $('#permissionupload').val('')
+          },
+          response => {
+            common.dealErrorCommon(_self, response)
+          }
+        )
         console.log('init success')
       } catch (error) {
         common.dealErrorCommon(_self, error)
@@ -489,8 +542,8 @@ export default {
           _self.workRow.billloading_vessel_id = common.getSelect2Val('billloading_vessel_id')
           _self.workRow.billloading_voyage_id = common.getSelect2Val('billloading_voyage_id')
           _self.workRow.billloading_containers = $('#goodstable').bootstrapTable('getData')
-          _self.workRow.billloading_vessel_id = common.getSelect2Val('billloading_loading_port_id')
-          _self.workRow.billloading_vessel_id = common.getSelect2Val('billloading_discharge_port_id')
+          _self.workRow.billloading_loading_port_id = common.getSelect2Val('billloading_loading_port_id')
+          _self.workRow.billloading_discharge_port_id = common.getSelect2Val('billloading_discharge_port_id')
           _self.workRow.billloading_stuffing_date = $('#stuffDate').val()
           _self.workRow.billloading_pay_date = $('#payat').val()
           _self.workRow.billloading_freight_currency = common.getSelect2Val('billloading_freight_currency')
