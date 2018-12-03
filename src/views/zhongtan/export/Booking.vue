@@ -85,7 +85,14 @@
                       <input v-model="workRow.billloading_consignee_name" class="form-control" placeholder="Consignee name" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
                     </div>
                     <div class="form-group">
-                      <input v-model="workRow.billloading_consignee_address" class="form-control" placeholder="Consignee Address" data-parsley-required="true" maxlength="100" data-parsley-maxlength="100">
+                      <input
+                        v-model="workRow.billloading_consignee_address"
+                        class="form-control"
+                        placeholder="Consignee Address"
+                        data-parsley-required="true"
+                        maxlength="100"
+                        data-parsley-maxlength="100"
+                      >
                     </div>
                     <div class="form-group">
                       <input v-model="workRow.billloading_consignee_tel" class="form-control" placeholder="Consignee Tel.">
@@ -97,7 +104,14 @@
                       <input v-model="workRow.billloading_notify_name" class="form-control" placeholder="Notify Party name" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
                     </div>
                     <div class="form-group">
-                      <input v-model="workRow.billloading_notify_address" class="form-control" placeholder="Notify Party Address" data-parsley-required="true" maxlength="100" data-parsley-maxlength="100">
+                      <input
+                        v-model="workRow.billloading_notify_address"
+                        class="form-control"
+                        placeholder="Notify Party Address"
+                        data-parsley-required="true"
+                        maxlength="100"
+                        data-parsley-maxlength="100"
+                      >
                     </div>
                     <div class="form-group">
                       <input v-model="workRow.billloading_notify_tel" class="form-control" placeholder="Notify Party Tel.">
@@ -223,7 +237,8 @@
               <h4>Loading List</h4>
               <div class="row">
                 <a v-for="f in files" v-bind:key="f.name" class="btn bg-navy btn-app">
-                  <i class="fa fa-file .btn-flat"></i> {{f.name}}
+                  <i class="fa fa-file .btn-flat"></i>
+                  {{f.name}}
                 </a>
                 <span class="fileupload-button">
                   <a class="btn btn-app">
@@ -234,7 +249,9 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-primary btn-info"><i class="fa fa-fw fa-plus"></i>Submit</button>
+              <button type="submit" class="btn btn-primary btn-info">
+                <i class="fa fa-fw fa-plus"></i>Submit
+              </button>
             </div>
           </form>
         </div>
@@ -297,7 +314,7 @@ export default {
         retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 submitloading">SUBMIT Loading</button>')
       } else if (row.billloading_state === 'DE') {
         retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 instruction">Confirm Instruction</button>')
-      } 
+      }
       retrunString.push('</div>')
       return retrunString.join('')
     }
@@ -407,7 +424,9 @@ export default {
         common.initSelect2($('#billloading_vessel_id'), retData.VesselINFO)
         $('#billloading_vessel_id').on('change', async function(evt) {
           $('#billloading_voyage_id').html('')
-          let rsp = await _self.$http.post(apiUrl + 'searchVoyage', { vessel_id: common.getSelect2Val('billloading_vessel_id') })
+          let rsp = await _self.$http.post(apiUrl + 'searchVoyage', {
+            vessel_id: common.getSelect2Val('billloading_vessel_id')
+          })
           let retD = rsp.data.info
           common.initSelect2($('#billloading_voyage_id'), retD.VoyageINFO)
         })
