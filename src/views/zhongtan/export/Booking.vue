@@ -320,6 +320,16 @@ export default {
       return ''
     }
 
+    function containersFormatter(value, row) {
+      let returnStr = []
+      for (let c of value) {
+        returnStr.push('br/')
+        returnStr.push('<div>' + c.billloading_container_number + ' * ' + c.billloading_container_size + c.billloading_container_type + '</div>')
+      }
+      returnStr.shift()
+      return returnStr.join('')
+    }
+
     function BTRowFormatContractInfo(rowid, rowname) {
       return {
         field: rowid,
@@ -357,6 +367,7 @@ export default {
           common.actFormatter('act', actFormatter, tableEvents),
           common.BTRowFormat('billloading_no', 'S/O'),
           common.BTRowFormatWithFormatter('billloading_state', 'Status', statusFormatter),
+          common.BTRowFormatWithFormatter('billloading_containers', 'Container', containersFormatter),
           common.BTRowFormatEdSelect2('billloading_vessel_id', 'Vessel', _self.pagePara.VesselINFO),
           common.BTRowFormatEditable('billloading_voyage_id', 'voyage'),
           BTRowFormatContractInfo('billloading_consignee', 'Consignee Info'),
