@@ -66,7 +66,7 @@
                       <input class="form-control" placeholder="Shipper name">
                     </div>
                     <div class="form-group">
-                      <textarea class="form-control" rows="2" placeholder="Shipper Address"> </textarea>
+                      <textarea class="form-control" rows="2" placeholder="Shipper Address"></textarea>
                     </div>
                   </div>
                   <div class="col-md-6">
@@ -79,17 +79,28 @@
                   </div>
                 </div>
                 <div class="row row-udline">
-                  <div class="col-md-6">
+                  <div class="col-md-5">
                     <div class="form-group">
                       <label>Consignee (Name & Address)</label>
                       <input v-model="workRow.billloading_consignee_name" class="form-control" placeholder="Consignee name" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
                     </div>
                     <div class="form-group">
-                      <textarea v-model="workRow.billloading_consignee_address" rows="2" class="form-control" placeholder="Consignee Address" data-parsley-required="true" maxlength="100" data-parsley-maxlength="100"></textarea>
+                      <textarea
+                        v-model="workRow.billloading_consignee_address"
+                        rows="2"
+                        class="form-control"
+                        placeholder="Consignee Address"
+                        data-parsley-required="true"
+                        maxlength="100"
+                        data-parsley-maxlength="100"
+                      ></textarea>
                     </div>
                     <div class="form-group">
                       <input v-model="workRow.billloading_consignee_tel" class="form-control" placeholder="Consignee Tel.">
                     </div>
+                  </div>
+                  <div class="col-md-1">
+                    <button type="button" class="btn btn-default" @click="sameCopy"><i class="fa fa-angle-double-right"></i></button>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
@@ -97,7 +108,15 @@
                       <input v-model="workRow.billloading_notify_name" class="form-control" placeholder="Notify Party name" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
                     </div>
                     <div class="form-group">
-                      <textarea v-model="workRow.billloading_notify_address" rows="2" class="form-control" placeholder="Notify Party Address" data-parsley-required="true" maxlength="100" data-parsley-maxlength="100"></textarea>
+                      <textarea
+                        v-model="workRow.billloading_notify_address"
+                        rows="2"
+                        class="form-control"
+                        placeholder="Notify Party Address"
+                        data-parsley-required="true"
+                        maxlength="100"
+                        data-parsley-maxlength="100"
+                      ></textarea>
                     </div>
                     <div class="form-group">
                       <input v-model="workRow.billloading_notify_tel" class="form-control" placeholder="Notify Party Tel.">
@@ -604,6 +623,12 @@ export default {
       } catch (error) {
         common.dealErrorCommon(_self, error)
       }
+    },
+    sameCopy: async function(){
+      let _self = this
+      _self.$set(_self.workRow, 'billloading_notify_name', _self.workRow.billloading_consignee_name)
+      _self.$set(_self.workRow, 'billloading_notify_address', _self.workRow.billloading_consignee_address)
+      _self.$set(_self.workRow, 'billloading_notify_tel', _self.workRow.billloading_consignee_tel)
     }
   }
 }
