@@ -2,7 +2,7 @@
 packInfo editable input.
 Internally value stored as {city: "Moscow", street: "Lenina", building: "15"}
 
-@class contractInfo
+@class shiplineInfo
 @extends abstractinput
 @final
 @example
@@ -25,21 +25,29 @@ $(function(){
 ;(function($) {
   'use strict'
 
-  let contractInfo = function(options) {
-    this.init('contractInfo', options, contractInfo.defaults)
+  let shiplineInfo = function(options) {
+    this.init('shiplineInfo', options, shiplineInfo.defaults)
   }
 
   // inherit from Abstract input
-  $.fn.editableutils.inherit(contractInfo, $.fn.editabletypes.abstractinput)
+  $.fn.editableutils.inherit(shiplineInfo, $.fn.editabletypes.abstractinput)
 
-  $.extend(contractInfo.prototype, {
+  $.extend(shiplineInfo.prototype, {
     /**
     Renders input from tpl
 
     @method render()
     **/
     render: function() {
-      this.$input = this.$tpl.find('input')
+      console.log(33333333)
+      this.$vessel = this.$tpl.find('select[id="vessel"]')
+      this.$voyage = this.$tpl.find('select[id="voyage"]')
+
+      this.$vessel.select2({
+        tags: false,
+        width: '200px',
+        data: this.options.source.VesselINFO
+      })
     },
 
     /**
@@ -50,15 +58,11 @@ $(function(){
     value2html: function(value, element) {
       var html =
         $('<div>')
-          .text(value.name)
+          .text(value.vessel_name)
           .html() +
         '<br/>' +
         $('<div>')
-          .text(value.address)
-          .html() +
-        '<br/>' +
-        $('<div>')
-          .text(value.telephone)
+          .text(value.voyage_number)
           .html()
       $(element).html(html)
     },
@@ -121,9 +125,40 @@ $(function(){
      @param {mixed} value
     **/
     value2input: function(value) {
-      this.$input.filter('[name="name"]').val(value.name)
-      this.$input.filter('[name="address"]').val(value.address)
-      this.$input.filter('[name="telephone"]').val(value.telephone)
+      let _this = this
+      function initVoyageAndSetValue() {
+        _this.$voyage.html('')
+        _this.options.source._self.$http
+          .post(_this.options.source.apiUrl + 'searchVoyage', {
+            vessel_id: _this.$vessel.val()
+          })
+          .then(res => {
+            _this.$voyage.select2({
+              tags: false,
+              width: '200px',
+              data: res.data.info.VoyageINFO
+            })
+            _this.$voyage.val(value.voyage).trigger('change')
+          })
+      }
+      function initVoyage() {
+        _this.$voyage.html('')
+        _this.options.source._self.$http
+          .post(_this.options.source.apiUrl + 'searchVoyage', {
+            vessel_id: _this.$vessel.val()
+          })
+          .then(res => {
+            _this.$voyage.select2({
+              tags: false,
+              width: '200px',
+              data: res.data.info.VoyageINFO
+            })
+          })
+      }
+      _this.$vessel.on('change', initVoyageAndSetValue)
+      _this.$vessel.val(value.vessel).trigger('change')
+      _this.$vessel.off('change')
+      _this.$vessel.on('change', initVoyage)
     },
     /**
      Returns value of input.
@@ -132,9 +167,8 @@ $(function(){
     **/
     input2value: function() {
       return {
-        name: this.$input.filter('[name="name"]').val(),
-        address: this.$input.filter('[name="address"]').val(),
-        telephone: this.$input.filter('[name="telephone"]').val()
+        vessel: this.$vessel.val(),
+        voyage: this.$voyage.val()
       }
     },
 
@@ -144,7 +178,7 @@ $(function(){
         @method activate()
        **/
     activate: function() {
-      this.$input.filter('[name="name"]').focus()
+      this.$vessel.focus()
     },
 
     /**
@@ -163,29 +197,23 @@ $(function(){
     }
   })
 
-  contractInfo.defaults = $.extend({}, $.fn.editabletypes.select.defaults, {
+  shiplineInfo.defaults = $.extend({}, $.fn.editabletypes.select.defaults, {
     tpl: `<div>
     <div>
-        <label class="col-sm-4 control-label">Name:</label>
+        <label class="col-sm-4 control-label">Vessel</label>
         <div class="col-sm-8">
-            <input class="form-control type="text" name="name">
+        <select class="form-control select2" id="vessel"></select>
         </div>
     </div>
     <div>
-        <label class="col-sm-4 control-label">Address:</label>
+        <label class="col-sm-4 control-label">Voyage</label>
         <div class="col-sm-8">
-            <input class="form-control type="text" name="address">
-        </div>
-    </div>
-    <div>
-        <label class="col-sm-4 control-label">Telephone:</label>
-        <div class="col-sm-8">
-            <input class="form-control type="text" name="telephone">
+        <select class="form-control select2" id="voyage"></select>
         </div>
     </div>
 </div>`,
     inputclass: ''
   })
 
-  $.fn.editabletypes.contractInfo = contractInfo
+  $.fn.editabletypes.shiplineInfo = shiplineInfo
 })(window.jQuery)

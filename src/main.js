@@ -30,9 +30,8 @@ import 'distpicker'
 import 'cropper'
 import 'cropper/dist/cropper.min.css'
 import './lib/x-editable-input/contractInfo/contractInfo.js'
-import './lib/x-editable-input/contractInfo/contractInfo.css'
 import './lib/x-editable-input/mavonEdit/mavonEdit.js'
-import './lib/x-editable-input/mavonEdit/mavonEdit.css'
+import './lib/x-editable-input/shiplineInfo/shiplineInfo.js'
 import Loading from './lib/loading/src/loading.js'
 import './lib/loading/src/loading.css'
 
@@ -62,7 +61,6 @@ const instance = axios.create(axiosConfig)
 let load = new Loading()
 instance.interceptors.request.use(function (config) {
   // Do something before request is sent
-  $('.btn').addClass('disabled')
   load.init()
   load.start()
   let token = common.getStoreData('token')
@@ -78,12 +76,11 @@ instance.interceptors.request.use(function (config) {
 // Add a response interceptor
 instance.interceptors.response.use(function (response) {
   // Do something with response data
-  $('.btn').removeClass('disabled')
+  console.log(3333333333)
   load.stop()
   return response
 }, function (error) {
   // Do something with response error
-  $('.btn').removeClass('disabled')
   load.stop()
   return Promise.reject(error)
 })

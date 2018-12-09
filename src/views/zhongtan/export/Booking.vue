@@ -100,7 +100,9 @@
                     </div>
                   </div>
                   <div class="col-md-1">
-                    <button type="button" class="btn btn-default" @click="sameCopy"><i class="fa fa-angle-double-right"></i></button>
+                    <button type="button" class="btn btn-default" @click="sameCopy">
+                      <i class="fa fa-angle-double-right"></i>
+                    </button>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
@@ -365,7 +367,33 @@ export default {
         valign: 'middle',
         editable: {
           type: 'contractInfo',
-          emptytext: '无'
+          emptytext: '-'
+        }
+      }
+    }
+
+    function BTRowFormatShiplineInfo(rowid, rowname) {
+      return {
+        field: rowid,
+        title: rowname,
+        formatter: function(value, row, index) {
+          if (typeof value === 'object') {
+            return JSON.stringify(value).replace(/"/g, '&quot;')
+          } else {
+            return value
+          }
+        },
+        class: 'text-nowrap',
+        align: 'center',
+        valign: 'middle',
+        editable: {
+          type: 'shiplineInfo',
+          emptytext: '-',
+          source: {
+            VesselINFO: _self.pagePara.VesselINFO,
+            _self: _self,
+            apiUrl: apiUrl
+          }
         }
       }
     }
@@ -384,11 +412,11 @@ export default {
         columns: [
           common.BTRowFormatWithIndex('No'),
           common.actFormatter('act', actFormatter, tableEvents),
+          common.BTRowFormat('booking_date', 'Book Date'),
           common.BTRowFormat('billloading_no', 'S/O'),
           common.BTRowFormatWithFormatter('billloading_state', 'Status', statusFormatter),
           common.BTRowFormatWithFormatter('billloading_containers', 'Container', containersFormatter),
-          common.BTRowFormatEdSelect2('billloading_vessel_id', 'Vessel', _self.pagePara.VesselINFO),
-          common.BTRowFormatEditable('billloading_voyage_id', 'voyage'),
+          BTRowFormatShiplineInfo('shipline', 'Ship Info', BTRowFormatShiplineInfo),
           BTRowFormatContractInfo('billloading_consignee', 'Consignee Info'),
           BTRowFormatContractInfo('billloading_notify', 'Notify Info'),
           common.BTRowFormatEdSelect2('billloading_loading_port_id', 'Loading Port', _self.pagePara.PortINFO),
@@ -624,7 +652,7 @@ export default {
         common.dealErrorCommon(_self, error)
       }
     },
-    sameCopy: async function(){
+    sameCopy: async function() {
       let _self = this
       _self.$set(_self.workRow, 'billloading_notify_name', _self.workRow.billloading_consignee_name)
       _self.$set(_self.workRow, 'billloading_notify_address', _self.workRow.billloading_consignee_address)
