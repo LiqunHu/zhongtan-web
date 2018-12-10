@@ -29,6 +29,14 @@ $(function(){
     this.init('contractInfo', options, contractInfo.defaults)
   }
 
+  function strFormat(str) {
+    if(str.length > 10){
+      return str.substring(0,7) + '...'
+    } else {
+      return str
+    }
+  }
+
   // inherit from Abstract input
   $.fn.editableutils.inherit(contractInfo, $.fn.editabletypes.abstractinput)
 
@@ -54,7 +62,7 @@ $(function(){
           .html() +
         '<br/>' +
         $('<div>')
-          .text(value.address)
+          .text(strFormat(value.address))
           .html() +
         '<br/>' +
         $('<div>')
@@ -164,21 +172,21 @@ $(function(){
   })
 
   contractInfo.defaults = $.extend({}, $.fn.editabletypes.select.defaults, {
-    tpl: `<div>
-    <div>
-        <label class="col-sm-4 control-label">Name:</label>
+    tpl: `<div class="row" style="display: grid;">
+    <div class="editable-form">
+        <label class="col-sm-3 control-label">Name:</label>
         <div class="col-sm-8">
             <input class="form-control type="text" name="name">
         </div>
     </div>
-    <div>
-        <label class="col-sm-4 control-label">Address:</label>
+    <div class="editable-form">
+        <label class="col-sm-3 control-label">Address:</label>
         <div class="col-sm-8">
             <input class="form-control type="text" name="address">
         </div>
     </div>
-    <div>
-        <label class="col-sm-4 control-label">Telephone:</label>
+    <div class="editable-form">
+        <label class="col-sm-3 control-label">Telephone:</label>
         <div class="col-sm-8">
             <input class="form-control type="text" name="telephone">
         </div>

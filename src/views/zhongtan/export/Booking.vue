@@ -312,7 +312,7 @@ export default {
     }
 
     function actFormatter(value, row) {
-      let retrunString = ['<div class="btn-group">']
+      let retrunString = []
       if (row.billloading_state === 'PBK') {
         retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 cancelb">Cancel</button>')
       } else if (row.billloading_state === 'BK') {
@@ -322,7 +322,6 @@ export default {
       } else if (row.billloading_state === 'DE') {
         retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 instruction">Confirm Instruction</button>')
       }
-      retrunString.push('</div>')
       return retrunString.join('')
     }
 
@@ -398,6 +397,30 @@ export default {
       }
     }
 
+    function BTRowFormatPortInfo(rowid, rowname) {
+      return {
+        field: rowid,
+        title: rowname,
+        formatter: function(value, row, index) {
+          if (typeof value === 'object') {
+            return JSON.stringify(value).replace(/"/g, '&quot;')
+          } else {
+            return value
+          }
+        },
+        class: 'text-nowrap',
+        align: 'center',
+        valign: 'middle',
+        editable: {
+          type: 'portInfo',
+          emptytext: '-',
+          source: {
+            PortINFO: _self.pagePara.PortINFO
+          }
+        }
+      }
+    }
+
     function initTable() {
       $('#table').bootstrapTable({
         method: 'POST',
@@ -416,11 +439,10 @@ export default {
           common.BTRowFormat('billloading_no', 'S/O'),
           common.BTRowFormatWithFormatter('billloading_state', 'Status', statusFormatter),
           common.BTRowFormatWithFormatter('billloading_containers', 'Container', containersFormatter),
-          BTRowFormatShiplineInfo('shipline', 'Ship Info', BTRowFormatShiplineInfo),
+          BTRowFormatShiplineInfo('shipline', 'Ship Info'),
           BTRowFormatContractInfo('billloading_consignee', 'Consignee Info'),
           BTRowFormatContractInfo('billloading_notify', 'Notify Info'),
-          common.BTRowFormatEdSelect2('billloading_loading_port_id', 'Loading Port', _self.pagePara.PortINFO),
-          common.BTRowFormatEdSelect2('billloading_discharge_port_id', 'Discharge Port', _self.pagePara.PortINFO),
+          BTRowFormatPortInfo('portinfo', 'Port Info'),
           common.BTRowFormatEditable('billloading_delivery_place', 'Delivery Place'),
           common.BTRowFormatEditable('billloading_stuffing_place', 'Stuffing Place'),
           common.BTRowFormatEditableDatePicker('billloading_stuffing_date', 'Stuffing Date'),

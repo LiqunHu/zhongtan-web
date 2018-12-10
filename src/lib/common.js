@@ -1410,8 +1410,7 @@ exports.actFormatter = function(rowid, rFormatter, e) {
     events: e,
     formatter: rFormatter,
     align: 'center',
-    valign: 'middle',
-    class: 'text-nowrap '
+    valign: 'middle'
   }
 }
 

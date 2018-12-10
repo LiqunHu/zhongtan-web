@@ -1,9 +1,13 @@
+.editable-form {
+  margin-bottom: 5px;
+}
+
 .bootstrap-table .table:not(.table-condensed),
-.bootstrap-table .table:not(.table-condensed)>tbody>tr>td,
-.bootstrap-table .table:not(.table-condensed)>tbody>tr>th,
-.bootstrap-table .table:not(.table-condensed)>tfoot>tr>td,
-.bootstrap-table .table:not(.table-condensed)>tfoot>tr>th,
-.bootstrap-table .table:not(.table-condensed)>thead>tr>td {
+.bootstrap-table .table:not(.table-condensed) > tbody > tr > td,
+.bootstrap-table .table:not(.table-condensed) > tbody > tr > th,
+.bootstrap-table .table:not(.table-condensed) > tfoot > tr > td,
+.bootstrap-table .table:not(.table-condensed) > tfoot > tr > th,
+.bootstrap-table .table:not(.table-condensed) > thead > tr > td {
   padding-top: 2px;
   padding-bottom: 2px;
 }
@@ -38,34 +42,34 @@
 }
 
 .label {
-  padding: .2em .3em .1em;
+  padding: 0.2em 0.3em 0.1em;
 }
 .label-booking {
-  background-color: #81b5d4
+  background-color: #81b5d4;
 }
 
 .label-putbox-apply {
-  background-color: #3c8dbc
+  background-color: #3c8dbc;
 }
 
 .label-putbox-confirm {
-  background-color: #357ca5
+  background-color: #357ca5;
 }
 
 .label-submit-loading {
-  background-color: #5ad6f5
+  background-color: #5ad6f5;
 }
 
 .label-reject-loading {
-  background-color: #f39c12
+  background-color: #f39c12;
 }
 
 .label-declaration {
-  background-color: #00c0ef
+  background-color: #00c0ef;
 }
 
 .label-confirm-instruction {
-  background-color: #00a7d0
+  background-color: #00a7d0;
 }
 
 .image-set {
@@ -89,7 +93,7 @@
 .urls-detail {
   max-height: 50px;
   max-width: 60px;
-  overflow: hidden
+  overflow: hidden;
 }
 
 .urls-detail ul {
@@ -104,12 +108,12 @@
 .urls-detail li a img {
   border: none;
   height: 50px;
-  width: 60px
+  width: 60px;
 }
 
 .ui-menu .ui-menu-item-wrapper {
   position: relative;
-  padding: 3px .4em 3px .4em;
+  padding: 3px 0.4em 3px 0.4em;
 }
 
 .ui-menu-item-remove {

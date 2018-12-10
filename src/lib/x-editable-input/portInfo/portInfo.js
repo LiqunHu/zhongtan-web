@@ -2,7 +2,7 @@
 packInfo editable input.
 Internally value stored as {city: "Moscow", street: "Lenina", building: "15"}
 
-@class shiplineInfo
+@class portInfo
 @extends abstractinput
 @final
 @example
@@ -25,27 +25,32 @@ $(function(){
 ;(function($) {
   'use strict'
 
-  let shiplineInfo = function(options) {
-    this.init('shiplineInfo', options, shiplineInfo.defaults)
+  let portInfo = function(options) {
+    this.init('portInfo', options, portInfo.defaults)
   }
 
   // inherit from Abstract input
-  $.fn.editableutils.inherit(shiplineInfo, $.fn.editabletypes.abstractinput)
+  $.fn.editableutils.inherit(portInfo, $.fn.editabletypes.abstractinput)
 
-  $.extend(shiplineInfo.prototype, {
+  $.extend(portInfo.prototype, {
     /**
     Renders input from tpl
 
     @method render()
     **/
     render: function() {
-      this.$vessel = this.$tpl.find('select[id="vessel"]')
-      this.$voyage = this.$tpl.find('select[id="voyage"]')
+      this.$loading = this.$tpl.find('select[id="loading"]')
+      this.$discharge = this.$tpl.find('select[id="discharge"]')
 
-      this.$vessel.select2({
+      this.$loading.select2({
         tags: false,
         width: '200px',
-        data: this.options.source.VesselINFO
+        data: this.options.source.PortINFO
+      })
+      this.$discharge.select2({
+        tags: false,
+        width: '200px',
+        data: this.options.source.PortINFO
       })
     },
 
@@ -55,13 +60,22 @@ $(function(){
     @method value2html(value, element)
     **/
     value2html: function(value, element) {
+      let PortINFO = this.options.source.PortINFO
+      function getPortName(id) {
+        for (let p of PortINFO) {
+          if (p.id == id) {
+            return p.text
+          }
+        }
+        return ''
+      }
       var html =
         $('<div>')
-          .text(value.vessel_name)
+          .text('Loading: ' + getPortName(value.loading))
           .html() +
         '<br/>' +
         $('<div>')
-          .text(value.voyage_number)
+          .text('Discharge: ' + getPortName(value.discharge))
           .html()
       $(element).html(html)
     },
@@ -125,39 +139,8 @@ $(function(){
     **/
     value2input: function(value) {
       let _this = this
-      function initVoyageAndSetValue() {
-        _this.$voyage.html('')
-        _this.options.source._self.$http
-          .post(_this.options.source.apiUrl + 'searchVoyage', {
-            vessel_id: _this.$vessel.val()
-          })
-          .then(res => {
-            _this.$voyage.select2({
-              tags: false,
-              width: '200px',
-              data: res.data.info.VoyageINFO
-            })
-            _this.$voyage.val(value.voyage).trigger('change')
-          })
-      }
-      function initVoyage() {
-        _this.$voyage.html('')
-        _this.options.source._self.$http
-          .post(_this.options.source.apiUrl + 'searchVoyage', {
-            vessel_id: _this.$vessel.val()
-          })
-          .then(res => {
-            _this.$voyage.select2({
-              tags: false,
-              width: '200px',
-              data: res.data.info.VoyageINFO
-            })
-          })
-      }
-      _this.$vessel.on('change', initVoyageAndSetValue)
-      _this.$vessel.val(value.vessel).trigger('change')
-      _this.$vessel.off('change')
-      _this.$vessel.on('change', initVoyage)
+      _this.$loading.val(value.loading).trigger('change')
+      _this.$discharge.val(value.discharge).trigger('change')
     },
     /**
      Returns value of input.
@@ -166,8 +149,8 @@ $(function(){
     **/
     input2value: function() {
       return {
-        vessel: this.$vessel.val(),
-        voyage: this.$voyage.val()
+        loading: this.$loading.val(),
+        discharge: this.$discharge.val()
       }
     },
 
@@ -177,7 +160,7 @@ $(function(){
         @method activate()
        **/
     activate: function() {
-      this.$vessel.focus()
+      this.$loading.focus()
     },
 
     /**
@@ -196,23 +179,23 @@ $(function(){
     }
   })
 
-  shiplineInfo.defaults = $.extend({}, $.fn.editabletypes.select.defaults, {
+  portInfo.defaults = $.extend({}, $.fn.editabletypes.select.defaults, {
     tpl: `<div class="row" style="display: grid;">
     <div class="editable-form">
-        <label class="col-sm-3 control-label">Vessel</label>
+        <label class="col-sm-3 control-label">Loading Port</label>
         <div class="col-sm-8">
-        <select class="form-control select2" id="vessel"></select>
+        <select class="form-control select2" id="loading"></select>
         </div>
     </div>
     <div class="editable-form">
-        <label class="col-sm-3 control-label">Voyage</label>
+        <label class="col-sm-3 control-label">Discharge Port</label>
         <div class="col-sm-8">
-        <select class="form-control select2" id="voyage"></select>
+        <select class="form-control select2" id="discharge"></select>
         </div>
     </div>
 </div>`,
     inputclass: ''
   })
 
-  $.fn.editabletypes.shiplineInfo = shiplineInfo
+  $.fn.editabletypes.portInfo = portInfo
 })(window.jQuery)

@@ -40,12 +40,16 @@
                 <select class="form-control select2" id="billloading_freight_currency" data-parsley-required="true" disabled></select>
               </div>
               <div class="form-group">
-                <label><span class="table-required">*</span>Freight Charge</label>
+                <label>
+                  <span class="table-required">*</span>Freight Charge
+                </label>
                 <input class="form-control" v-model="workRow.billloading_freight_charge" data-parsley-required="true" data-parsley-type="number">
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-primary btn-info"><i class="fa fa-fw fa-plus"></i>Submit</button>
+              <button type="submit" class="btn btn-primary btn-info">
+                <i class="fa fa-fw fa-plus"></i>Submit
+              </button>
             </div>
           </form>
         </div>
@@ -66,7 +70,9 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-primary btn-info"><i class="fa fa-fw fa-plus"></i>Submit</button>
+              <button type="submit" class="btn btn-primary btn-info">
+                <i class="fa fa-fw fa-plus"></i>Submit
+              </button>
             </div>
           </form>
         </div>
@@ -82,12 +88,16 @@
           <form @submit.prevent="rejectloadingAct" id="formRejectloading">
             <div class="modal-body">
               <div class="form-group">
-                <label><span class="table-required">*</span>Reject reason</label>
+                <label>
+                  <span class="table-required">*</span>Reject reason
+                </label>
                 <textarea class="form-control" v-model="workRow.reject_reason" data-parsley-required="true" maxlength="500" data-parsley-maxlength="500"></textarea>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-primary btn-info"><i class="fa fa-fw fa-plus"></i>Submit</button>
+              <button type="submit" class="btn btn-primary btn-info">
+                <i class="fa fa-fw fa-plus"></i>Submit
+              </button>
             </div>
           </form>
         </div>
@@ -109,7 +119,8 @@
               <h4>Loading Permission</h4>
               <div class="row">
                 <a v-for="f in files" v-bind:key="f.name" class="btn bg-navy btn-app">
-                  <i class="fa fa-file .btn-flat"></i> {{f.name}}
+                  <i class="fa fa-file .btn-flat"></i>
+                  {{f.name}}
                 </a>
                 <span class="fileupload-button">
                   <a class="btn btn-app">
@@ -120,7 +131,9 @@
               </div>
             </div>
             <div class="modal-footer">
-              <button type="submit" class="btn btn-primary btn-info"><i class="fa fa-fw fa-plus"></i>Submit</button>
+              <button type="submit" class="btn btn-primary btn-info">
+                <i class="fa fa-fw fa-plus"></i>Submit
+              </button>
             </div>
           </form>
         </div>
@@ -181,7 +194,7 @@ export default {
     }
 
     function actFormatter(value, row) {
-      let retrunString = ['<div class="btn-group">']
+      let retrunString = []
       if (row.billloading_state === 'PBK') {
         retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 booking">Booking</button>')
         retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 cancelb">Cancel</button>')
@@ -191,7 +204,6 @@ export default {
         retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 declaration">declaration</button>')
         retrunString.push('<button type="button" class="btn btn-warning btn-xs m-r-5 reject-loading">Reject</button>')
       }
-      retrunString.push('</div>')
       return retrunString.join('')
     }
 
@@ -208,6 +220,32 @@ export default {
         }
       }
       return ''
+    }
+
+    function BTRowFormatShiplineInfo(rowid, rowname) {
+      return {
+        field: rowid,
+        title: rowname,
+        formatter: function(value, row, index) {
+          if (typeof value === 'object') {
+            return JSON.stringify(value).replace(/"/g, '&quot;')
+          } else {
+            return value
+          }
+        },
+        class: 'text-nowrap',
+        align: 'center',
+        valign: 'middle',
+        editable: {
+          type: 'shiplineInfo',
+          emptytext: '-',
+          source: {
+            VesselINFO: _self.pagePara.VesselINFO,
+            _self: _self,
+            apiUrl: apiUrl
+          }
+        }
+      }
     }
 
     function containersFormatter(value, row) {
@@ -241,6 +279,30 @@ export default {
       }
     }
 
+    function BTRowFormatPortInfo(rowid, rowname) {
+      return {
+        field: rowid,
+        title: rowname,
+        formatter: function(value, row, index) {
+          if (typeof value === 'object') {
+            return JSON.stringify(value).replace(/"/g, '&quot;')
+          } else {
+            return value
+          }
+        },
+        class: 'text-nowrap',
+        align: 'center',
+        valign: 'middle',
+        editable: {
+          type: 'portInfo',
+          emptytext: '-',
+          source: {
+            PortINFO: _self.pagePara.PortINFO
+          }
+        }
+      }
+    }
+
     function initTable() {
       $('#table').bootstrapTable({
         method: 'POST',
@@ -258,12 +320,10 @@ export default {
           common.BTRowFormat('billloading_no', 'S/O'),
           common.BTRowFormatWithFormatter('billloading_state', 'Status', statusFormatter),
           common.BTRowFormatWithFormatter('billloading_containers', 'Container', containersFormatter),
-          common.BTRowFormatEdSelect2('billloading_vessel_id', 'Vessel', _self.pagePara.VesselINFO),
-          common.BTRowFormatEditable('billloading_voyage_id', 'voyage'),
+          BTRowFormatShiplineInfo('shipline', 'Ship Info', BTRowFormatShiplineInfo),
           BTRowFormatContractInfo('billloading_consignee', 'Consignee Info'),
           BTRowFormatContractInfo('billloading_notify', 'Notify Info'),
-          common.BTRowFormatEdSelect2('billloading_loading_port_id', 'Loading Port', _self.pagePara.PortINFO),
-          common.BTRowFormatEdSelect2('billloading_discharge_port_id', 'Discharge Port', _self.pagePara.PortINFO),
+          BTRowFormatPortInfo('portinfo', 'Port Info'),
           common.BTRowFormatEditable('billloading_delivery_place', 'Delivery Place'),
           common.BTRowFormatEditable('billloading_stuffing_place', 'Stuffing Place'),
           common.BTRowFormatEditableDatePicker('billloading_stuffing_date', 'Stuffing Date'),
