@@ -421,6 +421,27 @@ export default {
       }
     }
 
+    function BTRowFormatStuffingInfo(rowid, rowname) {
+      return {
+        field: rowid,
+        title: rowname,
+        formatter: function(value, row, index) {
+          if (typeof value === 'object') {
+            return JSON.stringify(value).replace(/"/g, '&quot;')
+          } else {
+            return value
+          }
+        },
+        class: 'text-nowrap',
+        align: 'center',
+        valign: 'middle',
+        editable: {
+          type: 'stuffingInfo',
+          emptytext: '-'
+        }
+      }
+    }
+
     function initTable() {
       $('#table').bootstrapTable({
         method: 'POST',
@@ -444,9 +465,7 @@ export default {
           BTRowFormatContractInfo('billloading_notify', 'Notify Info'),
           BTRowFormatPortInfo('portinfo', 'Port Info'),
           common.BTRowFormatEditable('billloading_delivery_place', 'Delivery Place'),
-          common.BTRowFormatEditable('billloading_stuffing_place', 'Stuffing Place'),
-          common.BTRowFormatEditableDatePicker('billloading_stuffing_date', 'Stuffing Date'),
-          common.BTRowFormatEditablePop('billloading_stuffing_requirement', 'Stuffing requirement'),
+          BTRowFormatStuffingInfo('stuffing', 'Stuffing Info'),
           common.BTRowFormatWithFormatter('loading_files', 'Loading list', common.filesFormatter),
           common.BTRowFormat('billloading_declare_number', 'Feclare Number'),
           common.BTRowFormatWithFormatter('permission_files', 'Permission', common.filesFormatter)

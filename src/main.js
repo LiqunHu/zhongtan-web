@@ -33,6 +33,7 @@ import './lib/x-editable-input/contractInfo/contractInfo.js'
 import './lib/x-editable-input/mavonEdit/mavonEdit.js'
 import './lib/x-editable-input/shiplineInfo/shiplineInfo.js'
 import './lib/x-editable-input/portInfo/portInfo.js'
+import './lib/x-editable-input/stuffingInfo/stuffingInfo.js'
 import Loading from './lib/loading/src/loading.js'
 import './lib/loading/src/loading.css'
 
