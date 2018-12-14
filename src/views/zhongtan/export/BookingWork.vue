@@ -196,7 +196,7 @@ export default {
     function actFormatter(value, row) {
       let retrunString = []
       if (row.billloading_state === 'PBK') {
-        retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 booking">Booking</button>')
+        retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 booking">Booking</button><br/>')
         retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 cancelb">Cancel</button>')
       } else if (row.billloading_state === 'PA') {
         retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 putbox-confirm">Confirm</button>')

@@ -2,7 +2,7 @@
 packInfo editable input.
 Internally value stored as {city: "Moscow", street: "Lenina", building: "15"}
 
-@class stuffingInfo
+@class filesInfo
 @extends abstractinput
 @final
 @example
@@ -21,12 +21,13 @@ $(function(){
 });
 </script>
 **/
+const common = require('@/lib/common')
 
 ;(function($) {
   'use strict'
 
-  let stuffingInfo = function(options) {
-    this.init('stuffingInfo', options, stuffingInfo.defaults)
+  let filesInfo = function(options) {
+    this.init('filesInfo', options, filesInfo.defaults)
   }
 
   function strFormat(str) {
@@ -38,24 +39,23 @@ $(function(){
   }
 
   // inherit from Abstract input
-  $.fn.editableutils.inherit(stuffingInfo, $.fn.editabletypes.abstractinput)
+  $.fn.editableutils.inherit(filesInfo, $.fn.editabletypes.abstractinput)
 
-  $.extend(stuffingInfo.prototype, {
+  $.extend(filesInfo.prototype, {
     /**
     Renders input from tpl
 
     @method render()
     **/
     render: function() {
-      this.$date = this.$tpl.find('input[id="date"]')
-      this.$place = this.$tpl.find('input[id="place"]')
-      this.$requirement = this.$tpl.find('input[id="requirement"]')
+      this.$table = this.$tpl.find('table')
 
-      this.$date.daterangepicker({
-        singleDatePicker: true,
-        locale: {
-          format: 'YYYY-MM-DD'
-        }
+      this.$table.bootstrapTable({
+        columns: [
+          common.BTRowFormat('date', 'Create Date'),
+          common.BTRowFormat('name', 'File Name'),
+          
+        ]
       })
     },
 
@@ -180,30 +180,10 @@ $(function(){
     }
   })
 
-  stuffingInfo.defaults = $.extend({}, $.fn.editabletypes.select.defaults, {
-    tpl: `<div class="row" style="display: grid;">
-    <div class="editable-form">
-        <label class="col-sm-4 control-label">Stuffing Date:</label>
-        <div class="col-sm-8">
-            <input class="form-control type="text" id="date">
-        </div>
-    </div>
-    <div class="editable-form">
-        <label class="col-sm-4 control-label">Stuffing Place:</label>
-        <div class="col-sm-8">
-            <input class="form-control type="text" id="place">
-        </div>
-    </div>
-    <div class="editable-form">
-        <label class="col-sm-4 control-label">Stuffing requirement
-        :</label>
-        <div class="col-sm-8">
-            <input class="form-control type="text" id="requirement">
-        </div>
-    </div>
-</div>`,
+  filesInfo.defaults = $.extend({}, $.fn.editabletypes.select.defaults, {
+    tpl: `<div><table></table></div>`,
     inputclass: ''
   })
 
-  $.fn.editabletypes.stuffingInfo = stuffingInfo
+  $.fn.editabletypes.filesInfo = filesInfo
 })(window.jQuery)
