@@ -139,6 +139,38 @@
         </div>
       </div>
     </div>
+    <div class="modal fade" id="sendblModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 class="modal-title">Submit Loading List</h4>
+          </div>
+          <form @submit.prevent="sendblOp" id="formSendbl">
+            <div class="modal-body">
+              <h4>DRAFT BILL OF LADING</h4>
+              <div class="row">
+                <a v-for="f in files" v-bind:key="f.name" class="btn bg-navy btn-app">
+                  <i class="fa fa-file .btn-flat"></i>
+                  {{f.name}}
+                </a>
+                <span class="fileupload-button">
+                  <a class="btn btn-app">
+                    <i class="fa fa-plus"></i> Add
+                  </a>
+                  <input class="fileupload" type="file" id="sendblupload">
+                </span>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary btn-info">
+                <i class="fa fa-fw fa-plus"></i>Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -196,6 +228,11 @@ export default {
           await _self.$http.post(apiUrl + 'sendCDS', row)
           $('#table').bootstrapTable('refresh')
         })
+      },
+      'click .send-bl': function(e, value, row, index) {
+        _self.workRow = row
+        _self.files = []
+        $('#sendblModal').modal('show')
       }
     }
 
@@ -210,7 +247,9 @@ export default {
         retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 declaration">Declaration</button>')
         retrunString.push('<button type="button" class="btn btn-warning btn-xs m-r-5 reject-loading">Reject</button>')
       } else if (row.billloading_state === 'CI') {
-        retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 csd-precessing">CDS Processing</button>')
+        retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 csd-precessing">send CDS</button>')
+      } else if (row.billloading_state === 'CP') {
+        retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 send-bl">send BL.</button>')
       }
       return retrunString.join('')
     }
@@ -468,6 +507,20 @@ export default {
           }
         )
         $('#formDeclaration').parsley()
+
+        common.fileUpload(
+          _self,
+          $('#sendblupload'),
+          apiUrl + 'upload',
+          function(fileInfo) {
+            _self.files.push(fileInfo)
+            $('#sendblupload').val('')
+          },
+          response => {
+            common.dealErrorCommon(_self, response)
+          }
+        )
+        $('#formSendbl').parsley()
         console.log('init success')
       } catch (error) {
         common.dealErrorCommon(_self, error)
@@ -543,6 +596,30 @@ export default {
           $('#table').bootstrapTable('refresh')
           common.dealSuccessCommon('declaration success')
           $('#declarationModal').modal('hide')
+        }
+      } catch (error) {
+        common.dealErrorCommon(_self, error)
+      }
+    },
+    sendblOp: async function() {
+      let _self = this
+      try {
+        if (
+          $('#formSendbl')
+            .parsley()
+            .isValid()
+        ) {
+          if (_self.files.length <= 0) {
+            return common.dealWarningCommon('Please upload DRAFT BILL OF LADING')
+          }
+
+          common.dealConfrimCommon('MAKE SURE THAT THE FREIGHT IS NOT SHOWN ON THE DRAFT BILL OF LADING!', async function() {
+            _self.workRow.bl_files = _self.files
+            await _self.$http.post(apiUrl + 'sendBL', _self.workRow)
+            $('#table').bootstrapTable('refresh')
+            common.dealSuccessCommon('send BL. success')
+          })
+          $('#sendblModal').modal('hide')
         }
       } catch (error) {
         common.dealErrorCommon(_self, error)
