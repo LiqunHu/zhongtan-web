@@ -491,8 +491,7 @@ export default {
           BTRowFormatPortInfo('portinfo', 'Port Info'),
           common.BTRowFormatEditable('billloading_delivery_place', 'Delivery Place'),
           BTRowFormatStuffingInfo('stuffing', 'Stuffing Info'),
-          BTRowFormatFilesInfo('files', 'files Info'),
-          common.BTRowFormat('billloading_declare_number', 'Feclare Number')
+          BTRowFormatFilesInfo('files', 'files Info')
         ],
         idField: 'billloading_id',
         uniqueId: 'billloading_id',

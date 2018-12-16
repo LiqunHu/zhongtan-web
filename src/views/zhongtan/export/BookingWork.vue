@@ -373,7 +373,6 @@ export default {
           common.BTRowFormatEditable('billloading_delivery_place', 'Delivery Place'),
           BTRowFormatStuffingInfo('stuffing', 'Stuffing Info'),
           BTRowFormatFilesInfo('files', 'files Info'),
-          common.BTRowFormat('billloading_declare_number', 'Feclare Number')
         ],
         idField: 'billloading_id',
         uniqueId: 'billloading_id',
