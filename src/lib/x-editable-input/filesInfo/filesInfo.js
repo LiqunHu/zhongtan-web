@@ -50,12 +50,19 @@ const common = require('@/lib/common')
     render: function() {
       this.$table = this.$tpl.find('table')
 
+      function fileFormatter(value, row) {
+        return '<a href= "' + value + '" target="_blank"><i class="fa fa-fw fa-file"></i></a>'
+      }
+
       this.$table.bootstrapTable({
         columns: [
           common.BTRowFormat('date', 'Create Date'),
           common.BTRowFormat('name', 'File Name'),
-          
-        ]
+          common.BTRowFormatWithFormatter('url', 'File', fileFormatter),
+          common.BTRowFormat('remark', 'Remark')
+        ],
+        groupBy: true,
+        groupByField: 'filetype'
       })
     },
 
@@ -65,18 +72,7 @@ const common = require('@/lib/common')
     @method value2html(value, element)
     **/
     value2html: function(value, element) {
-      var html =
-        $('<div>')
-          .text(value.date)
-          .html() +
-        '<br/>' +
-        $('<div>')
-          .text(strFormat(value.place))
-          .html() +
-        '<br/>' +
-        $('<div>')
-          .text(strFormat(value.requirement))
-          .html()
+      var html = $('<i class="fa fa-files-o"></i>').html()
       $(element).html(html)
     },
 
@@ -138,9 +134,9 @@ const common = require('@/lib/common')
      @param {mixed} value
     **/
     value2input: function(value) {
-      this.$date.val(value.date)
-      this.$place.val(value.place)
-      this.$requirement.val(value.requirement)
+      this.$table.bootstrapTable('load', {
+        data: value
+      })
     },
     /**
      Returns value of input.
@@ -148,11 +144,8 @@ const common = require('@/lib/common')
      @method input2value()
     **/
     input2value: function() {
-      return {
-        date: this.$date.val(),
-        place: this.$place.val(),
-        requirement: this.$requirement.val()
-      }
+      let data = this.$table.bootstrapTable('getData')
+      return data
     },
 
     /**

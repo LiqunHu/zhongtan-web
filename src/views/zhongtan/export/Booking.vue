@@ -442,6 +442,31 @@ export default {
       }
     }
 
+    function BTRowFormatFilesInfo(rowid, rowname) {
+      return {
+        field: rowid,
+        title: rowname,
+        formatter: function(value, row, index) {
+          if (typeof value === 'object') {
+            return JSON.stringify(value).replace(/"/g, '&quot;')
+          } else {
+            return value
+          }
+        },
+        class: 'text-nowrap',
+        align: 'center',
+        valign: 'middle',
+        editable: {
+          type: 'filesInfo',
+          placement: 'bottom',
+          showbuttons: false,
+          display: function(value) {
+            $(this).html('<i class="fa fa-files-o"></i>')
+          }
+        }
+      }
+    }
+
     function initTable() {
       $('#table').bootstrapTable({
         method: 'POST',
@@ -466,9 +491,8 @@ export default {
           BTRowFormatPortInfo('portinfo', 'Port Info'),
           common.BTRowFormatEditable('billloading_delivery_place', 'Delivery Place'),
           BTRowFormatStuffingInfo('stuffing', 'Stuffing Info'),
-          common.BTRowFormatWithFormatter('loading_files', 'Loading list', common.filesFormatter),
-          common.BTRowFormat('billloading_declare_number', 'Feclare Number'),
-          common.BTRowFormatWithFormatter('permission_files', 'Permission', common.filesFormatter)
+          BTRowFormatFilesInfo('files', 'files Info'),
+          common.BTRowFormat('billloading_declare_number', 'Feclare Number')
         ],
         idField: 'billloading_id',
         uniqueId: 'billloading_id',
@@ -485,7 +509,9 @@ export default {
           _self.oldRow = $.extend(true, {}, row)
         },
         onEditableSave: function(field, row, oldValue, $el) {
-          common.rowModifyWithT(_self, apiUrl + 'modify', row, 'billloading_id', $('#table'))
+          if (field !== 'files') {
+            common.rowModifyWithT(_self, apiUrl + 'modify', row, 'billloading_id', $('#table'))
+          }
         },
         onPostBody: function() {
           $('[data-name="billloading_voyage_id"]').each(function() {
