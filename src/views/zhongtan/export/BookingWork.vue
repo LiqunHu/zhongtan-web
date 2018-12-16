@@ -190,6 +190,12 @@ export default {
         _self.workRow = row
         _self.files = []
         $('#declarationModal').modal('show')
+      },
+      'click .csd-precessing': function(e, value, row, index) {
+        common.dealConfrimCommon('Shipping Information has been checked & send it to CDS?', async function() {
+          await _self.$http.post(apiUrl + 'sendCDS', row)
+          $('#table').bootstrapTable('refresh')
+        })
       }
     }
 
@@ -201,8 +207,10 @@ export default {
       } else if (row.billloading_state === 'PA') {
         retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 putbox-confirm">Confirm</button>')
       } else if (row.billloading_state === 'SL') {
-        retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 declaration">declaration</button>')
+        retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 declaration">Declaration</button>')
         retrunString.push('<button type="button" class="btn btn-warning btn-xs m-r-5 reject-loading">Reject</button>')
+      } else if (row.billloading_state === 'CI') {
+        retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 csd-precessing">CDS Processing</button>')
       }
       return retrunString.join('')
     }
@@ -372,7 +380,7 @@ export default {
           BTRowFormatPortInfo('portinfo', 'Port Info'),
           common.BTRowFormatEditable('billloading_delivery_place', 'Delivery Place'),
           BTRowFormatStuffingInfo('stuffing', 'Stuffing Info'),
-          BTRowFormatFilesInfo('files', 'files Info'),
+          BTRowFormatFilesInfo('files', 'files Info')
         ],
         idField: 'billloading_id',
         uniqueId: 'billloading_id',

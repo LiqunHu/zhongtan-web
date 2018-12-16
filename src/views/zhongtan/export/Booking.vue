@@ -264,6 +264,38 @@
         </div>
       </div>
     </div>
+    <div class="modal fade" id="submitinstructionModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 class="modal-title">Submit Loading List</h4>
+          </div>
+          <form @submit.prevent="submitinstructionOp" id="formSubmitinstruction">
+            <div class="modal-body">
+              <h4>Shipping Instruction</h4>
+              <div class="row">
+                <a v-for="f in files" v-bind:key="f.name" class="btn bg-navy btn-app">
+                  <i class="fa fa-file .btn-flat"></i>
+                  {{f.name}}
+                </a>
+                <span class="fileupload-button">
+                  <a class="btn btn-app">
+                    <i class="fa fa-plus"></i> Add
+                  </a>
+                  <input class="fileupload" type="file" id="instructionupload">
+                </span>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary btn-info">
+                <i class="fa fa-fw fa-plus"></i>Submit
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -304,10 +336,9 @@ export default {
         $('#submitloadingModal').modal('show')
       },
       'click .instruction': function(e, value, row, index) {
-        common.dealConfrimCommon('Shipping Instruction Been Sended?', async function() {
-          await _self.$http.post(apiUrl + 'confirmInstruction', row)
-          $('#table').bootstrapTable('refresh')
-        })
+        _self.workRow = row
+        _self.files = []
+        $('#submitinstructionModal').modal('show')
       }
     }
 
@@ -582,6 +613,20 @@ export default {
         )
         $('#formSubmitloading').parsley()
 
+        common.fileUpload(
+          _self,
+          $('#instructionupload'),
+          apiUrl + 'upload',
+          function(fileInfo) {
+            _self.files.push(fileInfo)
+            $('#instructionupload').val('')
+          },
+          response => {
+            common.dealErrorCommon(_self, response)
+          }
+        )
+        $('#formSubmitinstruction').parsley()
+
         console.log('init success')
       } catch (error) {
         common.dealErrorCommon(_self, error)
@@ -713,6 +758,28 @@ export default {
           $('#table').bootstrapTable('refresh')
           common.dealSuccessCommon('submit loading success')
           $('#submitloadingModal').modal('hide')
+        }
+      } catch (error) {
+        common.dealErrorCommon(_self, error)
+      }
+    },
+    submitinstructionOp: async function() {
+      let _self = this
+      try {
+        if (
+          $('#formSubmitinstruction')
+            .parsley()
+            .isValid()
+        ) {
+          if (_self.files.length <= 0) {
+            return common.dealWarningCommon('Please upload shipping instruction')
+          }
+
+          _self.workRow.instruction_files = _self.files
+          await _self.$http.post(apiUrl + 'confirmInstruction', _self.workRow)
+          $('#table').bootstrapTable('refresh')
+          common.dealSuccessCommon('submit loading success')
+          $('#submitinstructionModal').modal('hide')
         }
       } catch (error) {
         common.dealErrorCommon(_self, error)

@@ -72,6 +72,10 @@
   background-color: #00a7d0;
 }
 
+.label-cds-processing {
+  background-color: #39cccc;
+}
+
 .image-set {
   max-height: 22px;
   max-width: 22px;
