@@ -37,13 +37,13 @@
             <div class="modal-body">
               <div class="form-group">
                 <label>Freight Currency</label>
-                <select class="form-control select2" id="billloading_freight_currency" data-parsley-required="true" disabled></select>
+                <select class="form-control select2" id="billlading_freight_currency" data-parsley-required="true" disabled></select>
               </div>
               <div class="form-group">
                 <label>
                   <span class="table-required">*</span>Freight Charge
                 </label>
-                <input class="form-control" v-model="workRow.billloading_freight_charge" data-parsley-required="true" data-parsley-type="number">
+                <input class="form-control" v-model="workRow.billlading_freight_charge" data-parsley-required="true" data-parsley-type="number">
               </div>
             </div>
             <div class="modal-footer">
@@ -114,7 +114,7 @@
             <div class="modal-body">
               <h4>Declare Number</h4>
               <div class="form-group">
-                <input class="form-control" v-model="workRow.billloading_declare_number" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
+                <input class="form-control" v-model="workRow.billlading_declare_number" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
               </div>
               <h4>Loading Permission</h4>
               <div class="row">
@@ -197,14 +197,14 @@ export default {
 
     window.tableEvents = {
       'click .cancelb': function(e, value, row, index) {
-        common.rowDeleteWithApi(_self, 'Cancle?', apiUrl + 'cancel', $('#table'), row, 'billloading_id', function() {})
+        common.rowDeleteWithApi(_self, 'Cancle?', apiUrl + 'cancel', $('#table'), row, 'billlading_id', function() {})
       },
       'click .booking': function(e, value, row, index) {
         _self.workRow = row
-        $('#billloading_freight_currency')
-          .val(row.billloading_freight_currency)
+        $('#billlading_freight_currency')
+          .val(row.billlading_freight_currency)
           .trigger('change')
-        _self.workRow.billloading_freight_charge = '0.00'
+        _self.workRow.billlading_freight_charge = '0.00'
         $('#bookingConfirmModal').modal('show')
       },
       'click .putbox-confirm': function(e, value, row, index) {
@@ -238,17 +238,17 @@ export default {
 
     function actFormatter(value, row) {
       let retrunString = []
-      if (row.billloading_state === 'PBK') {
+      if (row.billlading_state === 'PBK') {
         retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 booking">Booking</button><br/>')
         retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 cancelb">Cancel</button>')
-      } else if (row.billloading_state === 'PA') {
+      } else if (row.billlading_state === 'PA') {
         retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 putbox-confirm">Confirm</button>')
-      } else if (row.billloading_state === 'SL') {
+      } else if (row.billlading_state === 'SL') {
         retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 declaration">Declaration</button>')
         retrunString.push('<button type="button" class="btn btn-warning btn-xs m-r-5 reject-loading">Reject</button>')
-      } else if (row.billloading_state === 'CI') {
+      } else if (row.billlading_state === 'CI') {
         retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 csd-precessing">send CDS</button>')
-      } else if (row.billloading_state === 'CP') {
+      } else if (row.billlading_state === 'CP') {
         retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 send-bl">send BL.</button>')
       }
       return retrunString.join('')
@@ -299,7 +299,7 @@ export default {
       let returnStr = []
       for (let c of value) {
         returnStr.push('br/')
-        returnStr.push('<div>' + c.billloading_container_number + ' * ' + c.billloading_container_size + c.billloading_container_type + '</div>')
+        returnStr.push('<div>' + c.billlading_container_number + ' * ' + c.billlading_container_size + c.billlading_container_type + '</div>')
       }
       returnStr.shift()
       return returnStr.join('')
@@ -410,19 +410,19 @@ export default {
         columns: [
           common.BTRowFormatWithIndex('No'),
           common.actFormatter('act', actFormatter, tableEvents),
-          common.BTRowFormat('billloading_no', 'S/O'),
-          common.BTRowFormatWithFormatter('billloading_state', 'Status', statusFormatter),
-          common.BTRowFormatWithFormatter('billloading_containers', 'Container', containersFormatter),
+          common.BTRowFormat('billlading_no', 'S/O'),
+          common.BTRowFormatWithFormatter('billlading_state', 'Status', statusFormatter),
+          common.BTRowFormatWithFormatter('billlading_containers', 'Container', containersFormatter),
           BTRowFormatShiplineInfo('shipline', 'Ship Info', BTRowFormatShiplineInfo),
-          BTRowFormatContractInfo('billloading_consignee', 'Consignee Info'),
-          BTRowFormatContractInfo('billloading_notify', 'Notify Info'),
+          BTRowFormatContractInfo('billlading_consignee', 'Consignee Info'),
+          BTRowFormatContractInfo('billlading_notify', 'Notify Info'),
           BTRowFormatPortInfo('portinfo', 'Port Info'),
-          common.BTRowFormatEditable('billloading_delivery_place', 'Delivery Place'),
+          common.BTRowFormatEditable('billlading_delivery_place', 'Delivery Place'),
           BTRowFormatStuffingInfo('stuffing', 'Stuffing Info'),
           BTRowFormatFilesInfo('files', 'files Info')
         ],
-        idField: 'billloading_id',
-        uniqueId: 'billloading_id',
+        idField: 'billlading_id',
+        uniqueId: 'billlading_id',
         toolbar: '#toolbar',
         showRefresh: true,
         showColumns: true,
@@ -436,10 +436,10 @@ export default {
           _self.oldRow = $.extend(true, {}, row)
         },
         onEditableSave: function(field, row, oldValue, $el) {
-          common.rowModifyWithT(_self, apiUrl + 'modify', row, 'billloading_id', $('#table'))
+          common.rowModifyWithT(_self, apiUrl + 'modify', row, 'billlading_id', $('#table'))
         },
         onPostBody: function() {
-          $('[data-name="billloading_voyage_id"]').each(function() {
+          $('[data-name="billlading_voyage_id"]').each(function() {
             let actrow = $('#table').bootstrapTable('getRowByUniqueId', this.getAttribute('data-pk'))
             $(this).editable({
               type: 'select2',
@@ -457,15 +457,15 @@ export default {
         let response = await _self.$http.post(apiUrl + 'init', {})
         let retData = response.data.info
         _self.pagePara = JSON.parse(JSON.stringify(retData))
-        common.initSelect2($('#billloading_vessel_id'), retData.VesselINFO)
-        $('#billloading_vessel_id').on('change', async function(evt) {
-          $('#billloading_voyage_id').html('')
-          let rsp = await _self.$http.post(apiUrl + 'searchVoyage', { vessel_id: common.getSelect2Val('billloading_vessel_id') })
+        common.initSelect2($('#billlading_vessel_id'), retData.VesselINFO)
+        $('#billlading_vessel_id').on('change', async function(evt) {
+          $('#billlading_voyage_id').html('')
+          let rsp = await _self.$http.post(apiUrl + 'searchVoyage', { vessel_id: common.getSelect2Val('billlading_vessel_id') })
           let retD = rsp.data.info
-          common.initSelect2($('#billloading_voyage_id'), retD.VoyageINFO)
+          common.initSelect2($('#billlading_voyage_id'), retD.VoyageINFO)
         })
-        common.initSelect2($('#billloading_loading_port_id'), retData.PortINFO)
-        common.initSelect2($('#billloading_discharge_port_id'), retData.PortINFO)
+        common.initSelect2($('#billlading_loading_port_id'), retData.PortINFO)
+        common.initSelect2($('#billlading_discharge_port_id'), retData.PortINFO)
         $('#searchDate').daterangepicker(
           {
             timePicker: false,
@@ -486,7 +486,7 @@ export default {
         initTable()
 
         // model
-        common.initSelect2($('#billloading_freight_currency'), retData.PayCurrencyINFO)
+        common.initSelect2($('#billlading_freight_currency'), retData.PayCurrencyINFO)
         $('#formBookingConfirm').parsley()
 
         common.initSelect2($('#container_manager_id'), retData.ContainerManagerINFO)

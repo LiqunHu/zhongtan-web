@@ -48,13 +48,13 @@
                 <div class="col-md-6">
                   <div class="form-group">
                     <label>Vessel</label>
-                    <select class="form-control select2" id="billloading_vessel_id"></select>
+                    <select class="form-control select2" id="billlading_vessel_id"></select>
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
                     <label>Voyage</label>
-                    <select class="form-control select2" id="billloading_voyage_id"></select>
+                    <select class="form-control select2" id="billlading_voyage_id"></select>
                   </div>
                 </div>
               </div>
@@ -82,11 +82,11 @@
                   <div class="col-md-5">
                     <div class="form-group">
                       <label>Consignee (Name & Address)</label>
-                      <input v-model="workRow.billloading_consignee_name" class="form-control" placeholder="Consignee name" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
+                      <input v-model="workRow.billlading_consignee_name" class="form-control" placeholder="Consignee name" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
                     </div>
                     <div class="form-group">
                       <textarea
-                        v-model="workRow.billloading_consignee_address"
+                        v-model="workRow.billlading_consignee_address"
                         rows="2"
                         class="form-control"
                         placeholder="Consignee Address"
@@ -96,7 +96,7 @@
                       ></textarea>
                     </div>
                     <div class="form-group">
-                      <input v-model="workRow.billloading_consignee_tel" class="form-control" placeholder="Consignee Tel.">
+                      <input v-model="workRow.billlading_consignee_tel" class="form-control" placeholder="Consignee Tel.">
                     </div>
                   </div>
                   <div class="col-md-1">
@@ -107,11 +107,11 @@
                   <div class="col-md-6">
                     <div class="form-group">
                       <label>Notify Party (Name & Address)</label>
-                      <input v-model="workRow.billloading_notify_name" class="form-control" placeholder="Notify Party name" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
+                      <input v-model="workRow.billlading_notify_name" class="form-control" placeholder="Notify Party name" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
                     </div>
                     <div class="form-group">
                       <textarea
-                        v-model="workRow.billloading_notify_address"
+                        v-model="workRow.billlading_notify_address"
                         rows="2"
                         class="form-control"
                         placeholder="Notify Party Address"
@@ -121,7 +121,7 @@
                       ></textarea>
                     </div>
                     <div class="form-group">
-                      <input v-model="workRow.billloading_notify_tel" class="form-control" placeholder="Notify Party Tel.">
+                      <input v-model="workRow.billlading_notify_tel" class="form-control" placeholder="Notify Party Tel.">
                     </div>
                   </div>
                 </div>
@@ -130,19 +130,19 @@
                     <div class="form-group">
                       <label class="col-sm-4 control-label">Port of Loading</label>
                       <div class="col-sm-8">
-                        <select class="form-control select2" id="billloading_loading_port_id"></select>
+                        <select class="form-control select2" id="billlading_loading_port_id"></select>
                       </div>
                     </div>
                     <div class="form-group">
                       <label class="col-sm-4 control-label">Port of Discharg</label>
                       <div class="col-sm-8">
-                        <select class="form-control select2" id="billloading_discharge_port_id"></select>
+                        <select class="form-control select2" id="billlading_discharge_port_id"></select>
                       </div>
                     </div>
                     <div class="form-group">
                       <label class="col-sm-4 control-label">Place of Deliver</label>
                       <div class="col-sm-8">
-                        <input v-model="workRow.billloading_delivery_place" class="form-control" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
+                        <input v-model="workRow.billlading_delivery_place" class="form-control" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
                       </div>
                     </div>
                   </div>
@@ -151,13 +151,13 @@
                     <div class="form-group">
                       <label class="col-sm-2 control-label">Original</label>
                       <div class="col-sm-10">
-                        <input v-model="workRow.billloading_original_num" type="number" class="form-control" data-parsley-required="true">
+                        <input v-model="workRow.billlading_original_num" type="number" class="form-control" data-parsley-required="true">
                       </div>
                     </div>
                     <div class="form-group">
                       <label class="col-sm-2 control-label">Copies</label>
                       <div class="col-sm-10">
-                        <input v-model="workRow.billloading_copys_num" type="number" class="form-control" data-parsley-required="true">
+                        <input v-model="workRow.billlading_copys_num" type="number" class="form-control" data-parsley-required="true">
                       </div>
                     </div>
                   </div>
@@ -181,7 +181,7 @@
                     <div class="form-group">
                       <label class="col-sm-4 control-label">Place</label>
                       <div class="col-sm-8">
-                        <input v-model="workRow.billloading_stuffing_place" class="form-control" data-parsley-required="true">
+                        <input v-model="workRow.billlading_stuffing_place" class="form-control" data-parsley-required="true">
                       </div>
                     </div>
                     <div class="form-group">
@@ -193,7 +193,7 @@
                     <div class="form-group">
                       <label class="col-sm-4 control-label">Special requirement</label>
                       <div class="col-sm-8">
-                        <textarea v-model="workRow.billloading_stuffing_requirement" class="form-control" rows="3"></textarea>
+                        <textarea v-model="workRow.billlading_stuffing_requirement" class="form-control" rows="3"></textarea>
                       </div>
                     </div>
                   </div>
@@ -216,7 +216,7 @@
                     <div class="form-group">
                       <label class="col-sm-4 control-label">Status</label>
                       <div class="col-sm-8">
-                        <select class="form-control select2" multiple id="billloading_freight_currency"></select>
+                        <select class="form-control select2" multiple id="billlading_freight_currency"></select>
                       </div>
                     </div>
                   </div>
@@ -322,7 +322,7 @@ export default {
 
     window.tableEvents = {
       'click .cancelb': function(e, value, row, index) {
-        common.rowDeleteWithApi(_self, 'Cancle?', apiUrl + 'cancel', $('#table'), row, 'billloading_id', function() {})
+        common.rowDeleteWithApi(_self, 'Cancle?', apiUrl + 'cancel', $('#table'), row, 'billlading_id', function() {})
       },
       'click .putbox': function(e, value, row, index) {
         common.dealConfrimCommon('Putbox Apply?', async function() {
@@ -344,13 +344,13 @@ export default {
 
     function actFormatter(value, row) {
       let retrunString = []
-      if (row.billloading_state === 'PBK') {
+      if (row.billlading_state === 'PBK') {
         retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 cancelb">Cancel</button>')
-      } else if (row.billloading_state === 'BK') {
+      } else if (row.billlading_state === 'BK') {
         retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 putbox">Putbox</button>')
-      } else if (row.billloading_state === 'PC' || row.billloading_state === 'RL') {
+      } else if (row.billlading_state === 'PC' || row.billlading_state === 'RL') {
         retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 submitloading">SUBMIT Loading</button>')
-      } else if (row.billloading_state === 'DE') {
+      } else if (row.billlading_state === 'DE') {
         retrunString.push('<button type="button" class="btn btn-primary btn-xs m-r-5 instruction">Confirm Instruction</button>')
       }
       return retrunString.join('')
@@ -375,7 +375,7 @@ export default {
       let returnStr = []
       for (let c of value) {
         returnStr.push('br/')
-        returnStr.push('<div>' + c.billloading_container_number + ' * ' + c.billloading_container_size + c.billloading_container_type + '</div>')
+        returnStr.push('<div>' + c.billlading_container_number + ' * ' + c.billlading_container_size + c.billlading_container_type + '</div>')
       }
       returnStr.shift()
       return returnStr.join('')
@@ -513,19 +513,19 @@ export default {
           common.BTRowFormatWithIndex('No'),
           common.actFormatter('act', actFormatter, tableEvents),
           common.BTRowFormat('booking_date', 'Book Date'),
-          common.BTRowFormat('billloading_no', 'S/O'),
-          common.BTRowFormatWithFormatter('billloading_state', 'Status', statusFormatter),
-          common.BTRowFormatWithFormatter('billloading_containers', 'Container', containersFormatter),
+          common.BTRowFormat('billlading_no', 'S/O'),
+          common.BTRowFormatWithFormatter('billlading_state', 'Status', statusFormatter),
+          common.BTRowFormatWithFormatter('billlading_containers', 'Container', containersFormatter),
           BTRowFormatShiplineInfo('shipline', 'Ship Info'),
-          BTRowFormatContractInfo('billloading_consignee', 'Consignee Info'),
-          BTRowFormatContractInfo('billloading_notify', 'Notify Info'),
+          BTRowFormatContractInfo('billlading_consignee', 'Consignee Info'),
+          BTRowFormatContractInfo('billlading_notify', 'Notify Info'),
           BTRowFormatPortInfo('portinfo', 'Port Info'),
-          common.BTRowFormatEditable('billloading_delivery_place', 'Delivery Place'),
+          common.BTRowFormatEditable('billlading_delivery_place', 'Delivery Place'),
           BTRowFormatStuffingInfo('stuffing', 'Stuffing Info'),
           BTRowFormatFilesInfo('files', 'files Info')
         ],
-        idField: 'billloading_id',
-        uniqueId: 'billloading_id',
+        idField: 'billlading_id',
+        uniqueId: 'billlading_id',
         toolbar: '#toolbar',
         showRefresh: true,
         showColumns: true,
@@ -540,11 +540,11 @@ export default {
         },
         onEditableSave: function(field, row, oldValue, $el) {
           if (field !== 'files') {
-            common.rowModifyWithT(_self, apiUrl + 'modify', row, 'billloading_id', $('#table'))
+            common.rowModifyWithT(_self, apiUrl + 'modify', row, 'billlading_id', $('#table'))
           }
         },
         onPostBody: function() {
-          $('[data-name="billloading_voyage_id"]').each(function() {
+          $('[data-name="billlading_voyage_id"]').each(function() {
             let actrow = $('#table').bootstrapTable('getRowByUniqueId', this.getAttribute('data-pk'))
             $(this).editable({
               type: 'select2',
@@ -562,17 +562,17 @@ export default {
         let response = await _self.$http.post(apiUrl + 'init', {})
         let retData = response.data.info
         _self.pagePara = JSON.parse(JSON.stringify(retData))
-        common.initSelect2($('#billloading_vessel_id'), retData.VesselINFO)
-        $('#billloading_vessel_id').on('change', async function(evt) {
-          $('#billloading_voyage_id').html('')
+        common.initSelect2($('#billlading_vessel_id'), retData.VesselINFO)
+        $('#billlading_vessel_id').on('change', async function(evt) {
+          $('#billlading_voyage_id').html('')
           let rsp = await _self.$http.post(apiUrl + 'searchVoyage', {
-            vessel_id: common.getSelect2Val('billloading_vessel_id')
+            vessel_id: common.getSelect2Val('billlading_vessel_id')
           })
           let retD = rsp.data.info
-          common.initSelect2($('#billloading_voyage_id'), retD.VoyageINFO)
+          common.initSelect2($('#billlading_voyage_id'), retD.VoyageINFO)
         })
-        common.initSelect2($('#billloading_loading_port_id'), retData.PortINFO)
-        common.initSelect2($('#billloading_discharge_port_id'), retData.PortINFO)
+        common.initSelect2($('#billlading_loading_port_id'), retData.PortINFO)
+        common.initSelect2($('#billlading_discharge_port_id'), retData.PortINFO)
         $('#searchDate').daterangepicker(
           {
             timePicker: false,
@@ -596,7 +596,7 @@ export default {
         common.initDatepicker($('#stuffDate'))
         common.initDatepicker($('#payat'))
         common.initSelect2($('#payType'), retData.PayTypeINFO)
-        common.initSelect2($('#billloading_freight_currency'), retData.PayCurrencyINFO)
+        common.initSelect2($('#billlading_freight_currency'), retData.PayCurrencyINFO)
         $('#formBook').parsley()
 
         common.fileUpload(
@@ -639,19 +639,19 @@ export default {
     BookingMod: function(event) {
       let _self = this
       _self.workRow = {}
-      $('#billloading_vessel_id')
+      $('#billlading_vessel_id')
         .val(null)
         .trigger('change')
-      $('#billloading_voyage_id')
+      $('#billlading_voyage_id')
         .val(null)
         .trigger('change')
-      $('#billloading_loading_port_id')
+      $('#billlading_loading_port_id')
         .val(null)
         .trigger('change')
-      $('#billloading_discharge_port_id')
+      $('#billlading_discharge_port_id')
         .val(null)
         .trigger('change')
-      $('#billloading_freight_currency')
+      $('#billlading_freight_currency')
         .val(null)
         .trigger('change')
       $('#goodstable').bootstrapTable('destroy')
@@ -671,16 +671,16 @@ export default {
       $('#goodstable').bootstrapTable({
         columns: [
           common.BTRowFormatWithIndex('No'),
-          common.BTRowFormatEnumber('billloading_container_number', 'Vol.'),
-          common.BTRowFormatEdSelect2('billloading_container_type', 'Type', _self.pagePara.ContainerTypeINFO),
-          common.BTRowFormatEdSelect2('billloading_container_size', 'Size', _self.pagePara.ContainerSizeINFO),
-          common.BTRowFormatEditable('billloading_container_goods_description', 'Description'),
-          common.BTRowFormatEnumber('billloading_container_package_number', 'Package No'),
-          common.BTRowFormatEdSelect2('billloading_container_package_unit', 'Package Unit', _self.pagePara.PackageUnitINFO),
-          common.BTRowFormatEnumber('billloading_container_gross_volume', 'Volume'),
-          common.BTRowFormatEdSelect2('billloading_container_gross_volume_unit', 'Volume Unit', _self.pagePara.VolumeUnitINFO),
-          common.BTRowFormatEnumber('billloading_container_gross_weight', 'Weight'),
-          common.BTRowFormatEdSelect2('billloading_container_gross_unit', 'Weight Unit', _self.pagePara.WeightUnitINFO),
+          common.BTRowFormatEnumber('billlading_container_number', 'Vol.'),
+          common.BTRowFormatEdSelect2('billlading_container_type', 'Type', _self.pagePara.ContainerTypeINFO),
+          common.BTRowFormatEdSelect2('billlading_container_size', 'Size', _self.pagePara.ContainerSizeINFO),
+          common.BTRowFormatEditable('billlading_container_goods_description', 'Description'),
+          common.BTRowFormatEnumber('billlading_container_package_number', 'Package No'),
+          common.BTRowFormatEdSelect2('billlading_container_package_unit', 'Package Unit', _self.pagePara.PackageUnitINFO),
+          common.BTRowFormatEnumber('billlading_container_gross_volume', 'Volume'),
+          common.BTRowFormatEdSelect2('billlading_container_gross_volume_unit', 'Volume Unit', _self.pagePara.VolumeUnitINFO),
+          common.BTRowFormatEnumber('billlading_container_gross_weight', 'Weight'),
+          common.BTRowFormatEdSelect2('billlading_container_gross_unit', 'Weight Unit', _self.pagePara.WeightUnitINFO),
           common.actFormatter('act', deleteFormatter, goodsTableEvents)
         ],
         idField: 'RowNumber',
@@ -688,31 +688,31 @@ export default {
         showFooter: false
       })
       $('#goodstable').bootstrapTable('append', {
-        billloading_container_number: '',
-        billloading_container_type: '',
-        billloading_container_size: '',
-        billloading_container_goods_description: '',
-        billloading_container_package_number: '',
-        billloading_container_package_unit: 'BAG',
-        billloading_container_gross_volume: '',
-        billloading_container_gross_volume_unit: 'M3',
-        billloading_container_gross_weight: '',
-        billloading_container_gross_unit: 'KG'
+        billlading_container_number: '',
+        billlading_container_type: '',
+        billlading_container_size: '',
+        billlading_container_goods_description: '',
+        billlading_container_package_number: '',
+        billlading_container_package_unit: 'BAG',
+        billlading_container_gross_volume: '',
+        billlading_container_gross_volume_unit: 'M3',
+        billlading_container_gross_weight: '',
+        billlading_container_gross_unit: 'KG'
       })
       $('#bookingModal').modal('show')
     },
     AddCargo: function(event) {
       $('#goodstable').bootstrapTable('append', {
-        billloading_container_number: '',
-        billloading_container_type: '',
-        billloading_container_size: '',
-        billloading_container_goods_description: '',
-        billloading_container_package_number: '',
-        billloading_container_package_unit: 'BAG',
-        billloading_container_gross_volume: '',
-        billloading_container_gross_volume_unit: 'M3',
-        billloading_container_gross_weight: '',
-        billloading_container_gross_unit: 'KG'
+        billlading_container_number: '',
+        billlading_container_type: '',
+        billlading_container_size: '',
+        billlading_container_goods_description: '',
+        billlading_container_package_number: '',
+        billlading_container_package_unit: 'BAG',
+        billlading_container_gross_volume: '',
+        billlading_container_gross_volume_unit: 'M3',
+        billlading_container_gross_weight: '',
+        billlading_container_gross_unit: 'KG'
       })
     },
     bookingOp: async function(event) {
@@ -723,14 +723,14 @@ export default {
             .parsley()
             .isValid()
         ) {
-          _self.workRow.billloading_vessel_id = common.getSelect2Val('billloading_vessel_id')
-          _self.workRow.billloading_voyage_id = common.getSelect2Val('billloading_voyage_id')
-          _self.workRow.billloading_containers = $('#goodstable').bootstrapTable('getData')
-          _self.workRow.billloading_loading_port_id = common.getSelect2Val('billloading_loading_port_id')
-          _self.workRow.billloading_discharge_port_id = common.getSelect2Val('billloading_discharge_port_id')
-          _self.workRow.billloading_stuffing_date = $('#stuffDate').val()
-          _self.workRow.billloading_pay_date = $('#payat').val()
-          _self.workRow.billloading_freight_currency = common.getSelect2Val('billloading_freight_currency')
+          _self.workRow.billlading_vessel_id = common.getSelect2Val('billlading_vessel_id')
+          _self.workRow.billlading_voyage_id = common.getSelect2Val('billlading_voyage_id')
+          _self.workRow.billlading_containers = $('#goodstable').bootstrapTable('getData')
+          _self.workRow.billlading_loading_port_id = common.getSelect2Val('billlading_loading_port_id')
+          _self.workRow.billlading_discharge_port_id = common.getSelect2Val('billlading_discharge_port_id')
+          _self.workRow.billlading_stuffing_date = $('#stuffDate').val()
+          _self.workRow.billlading_pay_date = $('#payat').val()
+          _self.workRow.billlading_freight_currency = common.getSelect2Val('billlading_freight_currency')
           await _self.$http.post(apiUrl + 'booking', _self.workRow)
           $('#table').bootstrapTable('refresh')
           common.dealSuccessCommon('增加成功')
@@ -787,9 +787,9 @@ export default {
     },
     sameCopy: async function() {
       let _self = this
-      _self.$set(_self.workRow, 'billloading_notify_name', _self.workRow.billloading_consignee_name)
-      _self.$set(_self.workRow, 'billloading_notify_address', _self.workRow.billloading_consignee_address)
-      _self.$set(_self.workRow, 'billloading_notify_tel', _self.workRow.billloading_consignee_tel)
+      _self.$set(_self.workRow, 'billlading_notify_name', _self.workRow.billlading_consignee_name)
+      _self.$set(_self.workRow, 'billlading_notify_address', _self.workRow.billlading_consignee_address)
+      _self.$set(_self.workRow, 'billlading_notify_tel', _self.workRow.billlading_consignee_tel)
     }
   }
 }
