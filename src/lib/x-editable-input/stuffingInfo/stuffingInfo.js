@@ -30,10 +30,14 @@ $(function(){
   }
 
   function strFormat(str) {
-    if (str.length > 10) {
-      return str.substring(0, 7) + '...'
+    if (str) {
+      if (str.length > 10) {
+        return str.substring(0, 7) + '...'
+      } else {
+        return str
+      }
     } else {
-      return str
+      return ''
     }
   }
 
