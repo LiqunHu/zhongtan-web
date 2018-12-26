@@ -1,44 +1,26 @@
 <template>
-  <div>
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="#">Examples</a></li>
-        <li class="active">Blank page</li>
-      </ol>
-    </section>
-    <!-- Main content -->
-    <section class="content">
-      <!-- Default box -->
-      <div class="box">
-        <div class="box-header with-border">
-          <h3 class="box-title">Title</h3>
-
-          <div class="box-tools pull-right">
-            <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse">
-              <i class="fa fa-minus"></i>
-            </button>
-            <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
-              <i class="fa fa-times"></i>
-            </button>
-          </div>
-        </div>
-        <div class="box-body">
-          Start creating your amazing application!
-        </div>
-        <!-- /.box-body -->
-        <div class="box-footer">
-          Footer
-        </div>
-        <!-- /.box-footer-->
-      </div>
-      <!-- /.box -->
-    </section>
-    <!-- /.content -->
-  </div>
+	<div>
+		<!-- begin breadcrumb -->
+		<ol class="breadcrumb pull-right">
+			<li class="breadcrumb-item active"><a href="javascript:;">Home</a></li>
+		</ol>
+		<!-- end breadcrumb -->
+		<!-- begin page-header -->
+		<h1 class="page-header">Home <small>header small text goes here...</small></h1>
+		<!-- end page-header -->
+		<panel title="Panel title here">
+			<p>
+				Panel content here
+			</p>
+		</panel>
+	</div>
 </template>
 <script>
+import PageOptions from '../config/PageOptions.vue'
+
+export default {
+  created() {
+    PageOptions.pageEmpty = false
+  }
+}
 </script>
-<style>
-</style>

@@ -6,7 +6,7 @@ const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
-function resolve (dir) {
+function resolve(dir) {
   return path.join(__dirname, '..', dir)
 }
 
@@ -18,37 +18,32 @@ module.exports = {
   output: {
     path: config.build.assetsRoot,
     filename: '[name].js',
-    publicPath: process.env.NODE_ENV === 'production'
-      ? config.build.assetsPublicPath
-      : config.dev.assetsPublicPath
+    publicPath: process.env.NODE_ENV === 'production' ? config.build.assetsPublicPath : config.dev.assetsPublicPath
   },
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     alias: {
-      'vue$': 'vue/dist/vue.esm.js',
-      '@': resolve('src'),
+      vue$: 'vue/dist/vue.esm.js',
+      '@': resolve('src')
     }
   },
-  plugins: [
-    new VueLoaderPlugin(),
-    new webpack.ProvidePlugin({
-            $: "jquery",
-            jQuery: "jquery",
-            moment: "moment"
-        })
-  ],
+  plugins: [new VueLoaderPlugin()],
   module: {
     rules: [
-      ...(config.dev.useEslint? [{
-        test: /\.(js|vue)$/,
-        loader: 'eslint-loader',
-        enforce: 'pre',
-        include: [resolve('src'), resolve('test')],
-        options: {
-          formatter: require('eslint-friendly-formatter'),
-          emitWarning: !config.dev.showEslintErrorsInOverlay
-        }
-      }] : []),
+      ...(config.dev.useEslint
+        ? [
+            {
+              test: /\.(js|vue)$/,
+              loader: 'eslint-loader',
+              enforce: 'pre',
+              include: [resolve('src'), resolve('test')],
+              options: {
+                formatter: require('eslint-friendly-formatter'),
+                emitWarning: !config.dev.showEslintErrorsInOverlay
+              }
+            }
+          ]
+        : []),
       {
         test: /\.vue$/,
         loader: 'vue-loader',
@@ -57,7 +52,7 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [resolve('src'), resolve('test')]
+        include: [resolve('src'), resolve('test'), resolve('/node_modules/_vue-ins-progress-bar@1.0.0@vue-ins-progress-bar')]
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,

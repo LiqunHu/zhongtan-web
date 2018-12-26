@@ -1,54 +1,54 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
+import VueX from 'vuex'
 import axios from 'axios'
-import App from './App'
-import router from './router'
 import store from './store'
-import './lib/jquery-vender.js'
 
-// user plugin
-import 'bootstrap'
-import 'bootstrap/dist/css/bootstrap.css'
-import 'select2'
-import 'select2/dist/css/select2.min.css'
-import 'ztree'
-import 'ztree/css/metroStyle/metroStyle.css'
-import 'font-awesome/css/font-awesome.css'
-import 'admin-lte'
-import 'bootstrap3-dialog'
-import 'bootstrap3-dialog/dist/css/bootstrap-dialog.min.css'
-import './lib/x-editable/dist/bootstrap3-editable/js/bootstrap-editable.js'
-import './lib/x-editable/dist/bootstrap3-editable/css/bootstrap-editable.css'
-import 'bootstrap-table'
-import 'bootstrap-table/dist/extensions/editable/bootstrap-table-editable.min.js'
-import 'bootstrap-table/dist/bootstrap-table.min.css'
-import 'bootstrap-table/dist/extensions/group-by-v2/bootstrap-table-group-by.min.js'
-import 'bootstrap-table/dist/extensions/group-by-v2/bootstrap-table-group-by.css'
-import 'daterangepicker'
-import 'daterangepicker/daterangepicker.css'
-import 'parsleyjs'
-import 'distpicker'
-import 'cropper'
-import 'cropper/dist/cropper.min.css'
-import './lib/x-editable-input/contractInfo/contractInfo.js'
-import './lib/x-editable-input/mavonEdit/mavonEdit.js'
-import './lib/x-editable-input/shiplineInfo/shiplineInfo.js'
-import './lib/x-editable-input/portInfo/portInfo.js'
-import './lib/x-editable-input/stuffingInfo/stuffingInfo.js'
-import './lib/x-editable-input/filesInfo/filesInfo.js'
-import Loading from './lib/loading/src/loading.js'
-import './lib/loading/src/loading.css'
+import routes from './config/PageRoutes'
 
-import 'admin-lte/dist/css/AdminLTE.min.css'
-import 'admin-lte/dist/css/skins/_all-skins.min.css'
+// plugins
+import VueRouter from 'vue-router'
+import VueInsProgressBar from 'vue-ins-progress-bar'
+import iView from 'iview'
+import vuescroll from 'vuescroll'
+import VuePanel from './lib/panel/'
 import * as common from './lib/common.js'
+
+// plugins css
+import 'bootstrap/dist/css/bootstrap.css'
+import 'simple-line-icons/css/simple-line-icons.css'
+import 'flag-icon-css/css/flag-icon.min.css'
+import 'bootstrap-social/bootstrap-social.css'
+import 'ionicons/dist/css/ionicons.min.css'
+import 'iview/dist/styles/iview.css'
+import 'vuescroll/dist/vuescroll.css'
+
+// color admin css
+import './assets/css/default/style.min.css'
+import './assets/css/default/style-responsive.min.css'
+import './assets/css/default/theme/default.css'
+import './assets/css/style.css'
 import './assets/css/ui.css'
 
+import App from './App'
 // use mavon-editor
-import mavonEditor from 'mavon-editor'
-import 'mavon-editor/dist/css/index.css'
-Vue.use(mavonEditor)
+Vue.use(VueX)
+Vue.use(VueRouter)
+Vue.use(vuescroll)
+Vue.use(iView)
+Vue.use(VuePanel)
+Vue.use(VueInsProgressBar, {
+  position: 'fixed',
+  show: true,
+  height: '3px'
+})
+
+const router = new VueRouter({
+  mode: 'history',
+  scrollBehavior: () => ({ y: 0 }),
+  routes
+})
 
 Vue.config.productionTip = false
 
@@ -60,15 +60,13 @@ let axiosConfig = {
 // if (process.env.NODE_ENV !== 'production') {
 //   axiosConfig.baseURL = process.env.BASE_API
 // }
-
+let vueInstance
 const instance = axios.create(axiosConfig)
 // Add a request interceptor
-let load = new Loading()
 instance.interceptors.request.use(
   function(config) {
     // Do something before request is sent
-    load.init()
-    load.start()
+    vueInstance.$Spin.show()
     let token = common.getStoreData('token')
     if (typeof token === 'string') {
       config.headers['Authorization'] = token
@@ -77,6 +75,7 @@ instance.interceptors.request.use(
   },
   function(error) {
     // Do something with request error
+    vueInstance.$Spin.hide()
     return Promise.reject(error)
   }
 )
@@ -85,40 +84,78 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   function(response) {
     // Do something with response data
-    if (load.loading !== null) {
-      load.stop()
-    }
+    vueInstance.$Spin.hide()
     return response
   },
   function(error) {
     // Do something with response error
-    if (load.loading !== null) {
-      load.stop()
-    }
+    vueInstance.$Spin.hide()
     return Promise.reject(error)
   }
 )
 Vue.prototype.$http = instance
-
-router.beforeEach(function(to, from, next) {
-  const toPath = to.path
-  const fromPath = from.path
-  console.log('to: ' + toPath + ' from: ' + fromPath)
-  console.log('to: ' + toPath.replace('.html', ''))
-  next()
-})
-
-router.afterEach(route => {
-  console.log(`成功浏览到: ${route.path}`)
-})
-
-/* eslint-disable no-new */
-new Vue({
-  el: '#app',
-  router,
-  store,
-  template: '<App/>',
-  components: {
-    App
+Vue.prototype.$commonact = {
+  info: message => {
+    vueInstance.$Modal.info({
+      title: '提示',
+      content: '<p>' + message + '</p>'
+    })
+  },
+  success: message => {
+    vueInstance.$Modal.success({
+      title: '成功',
+      content: '<p>' + message + '</p>'
+    })
+  },
+  warning: message => {
+    vueInstance.$Modal.warning({
+      title: '警告',
+      content: '<p>' + message + '</p>'
+    })
+  },
+  error: message => {
+    vueInstance.$Modal.error({
+      title: '错误',
+      content: '<p>' + message + '</p>'
+    })
+  },
+  confirm: (message, cb) => {
+    vueInstance.$Modal.confirm({
+      title: '确认',
+      content: '<p>' + message + '</p>',
+      onOk: cb
+    })
+  },
+  fault: error => {
+    let response = error.response
+    if (response) {
+      if (response.status > 699 && response.status < 800) {
+        vueInstance.$Modal.error({
+          title: '错误',
+          content: '<p>' + response.data.msg + '</p>'
+        })
+      } else if (response.status === 404) {
+        vueInstance.$router.push({
+          path: '/error404'
+        })
+      } else if (response.status === 401) {
+        if (response.data.errno === -2) {
+          vueInstance.$router.push({ path: '/error', query: { httpcode: response.status, error: response.data.errno, message: '从其他地方登录' } })
+        } else {
+          vueInstance.$router.push({
+            path: '/error',
+            query: { httpcode: response.status, error: response.data.errno, message: '未经授权：访问由于凭据无效被拒绝' }
+          })
+        }
+      } else {
+        vueInstance.$router.push({ path: '/error', query: { httpcode: response.status, error: response.data.errno, message: response.data.msg } })
+      }
+    }
   }
-})
+}
+
+vueInstance = new Vue({
+  render: h => h(App),
+  router,
+  store
+}).$mount('#app')

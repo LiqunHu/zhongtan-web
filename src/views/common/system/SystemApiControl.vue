@@ -1,281 +1,267 @@
 <template>
   <div>
-    <section class="content-header">
-      <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> 系统管理</a></li>
-        <li class="active">系统菜单维护</li>
-      </ol>
-    </section>
-    <section class="content">
-      <div class="row">
-        <div class="col-xs-12">
-          <div class="box box-info">
-            <div class="box-body">
-              <div class="margin form-inline">
-                <div class="form-group">
-                  <div class="form-group">
-                    <button class="btn btn-primary btn-info" v-on:click="addF">
-                      <i class="glyphicon glyphicon-plus"></i> 增加目录
-                    </button>
-                    <button class="btn btn-primary btn-info" v-on:click="addM">
-                      <i class="glyphicon glyphicon-plus"></i> 增加菜单
-                    </button>
-                    <button class="btn btn-primary btn-info" v-on:click="editNode">
-                      <i class="glyphicon glyphicon-plus"></i> 编辑
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <ul id="tree" class="ztree"></ul>
-            </div>
-          </div>
+    <!-- begin breadcrumb -->
+    <ol class="breadcrumb pull-right">
+      <li class="breadcrumb-item active">
+        <a href="javascript:;">系统管理</a>
+      </li>
+    </ol>
+    <!-- end breadcrumb -->
+    <!-- begin page-header -->
+    <h1 class="page-header">
+      系统菜单维护
+      <small></small>
+    </h1>
+    <!-- end page-header -->
+    <panel title="维护">
+      <template slot="beforeBody">
+        <div class="panel-toolbar">
+          <button type="button" class="btn btn-info" @click="addFolderModal">增加目录</button>
+          <button type="button" class="btn btn-info" @click="addMenuModal">增加菜单</button>
+          <button type="button" class="btn btn-info" @click="editNode">编辑</button>
         </div>
+      </template>
+
+      <Tree :data="tree.apiTree" ref="apiTree" :render="renderTreedata"></Tree>
+    </panel>
+    <Modal v-model="modal.folderModal" title="目录">
+      <Form :model="workPara" :label-width="80" :rules="formRule.ruleFolderModal" ref="formFolder">
+        <FormItem label="目录名称" prop="systemmenu_name">
+          <Input placeholder="目录名称" v-model="workPara.systemmenu_name"/>
+        </FormItem>
+        <FormItem label="图标" prop="systemmenu_icon">
+          <Input search enter-button placeholder="图标..." v-model="workPara.systemmenu_icon" @on-search="showIconModal"/>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.folderModal=false">取消</Button>
+        <Button type="primary" size="large" @click="submitFolder()">确定</Button>
       </div>
-    </section>
-    <div class="modal fade" id="FModal">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h4 class="modal-title">目录</h4>
-          </div>
-          <form class="form-horizontal" @submit.prevent="submitF" id="formF">
-            <div class="modal-body">
-              <div class="form-group">
-                <label class="col-md-3 control-label">目录名称</label>
-                <div class="col-md-9">
-                  <input class="form-control" v-model="workRow.systemmenu_name" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
-                </div>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="submit" class="btn btn-info">
-                <i class="fa fa-fw fa-plus"></i>提交
-              </button>
-            </div>
-          </form>
-        </div>
+    </Modal>
+    <Modal v-model="modal.iconModal" title="图标选择" @on-cancel="iconCancel">
+      <Table highlight-row height="300" ref="icontable" :columns="table.iconTable.rows" :data="table.iconTable.data" @on-current-change="iconChoose"></Table>
+    </Modal>
+    <Modal v-model="modal.menuModal" title="菜单">
+      <Form :model="workPara" :label-width="80" :rules="formRule.ruleMenuModal" ref="formMenu">
+        <FormItem label="功能名称" prop="systemmenu_name">
+          <Input placeholder="目录名称" v-model="workPara.systemmenu_name"/>
+        </FormItem>
+        <FormItem label="API路径" prop="api_path">
+          <Input placeholder="API路径" v-model="workPara.api_path"/>
+        </FormItem>
+        <FormItem label="权限校验" prop="auth_flag">
+          <Select v-model="workPara.auth_flag">
+            <Option v-for="item in pagePara.tfInfo" :value="item.id" :key="item.id">{{ item.text }}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="是否显示" prop="show_flag">
+          <Select v-model="workPara.show_flag">
+            <Option v-for="item in pagePara.tfInfo" :value="item.id" :key="item.id">{{ item.text }}</Option>
+          </Select>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.menuModal=false">取消</Button>
+        <Button type="primary" size="large" @click="submitMenu()">确定</Button>
       </div>
-    </div>
-    <div class="modal fade" id="MModal">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h4 class="modal-title">菜单</h4>
-          </div>
-          <form @submit.prevent="submitM" id="formM">
-            <div class="modal-body">
-              <div class="form-group">
-                <label>功能名称</label>
-                <input class="form-control" v-model="workRow.systemmenu_name" data-parsley-required="true" maxlength="50" data-parsley-maxlength="50">
-              </div>
-              <div class="form-group">
-                <label>功能路径</label>
-                <input class="form-control" v-model="workRow.api_path" data-parsley-required="true" maxlength="100" data-parsley-maxlength="100">
-              </div>
-              <div class="form-group">
-                <label>权限校验</label>
-                <select class="form-control select2" multiple style="width:100%" id="auth_flag"></select>
-              </div>
-              <div class="form-group">
-                <label>是否显示</label>
-                <select class="form-control select2" multiple style="width:100%" id="show_flag"></select>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="submit" class="btn btn-info">
-                <i class="fa fa-fw fa-plus"></i>提交
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+    </Modal>
   </div>
 </template>
 <script>
+import _ from 'lodash'
+import PageOptions from '../../../config/PageOptions.vue'
 const common = require('@/lib/common')
-const apiUrl = '/api/common/system/SystemApiControl/'
+const apiUrl = '/v1/api/common/system/SystemApiControl/'
+const icons = require('@/config/icon.json')
 
 export default {
-  data: function() {
+  name: 'SystemApiControl',
+  data() {
     return {
+      modal: {
+        folderModal: false,
+        iconModal: false,
+        menuModal: false
+      },
+      table: {
+        iconTable: {
+          rows: [
+            {
+              type: 'index',
+              width: 60,
+              align: 'center'
+            },
+            {
+              title: '图标',
+              key: 'iconSource',
+              render: (h, params) => {
+                return h('i', {
+                  class: params.row.iconSource
+                })
+              }
+            },
+            {
+              title: '图标代码',
+              key: 'iconSource'
+            }
+          ],
+          data: icons
+        }
+      },
+      formRule: {
+        ruleFolderModal: {
+          systemmenu_name: [{ required: true, trigger: 'change' }],
+          systemmenu_icon: [{ required: true, trigger: 'change' }]
+        },
+        ruleMenuModal: {
+          systemmenu_name: [{ required: true, trigger: 'change' }],
+          api_path: [{ required: true, trigger: 'change' }],
+          auth_flag: [{ required: true, trigger: 'change' }],
+          show_flag: [{ required: true, trigger: 'change' }]
+        }
+      },
       pagePara: {},
-      workRow: {},
+      tree: {
+        apiTree: []
+      },
       actNode: {},
-      act: '' // 1新增 2修改
+      workPara: {},
+      action: ''
     }
   },
-  name: 'MenuControl',
+  created() {
+    PageOptions.pageEmpty = false
+  },
   mounted: function() {
-    let _self = this
-
-    async function initPage() {
+    const initPage = async () => {
       try {
-        let response = await _self.$http.post(apiUrl + 'init', {})
-        let retData = response.data.info
-        _self.pagePara = JSON.parse(JSON.stringify(retData))
-        common.initSelect2($('#auth_flag'), retData.authInfo)
-        common.initSelect2($('#show_flag'), retData.tfInfo)
-        _self.getData()
-        $('#formF').parsley()
-        $('#formM').parsley()
-        console.log('init success')
+        let response = await this.$http.post(apiUrl + 'init', {})
+        this.pagePara = JSON.parse(JSON.stringify(response.data.info))
+        this.getTreeData()
       } catch (error) {
-        common.dealErrorCommon(_self, error)
+        this.$commonact.fault(error)
       }
     }
 
     initPage()
   },
   methods: {
-    getData: async function(event) {
-      let _self = this
+    renderTreedata: function(h, { root, node, data }) {
+      return common.treeIconRender(h, { root, node, data }, this, this.$refs.apiTree, 'ios-folder-open', 'ios-cog')
+    },
+    getTreeData: async function() {
       try {
-        let response = await _self.$http.post(apiUrl + 'search', {})
-        let zNodes = response.data.info
-        let treeObj = $.fn.zTree.init($('#tree'), {}, zNodes)
-        treeObj.expandAll(true)
+        let response = await this.$http.post(apiUrl + 'search', {})
+        this.tree.apiTree = response.data.info
       } catch (error) {
-        common.dealErrorCommon(_self, error)
+        this.$commonact.fault(error)
       }
     },
-    addF: function(event) {
-      let _self = this
-      _self.workRow = {}
-      _self.workRow.systemmenu_name = ''
-      let nodeObj = $.fn.zTree.getZTreeObj('tree').getSelectedNodes()
-      if (nodeObj && nodeObj.length > 0) {
-        if (nodeObj[0].getPath().length > 4) {
-          return common.dealWarningCommon('系统最多只支持4级菜单')
+    addFolderModal: function() {
+      this.workPara = {}
+      this.action = 'add'
+      this.$refs.formFolder.resetFields()
+      if (_.isEmpty(this.actNode)) {
+        return this.$commonact.warning('请选择一个目录')
+      } else {
+        if (this.actNode.node_type === '01') {
+          return this.$commonact.warning('菜单下不允许新增内容')
         }
-        if (nodeObj[0].node_type === '01') {
-          return common.dealWarningCommon('菜单下不允许新增')
-        }
-        _self.actNode = JSON.parse(JSON.stringify(nodeObj[0]))
-      } else return common.dealWarningCommon('请选择一个节点')
-      $('#formF')
-        .parsley()
-        .reset()
-      _self.act = '1'
-      $('#FModal').modal('show')
+        this.modal.folderModal = true
+      }
     },
-    submitF: async function(event) {
-      let _self = this
-      try {
-        if (
-          $('#formF')
-            .parsley()
-            .isValid()
-        ) {
-          _self.workRow.parent_id = _self.actNode.systemmenu_id
+    showIconModal: function() {
+      this.modal.iconModal = true
+    },
+    iconChoose: function(currentRow) {
+      this.workPara.systemmenu_icon = currentRow.iconSource
+    },
+    iconCancel: function() {
+      this.workPara.systemmenu_icon = ''
+    },
+    submitFolder: function() {
+      this.$refs.formFolder.validate(async valid => {
+        if (valid) {
+          try {
+            if (this.action === 'add') {
+              this.workPara.parent_id = this.actNode.systemmenu_id
+              await this.$http.post(apiUrl + 'addFolder', this.workPara)
+              this.$Message.success('增加目录成功')
+            } else if (this.action === 'modify') {
+              await this.$http.post(apiUrl + 'modifyFolder', this.workPara)
+              this.$Message.success('修改目录成功')
+            }
 
-          if (_self.act === '1') {
-            await _self.$http.post(apiUrl + 'addFolder', _self.workRow)
-          } else {
-            await _self.$http.post(apiUrl + 'modifyFolder', _self.workRow)
+            this.getTreeData()
+            this.modal.folderModal = false
+          } catch (error) {
+            this.$commonact.fault(error)
           }
-          $('#FModal').modal('hide')
-          _self.getData()
         }
-      } catch (error) {
-        common.dealErrorCommon(_self, error)
+      })
+    },
+    addMenuModal: function() {
+      this.workPara = {}
+      this.action = 'add'
+      this.$refs.formMenu.resetFields()
+      if (_.isEmpty(this.actNode)) {
+        return this.$commonact.warning('请选择一个目录')
+      } else {
+        if (this.actNode.node_type === '01') {
+          return this.$commonact.warning('菜单下不允许新增内容')
+        }
+        this.modal.menuModal = true
       }
     },
-    addM: function(event) {
-      let _self = this
-      _self.workRow = {}
-      _self.workRow.systemmenu_name = ''
-      _self.api_path = ''
-      $('#auth_flag')
-        .val(null)
-        .trigger('change')
-      $('#show_flag')
-        .val(null)
-        .trigger('change')
-
-      let nodeObj = $.fn.zTree.getZTreeObj('tree').getSelectedNodes()
-      if (nodeObj && nodeObj.length > 0) {
-        if (nodeObj[0].node_type === '01') {
-          return common.dealWarningCommon('菜单下不允许新增')
-        }
-        _self.actNode = JSON.parse(JSON.stringify(nodeObj[0]))
-      } else return common.dealWarningCommon('请选择一个节点')
-      $('#formM')
-        .parsley()
-        .reset()
-      _self.act = '1'
-      $('#MModal').modal('show')
-    },
-    submitM: async function(event) {
-      let _self = this
-      try {
-        if (
-          $('#formM')
-            .parsley()
-            .isValid()
-        ) {
-          _self.workRow.parent_id = _self.actNode.systemmenu_id
-          _self.workRow.auth_flag = common.getSelect2Val('auth_flag')
-          _self.workRow.show_flag = common.getSelect2Val('show_flag')
-          if (_self.act === '1') {
-            await _self.$http.post(apiUrl + 'addMenu', _self.workRow)
-          } else {
-            await _self.$http.post(apiUrl + 'modifyMenu', _self.workRow)
+    submitMenu: function() {
+      this.$refs.formMenu.validate(async valid => {
+        if (valid) {
+          try {
+            if (this.action === 'add') {
+              this.workPara.parent_id = this.actNode.systemmenu_id
+              await this.$http.post(apiUrl + 'addMenu', this.workPara)
+              this.$Message.success('增加菜单成功')
+            } else if (this.action === 'modify') {
+              await this.$http.post(apiUrl + 'modifyMenu', this.workPara)
+              this.$Message.success('修改菜单成功')
+            }
+            this.getTreeData()
+            this.modal.menuModal = false
+          } catch (error) {
+            this.$commonact.fault(error)
           }
-          $('#MModal').modal('hide')
-          _self.getData()
-        }
-      } catch (error) {
-        common.dealErrorCommon(_self, error)
-      }
-    },
-    editNode: async function(event) {
-      let _self = this
-      try {
-        let nodeObj = $.fn.zTree.getZTreeObj('tree').getSelectedNodes()
-        if (nodeObj && nodeObj.length > 0) {
-          _self.actNode = JSON.parse(JSON.stringify(nodeObj[0]))
         } else {
-          return common.dealWarningCommon('请选择一个节点')
+          this.$commonact.error('增加目录失败')
         }
-        _self.act = '2'
-        if (nodeObj[0].node_type === '00') {
-          _self.workRow = {}
-          _self.workRow.systemmenu_id = nodeObj[0].systemmenu_id
-          _self.workRow.systemmenu_name = nodeObj[0].systemmenu_name
-          $('#formF')
-            .parsley()
-            .reset()
-          $('#FModal').modal('show')
-        } else if (nodeObj[0].node_type === '01') {
-          let response = await _self.$http.post(apiUrl + 'getApi', {
-            api_id: nodeObj[0].api_id
-          })
-          let retData = response.data.info
-          _self.workRow = {}
-          _self.workRow.systemmenu_id = nodeObj[0].systemmenu_id
-          _self.workRow.systemmenu_name = nodeObj[0].systemmenu_name
-          _self.workRow.api_path = retData.api_path
-          $('#auth_flag')
-            .val(retData.auth_flag)
-            .trigger('change')
-          $('#show_flag')
-            .val(retData.show_flag)
-            .trigger('change')
-
-          $('#formM')
-            .parsley()
-            .reset()
-          $('#MModal').modal('show')
+      })
+    },
+    editNode: async function() {
+      try {
+        if (_.isEmpty(this.actNode)) {
+          return this.$commonact.warning('请选择一个节点')
+        }
+        this.action = 'modify'
+        if (this.actNode.node_type === '00') {
+          this.workPara = {}
+          this.$refs.formFolder.resetFields()
+          this.workPara.systemmenu_id = this.actNode.systemmenu_id
+          this.workPara.systemmenu_name = this.actNode.systemmenu_name
+          this.workPara.systemmenu_icon = this.actNode.systemmenu_icon
+          this.modal.folderModal = true
+        } else if (this.actNode.node_type === '01') {
+          this.workPara = {}
+          this.$refs.formMenu.resetFields()
+          this.workPara.systemmenu_id = this.actNode.systemmenu_id
+          this.workPara.systemmenu_name = this.actNode.systemmenu_name
+          this.workPara.api_path = this.actNode.api_path
+          this.workPara.auth_flag = this.actNode.auth_flag
+          this.workPara.show_flag = this.actNode.show_flag
+          this.modal.menuModal = true
         }
       } catch (error) {
-        common.dealErrorCommon(_self, error)
+        this.$commonact.fault(error)
       }
     }
   }
 }
 </script>
-<style scoped>
-</style>

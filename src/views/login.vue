@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <div style="height:100%; background-color: #fff;">
     <!-- begin #header -->
-    <div class="header navbar navbar-default navbar-fixed-top" style="position: relative;">
+    <div class="lheader lnavbar lnavbar-default lnavbar-fixed-top" style="position: relative;">
       <!-- begin container -->
       <div>
         <!-- begin navbar-header -->
-        <div class="navbar-header">
-          <a href="/" class="navbar-brand">
+        <div class="lnavbar-header">
+          <a href="/" class="lnavbar-brand">
             <!-- <span class="brand-logo-ship"></span> -->
             <img src="/static/logo.png" class="brand-logo-ship">
             <span class="brand-text">
@@ -16,8 +16,8 @@
         </div>
         <!-- end navbar-header -->
         <!-- begin navbar-collapse -->
-        <div class="collapse navbar-collapse" id="header-navbar">
-          <ul class="nav navbar-nav navbar-right" style="margin-right: 0px;">
+        <div class="lcollapse lnavbar-collapse" id="header-navbar">
+          <ul class="lnav lnavbar-nav lnavbar-right" style="margin-right: 0px;">
             <li>
               <a href="/">Home</a>
             </li>
@@ -45,16 +45,19 @@
       </div>
       <!-- end container -->
       <!-- begin #home -->
-      <div id="home" class="home home-bg" style="height: 300px;">
-      </div>
+      <div id="home" class="lhome lhome-bg" style="height: 300px;"></div>
       <!-- end #home -->
     </div>
     <!-- end #header -->
     <div class="login-box">
-      <div class="login-logo" style="color: #444;"><a href="/"><b>SINOTASHIP</b> Co.</a></div>
+      <div class="login-logo" style="color: #444;">
+        <a href="/">
+          <b>SINOTASHIP</b> Co.
+        </a>
+      </div>
       <div class="login-box-body">
         <div>
-          <div class="alert alert-danger" v-bind:class="{ 'hidden': isA }">{{ errorMessage }}</div>
+          <div class="alert alert-danger" v-show="isA">{{ errorMessage }}</div>
           <div class="form-group has-feedback">
             <input v-model="username" type="text" class="form-control" placeholder="username">
             <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
@@ -65,7 +68,7 @@
           </div>
           <div class="row">
             <div class="col-xs-4">
-              <button v-on:click="login" class="btn btn-primary btn-block btn-flat">Submit</button>
+              <button v-on:click="checkForm" class="btn btn-primary btn-block btn-flat">Submit</button>
             </div>
             <!-- /.col -->
           </div>
@@ -81,7 +84,10 @@
     <!-- /.login-box -->
   </div>
 </template>
+
 <script>
+import { mapActions } from 'vuex'
+import PageOptions from '../config/PageOptions.vue'
 const common = require('@/lib/common')
 
 export default {
@@ -91,188 +97,106 @@ export default {
       username: '',
       password: '',
       errorMessage: '',
-      isA: true
+      isA: false
     }
   },
-  mounted: function() {
-    $('body').removeClass()
-    // $('body').addClass('hold-transition')
-    // $('body').addClass('login-page')
+  created() {
+    PageOptions.pageEmpty = true
+  },
+  beforeRouteLeave(to, from, next) {
+    PageOptions.pageEmpty = false
+    next()
   },
   methods: {
-    login: function(event) {
+    ...mapActions('access', ['login', 'logout']),
+    checkForm: function(e) {
+      e.preventDefault()
       let _self = this
       let encInfo = common.aesEncryptModeCFB(this.username, this.password)
       _self.$http
-        .post('/api/auth', {
+        .post('/v1/api/auth/signin', {
           username: this.username,
-          identifyCode: encInfo[1],
-          magicNo: encInfo[0],
-          loginType: 'WEB'
+          identify_code: encInfo[1],
+          magic_no: encInfo[0],
+          login_type: 'WEB'
         })
         .then(function(response) {
-          let token = response.headers.authorization
-          if (token) {
-            let userinfo = response.data.info
+          let userinfo = response.data.info
+          if (userinfo.Authorization) {
             if (!userinfo.avatar) {
               userinfo.avatar = '/static/images/base/head.jpg'
             }
-            common.clearStoreData()
-            common.setStoreData('token', token)
-            common.setStoreData('userinfo', userinfo)
-            _self.$router.push({
-              path: '/admin/common/system/home'
+            // common.clearStoreData()
+            // common.setStoreData('token', token)
+            // common.setStoreData('userinfo', userinfo)
+            _self.login({ userInfo: userinfo }).then(() => {
+              _self.$router.push({ path: '/dashboard/home' })
             })
           } else {
             _self.errorMessage = '系统错误'
-            _self.isA = false
-            common.clearStoreData()
+            _self.isA = true
+            _self.logout()
           }
         })
-        .catch(function(error) {
+        .catch(function() {
           _self.errorMessage = '用户名或者密码错误'
-          _self.isA = false
-          common.clearStoreData()
+          _self.isA = true
+          _self.logout()
         })
     }
   }
 }
 </script>
 <style scoped>
-.navbar-fixed-top,
-.navbar-fixed-bottom {
-  position: fixed;
-  right: 0;
-  left: 0;
-  z-index: 1030;
+.lnavbar {
+  position: relative;
+  min-height: 50px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
 }
 
-.navbar-fixed-top {
-  top: 0;
-  border-width: 0 0 1px;
-}
-
-.navbar-default {
+.lnavbar-default {
   background-color: #f8f8f8;
   border-color: #e7e7e7;
 }
 
-.header.navbar {
+.lnavbar-fixed-top {
+  top: 0;
+  border-width: 0 0 1px;
+}
+
+.lheader.navbar.lnavbar-default {
+  background: #fff;
+}
+
+.lheader.lnavbar {
   border-bottom: none;
   -webkit-transition: all 0.2s linear;
   transition: all 0.2s linear;
 }
 
-.header.navbar.navbar-default {
+.lheader.lnavbar.lnavbar-default {
   background: #fff;
 }
 
-.header .navbar-brand {
+.lnavbar-header {
+  float: left;
+}
+
+.lheader .lnavbar-brand {
   padding: 25px 15px;
 }
 
-.text-theme,
-a {
-  color: #00acac;
+.lnavbar-default .lnavbar-brand {
+  color: #777;
 }
 
-.navbar-default .navbar-collapse,
-.navbar-default .navbar-form {
-  border-color: #e7e7e7;
-}
-
-.navbar-fixed-top .navbar-collapse,
-.navbar-fixed-bottom .navbar-collapse {
-  max-height: 340px;
-}
-
-.navbar-collapse.collapse {
-  display: block !important;
-  height: auto !important;
-  padding-bottom: 0;
-  overflow: visible !important;
-}
-
-.navbar-collapse {
-  width: auto;
-  border-top: 0;
-  -webkit-box-shadow: none;
-  box-shadow: none;
-}
-
-.navbar-collapse {
-  padding-right: 15px;
-  padding-left: 15px;
-  overflow-x: visible;
-  -webkit-overflow-scrolling: touch;
-  border-top: 1px solid transparent;
-  -webkit-box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, 0.1);
-  box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, 0.1);
-}
-
-.collapse {
-  display: none;
-}
-
-.navbar-right {
-  float: right !important;
-  margin-right: -15px;
-}
-
-.navbar-nav {
+.lnavbar-brand {
   float: left;
-  margin: 0;
-}
-
-.nav {
-  padding-left: 0;
-  margin-bottom: 0;
-  list-style: none;
-}
-
-.navbar-nav > li {
-  float: left;
-}
-
-.nav > li,
-.nav > li > a {
-  position: relative;
-  display: block;
-}
-
-.header.navbar .navbar-nav > li > a {
-  font-size: 12px;
+  height: 50px;
+  padding: 15px;
+  font-size: 18px;
   line-height: 20px;
-  color: #2d353c;
-  font-weight: 600;
-  padding: 25px 15px;
-}
-
-.nav > li,
-.nav > li > a {
-  position: relative;
-  display: block;
-}
-
-a {
-  -webkit-transition: all 0.2s linear;
-  transition: all 0.2s linear;
-  color: #337ab7;
-  text-decoration: none;
-  background-color: transparent;
-}
-
-.home {
-  padding: 0 !important;
-  color: #fff;
-}
-
-.home-bg {
-  background-image: url(/static/header-main.jpg);
-  background-repeat: no-repeat;
-  /* background-position: 0px -100px; */
-  background-size: cover;
-  /* -moz-background-size: 100% 100%; */
 }
 
 .brand-logo-ship {
@@ -283,8 +207,155 @@ a {
   margin-top: -14px;
 }
 
-.login-box-body,
-.register-box-body {
+.lnavbar-brand > img {
+  display: block;
+}
+
+.lnavbar-collapse {
+  width: auto;
+  border-top: 0;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+.lnavbar-collapse {
+  padding-right: 15px;
+  padding-left: 15px;
+  overflow-x: visible;
+  -webkit-overflow-scrolling: touch;
+  border-top: 1px solid transparent;
+  -webkit-box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, 0.1);
+  box-shadow: inset 0 1px 0 hsla(0, 0%, 100%, 0.1);
+}
+
+.lnavbar-collapse.lcollapse {
+  display: flow-root !important;
+  height: auto !important;
+  padding-bottom: 0;
+  overflow: visible !important;
+}
+
+.lnavbar-fixed-bottom .lnavbar-collapse,
+.lnavbar-fixed-top .lnavbar-collapse,
+.lnavbar-static-top .lnavbar-collapse {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+.lnavbar-fixed-top .lnavbar-collapse {
+  max-height: 340px;
+}
+
+.lnavbar-default .lnavbar-collapse {
+  border-color: #e7e7e7;
+}
+
+.lnavbar-right {
+  float: right !important;
+  margin-right: -15px;
+}
+
+.lnavbar-nav {
+  float: left;
+  margin: 0;
+}
+
+.lnav {
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+}
+
+.btn-group-vertical > .btn-group:after,
+.btn-group-vertical > .btn-group:before,
+.btn-toolbar:after,
+.btn-toolbar:before,
+.clearfix:after,
+.clearfix:before,
+.container-fluid:after,
+.container-fluid:before,
+.container:after,
+.container:before,
+.dl-horizontal dd:after,
+.dl-horizontal dd:before,
+.form-horizontal .form-group:after,
+.form-horizontal .form-group:before,
+.modal-footer:after,
+.modal-footer:before,
+.modal-header:after,
+.modal-header:before,
+.lnav:after,
+.lnav:before,
+.lnavbar-collapse:after,
+.lnavbar-collapse:before,
+.lnavbar-header:after,
+.lnavbar-header:before,
+.lnavbar:after,
+.lnavbar:before,
+.pager:after,
+.pager:before,
+.panel-body:after,
+.panel-body:before,
+.row:after,
+.row:before {
+  display: table;
+  content: ' ';
+}
+
+.lnav > li,
+.lnav > li > a {
+  position: relative;
+  display: block;
+}
+
+.lnavbar-nav > li {
+  float: left;
+}
+
+.lheader.lnavbar .lnavbar-nav > li > a {
+  font-size: 12px;
+  line-height: 20px;
+  color: #2d353c;
+  font-weight: 600;
+  padding: 25px 15px;
+}
+
+.lhome {
+  padding: 0 !important;
+  color: #fff;
+}
+
+.lhome-bg {
+  background-image: url(/static/header-main.jpg);
+  background-repeat: no-repeat;
+  /* background-position: 0px -100px; */
+  background-size: cover;
+  /* -moz-background-size: 100% 100%; */
+}
+.login-box {
+  width: 360px;
+  margin: 7% auto;
+}
+
+.login-logo {
+  font-size: 35px;
+  text-align: center;
+  margin-bottom: 25px;
+  font-weight: 300;
+}
+
+.login-box-body {
   background: #d2d6de;
+  padding: 20px;
+  border-top: 0;
+  color: #666;
+}
+
+a {
+  -webkit-transition: all 0.2s linear;
+  transition: all 0.2s linear;
+  color: #337ab7;
+  text-decoration: none;
+  background-color: transparent;
 }
 </style>
