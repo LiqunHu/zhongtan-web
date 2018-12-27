@@ -9,7 +9,10 @@ const routes = [
   { path: '/admin/common/system/GroupControl', component: resolve => require(['@/views/common/system/GroupControl'], resolve) },
   { path: '/admin/common/system/OperatorControl', component: resolve => require(['@/views/common/system/OperatorControl'], resolve) },
   { path: '/admin/common/system/UserProfile', component: resolve => require(['@/views/common/system/UserProfile'], resolve) },
-  { path: '/admin/test', component: resolve => require(['@/views/Test'], resolve) }
+  { path: '/admin/test', component: resolve => require(['@/views/Test'], resolve) },
+  { path: '/admin/zhongtan/configuration/PortConfig', component: resolve => require(['@/views/zhongtan/configuration/PortConfig'], resolve) },
+  { path: '/admin/zhongtan/web/SailSchedule', component: resolve => require(['@/views/zhongtan/web/SailSchedule'], resolve) },
+  { path: '/admin/zhongtan/web/WebConfig', component: resolve => require(['@/views/zhongtan/web/WebConfig'], resolve) }
 ]
 
 export default routes

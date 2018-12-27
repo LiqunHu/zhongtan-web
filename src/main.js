@@ -11,7 +11,9 @@ import routes from './config/PageRoutes'
 import VueRouter from 'vue-router'
 import VueInsProgressBar from 'vue-ins-progress-bar'
 import iView from 'iview'
+import locale from 'iview/dist/locale/en-US'
 import vuescroll from 'vuescroll'
+import mavonEditor from 'mavon-editor'
 import VuePanel from './lib/panel/'
 import * as common from './lib/common.js'
 
@@ -23,6 +25,7 @@ import 'bootstrap-social/bootstrap-social.css'
 import 'ionicons/dist/css/ionicons.min.css'
 import 'iview/dist/styles/iview.css'
 import 'vuescroll/dist/vuescroll.css'
+import 'mavon-editor/dist/css/index.css'
 
 // color admin css
 import './assets/css/default/style.min.css'
@@ -36,13 +39,14 @@ import App from './App'
 Vue.use(VueX)
 Vue.use(VueRouter)
 Vue.use(vuescroll)
-Vue.use(iView)
+Vue.use(iView, { locale })
 Vue.use(VuePanel)
 Vue.use(VueInsProgressBar, {
   position: 'fixed',
   show: true,
   height: '3px'
 })
+Vue.use(mavonEditor)
 
 const router = new VueRouter({
   mode: 'history',
@@ -97,31 +101,31 @@ Vue.prototype.$http = instance
 Vue.prototype.$commonact = {
   info: message => {
     vueInstance.$Modal.info({
-      title: '提示',
+      title: 'info',
       content: '<p>' + message + '</p>'
     })
   },
   success: message => {
     vueInstance.$Modal.success({
-      title: '成功',
+      title: 'success',
       content: '<p>' + message + '</p>'
     })
   },
   warning: message => {
     vueInstance.$Modal.warning({
-      title: '警告',
+      title: 'warning',
       content: '<p>' + message + '</p>'
     })
   },
   error: message => {
     vueInstance.$Modal.error({
-      title: '错误',
+      title: 'error',
       content: '<p>' + message + '</p>'
     })
   },
   confirm: (message, cb) => {
     vueInstance.$Modal.confirm({
-      title: '确认',
+      title: 'confirm',
       content: '<p>' + message + '</p>',
       onOk: cb
     })
@@ -131,7 +135,7 @@ Vue.prototype.$commonact = {
     if (response) {
       if (response.status > 699 && response.status < 800) {
         vueInstance.$Modal.error({
-          title: '错误',
+          title: 'Error',
           content: '<p>' + response.data.msg + '</p>'
         })
       } else if (response.status === 404) {
@@ -140,7 +144,10 @@ Vue.prototype.$commonact = {
         })
       } else if (response.status === 401) {
         if (response.data.errno === -2) {
-          vueInstance.$router.push({ path: '/error', query: { httpcode: response.status, error: response.data.errno, message: '从其他地方登录' } })
+          vueInstance.$router.push({
+            path: '/error',
+            query: { httpcode: response.status, error: response.data.errno, message: 'Login from other place' }
+          })
         } else {
           vueInstance.$router.push({
             path: '/error',

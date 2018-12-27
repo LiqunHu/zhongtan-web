@@ -55,7 +55,7 @@
 import _ from 'lodash'
 import PageOptions from '../../../config/PageOptions.vue'
 const common = require('@/lib/common')
-const apiUrl = '/v1/api/common/system/GroupControl/'
+const apiUrl = '/api/common/system/GroupControl/'
 
 export default {
   name: 'GroupControl',

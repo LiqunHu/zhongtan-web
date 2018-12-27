@@ -114,7 +114,7 @@ export default {
       let _self = this
       let encInfo = common.aesEncryptModeCFB(this.username, this.password)
       _self.$http
-        .post('/v1/api/auth/signin', {
+        .post('/api/auth/signin', {
           username: this.username,
           identify_code: encInfo[1],
           magic_no: encInfo[0],
@@ -130,7 +130,7 @@ export default {
             // common.setStoreData('token', token)
             // common.setStoreData('userinfo', userinfo)
             _self.login({ userInfo: userinfo }).then(() => {
-              _self.$router.push({ path: '/dashboard/home' })
+              _self.$router.push({ path: '/admin/dashboard/home' })
             })
           } else {
             _self.errorMessage = '系统错误'

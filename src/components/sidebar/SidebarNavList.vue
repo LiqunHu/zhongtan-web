@@ -20,7 +20,7 @@
   </li>
 
   <!-- menu without submenu -->
-  <router-link v-else v-bind:to="menu.menu_path" active-class="active" tag="li" v-on:click.native="collapseOther()">
+  <router-link v-else v-bind:to="'/admin' + menu.menu_path" active-class="active" tag="li" v-on:click.native="collapseOther()">
     <a>
       <span v-if="menu.badge" class="badge pull-right">{{ menu.badge }}</span>
       <i v-if="menu.menu_icon" v-bind:class="'fa ' + menu.menu_icon"></i>

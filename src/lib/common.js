@@ -54,6 +54,12 @@ exports.removeStoreData = function(key) {
   store.remove(key)
 }
 
+exports.uploadHeaders = () => {
+  return {
+    Authorization: getStoreData('token')
+  }
+}
+
 exports.treeIconRender = (h, { root, node, data }, _self, treeRef, folderIcon, menuIcon) => {
   if (node.node.node_type === '00') {
     return h(

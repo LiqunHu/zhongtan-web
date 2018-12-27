@@ -71,7 +71,7 @@
 import _ from 'lodash'
 import PageOptions from '../../../config/PageOptions.vue'
 const common = require('@/lib/common')
-const apiUrl = '/v1/api/common/system/SystemApiControl/'
+const apiUrl = '/api/common/system/SystemApiControl/'
 const icons = require('@/config/icon.json')
 
 export default {

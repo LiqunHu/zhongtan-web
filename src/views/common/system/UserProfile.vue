@@ -199,7 +199,7 @@
 import { mapState } from 'vuex'
 import CryptoJS from 'crypto-js'
 import PageOptions from '../../../config/PageOptions.vue'
-const apiUrl = '/v1/api/common/system/UserSetting/'
+const apiUrl = '/api/common/system/UserSetting/'
 
 export default {
   data() {
