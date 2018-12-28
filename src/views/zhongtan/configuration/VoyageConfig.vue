@@ -32,7 +32,7 @@
         </div>
       </template>
       <Table stripe ref="voyageTable" :columns="table.voyageTable.rows" :data="table.voyageTable.data">
-        <template slot-scope="{ row, index }" slot="vessel_name">
+        <template slot-scope="{ row, index }" slot="vessel_id">
           <Select v-model="row.vessel_id">
             <Option v-for="item in pagePara.VesselINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
           </Select>
@@ -114,7 +114,7 @@ export default {
         ruleVoyageModal: {
           vessel_name: [{ required: true, trigger: 'change', message: 'Choose vessel' }],
           voyage_number: [{ required: true, trigger: 'change', message: 'Enter voyage number' }],
-          etadate: [{ required: true, trigger: 'change', message: 'Enter select date' }]
+          etadate: [{ required: true, trigger: 'change', message: 'Please select date' }]
         }
       },
       pagePara: {},
