@@ -9,7 +9,7 @@
     <!-- end breadcrumb -->
     <!-- begin page-header -->
     <h1 class="page-header">
-      Vessel Config
+      Voyage Config
       <small></small>
     </h1>
     <!-- end page-header -->
@@ -18,23 +18,23 @@
         <div class="panel-toolbar">
           <div class="form-inline">
             <div class="input-group m-r-10">
-              <input type="text" placeholder="vessel name、operator、code" v-model="table.vesselTable.search_text" class="form-control">
+              <input type="text" placeholder="voyage name、operator、code" v-model="table.voyageTable.search_text" class="form-control">
               <div class="input-group-append">
-                <button type="button" class="btn btn-info" @click="getVesselData(1)">
+                <button type="button" class="btn btn-info" @click="getVoyageData(1)">
                   <i class="fa fa-search"></i>
                 </button>
               </div>
             </div>
             <div class="form-group m-r-10">
-              <button type="button" class="btn btn-info" @click="addVesselModal">Add Vessel</button>
+              <button type="button" class="btn btn-info" @click="addVoyageModal">Add Voyage</button>
             </div>
           </div>
         </div>
       </template>
-      <Table stripe ref="vesselTable" :columns="table.vesselTable.rows" :data="table.vesselTable.data">
-        <template slot-scope="{ row, index }" slot="vessel_service_name">
-          <Select v-model="row.vessel_service_name" disabled>
-            <Option v-for="item in pagePara.VesselServiceINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+      <Table stripe ref="voyageTable" :columns="table.voyageTable.rows" :data="table.voyageTable.data">
+        <template slot-scope="{ row, index }" slot="vessel_name">
+          <Select v-model="row.vessel_id">
+            <Option v-for="item in pagePara.VesselINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
           </Select>
         </template>
         <template slot-scope="{ row, index }" slot="action">
@@ -46,43 +46,40 @@
           </a>
         </template>
       </Table>
-      <Page class="m-t-10" :total="table.vesselTable.total" :page-size="table.vesselTable.limit" @on-change="getVesselData"/>
+      <Page class="m-t-10" :total="table.voyageTable.total" :page-size="table.voyageTable.limit" @on-change="getVoyageData"/>
     </panel>
-    <Modal v-model="modal.vesselModal" title="Vessel">
-      <Form :model="workPara" :label-width="120" :rules="formRule.ruleVesselModal" ref="formVessel">
-        <FormItem label="Vessel Service" prop="vessel_service_name">
-          <Select v-model="workPara.vessel_service_name" :disabled="action === 'modify'">
-            <Option v-for="item in pagePara.VesselServiceINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+    <Modal v-model="modal.voyageModal" title="Voyage">
+      <Form :model="workPara" :label-width="120" :rules="formRule.ruleVoyageModal" ref="formVoyage">
+        <FormItem label="Vessel Name" prop="vessel_name">
+          <Select v-model="workPara.vessel_id">
+            <Option v-for="item in pagePara.VesselINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
           </Select>
         </FormItem>
-        <FormItem label="Vessel Name" prop="vessel_name">
-          <Input placeholder="Vessel Name" v-model="workPara.vessel_name"/>
+        <FormItem label="Voyage Number" prop="voyage_number">
+          <Input placeholder="Voyage Number" v-model="workPara.voyage_number"/>
         </FormItem>
-        <FormItem label="Vessel Operator" prop="vessel_operator">
-          <Input placeholder="Vessel Operator" v-model="workPara.vessel_operator"/>
-        </FormItem>
-        <FormItem label="Vessel Code" prop="vessel_code">
-          <Input placeholder="Vessel Code" v-model="workPara.vessel_code"/>
+        <FormItem label="ETA Date" prop="etadate">
+          <DatePicker type="date" v-model="workPara.voyage_eta_date"></DatePicker>
         </FormItem>
       </Form>
       <div slot="footer">
-        <Button type="text" size="large" @click="modal.vesselModal=false">Cancel</Button>
-        <Button type="primary" size="large" @click="submitVessel">Submit</Button>
+        <Button type="text" size="large" @click="modal.voyageModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="submitVoyage">Submit</Button>
       </div>
     </Modal>
   </div>
 </template>
 <script>
 import PageOptions from '../../../config/PageOptions.vue'
-const apiUrl = '/api/zhongtan/configuration/VesselConfig/'
+const apiUrl = '/api/zhongtan/configuration/VoyageConfig/'
 
 export default {
-  name: 'VesselConfig',
+  name: 'VoyageConfig',
   data: function() {
     return {
-      modal: { vesselModal: false },
+      modal: { voyageModal: false },
       table: {
-        vesselTable: {
+        voyageTable: {
           rows: [
             {
               type: 'index',
@@ -90,20 +87,16 @@ export default {
               align: 'center'
             },
             {
-              title: 'Vessel Service',
-              slot: 'vessel_service_name'
-            },
-            {
               title: 'Vessel Name',
-              key: 'vessel_name'
+              slot: 'vessel_id'
             },
             {
-              title: 'Vessel Operator',
-              key: 'vessel_operator'
+              title: 'Voyage Number',
+              key: 'voyage_number'
             },
             {
-              title: 'Vessel Code',
-              key: 'vessel_code'
+              title: 'ETA DATE',
+              key: 'voyage_eta_date'
             },
             {
               title: 'Action',
@@ -118,11 +111,10 @@ export default {
         }
       },
       formRule: {
-        ruleVesselModal: {
-          vessel_service_name: [{ required: true, trigger: 'change', message: 'Choose service' }],
-          vessel_name: [{ required: true, trigger: 'change', message: 'Enter vessel name' }],
-          vessel_operator: [{ required: true, trigger: 'change', message: 'Enter vessel name' }],
-          vessel_code: [{ required: true, trigger: 'change', message: 'Enter vessel code' }]
+        ruleVoyageModal: {
+          vessel_name: [{ required: true, trigger: 'change', message: 'Choose vessel' }],
+          voyage_number: [{ required: true, trigger: 'change', message: 'Enter voyage number' }],
+          etadate: [{ required: true, trigger: 'change', message: 'Enter select date' }]
         }
       },
       pagePara: {},
@@ -139,7 +131,7 @@ export default {
       try {
         let response = await this.$http.post(apiUrl + 'init', {})
         this.pagePara = JSON.parse(JSON.stringify(response.data.info))
-        this.getVesselData(1)
+        this.getVoyageData(1)
       } catch (error) {
         this.$commonact.fault(error)
       }
@@ -148,29 +140,29 @@ export default {
     initPage()
   },
   methods: {
-    getVesselData: async function(index) {
+    getVoyageData: async function(index) {
       try {
         if (index) {
-          this.table.vesselTable.offset = (index - 1) * this.table.vesselTable.limit
+          this.table.voyageTable.offset = (index - 1) * this.table.voyageTable.limit
         }
 
         let response = await this.$http.post(apiUrl + 'search', {
-          search_text: this.table.vesselTable.search_text,
-          offset: this.table.vesselTable.offset,
-          limit: this.table.vesselTable.limit
+          search_text: this.table.voyageTable.search_text,
+          offset: this.table.voyageTable.offset,
+          limit: this.table.voyageTable.limit
         })
         let data = response.data.info
-        this.table.vesselTable.total = data.total
-        this.table.vesselTable.data = JSON.parse(JSON.stringify(data.rows))
+        this.table.voyageTable.total = data.total
+        this.table.voyageTable.data = JSON.parse(JSON.stringify(data.rows))
       } catch (error) {
         this.$commonact.fault(error)
       }
     },
-    addVesselModal: async function() {
+    addVoyageModal: async function() {
       this.workPara = {}
       this.action = 'add'
-      this.$refs.formVessel.resetFields()
-      this.modal.vesselModal = true
+      this.$refs.formVoyage.resetFields()
+      this.modal.voyageModal = true
     },
     modifyVesselModal: async function(row) {
       let actrow = JSON.parse(JSON.stringify(row))
@@ -179,11 +171,11 @@ export default {
       this.oldPara = JSON.parse(JSON.stringify(actrow))
       this.workPara = JSON.parse(JSON.stringify(actrow))
       this.action = 'modify'
-      this.$refs.formVessel.resetFields()
-      this.modal.vesselModal = true
+      this.$refs.formVoyage.resetFields()
+      this.modal.voyageModal = true
     },
-    submitVessel: function() {
-      this.$refs.formVessel.validate(async valid => {
+    submitVoyage: function() {
+      this.$refs.formVoyage.validate(async valid => {
         if (valid) {
           try {
             if (this.action === 'add') {
@@ -193,8 +185,8 @@ export default {
               await this.$http.post(apiUrl + 'modify', { old: this.oldPara, new: this.workPara })
               this.$Message.success('modify port success')
             }
-            this.getVesselData()
-            this.modal.vesselModal = false
+            this.getVoyageData()
+            this.modal.voyageModal = false
           } catch (error) {
             this.$commonact.fault(error)
           }
@@ -204,9 +196,9 @@ export default {
     deleteVessel: function(row) {
       this.$commonact.confirm('delete confirmed?', async () => {
         try {
-          await this.$http.post(apiUrl + 'delete', { vessel_id: row.vessel_id })
+          await this.$http.post(apiUrl + 'delete', { voyage_id: row.voyage_id })
           this.$Message.success('delete success')
-          this.getVesselData()
+          this.getVoyageData()
         } catch (error) {
           this.$commonact.fault(error)
         }

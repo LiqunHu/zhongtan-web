@@ -12,6 +12,7 @@ const routes = [
   { path: '/admin/test', component: resolve => require(['@/views/Test'], resolve) },
   { path: '/admin/zhongtan/configuration/PortConfig', component: resolve => require(['@/views/zhongtan/configuration/PortConfig'], resolve) },
   { path: '/admin/zhongtan/configuration/VesselConfig', component: resolve => require(['@/views/zhongtan/configuration/VesselConfig'], resolve) },
+  { path: '/admin/zhongtan/configuration/VoyageConfig', component: resolve => require(['@/views/zhongtan/configuration/VoyageConfig'], resolve) },
   { path: '/admin/zhongtan/web/SailSchedule', component: resolve => require(['@/views/zhongtan/web/SailSchedule'], resolve) },
   { path: '/admin/zhongtan/web/WebConfig', component: resolve => require(['@/views/zhongtan/web/WebConfig'], resolve) }
 ]
