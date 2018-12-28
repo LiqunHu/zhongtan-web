@@ -26,15 +26,14 @@
       <Table stripe ref="scheduleTable" :columns="table.scheduleTable.rows" :data="table.scheduleTable.data">
         <template slot-scope="{ row, index }" slot="files">
           <Dropdown style="margin-left: 20px" placement="bottom-end">
-            <a href="javascript:void(0)">菜单(右)
+            <a href="javascript:void(0)">
+              <Icon type="ios-folder-open" size="30"/>
               <Icon type="ios-arrow-down"></Icon>
             </a>
             <DropdownMenu slot="list">
-              <DropdownItem>驴打滚</DropdownItem>
-              <DropdownItem>炸酱面</DropdownItem>
-              <DropdownItem>豆汁儿</DropdownItem>
-              <DropdownItem>冰糖葫芦</DropdownItem>
-              <DropdownItem>北京烤鸭</DropdownItem>
+              <DropdownItem v-for="f in row.files" v-bind:key="f.url">
+                <a :href="f.url" target="_blank">{{f.name}}</a>
+              </DropdownItem>
             </DropdownMenu>
           </Dropdown>
         </template>
@@ -52,20 +51,18 @@
     </panel>
     <Modal v-model="modal.scheduleModal" title="Port">
       <Form :model="workPara" :label-width="120" :rules="formRule.ruleScheduleModal" ref="formSchedule">
-        <FormItem label="Desc" prop="web_article_title">
+        <FormItem label="Desc" prop="sail_schedule_upload_desc">
           <Input placeholder="Desc" v-model="workPara.sail_schedule_upload_desc"/>
         </FormItem>
         <FormItem label="Files" prop="files">
-          {{files}}
-          <a v-for="f in files" v-bind:key="f.name" :herf="f.url" class="btn bg-navy btn-app">
-            <i class="fa fa-file .btn-flat"></i>
-            {{f.name}}
-          </a>
+          <div v-for="f in files" v-bind:key="f.name" class="upload-list">
+            <Icon type="ios-document" size="60"/>
+          </div>
           <Upload
             ref="upload"
+            :default-file-list="defaultList"
             :headers="headers"
             :show-upload-list="false"
-            :default-file-list="files"
             :on-success="handleSuccess"
             :format="['xls','xlsx']"
             :max-size="4096"
@@ -132,12 +129,10 @@ export default {
       },
       formRule: {
         ruleScheduleModal: {
-          port_name: [{ required: true, trigger: 'change', message: 'Enter port name' }],
-          port_name_cn: [{ required: true, trigger: 'change', message: 'Enter port name cn' }],
-          port_code: [{ required: true, trigger: 'change', message: 'Enter port code' }],
-          port_country: [{ required: true, trigger: 'change', message: 'Choose port country' }]
+          sail_schedule_upload_desc: [{ required: true, trigger: 'change', message: 'Enter description' }]
         }
       },
+      defaultList: [],
       files: [],
       headers: common.uploadHeaders(),
       workPara: {},
@@ -148,7 +143,6 @@ export default {
     PageOptions.pageEmpty = false
   },
   mounted: function() {
-    this.files = this.$refs.upload.fileList
     this.getScheduleData(1)
   },
   filters: {
@@ -182,6 +176,8 @@ export default {
     addScheduleModal: async function() {
       this.workPara = {}
       this.action = 'add'
+      this.files = []
+      this.$refs.upload.clearFiles()
       this.$refs.formSchedule.resetFields()
       this.modal.scheduleModal = true
     },
@@ -192,6 +188,8 @@ export default {
       this.oldPara = JSON.parse(JSON.stringify(actrow))
       this.workPara = JSON.parse(JSON.stringify(actrow))
       this.action = 'modify'
+      this.defaultList = actrow.files
+      this.files = this.$refs.upload.fileList
       this.$refs.formSchedule.resetFields()
       this.modal.scheduleModal = true
     },
@@ -200,6 +198,13 @@ export default {
         if (valid) {
           try {
             if (this.action === 'add') {
+              this.workPara.files = []
+              for (let f of this.files) {
+                this.workPara.files.push({
+                  url: f.url,
+                  name: f.name
+                })
+              }
               await this.$http.post(apiUrl + 'add', this.workPara)
               this.$Message.success('add port success')
             } else if (this.action === 'modify') {
@@ -217,7 +222,7 @@ export default {
     deleteSchedule: function(row) {
       this.$commonact.confirm('delete confirmed?', async () => {
         try {
-          await this.$http.post(apiUrl + 'delete', { port_id: row.port_id })
+          await this.$http.post(apiUrl + 'delete', { sail_schedule_upload_id: row.sail_schedule_upload_id })
           this.$Message.success('delete success')
           this.getScheduleData()
         } catch (error) {
@@ -237,9 +242,10 @@ export default {
       })
     },
     $imgDel(pos) {},
-    handleSuccess(res, file) {
+    handleSuccess(res, file, fileList) {
       file.url = res.info.url
       file.name = res.info.name
+      this.files = this.$refs.upload.fileList
     },
     handleFormatError(file) {
       this.$Notice.warning({
@@ -256,3 +262,19 @@ export default {
   }
 }
 </script>
+<style scoped>
+.upload-list {
+  display: inline-block;
+  width: 60px;
+  height: 60px;
+  text-align: center;
+  line-height: 60px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #fff;
+  position: relative;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  margin-right: 4px;
+}
+</style>

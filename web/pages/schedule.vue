@@ -5,9 +5,11 @@
     <div class="container">
       <div class="vertical-box color-salve">
         <div class="vertical-box-column width-250 color-gray show-pannel">
-          <p><b>Sail Schedule</b></p>
+          <p>
+            <b>Sail Schedule</b>
+          </p>
           <div class="media">
-            <img src="/gallery.jpg" alt="" class="media-object">
+            <img src="/gallery.jpg" alt class="media-object">
           </div>
         </div>
         <div class="vertical-box-column">
@@ -19,13 +21,13 @@
                     <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu">
-                    <li v-for="f in s.files" :key="f.uploadfile_id"><a :href="f.uploadfile_url">{{f.uploadfile_name}}</a></li>
+                    <li v-for="f in s.files" :key="f.uploadfile_id">
+                      <a :href="f.uploadfile_url">{{f.uploadfile_name}}</a>
+                    </li>
                   </ul>
                 </div>
                 <span class="info-time">{{s.created_at}}</span>
-                <h5 class="info-title">
-                  {{s.sail_schedule_upload_desc}}
-                </h5>
+                <h5 class="info-title">{{s.sail_schedule_upload_desc}}</h5>
               </div>
             </li>
           </ul>

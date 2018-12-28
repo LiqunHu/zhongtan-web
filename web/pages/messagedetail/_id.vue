@@ -1,33 +1,35 @@
 <template>
   <!-- begin #page-container -->
-    <div>
-        <common-header></common-header>
-        <div class="container">
-          <article class="page">
-            <header class="border-left entry-header">
-              <h1 class="entry-title">{{data.web_article_id}}</h1>
-              <div class="blog-meta metabox">
-                <span class="entry-elem">
-                  <i class="fa fa-calendar"></i>
-                {{data.created_at}}							</span>
-                <span class="separator">|</span>
-                <span class="entry-elem"> 
-                  <i class="fa fa-comment"></i>
-                {{data.web_article_author}} 							</span>
-              </div>
-            </header><!-- .entry-header -->
-
-            <div class="entry-content">
-              <blockquote  class="markdown-body" v-html="data.web_article_markdown">
-              </blockquote>
-             </div><!-- .entry-content -->
-
-            <footer class="entry-footer"></footer><!-- .entry-footer -->
-          </article>
+  <div>
+    <common-header></common-header>
+    <div class="container">
+      <article class="page">
+        <header class="border-left entry-header">
+          <h1 class="entry-title">{{data.web_article_id}}</h1>
+          <div class="blog-meta metabox">
+            <span class="entry-elem">
+              <i class="fa fa-calendar"></i>
+              {{data.created_at}}
+            </span>
+            <span class="separator">|</span>
+            <span class="entry-elem">
+              <i class="fa fa-comment"></i>
+              {{data.web_article_author}}
+            </span>
+          </div>
+        </header>
+        <!-- .entry-header -->
+        <div class="entry-content">
+          <blockquote class="markdown-body" v-html="data.web_article_markdown"></blockquote>
         </div>
-        <page-footer></page-footer>
+        <!-- .entry-content -->
+        <footer class="entry-footer"></footer>
+        <!-- .entry-footer -->
+      </article>
     </div>
-    <!-- end #page-container -->
+    <page-footer></page-footer>
+  </div>
+  <!-- end #page-container -->
 </template>
 
 <script>
@@ -39,15 +41,14 @@ const apiUrl = '/api/zhongtan/web/Web/'
 
 export default {
   async asyncData({ params }) {
-    let { data } = await request.post(apiUrl + 'getArticle', {web_article_id: params.id})
+    let { data } = await request.post(apiUrl + 'getArticle', { web_article_id: params.id })
     return { data: data.info }
   },
   components: {
     CommonHeader,
     PageFooter
   },
-  mounted() {
-  },
+  mounted() {}
 }
 </script>
 <style scoped>

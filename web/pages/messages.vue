@@ -1,32 +1,34 @@
 <template>
   <!-- begin #page-container -->
-    <div>
-        <common-header></common-header>
-        <div class="container">
-          <div class="vertical-box color-salve">
-            <div class="vertical-box-column width-250 color-gray show-pannel">
-              <p><b>Message</b></p>
-              <div class="media">
-                <img src="/gallery.jpg" alt="" class="media-object">
-              </div>
-            </div>
-            <div class="vertical-box-column">
-              <ul class="list-group list-group-lg no-radius list-info">
-                  <li v-for="m in data.messages" :key="m.web_article_id" :class="'list-group-item inverse style'+m.web_article_id%5">
-                      <div class="info-data">
-                          <span class="info-time">{{m.created_at}}</span>
-                          <h5 class="info-title">
-                            <nuxt-link :to="'/messagedetail/'+m.web_article_id">{{m.web_article_title}}</nuxt-link>
-                          </h5>
-                      </div>
-                  </li>
-              </ul>
-            </div>
-           </div>
+  <div>
+    <common-header></common-header>
+    <div class="container">
+      <div class="vertical-box color-salve">
+        <div class="vertical-box-column width-250 color-gray show-pannel">
+          <p>
+            <b>Message</b>
+          </p>
+          <div class="media">
+            <img src="/gallery.jpg" alt class="media-object">
+          </div>
         </div>
-        <page-footer></page-footer>
+        <div class="vertical-box-column">
+          <ul class="list-group list-group-lg no-radius list-info">
+            <li v-for="m in data.messages" :key="m.web_article_id" :class="'list-group-item inverse style'+m.web_article_id%5">
+              <div class="info-data">
+                <span class="info-time">{{m.created_at}}</span>
+                <h5 class="info-title">
+                  <nuxt-link :to="'/messagedetail/'+m.web_article_id">{{m.web_article_title}}</nuxt-link>
+                </h5>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
-    <!-- end #page-container -->
+    <page-footer></page-footer>
+  </div>
+  <!-- end #page-container -->
 </template>
 
 <script>
@@ -41,17 +43,16 @@ export default {
     let { data } = await request.post(apiUrl + 'getMessages', {})
     return { data: data.info.data }
   },
-  head () {
+  head() {
     return {
-      title: 'SINOTASHIP Message',
+      title: 'SINOTASHIP Message'
     }
   },
   components: {
     CommonHeader,
     PageFooter
   },
-  mounted() {
-  },
+  mounted() {}
 }
 </script>
 <style scoped>
@@ -89,20 +90,20 @@ export default {
 }
 
 .list-info {
-    margin-bottom: 0;
-    border-top: 1px solid #e2e7eb;
-    border-bottom: 1px solid #e2e7eb;
+  margin-bottom: 0;
+  border-top: 1px solid #e2e7eb;
+  border-bottom: 1px solid #e2e7eb;
 }
-.list-info>li.list-group-item+li.list-group-item {
-    border-top: 1px solid #e2e7eb;
+.list-info > li.list-group-item + li.list-group-item {
+  border-top: 1px solid #e2e7eb;
 }
-.list-info>li.list-group-item {
-    -webkit-border-radius: 0;
-    -moz-border-radius: 0;
-    border-radius: 0;
-    border: none;
-    padding: 15px 15px 15px 20px;
-    position: relative;
+.list-info > li.list-group-item {
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0;
+  border-radius: 0;
+  border: none;
+  padding: 15px 15px 15px 20px;
+  position: relative;
 }
 .list-info > li.list-group-item.style0:before {
   background-color: #242a30;
@@ -119,29 +120,29 @@ export default {
 .list-info > li.list-group-item.style4:before {
   background-color: #ff5b57;
 }
-.list-info>li.list-group-item:before {
-    content: '';
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 5px;
-    background: #fff;
+.list-info > li.list-group-item:before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 5px;
+  background: #fff;
 }
 .list-info .info-time {
-    float: right;
-    font-size: 11px;
-    color: #C8CCCF;
-    margin-left: 10px;
+  float: right;
+  font-size: 11px;
+  color: #c8cccf;
+  margin-left: 10px;
 }
 .list-info .info-title {
-    margin-top: 3px;
-    margin-bottom: 3px;
-    line-height: 20px;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  line-height: 20px;
 }
 .list-info .info-title a {
-    color: #242a30;
+  color: #242a30;
 }
 </style>
 
