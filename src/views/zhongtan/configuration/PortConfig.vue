@@ -18,7 +18,7 @@
         <div class="panel-toolbar">
           <div class="form-inline">
             <div class="input-group m-r-10">
-              <input type="text" placeholder="search port name, port name cn, number" v-model="table.portTable.search_text" class="form-control">
+              <input type="text" placeholder="port name、name cn、number" v-model="table.portTable.search_text" class="form-control">
               <div class="input-group-append">
                 <button type="button" class="btn btn-info" @click="getPortData(1)">
                   <i class="fa fa-search"></i>
@@ -33,7 +33,7 @@
       </template>
       <Table stripe ref="portTable" :columns="table.portTable.rows" :data="table.portTable.data">
         <template slot-scope="{ row, index }" slot="port_country">
-          <Select multiple v-model="row.port_country" disabled>
+          <Select v-model="row.port_country" disabled>
             <Option v-for="item in pagePara.PortCountryINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
           </Select>
         </template>
