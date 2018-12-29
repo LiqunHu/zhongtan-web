@@ -50,7 +50,7 @@
     </panel>
     <Modal v-model="modal.voyageModal" title="Voyage">
       <Form :model="workPara" :label-width="120" :rules="formRule.ruleVoyageModal" ref="formVoyage">
-        <FormItem label="Vessel Name" prop="vessel_name">
+        <FormItem label="Vessel Name" prop="vessel_id">
           <Select v-model="workPara.vessel_id">
             <Option v-for="item in pagePara.VesselINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
           </Select>
@@ -58,7 +58,7 @@
         <FormItem label="Voyage Number" prop="voyage_number">
           <Input placeholder="Voyage Number" v-model="workPara.voyage_number"/>
         </FormItem>
-        <FormItem label="ETA Date" prop="etadate">
+        <FormItem label="ETA Date" prop="voyage_eta_date">
           <DatePicker type="date" v-model="workPara.voyage_eta_date"></DatePicker>
         </FormItem>
       </Form>
@@ -112,9 +112,9 @@ export default {
       },
       formRule: {
         ruleVoyageModal: {
-          vessel_name: [{ required: true, trigger: 'change', message: 'Choose vessel' }],
+          vessel_id: [{ required: true, type: 'number', trigger: 'change', message: 'Choose vessel' }],
           voyage_number: [{ required: true, trigger: 'change', message: 'Enter voyage number' }],
-          etadate: [{ required: true, trigger: 'change', message: 'Please select date' }]
+          voyage_eta_date: [{ required: true, type: 'date', trigger: 'change', message: 'Please select date' }]
         }
       },
       pagePara: {},
