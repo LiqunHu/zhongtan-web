@@ -14,9 +14,10 @@ module.exports = {
   // https://github.com/standard/standard/blob/master/docs/RULES-en.md
   extends: 'eslint:recommended',
   // required to lint *.vue files
-  plugins: ['html'],
+  plugins: ['html', 'vue'],
   // add your custom rules here
   rules: {
-    'no-unused-vars': ['error', { args: 'none' }]
+    'no-unused-vars': ['error', { args: 'none' }],
+    'vue/no-parsing-error': [2, { 'x-invalid-end-tag': false }]
   }
 }
