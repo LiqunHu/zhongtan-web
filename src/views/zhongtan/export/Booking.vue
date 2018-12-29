@@ -301,20 +301,7 @@ export default {
               slot: 'action'
             }
           ],
-          data: [
-            {
-              billlading_container_number: null,
-              billlading_container_type: '',
-              billlading_container_size: '',
-              billlading_container_goods_description: '',
-              billlading_container_package_number: null,
-              billlading_container_package_unit: 'BAG',
-              billlading_container_gross_volume: null,
-              billlading_container_gross_volume_unit: 'M3',
-              billlading_container_gross_weight: null,
-              billlading_container_gross_unit: 'KG'
-            }
-          ]
+          data: []
         }
       },
       formRule: {
@@ -376,7 +363,7 @@ export default {
       })
     },
     deleteGood: function(index) {
-      this.table.goodsTable.data.splice(index,1)
+      this.table.goodsTable.data.splice(index, 1)
     },
     getBookingData: async function(index) {
       try {
@@ -398,6 +385,20 @@ export default {
     },
     actBookingModal: async function() {
       this.workPara = {}
+      this.table.goodsTable.data = [
+        {
+          billlading_container_number: null,
+          billlading_container_type: '',
+          billlading_container_size: '',
+          billlading_container_goods_description: '',
+          billlading_container_package_number: null,
+          billlading_container_package_unit: 'BAG',
+          billlading_container_gross_volume: null,
+          billlading_container_gross_volume_unit: 'M3',
+          billlading_container_gross_weight: null,
+          billlading_container_gross_unit: 'KG'
+        }
+      ]
       this.action = 'add'
       this.$refs.formPort.resetFields()
       this.modal.bookingModal = true
