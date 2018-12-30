@@ -134,7 +134,7 @@ Vue.prototype.$commonact = {
     let response = error.response
     if (response) {
       if (response.status > 699 && response.status < 800) {
-        vueInstance.$Modal.error({
+        vueInstance.$Message.error({
           title: 'Error',
           content: '<p>' + response.data.msg + '</p>'
         })

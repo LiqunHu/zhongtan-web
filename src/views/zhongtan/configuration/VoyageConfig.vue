@@ -33,7 +33,7 @@
       </template>
       <Table stripe ref="voyageTable" :columns="table.voyageTable.rows" :data="table.voyageTable.data">
         <template slot-scope="{ row, index }" slot="vessel_id">
-          <Select v-model="row.vessel_id">
+          <Select v-model="row.vessel_id" disabled>
             <Option v-for="item in pagePara.VesselINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
           </Select>
         </template>
