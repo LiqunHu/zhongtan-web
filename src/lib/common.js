@@ -153,3 +153,34 @@ exports.treeIconRender = (h, { root, node, data }, _self, treeRef, folderIcon, m
     )
   }
 }
+
+exports.selectRender = (_self, key) => {
+  return (h, params) => {
+    let options = []
+    console.log(_self)
+    _self.pagePara[key].forEach(item => {
+      options.push(
+        h(
+          'Option',
+          {
+            props: {
+              value: item.id,
+              key: item.id
+            }
+          },
+          item.text
+        )
+      )
+    })
+    return h(
+      'Select',
+      {
+        props: {
+          value: params.row[params.column.key],
+          disabled: true
+        }
+      },
+      options
+    )
+  }
+}

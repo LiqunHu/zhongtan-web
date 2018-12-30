@@ -33,12 +33,7 @@
           </div>
         </div>
       </template>
-      <Table stripe ref="bookingTable" :columns="table.bookingTable.rows" :data="table.bookingTable.data">
-        <template slot-scope="{ row, index }" slot="port_country">
-          <Select v-model="row.port_country" disabled>
-            <Option v-for="item in pagePara.PortCountryINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-          </Select>
-        </template>
+      <Table stripe border size="small" ref="bookingTable" :columns="table.bookingTable.rows" :data="table.bookingTable.data">
         <template slot-scope="{ row, index }" slot="action">
           <a href="#" class="btn btn-info btn-icon btn-sm" @click="modifyPortModal(row)">
             <i class="fa fa-edit"></i>
@@ -46,6 +41,36 @@
           <a href="#" class="btn btn-danger btn-icon btn-sm" @click="deletePort(row)">
             <i class="fa fa-times"></i>
           </a>
+        </template>
+        <template slot-scope="{ row, index }" slot="billlading_voyage_id">
+          <Select v-model="row.billlading_voyage_id" disabled>
+            <Option v-for="item in row.VoyageINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+          </Select>
+        </template>
+        <template slot-scope="{ row, index }" slot="billlading_delivery_place">
+          <Poptip trigger="hover" :content="row.billlading_delivery_place">
+            <Button>{{row.billlading_delivery_place|strFormat}}</Button>
+          </Poptip>
+        </template>
+        <template slot-scope="{ row, index }" slot="billlading_stuffing_place">
+          <Poptip trigger="hover" :content="row.billlading_stuffing_place">
+            <Button>{{row.billlading_stuffing_place|strFormat}}</Button>
+          </Poptip>
+        </template>
+        <template slot-scope="{ row, index }" slot="billlading_stuffing_requirement">
+          <Poptip trigger="hover" :content="row.billlading_stuffing_requirement">
+            <Button>{{row.billlading_stuffing_requirement|strFormat}}</Button>
+          </Poptip>
+        </template>
+        <template slot-scope="{ row, index }" slot="billlading_consignee_address">
+          <Poptip trigger="hover" :content="row.billlading_consignee_address">
+            <Button>{{row.billlading_consignee_address|strFormat}}</Button>
+          </Poptip>
+        </template>
+        <template slot-scope="{ row, index }" slot="billlading_notify_address">
+          <Poptip trigger="hover" :content="row.billlading_notify_address">
+            <Button>{{row.billlading_notify_address|strFormat}}</Button>
+          </Poptip>
         </template>
       </Table>
       <Page class="m-t-10" :total="table.bookingTable.total" :page-size="table.bookingTable.limit" @on-change="getBookingData"/>
@@ -139,48 +164,43 @@
                   <b>Cargo Description</b>
                 </h4>
                 <Table stripe ref="goodsTable" :columns="table.goodsTable.rows" :data="table.goodsTable.data">
-                  <template slot-scope="{ row, index }" slot="billlading_container_number">
-                    <Input v-model="row.billlading_container_number" @on-blur="table.goodsTable.data[index] = row"/>
+                  <template slot-scope="{ row, index }" slot="billlading_goods_container_number">
+                    <Input v-model="row.billlading_goods_container_number" @on-blur="table.goodsTable.data[index] = row"/>
                   </template>
-                  <template slot-scope="{ row, index }" slot="billlading_container_type">
-                    <Select v-model="row.billlading_container_type" @on-change="table.goodsTable.data[index] = row">
+                  <template slot-scope="{ row, index }" slot="billlading_goods_container_type">
+                    <Select v-model="row.billlading_goods_container_type" @on-change="table.goodsTable.data[index] = row">
                       <Option v-for="item in pagePara.ContainerTypeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
                     </Select>
                   </template>
-                  <template slot-scope="{ row, index }" slot="billlading_container_size">
-                    <Select v-model="row.billlading_container_size" @on-change="table.goodsTable.data[index] = row">
+                  <template slot-scope="{ row, index }" slot="billlading_goods_container_size">
+                    <Select v-model="row.billlading_goods_container_size" @on-change="table.goodsTable.data[index] = row">
                       <Option v-for="item in pagePara.ContainerSizeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
                     </Select>
                   </template>
-                  <template slot-scope="{ row, index }" slot="billlading_container_goods_description">
-                    <Input v-model="row.billlading_container_goods_description" @on-blur="table.goodsTable.data[index] = row"/>
+                  <template slot-scope="{ row, index }" slot="billlading_goods_description">
+                    <Input v-model="row.billlading_goods_description" @on-blur="table.goodsTable.data[index] = row"/>
                   </template>
-                  <template slot-scope="{ row, index }" slot="billlading_container_package_number">
-                    <Input v-model="row.billlading_container_package_number" @on-blur="table.goodsTable.data[index] = row"/>
+                  <template slot-scope="{ row, index }" slot="billlading_goods_package_number">
+                    <Input v-model="row.billlading_goods_package_number" @on-blur="table.goodsTable.data[index] = row"/>
                   </template>
-                  <template slot-scope="{ row, index }" slot="billlading_container_package_unit">
-                    <Select v-model="row.billlading_container_package_unit" @on-change="table.goodsTable.data[index] = row">
+                  <template slot-scope="{ row, index }" slot="billlading_goods_package_unit">
+                    <Select v-model="row.billlading_goods_package_unit" @on-change="table.goodsTable.data[index] = row">
                       <Option v-for="item in pagePara.PackageUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
                     </Select>
                   </template>
-                  <template slot-scope="{ row, index }" slot="billlading_container_package_unit">
-                    <Select v-model="row.billlading_container_package_unit" @on-change="table.goodsTable.data[index] = row">
-                      <Option v-for="item in pagePara.PackageUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-                    </Select>
+                  <template slot-scope="{ row, index }" slot="billlading_goods_gross_volume">
+                    <Input v-model="row.billlading_goods_gross_volume" @on-blur="table.goodsTable.data[index] = row"/>
                   </template>
-                  <template slot-scope="{ row, index }" slot="billlading_container_gross_volume">
-                    <Input v-model="row.billlading_container_gross_volume" @on-blur="table.goodsTable.data[index] = row"/>
-                  </template>
-                  <template slot-scope="{ row, index }" slot="billlading_container_gross_volume_unit">
-                    <Select v-model="row.billlading_container_gross_volume_unit" @on-change="table.goodsTable.data[index] = row">
+                  <template slot-scope="{ row, index }" slot="billlading_goods_gross_volume_unit">
+                    <Select v-model="row.billlading_goods_gross_volume_unit" @on-change="table.goodsTable.data[index] = row">
                       <Option v-for="item in pagePara.VolumeUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
                     </Select>
                   </template>
-                  <template slot-scope="{ row, index }" slot="billlading_container_gross_weight">
-                    <Input v-model="row.billlading_container_gross_weight" @on-blur="table.goodsTable.data[index] = row"/>
+                  <template slot-scope="{ row, index }" slot="billlading_goods_gross_weight">
+                    <Input v-model="row.billlading_goods_gross_weight" @on-blur="table.goodsTable.data[index] = row"/>
                   </template>
-                  <template slot-scope="{ row, index }" slot="billlading_container_gross_unit">
-                    <Select v-model="row.billlading_container_gross_unit" @on-change="table.goodsTable.data[index] = row">
+                  <template slot-scope="{ row, index }" slot="billlading_goods_gross_unit">
+                    <Select v-model="row.billlading_goods_gross_unit" @on-change="table.goodsTable.data[index] = row">
                       <Option v-for="item in pagePara.WeightUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
                     </Select>
                   </template>
@@ -243,6 +263,7 @@
 <script>
 import PageOptions from '../../../config/PageOptions.vue'
 const moment = require('moment')
+const common = require('@/lib/common')
 const apiUrl = '/api/zhongtan/export/Booking/'
 
 export default {
@@ -255,28 +276,117 @@ export default {
           rows: [
             {
               type: 'index',
-              width: 60,
-              align: 'center'
-            },
-            {
-              title: 'Port Country',
-              slot: 'port_country'
-            },
-            {
-              title: 'Port Name',
-              key: 'port_name'
-            },
-            {
-              title: 'CN Port Name',
-              key: 'port_name_cn'
-            },
-            {
-              title: 'Port Code',
-              key: 'port_code'
+              width: 40,
+              align: 'center',
+              fixed: 'left'
             },
             {
               title: 'Action',
-              slot: 'action'
+              slot: 'action',
+              width: 100,
+              fixed: 'left'
+            },
+            {
+              title: 'S/O',
+              key: 'billlading_no',
+              width: 100,
+              fixed: 'left'
+            },
+            {
+              title: 'Status',
+              key: 'billlading_state',
+              render: (h, params) => {
+                let info = this.pagePara.BLSTATUSINFO.find(element => element.id === params.row.billlading_state)
+                return h('span', { class: 'label ' + info.style }, info.text)
+              },
+              width: 150,
+              fixed: 'left'
+            },
+            {
+              title: 'Book Date',
+              key: 'booking_date',
+              width: 100
+            },
+            {
+              title: 'Vessel',
+              key: 'billlading_vessel_id',
+              render: common.selectRender(this, 'VesselINFO'),
+              width: 100
+            },
+            {
+              title: 'voyage',
+              slot: 'billlading_voyage_id',
+              width: 180
+            },
+            {
+              title: 'Loading Port',
+              key: 'billlading_loading_port_id',
+              render: common.selectRender(this, 'PortINFO'),
+              width: 140
+            },
+            {
+              title: 'Discharge Port',
+              key: 'billlading_discharge_port_id',
+              render: common.selectRender(this, 'PortINFO'),
+              width: 140
+            },
+            {
+              title: 'Delivery Place',
+              slot: 'billlading_delivery_place',
+              width: 100
+            },
+            {
+              title: 'Stuffing Place',
+              slot: 'billlading_stuffing_place',
+              width: 100
+            },
+            {
+              title: 'Stuffing Date',
+              key: 'billlading_stuffing_date',
+              width: 100
+            },
+            {
+              title: 'Stuffing requirement',
+              slot: 'billlading_stuffing_requirement',
+              width: 100
+            },
+            {
+              title: 'Consignee Name',
+              key: 'billlading_consignee_name',
+              width: 100
+            },
+            {
+              title: 'Consignee Address',
+              slot: 'billlading_consignee_address',
+              width: 100
+            },
+            {
+              title: 'Consignee telephone',
+              key: 'billlading_consignee_tel',
+              width: 100
+            },
+            {
+              title: 'Notify Name',
+              key: 'billlading_notify_name',
+              width: 100
+            },
+            {
+              title: 'Notify Address',
+              slot: 'billlading_notify_address',
+              width: 100
+            },
+            {
+              title: 'Notify telephone',
+              key: 'billlading_notify_tel',
+              width: 100
+            },
+            {
+              title: 'goods',
+              slot: 'billlading_goods'
+            },
+            {
+              title: 'goods',
+              slot: 'billlading_goods'
             }
           ],
           data: [],
@@ -295,43 +405,43 @@ export default {
           rows: [
             {
               title: 'Vol.',
-              slot: 'billlading_container_number'
+              slot: 'billlading_goods_container_number'
             },
             {
               title: 'Type',
-              slot: 'billlading_container_type'
+              slot: 'billlading_goods_container_type'
             },
             {
               title: 'Size',
-              slot: 'billlading_container_size'
+              slot: 'billlading_goods_container_size'
             },
             {
               title: 'Description',
-              slot: 'billlading_container_goods_description'
+              slot: 'billlading_goods_description'
             },
             {
               title: 'Package No',
-              slot: 'billlading_container_package_number'
+              slot: 'billlading_goods_package_number'
             },
             {
               title: 'Package Unit',
-              slot: 'billlading_container_package_unit'
+              slot: 'billlading_goods_package_unit'
             },
             {
               title: 'Volume',
-              slot: 'billlading_container_gross_volume'
+              slot: 'billlading_goods_gross_volume'
             },
             {
               title: 'Volume Unit',
-              slot: 'billlading_container_gross_volume_unit'
+              slot: 'billlading_goods_gross_volume_unit'
             },
             {
               title: 'Weight',
-              slot: 'billlading_container_gross_weight'
+              slot: 'billlading_goods_gross_weight'
             },
             {
               title: 'Weight Unit',
-              slot: 'billlading_container_gross_unit'
+              slot: 'billlading_goods_gross_unit'
             },
             {
               title: 'Action',
@@ -369,6 +479,15 @@ export default {
       action: ''
     }
   },
+  filters: {
+    strFormat: function(value) {
+      if (value.length > 8) {
+        return value.substring(0, 5) + '...'
+      } else {
+        return value
+      }
+    }
+  },
   created() {
     PageOptions.pageEmpty = false
   },
@@ -400,16 +519,16 @@ export default {
     },
     addGood: function() {
       this.table.goodsTable.data.push({
-        billlading_container_number: null,
-        billlading_container_type: '',
-        billlading_container_size: '',
-        billlading_container_goods_description: '',
-        billlading_container_package_number: null,
-        billlading_container_package_unit: 'BAG',
-        billlading_container_gross_volume: null,
-        billlading_container_gross_volume_unit: 'M3',
-        billlading_container_gross_weight: null,
-        billlading_container_gross_unit: 'KG'
+        billlading_goods_container_number: null,
+        billlading_goods_container_type: '',
+        billlading_goods_container_size: '',
+        billlading_goods_description: '',
+        billlading_goods_package_number: null,
+        billlading_goods_package_unit: 'BAG',
+        billlading_goods_gross_volume: null,
+        billlading_goods_gross_volume_unit: 'M3',
+        billlading_goods_gross_weight: null,
+        billlading_goods_gross_unit: 'KG'
       })
     },
     deleteGood: function(index) {
@@ -437,16 +556,16 @@ export default {
       this.workPara = {}
       this.table.goodsTable.data = [
         {
-          billlading_container_number: null,
-          billlading_container_type: '',
-          billlading_container_size: '',
-          billlading_container_goods_description: '',
-          billlading_container_package_number: null,
-          billlading_container_package_unit: 'BAG',
-          billlading_container_gross_volume: null,
-          billlading_container_gross_volume_unit: 'M3',
-          billlading_container_gross_weight: null,
-          billlading_container_gross_unit: 'KG'
+          billlading_goods_container_number: null,
+          billlading_goods_container_type: '',
+          billlading_goods_container_size: '',
+          billlading_goods_description: '',
+          billlading_goods_package_number: null,
+          billlading_goods_package_unit: 'BAG',
+          billlading_goods_gross_volume: null,
+          billlading_goods_gross_volume_unit: 'M3',
+          billlading_goods_gross_weight: null,
+          billlading_goods_gross_unit: 'KG'
         }
       ]
       this.action = 'add'
@@ -459,6 +578,7 @@ export default {
       delete actrow._rowKey
       this.oldPara = JSON.parse(JSON.stringify(actrow))
       this.workPara = JSON.parse(JSON.stringify(actrow))
+      this.table.goodsTable.data = JSON.parse(JSON.stringify(actrow.billlading_goods))
       this.action = 'modify'
       this.$refs.formPort.resetFields()
       this.modal.bookingModal = true
@@ -467,8 +587,8 @@ export default {
       this.$refs.formPort.validate(async valid => {
         if (valid) {
           try {
+            this.workPara.billlading_goods = JSON.parse(JSON.stringify(this.table.goodsTable.data))
             if (this.action === 'add') {
-              this.workPara.billlading_goods = JSON.parse(JSON.stringify(this.table.goodsTable.data))
               await this.$http.post(apiUrl + 'booking', this.workPara)
               this.$Message.success('booking success')
             } else if (this.action === 'modify') {
