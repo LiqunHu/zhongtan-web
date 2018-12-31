@@ -32,11 +32,6 @@
         </div>
       </template>
       <Table stripe ref="vesselTable" :columns="table.vesselTable.rows" :data="table.vesselTable.data">
-        <template slot-scope="{ row, index }" slot="vessel_service_name">
-          <Select v-model="row.vessel_service_name" disabled>
-            <Option v-for="item in pagePara.VesselServiceINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-          </Select>
-        </template>
         <template slot-scope="{ row, index }" slot="action">
           <a href="#" class="btn btn-info btn-icon btn-sm" @click="modifyVesselModal(row)">
             <i class="fa fa-edit"></i>
@@ -74,6 +69,7 @@
 </template>
 <script>
 import PageOptions from '../../../config/PageOptions.vue'
+const common = require('@/lib/common')
 const apiUrl = '/api/zhongtan/configuration/VesselConfig/'
 
 export default {
@@ -91,7 +87,8 @@ export default {
             },
             {
               title: 'Vessel Service',
-              slot: 'vessel_service_name'
+              key: 'vessel_service_name',
+              render: common.selectRender(this, 'VesselServiceINFO'),
             },
             {
               title: 'Vessel Name',
