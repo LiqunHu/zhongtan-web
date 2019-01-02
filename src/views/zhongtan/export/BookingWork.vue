@@ -62,6 +62,14 @@
             </template>
           </Poptip>
         </template>
+        <template slot-scope="{ row, index }" slot="billlading_containers">
+          <Poptip trigger="hover" width="1000">
+            <Button type="text" style="text-decoration:underline">Containers</Button>
+            <template slot="content">
+              <Table stripe size="small" :columns="table.poptipContainerTable.rows" :data="row.billlading_containers"></Table>
+            </template>
+          </Poptip>
+        </template>
       </Table>
       <Page class="m-t-10" :total="table.bookingTable.total" :page-size="table.bookingTable.limit" @on-change="getBookingData"/>
     </panel>
@@ -148,7 +156,7 @@
               </Col>
             </Row>
             <Divider/>
-            <Row>
+            <Row v-if="workPara.billlading_state === 'PBK'">
               <Col span="24">
                 <h4 class="text-middle m-b-10">
                   <b>Cargo Description</b>
@@ -201,6 +209,55 @@
                     <a v-if="index !== 0" href="#" class="btn btn-danger btn-icon btn-sm" @click="deleteGood(index)">
                       <i class="fa fa-times"></i>
                     </a>
+                  </template>
+                </Table>
+              </Col>
+            </Row>
+            <Row v-else>
+              <Col span="24">
+                <h4 class="text-middle m-b-10">
+                  <b>Container Description</b>
+                </h4>
+                <Table stripe ref="containerTable" :columns="table.containerTable.rows" :data="table.containerTable.data">
+                  <template slot-scope="{ row, index }" slot="container_no">
+                    <Input v-model="row.container_no" @on-blur="table.containerTable.data[index] = row"/>
+                  </template>
+                  <template slot-scope="{ row, index }" slot="container_type">
+                    <Select v-model="row.container_type" @on-change="table.containerTable.data[index] = row">
+                      <Option v-for="item in pagePara.ContainerTypeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                    </Select>
+                  </template>
+                  <template slot-scope="{ row, index }" slot="container_size">
+                    <Select v-model="row.container_size" @on-change="table.containerTable.data[index] = row">
+                      <Option v-for="item in pagePara.ContainerSizeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                    </Select>
+                  </template>
+                  <template slot-scope="{ row, index }" slot="container_seal_no1">
+                    <Input v-model="row.container_seal_no1" @on-blur="table.containerTable.data[index] = row"/>
+                  </template>
+                  <template slot-scope="{ row, index }" slot="container_package_no">
+                    <Input v-model="row.container_package_no" @on-blur="table.containerTable.data[index] = row"/>
+                  </template>
+                  <template slot-scope="{ row, index }" slot="container_package_unit">
+                    <Select v-model="row.container_package_unit" @on-change="table.containerTable.data[index] = row">
+                      <Option v-for="item in pagePara.PackageUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                    </Select>
+                  </template>
+                  <template slot-scope="{ row, index }" slot="container_volume">
+                    <Input v-model="row.container_volume" @on-blur="table.containerTable.data[index] = row"/>
+                  </template>
+                  <template slot-scope="{ row, index }" slot="container_volume_unit">
+                    <Select v-model="row.container_volume_unit" @on-change="table.containerTable.data[index] = row">
+                      <Option v-for="item in pagePara.VolumeUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                    </Select>
+                  </template>
+                  <template slot-scope="{ row, index }" slot="container_weight">
+                    <Input v-model="row.container_weight" @on-blur="table.containerTable.data[index] = row"/>
+                  </template>
+                  <template slot-scope="{ row, index }" slot="container_weight_unit">
+                    <Select v-model="row.container_weight_unit" @on-change="table.containerTable.data[index] = row">
+                      <Option v-for="item in pagePara.WeightUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                    </Select>
                   </template>
                 </Table>
               </Col>
@@ -336,6 +393,11 @@ export default {
               width: 100
             },
             {
+              title: 'Gontainers',
+              slot: 'billlading_containers',
+              width: 100
+            },
+            {
               title: 'Loading Port',
               key: 'billlading_loading_port_id',
               render: common.selectRender(this, 'PortINFO'),
@@ -466,6 +528,51 @@ export default {
           ],
           data: []
         },
+        containerTable: {
+          rows: [
+            {
+              title: 'Container No.',
+              slot: 'container_no'
+            },
+            {
+              title: 'Type',
+              slot: 'container_type'
+            },
+            {
+              title: 'Size',
+              slot: 'container_size'
+            },
+            {
+              title: 'Seal No.',
+              slot: 'container_seal_no1'
+            },
+            {
+              title: 'Package No',
+              slot: 'container_package_no'
+            },
+            {
+              title: 'Package Unit',
+              slot: 'container_package_unit'
+            },
+            {
+              title: 'Volume',
+              slot: 'container_volume'
+            },
+            {
+              title: 'Volume Unit',
+              slot: 'container_volume_unit'
+            },
+            {
+              title: 'Weight',
+              slot: 'container_weight'
+            },
+            {
+              title: 'Weight Unit',
+              slot: 'container_weight_unit'
+            }
+          ],
+          data: []
+        },
         poptipGoodsTable: {
           rows: [
             {
@@ -512,6 +619,55 @@ export default {
             {
               title: 'Weight Unit',
               key: 'billlading_goods_gross_unit',
+              render: common.selectRender(this, 'WeightUnitINFO')
+            }
+          ]
+        },
+        poptipContainerTable: {
+          rows: [
+            {
+              title: 'Container No.',
+              key: 'container_no'
+            },
+            {
+              title: 'Type',
+              key: 'container_type',
+              render: common.selectRender(this, 'ContainerTypeINFO')
+            },
+            {
+              title: 'Size',
+              key: 'container_size',
+              render: common.selectRender(this, 'ContainerSizeINFO')
+            },
+            {
+              title: 'Seal No.',
+              key: 'container_seal_no1'
+            },
+            {
+              title: 'Package No',
+              key: 'container_package_no'
+            },
+            {
+              title: 'Package Unit',
+              key: 'container_package_unit',
+              render: common.selectRender(this, 'PackageUnitINFO')
+            },
+            {
+              title: 'Volume',
+              key: 'container_volume'
+            },
+            {
+              title: 'Volume Unit',
+              key: 'container_volume_unit',
+              render: common.selectRender(this, 'VolumeUnitINFO')
+            },
+            {
+              title: 'Weight',
+              key: 'container_weight'
+            },
+            {
+              title: 'Weight Unit',
+              key: 'container_weight_unit',
               render: common.selectRender(this, 'WeightUnitINFO')
             }
           ]
@@ -618,6 +774,7 @@ export default {
       this.oldPara = JSON.parse(JSON.stringify(actrow))
       this.workPara = JSON.parse(JSON.stringify(actrow))
       this.table.goodsTable.data = JSON.parse(JSON.stringify(actrow.billlading_goods))
+      this.table.containerTable.data = JSON.parse(JSON.stringify(actrow.billlading_containers))
       this.action = 'modify'
       this.$refs.formBooking.resetFields()
       this.modal.bookingModal = true
@@ -627,6 +784,7 @@ export default {
         if (valid) {
           try {
             this.workPara.billlading_goods = JSON.parse(JSON.stringify(this.table.goodsTable.data))
+            this.workPara.billlading_containers = JSON.parse(JSON.stringify(this.table.containerTable.data))
             if (this.action === 'add') {
               await this.$http.post(apiUrl + 'booking', this.workPara)
               this.$Message.success('booking success')
