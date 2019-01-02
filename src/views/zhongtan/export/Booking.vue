@@ -458,6 +458,55 @@ export default {
           ],
           data: []
         },
+        containerTable: {
+          rows: [
+            {
+              title: 'Vol.',
+              slot: 'billlading_goods_container_number'
+            },
+            {
+              title: 'Type',
+              slot: 'billlading_goods_container_type'
+            },
+            {
+              title: 'Size',
+              slot: 'billlading_goods_container_size'
+            },
+            {
+              title: 'Description',
+              slot: 'billlading_goods_description'
+            },
+            {
+              title: 'Package No',
+              slot: 'billlading_goods_package_number'
+            },
+            {
+              title: 'Package Unit',
+              slot: 'billlading_goods_package_unit'
+            },
+            {
+              title: 'Volume',
+              slot: 'billlading_goods_gross_volume'
+            },
+            {
+              title: 'Volume Unit',
+              slot: 'billlading_goods_gross_volume_unit'
+            },
+            {
+              title: 'Weight',
+              slot: 'billlading_goods_gross_weight'
+            },
+            {
+              title: 'Weight Unit',
+              slot: 'billlading_goods_gross_unit'
+            },
+            {
+              title: 'Action',
+              slot: 'action'
+            }
+          ],
+          data: []
+        },
         poptipGoodsTable: {
           rows: [
             {
