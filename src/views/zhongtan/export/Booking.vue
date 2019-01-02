@@ -147,7 +147,7 @@
               </Col>
             </Row>
             <Divider/>
-            <Row>
+            <Row v-if="workPara.billlading_state === 'PBK'">
               <Col span="24">
                 <h4 class="text-middle m-b-10">
                   <b>Cargo Description</b>
@@ -201,6 +201,15 @@
                       <i class="fa fa-times"></i>
                     </a>
                   </template>
+                </Table>
+              </Col>
+            </Row>
+            <Row v-else>
+              <Col span="24">
+                <h4 class="text-middle m-b-10">
+                  <b>Container Description</b>
+                </h4>
+                <Table stripe ref="containerTable" :columns="table.containerTable.rows" :data="table.containerTable.data">
                 </Table>
               </Col>
             </Row>
