@@ -43,7 +43,7 @@
         </template>
         <template slot-scope="{ row, index }" slot="action">
           <Tooltip content="Delete bill lading">
-            <a href="#" class="btn btn-danger btn-icon btn-sm" @click="deletePort(row)">
+            <a href="#" class="btn btn-danger btn-icon btn-sm" @click="cancelBooking(row)">
               <i class="fa fa-times"></i>
             </a>
           </Tooltip>
@@ -57,9 +57,8 @@
           <Poptip trigger="hover" width="1000">
             <Button type="text" style="text-decoration:underline">Goods</Button>
             <template slot="content">
-              <Table stripe size="small" :columns="table.poptipGoodsTable.rows" :data="row.billlading_goods">
-              </Table>
-              </template>
+              <Table stripe size="small" :columns="table.poptipGoodsTable.rows" :data="row.billlading_goods"></Table>
+            </template>
           </Poptip>
         </template>
       </Table>
@@ -517,8 +516,6 @@ export default {
           billlading_original_num: [{ required: true, trigger: 'change', message: 'Enter Original B/L' }],
           billlading_copys_num: [{ required: true, trigger: 'change', message: 'Enter Copies B/L' }],
           billlading_stuffing_place: [{ required: true, trigger: 'change', message: 'Enter Stuffing Place' }],
-          billlading_stuffing_date: [{ required: true, type: 'date', trigger: 'change', message: 'Choose Expected date' }],
-          billlading_pay_date: [{ required: true, type: 'date', trigger: 'change', message: 'Choose Payable at' }],
           billlading_freight_currency: [{ required: true, trigger: 'change', message: 'Choose Status' }]
         }
       },
@@ -644,11 +641,11 @@ export default {
         }
       })
     },
-    deletePort: function(row) {
-      this.$commonact.confirm('delete confirmed?', async () => {
+    cancelBooking: function(row) {
+      this.$commonact.confirm('cancel confirmed?', async () => {
         try {
-          await this.$http.post(apiUrl + 'delete', { port_id: row.port_id })
-          this.$Message.success('delete success')
+          await this.$http.post(apiUrl + 'cancel', { billlading_id: row.billlading_id })
+          this.$Message.success('cancel success')
           this.getBookingData()
         } catch (error) {
           this.$commonact.fault(error)
