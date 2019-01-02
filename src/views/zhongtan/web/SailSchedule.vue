@@ -145,15 +145,6 @@ export default {
   mounted: function() {
     this.getScheduleData(1)
   },
-  filters: {
-    strFormat: function(value) {
-      if (value.length > 10) {
-        return value.substring(0, 7) + '...'
-      } else {
-        return value
-      }
-    }
-  },
   methods: {
     getScheduleData: async function(index) {
       try {

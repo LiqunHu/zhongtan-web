@@ -35,42 +35,21 @@
       </template>
       <Table stripe border size="small" ref="bookingTable" :columns="table.bookingTable.rows" :data="table.bookingTable.data">
         <template slot-scope="{ row, index }" slot="action">
-          <a href="#" class="btn btn-info btn-icon btn-sm" @click="modifyPortModal(row)">
-            <i class="fa fa-edit"></i>
-          </a>
-          <a href="#" class="btn btn-danger btn-icon btn-sm" @click="deletePort(row)">
-            <i class="fa fa-times"></i>
-          </a>
+          <Tooltip content="Edit bill lading">
+            <a href="#" class="btn btn-info btn-icon btn-sm" @click="modifyPortModal(row)">
+              <i class="fa fa-edit"></i>
+            </a>
+          </Tooltip>
+          <Tooltip content="Delete bill lading">
+            <a href="#" class="btn btn-danger btn-icon btn-sm" @click="deletePort(row)">
+              <i class="fa fa-times"></i>
+            </a>
+          </Tooltip>
         </template>
         <template slot-scope="{ row, index }" slot="billlading_voyage_id">
           <Select v-model="row.billlading_voyage_id" disabled>
             <Option v-for="item in row.VoyageINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
           </Select>
-        </template>
-        <template slot-scope="{ row, index }" slot="billlading_delivery_place">
-          <Poptip trigger="hover" :content="row.billlading_delivery_place">
-            <Button>{{row.billlading_delivery_place|strFormat}}</Button>
-          </Poptip>
-        </template>
-        <template slot-scope="{ row, index }" slot="billlading_stuffing_place">
-          <Poptip trigger="hover" :content="row.billlading_stuffing_place">
-            <Button>{{row.billlading_stuffing_place|strFormat}}</Button>
-          </Poptip>
-        </template>
-        <template slot-scope="{ row, index }" slot="billlading_stuffing_requirement">
-          <Poptip trigger="hover" :content="row.billlading_stuffing_requirement">
-            <Button>{{row.billlading_stuffing_requirement|strFormat}}</Button>
-          </Poptip>
-        </template>
-        <template slot-scope="{ row, index }" slot="billlading_consignee_address">
-          <Poptip trigger="hover" :content="row.billlading_consignee_address">
-            <Button>{{row.billlading_consignee_address|strFormat}}</Button>
-          </Poptip>
-        </template>
-        <template slot-scope="{ row, index }" slot="billlading_notify_address">
-          <Poptip trigger="hover" :content="row.billlading_notify_address">
-            <Button>{{row.billlading_notify_address|strFormat}}</Button>
-          </Poptip>
         </template>
       </Table>
       <Page class="m-t-10" :total="table.bookingTable.total" :page-size="table.bookingTable.limit" @on-change="getBookingData"/>
@@ -332,12 +311,14 @@ export default {
             },
             {
               title: 'Delivery Place',
-              slot: 'billlading_delivery_place',
+              key: 'billlading_delivery_place',
+              render: common.tooltipRender(),
               width: 100
             },
             {
               title: 'Stuffing Place',
-              slot: 'billlading_stuffing_place',
+              key: 'billlading_stuffing_place',
+              render: common.tooltipRender(),
               width: 100
             },
             {
@@ -347,17 +328,20 @@ export default {
             },
             {
               title: 'Stuffing requirement',
-              slot: 'billlading_stuffing_requirement',
+              key: 'billlading_stuffing_requirement',
+              render: common.tooltipRender(),
               width: 100
             },
             {
               title: 'Consignee Name',
               key: 'billlading_consignee_name',
+              render: common.tooltipRender(),
               width: 100
             },
             {
               title: 'Consignee Address',
-              slot: 'billlading_consignee_address',
+              key: 'billlading_consignee_address',
+              render: common.tooltipRender(),
               width: 100
             },
             {
@@ -368,21 +352,19 @@ export default {
             {
               title: 'Notify Name',
               key: 'billlading_notify_name',
+              render: common.tooltipRender(),
               width: 100
             },
             {
               title: 'Notify Address',
-              slot: 'billlading_notify_address',
+              key: 'billlading_notify_address',
+              render: common.tooltipRender(),
               width: 100
             },
             {
               title: 'Notify telephone',
               key: 'billlading_notify_tel',
               width: 100
-            },
-            {
-              title: 'goods',
-              slot: 'billlading_goods'
             }
           ],
           data: [],
@@ -473,15 +455,6 @@ export default {
       oldPara: {},
       workPara: {},
       action: ''
-    }
-  },
-  filters: {
-    strFormat: function(value) {
-      if (value.length > 8) {
-        return value.substring(0, 5) + '...'
-      } else {
-        return value
-      }
     }
   },
   created() {

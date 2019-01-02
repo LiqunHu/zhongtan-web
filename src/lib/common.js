@@ -157,7 +157,6 @@ exports.treeIconRender = (h, { root, node, data }, _self, treeRef, folderIcon, m
 exports.selectRender = (_self, key) => {
   return (h, params) => {
     let options = []
-    console.log(_self)
     _self.pagePara[key].forEach(item => {
       options.push(
         h(
@@ -181,6 +180,39 @@ exports.selectRender = (_self, key) => {
         }
       },
       options
+    )
+  }
+}
+
+let tooltipFormat = value => {
+  if (value.length > 8) {
+    return value.substring(0, 5) + '...'
+  } else {
+    return value
+  }
+}
+exports.tooltipRender = () => {
+  return (h, params) => {
+    return h(
+      'Poptip',
+      {
+        props: {
+          trigger: 'hover',
+          content: params.row[params.column.key]
+        }
+      },
+      [
+        h(
+          'Button',
+          {
+            style: 'text-decoration:underline',
+            props: {
+              type: 'text'
+            }
+          },
+          tooltipFormat(params.row[params.column.key])
+        )
+      ]
     )
   }
 }

@@ -32,8 +32,6 @@
         </div>
       </template>
       <Table stripe ref="messageTable" :columns="table.messageTable.rows" :data="table.messageTable.data">
-        <template slot-scope="{ row, index }" slot="web_article_body">{{row.web_article_body|strFormat}}</template>
-
         <template slot-scope="{ row, index }" slot="action">
           <a href="#" class="btn btn-info btn-icon btn-sm" @click="modifyMessageModal(row)">
             <i class="fa fa-edit"></i>
@@ -66,6 +64,7 @@
 </template>
 <script>
 import PageOptions from '../../../config/PageOptions.vue'
+const common = require('@/lib/common')
 const apiUrl = '/api/zhongtan/web/WebConfig/'
 
 export default {
@@ -91,7 +90,8 @@ export default {
             },
             {
               title: 'Content',
-              slot: 'web_article_body'
+              key: 'web_article_body',
+              render: common.tooltipRender()
             },
             {
               title: 'Action',
@@ -124,15 +124,6 @@ export default {
   },
   mounted: function() {
     this.getMessageData(1)
-  },
-  filters: {
-    strFormat: function(value) {
-      if (value.length > 10) {
-        return value.substring(0, 7) + '...'
-      } else {
-        return value
-      }
-    }
   },
   methods: {
     getMessageData: async function(index) {
