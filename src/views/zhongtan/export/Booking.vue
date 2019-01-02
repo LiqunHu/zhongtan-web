@@ -383,10 +383,6 @@ export default {
             {
               title: 'goods',
               slot: 'billlading_goods'
-            },
-            {
-              title: 'goods',
-              slot: 'billlading_goods'
             }
           ],
           data: [],
