@@ -33,7 +33,7 @@
           </div>
         </div>
       </template>
-      <Table stripe border size="small" ref="bookingTable" :columns="table.bookingTable.rows" :data="table.bookingTable.data">
+      <Table stripe size="small" ref="bookingTable" :columns="table.bookingTable.rows" :data="table.bookingTable.data">
         <template slot-scope="{ row, index }" slot="action">
           <Tooltip content="Edit bill lading">
             <a href="#" class="btn btn-info btn-icon btn-sm" @click="modifyPortModal(row)">
@@ -50,6 +50,15 @@
           <Select v-model="row.billlading_voyage_id" disabled>
             <Option v-for="item in row.VoyageINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
           </Select>
+        </template>
+        <template slot-scope="{ row, index }" slot="billlading_goods">
+          <Poptip trigger="hover" width="1000">
+            <Button type="text" style="text-decoration:underline">Goods</Button>
+            <template slot="content">
+              <Table stripe size="small" :columns="table.poptipGoodsTable.rows" :data="row.billlading_goods">
+              </Table>
+              </template>
+          </Poptip>
         </template>
       </Table>
       <Page class="m-t-10" :total="table.bookingTable.total" :page-size="table.bookingTable.limit" @on-change="getBookingData"/>
@@ -293,9 +302,14 @@ export default {
               width: 100
             },
             {
-              title: 'voyage',
+              title: 'Voyage',
               slot: 'billlading_voyage_id',
               width: 180
+            },
+            {
+              title: 'Goods',
+              slot: 'billlading_goods',
+              width: 100
             },
             {
               title: 'Loading Port',
@@ -427,6 +441,56 @@ export default {
             }
           ],
           data: []
+        },
+        poptipGoodsTable: {
+          rows: [
+            {
+              title: 'Vol.',
+              key: 'billlading_goods_container_number'
+            },
+            {
+              title: 'Type',
+              key: 'billlading_goods_container_type',
+              render: common.selectRender(this, 'ContainerTypeINFO')
+            },
+            {
+              title: 'Size',
+              key: 'billlading_goods_container_size',
+              render: common.selectRender(this, 'ContainerSizeINFO')
+            },
+            {
+              title: 'Description',
+              key: 'billlading_goods_description',
+              render: common.tooltipRender()
+            },
+            {
+              title: 'Package No',
+              key: 'billlading_goods_package_number'
+            },
+            {
+              title: 'Package Unit',
+              key: 'billlading_goods_package_unit',
+              render: common.selectRender(this, 'PackageUnitINFO')
+            },
+            {
+              title: 'Volume',
+              key: 'billlading_goods_gross_volume'
+            },
+            {
+              title: 'Volume Unit',
+              key: 'billlading_goods_gross_volume_unit',
+              render: common.selectRender(this, 'VolumeUnitINFO')
+            },
+            {
+              title: 'Weight',
+              key: 'billlading_goods_gross_weight'
+            },
+            {
+              title: 'Weight Unit',
+              key: 'billlading_goods_gross_unit',
+              render: common.selectRender(this, 'WeightUnitINFO')
+            }
+          ]
         }
       },
       formRule: {
