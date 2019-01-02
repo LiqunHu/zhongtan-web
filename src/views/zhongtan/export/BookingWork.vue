@@ -26,10 +26,6 @@
                 <i class="fa fa-search"></i>
               </button>
             </div>
-
-            <div class="form-group m-r-10">
-              <button type="button" class="btn btn-info" @click="actBookingModal">Booking</button>
-            </div>
           </div>
         </div>
       </template>
@@ -42,6 +38,11 @@
           </Tooltip>
         </template>
         <template slot-scope="{ row, index }" slot="action">
+          <Tooltip content="Booking bill lading" v-if="row.billlading_state === 'PBK'">
+            <a href="#" class="btn btn-danger btn-icon btn-sm" @click="confirmBookingModal(row)">
+              <i class="fa fa-times"></i>
+            </a>
+          </Tooltip>
           <Tooltip content="Delete bill lading" v-if="row.billlading_state === 'PBK'">
             <a href="#" class="btn btn-danger btn-icon btn-sm" @click="cancelBooking(row)">
               <i class="fa fa-times"></i>
@@ -67,7 +68,7 @@
     <Modal v-model="modal.bookingModal" title="Booking" width="1100">
       <div style="height: 600px">
         <vue-scroll>
-          <Form :model="workPara" :label-width="120" :rules="formRule.ruleBookingModal" ref="formPort">
+          <Form :model="workPara" :label-width="120" :rules="formRule.ruleBookingModal" ref="formBooking">
             <Row>
               <Col span="9">
                 <FormItem label="Vessel" prop="billlading_vessel_id">
@@ -247,19 +248,35 @@
         <Button type="primary" size="large" @click="submitBooking">Submit</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.confirmBookingModal" title="Booking">
+      <Form :model="workPara" :label-width="120" :rules="formRule.ruleConfirmBookingModal" ref="formConfirmBooking">
+        <FormItem label="Freight Currency" prop="billlading_freight_currency">
+          <Select v-model="workPara.billlading_freight_currency">
+            <Option v-for="item in pagePara.PayCurrencyINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="Freight Charge" prop="billlading_freight_charge">
+          <Input placeholder="Freight Charge" v-model="workPara.billlading_freight_charge"/>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.confirmBookingModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="submitPort">Submit</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
 import PageOptions from '../../../config/PageOptions.vue'
 const moment = require('moment')
 const common = require('@/lib/common')
-const apiUrl = '/api/zhongtan/export/Booking/'
+const apiUrl = '/api/zhongtan/export/BookingWork/'
 
 export default {
-  name: 'Booking',
+  name: 'BookingWork',
   data: function() {
     return {
-      modal: { bookingModal: false },
+      modal: { bookingModal: false, confirmBookingModal: false },
       table: {
         bookingTable: {
           rows: [
@@ -517,6 +534,10 @@ export default {
           billlading_copys_num: [{ required: true, trigger: 'change', message: 'Enter Copies B/L' }],
           billlading_stuffing_place: [{ required: true, trigger: 'change', message: 'Enter Stuffing Place' }],
           billlading_freight_currency: [{ required: true, trigger: 'change', message: 'Choose Status' }]
+        },
+        ruleConfirmBookingModal: {
+          billlading_freight_currency: [{ required: true, trigger: 'change', message: 'Choose Currency' }],
+          billlading_freight_charge: [{ required: true, trigger: 'change', message: 'Enter Freight Charge' }]
         }
       },
       pagePara: {},
@@ -590,26 +611,6 @@ export default {
         this.$commonact.fault(error)
       }
     },
-    actBookingModal: async function() {
-      this.workPara = {}
-      this.table.goodsTable.data = [
-        {
-          billlading_goods_container_number: null,
-          billlading_goods_container_type: '',
-          billlading_goods_container_size: '',
-          billlading_goods_description: '',
-          billlading_goods_package_number: null,
-          billlading_goods_package_unit: 'BAG',
-          billlading_goods_gross_volume: null,
-          billlading_goods_gross_volume_unit: 'M3',
-          billlading_goods_gross_weight: null,
-          billlading_goods_gross_unit: 'KG'
-        }
-      ]
-      this.action = 'add'
-      this.$refs.formPort.resetFields()
-      this.modal.bookingModal = true
-    },
     modifyBookingModal: async function(row) {
       let actrow = JSON.parse(JSON.stringify(row))
       delete actrow._index
@@ -618,11 +619,11 @@ export default {
       this.workPara = JSON.parse(JSON.stringify(actrow))
       this.table.goodsTable.data = JSON.parse(JSON.stringify(actrow.billlading_goods))
       this.action = 'modify'
-      this.$refs.formPort.resetFields()
+      this.$refs.formBooking.resetFields()
       this.modal.bookingModal = true
     },
     submitBooking: function() {
-      this.$refs.formPort.validate(async valid => {
+      this.$refs.formBooking.validate(async valid => {
         if (valid) {
           try {
             this.workPara.billlading_goods = JSON.parse(JSON.stringify(this.table.goodsTable.data))
@@ -649,6 +650,28 @@ export default {
           this.getBookingData()
         } catch (error) {
           this.$commonact.fault(error)
+        }
+      })
+    },
+    confirmBookingModal: function(row) {
+      let actrow = JSON.parse(JSON.stringify(row))
+      delete actrow._index
+      delete actrow._rowKey
+      this.workPara = JSON.parse(JSON.stringify(actrow))
+      this.modal.bookingModal = true
+    },
+    confirmBookingAct: function() {
+      this.$refs.formConfirmBooking.validate(async valid => {
+        if (valid) {
+          try {
+            this.workPara.billlading_goods = JSON.parse(JSON.stringify(this.table.goodsTable.data))
+            await this.$http.post(apiUrl + 'confirmBooking', this.workPara)
+            this.$Message.success('confirm success')
+            this.getBookingData()
+            this.modal.confirmBookingModal = false
+          } catch (error) {
+            this.$commonact.fault(error)
+          }
         }
       })
     }
