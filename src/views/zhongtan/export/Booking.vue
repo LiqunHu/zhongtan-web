@@ -34,12 +34,14 @@
         </div>
       </template>
       <Table stripe size="small" ref="bookingTable" :columns="table.bookingTable.rows" :data="table.bookingTable.data">
-        <template slot-scope="{ row, index }" slot="action">
+        <template slot-scope="{ row, index }" slot="edit">
           <Tooltip content="Edit bill lading">
             <a href="#" class="btn btn-info btn-icon btn-sm" @click="modifyPortModal(row)">
               <i class="fa fa-edit"></i>
             </a>
           </Tooltip>
+        </template>
+        <template slot-scope="{ row, index }" slot="action">
           <Tooltip content="Delete bill lading">
             <a href="#" class="btn btn-danger btn-icon btn-sm" @click="deletePort(row)">
               <i class="fa fa-times"></i>
@@ -266,6 +268,12 @@ export default {
               type: 'index',
               width: 40,
               align: 'center',
+              fixed: 'left'
+            },
+            {
+              title: 'Edit',
+              slot: 'edit',
+              width: 60,
               fixed: 'left'
             },
             {
