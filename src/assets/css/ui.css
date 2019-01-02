@@ -1,3 +1,40 @@
 .ivu-spin-fix {
     background-color: rgba(255, 255, 255, 0.1);
 }
+
+.label-booking {
+    background-color: #81b5d4;
+  }
+  
+  .label-putbox-apply {
+    background-color: #3c8dbc;
+  }
+  
+  .label-putbox-confirm {
+    background-color: #357ca5;
+  }
+  
+  .label-submit-loading {
+    background-color: #5ad6f5;
+  }
+  
+  .label-reject-loading {
+    background-color: #f39c12;
+  }
+  
+  .label-declaration {
+    background-color: #00c0ef;
+  }
+  
+  .label-confirm-instruction {
+    background-color: #00a7d0;
+  }
+  
+  .label-cds-processing {
+    background-color: #6ee1df;
+  }
+  
+  .label-bill-lading {
+    background-color: #39cccc;
+  }
+  
