@@ -39,11 +39,11 @@
         </template>
         <template slot-scope="{ row, index }" slot="action">
           <Tooltip content="Booking bill lading" v-if="row.billlading_state === 'PBK'">
-            <a href="#" class="btn btn-danger btn-icon btn-sm" @click="confirmBookingModal(row)">
-              <i class="fa fa-times"></i>
+            <a href="#" class="btn btn-primary btn-icon btn-sm" @click="confirmBookingModal(row)">
+              <i class="fa fa-dot-circle"></i>
             </a>
           </Tooltip>
-          <Tooltip content="Delete bill lading" v-if="row.billlading_state === 'PBK'">
+          <Tooltip content="Cancel bill lading" v-if="row.billlading_state === 'PBK'">
             <a href="#" class="btn btn-danger btn-icon btn-sm" @click="cancelBooking(row)">
               <i class="fa fa-times"></i>
             </a>
@@ -261,7 +261,7 @@
       </Form>
       <div slot="footer">
         <Button type="text" size="large" @click="modal.confirmBookingModal=false">Cancel</Button>
-        <Button type="primary" size="large" @click="submitPort">Submit</Button>
+        <Button type="primary" size="large" @click="confirmBookingAct">Submit</Button>
       </div>
     </Modal>
   </div>
@@ -658,7 +658,8 @@ export default {
       delete actrow._index
       delete actrow._rowKey
       this.workPara = JSON.parse(JSON.stringify(actrow))
-      this.modal.bookingModal = true
+      this.workPara.billlading_freight_charge = '0.00'
+      this.modal.confirmBookingModal = true
     },
     confirmBookingAct: function() {
       this.$refs.formConfirmBooking.validate(async valid => {

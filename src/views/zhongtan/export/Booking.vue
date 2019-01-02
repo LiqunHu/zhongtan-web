@@ -42,7 +42,7 @@
           </Tooltip>
         </template>
         <template slot-scope="{ row, index }" slot="action">
-          <Tooltip content="Delete bill lading" v-if="row.billlading_state === 'PBK'">
+          <Tooltip content="Cancel bill lading" v-if="row.billlading_state === 'PBK'">
             <a href="#" class="btn btn-danger btn-icon btn-sm" @click="cancelBooking(row)">
               <i class="fa fa-times"></i>
             </a>
