@@ -13,6 +13,7 @@ const routes = [
   { path: '/admin/zhongtan/configuration/PortConfig', component: resolve => require(['@/views/zhongtan/configuration/PortConfig'], resolve) },
   { path: '/admin/zhongtan/configuration/VesselConfig', component: resolve => require(['@/views/zhongtan/configuration/VesselConfig'], resolve) },
   { path: '/admin/zhongtan/configuration/VoyageConfig', component: resolve => require(['@/views/zhongtan/configuration/VoyageConfig'], resolve) },
+  { path: '/admin/zhongtan/configuration/ContainerManagerConfig', component: resolve => require(['@/views/zhongtan/configuration/ContainerManagerConfig'], resolve) },
   { path: '/admin/zhongtan/export/Booking', component: resolve => require(['@/views/zhongtan/export/Booking'], resolve) },
   { path: '/admin/zhongtan/export/BookingWork', component: resolve => require(['@/views/zhongtan/export/BookingWork'], resolve) },
   { path: '/admin/zhongtan/web/SailSchedule', component: resolve => require(['@/views/zhongtan/web/SailSchedule'], resolve) },

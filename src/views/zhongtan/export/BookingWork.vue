@@ -48,6 +48,11 @@
               <i class="fa fa-times"></i>
             </a>
           </Tooltip>
+          <Tooltip content="Pick up empty confirm" v-if="row.billlading_state === 'PA'">
+            <a href="#" class="btn btn-primary btn-icon btn-sm" @click="pickUpEmptyConfirmModal(row)">
+              <i class="fa fa-dot-circle"></i>
+            </a>
+          </Tooltip>
         </template>
         <template slot-scope="{ row, index }" slot="billlading_voyage_id">
           <Select v-model="row.billlading_voyage_id" disabled>
@@ -321,6 +326,19 @@
         <Button type="primary" size="large" @click="confirmBookingAct">Submit</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.pickUpEmptyConfirmModal" title="Booking">
+      <Form :model="workPara" :label-width="120" :rules="formRule.rulePickUpEmptyConfirmModal" ref="formPickUpEmptyConfirm">
+        <FormItem label="Continer Manager" prop="container_manager_id">
+          <Select v-model="workPara.container_manager_id">
+            <Option v-for="item in pagePara.ContainerManagerINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+          </Select>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.pickUpEmptyConfirmModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="pickUpEmptyConfirm">Submit</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -333,7 +351,7 @@ export default {
   name: 'BookingWork',
   data: function() {
     return {
-      modal: { bookingModal: false, confirmBookingModal: false },
+      modal: { bookingModal: false, confirmBookingModal: false, pickUpEmptyConfirmModal: false },
       table: {
         bookingTable: {
           rows: [
@@ -694,6 +712,9 @@ export default {
         ruleConfirmBookingModal: {
           billlading_freight_currency: [{ required: true, trigger: 'change', message: 'Choose Currency' }],
           billlading_freight_charge: [{ required: true, trigger: 'change', message: 'Enter Freight Charge' }]
+        },
+        rulePickUpEmptyConfirmModal: {
+          container_manager_id: [{ required: true, type: 'number', trigger: 'change', message: 'Choose Continer Manager' }]
         }
       },
       pagePara: {},
@@ -828,6 +849,25 @@ export default {
             this.$Message.success('confirm success')
             this.getBookingData()
             this.modal.confirmBookingModal = false
+          } catch (error) {
+            this.$commonact.fault(error)
+          }
+        }
+      })
+    },
+    pickUpEmptyConfirmModal: function(row) {
+      this.workPara = JSON.parse(JSON.stringify(row))
+      this.$refs.formPickUpEmptyConfirm.resetFields()
+      this.modal.pickUpEmptyConfirmModal = true
+    },
+    pickUpEmptyConfirm: function() {
+      this.$refs.formPickUpEmptyConfirm.validate(async valid => {
+        if (valid) {
+          try {
+            await this.$http.post(apiUrl + 'confirmPickUp', this.workPara)
+            this.$Message.success('confirm success')
+            this.getBookingData()
+            this.modal.pickUpEmptyConfirmModal = false
           } catch (error) {
             this.$commonact.fault(error)
           }
