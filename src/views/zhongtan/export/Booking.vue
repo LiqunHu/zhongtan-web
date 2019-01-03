@@ -47,6 +47,11 @@
               <i class="fa fa-times"></i>
             </a>
           </Tooltip>
+          <Tooltip content="Pick up empty" v-if="row.billlading_state === 'BK'">
+            <a href="#" class="btn btn-primary btn-icon btn-sm" @click="pickUpEmpty(row)">
+              <i class="fa fa-dot-circle"></i>
+            </a>
+          </Tooltip>
         </template>
         <template slot-scope="{ row, index }" slot="billlading_voyage_id">
           <Select v-model="row.billlading_voyage_id" disabled>
@@ -804,6 +809,17 @@ export default {
         try {
           await this.$http.post(apiUrl + 'cancel', { billlading_id: row.billlading_id })
           this.$Message.success('cancel success')
+          this.getBookingData()
+        } catch (error) {
+          this.$commonact.fault(error)
+        }
+      })
+    },
+    pickUpEmpty: function(row) {
+      this.$commonact.confirm('Pick up empty?', async () => {
+        try {
+          await this.$http.post(apiUrl + 'pickUpEmpty', { billlading_id: row.billlading_id })
+          this.$Message.success('Successful operation')
           this.getBookingData()
         } catch (error) {
           this.$commonact.fault(error)
