@@ -20,7 +20,6 @@
             <div class="form-group m-r-2">
               <DatePicker type="daterange" :value="table.bookingTable.search_data" placeholder="Application Date" style="width: 200px"></DatePicker>
             </div>
-
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="getBookingData(1)">
                 <i class="fa fa-search"></i>
@@ -51,6 +50,16 @@
           <Tooltip content="Pick up empty confirm" v-if="row.billlading_state === 'PA'">
             <a href="#" class="btn btn-primary btn-icon btn-sm" @click="pickUpEmptyConfirmModal(row)">
               <i class="fa fa-dot-circle"></i>
+            </a>
+          </Tooltip>
+          <Tooltip content="Declaration" v-if="row.billlading_state === 'SL'">
+            <a href="#" class="btn btn-primary btn-icon btn-sm" @click="declarationModal(row)">
+              <i class="fa fa-dot-circle"></i>
+            </a>
+          </Tooltip>
+          <Tooltip content="Declaration" v-if="row.billlading_state === 'SL'">
+            <a href="#" class="btn btn-yellow btn-icon btn-sm" @click="pickUpEmptyConfirmModal(row)">
+              <i class="fa fa-times"></i>
             </a>
           </Tooltip>
         </template>
@@ -339,6 +348,32 @@
         <Button type="primary" size="large" @click="pickUpEmptyConfirm">Submit</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.declarationModal" title="Declaration">
+      <div v-for="f in files" v-bind:key="f.name" class="upload-list">
+        <Icon type="ios-document" size="60"/>
+      </div>
+      <Upload
+        ref="upload"
+        :headers="headers"
+        :show-upload-list="false"
+        :on-success="handleSuccess"
+        :format="['pdf']"
+        :max-size="4096"
+        :on-format-error="handleFormatError"
+        :on-exceeded-size="handleMaxSize"
+        type="drag"
+        action="/api/zhongtan/export/BookingWork/upload"
+        style="display: inline-block;width:58px;"
+      >
+        <div style="width: 58px;height:58px;line-height: 58px;">
+          <Icon type="md-add" size="20"></Icon>
+        </div>
+      </Upload>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.declarationModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="declaration">Submit</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -351,7 +386,7 @@ export default {
   name: 'BookingWork',
   data: function() {
     return {
-      modal: { bookingModal: false, confirmBookingModal: false, pickUpEmptyConfirmModal: false },
+      modal: { bookingModal: false, confirmBookingModal: false, pickUpEmptyConfirmModal: false, declarationModal: false },
       table: {
         bookingTable: {
           rows: [
@@ -721,7 +756,9 @@ export default {
       VoyageINFO: [],
       oldPara: {},
       workPara: {},
-      action: ''
+      action: '',
+      files: [],
+      headers: common.uploadHeaders()
     }
   },
   created() {
@@ -873,7 +910,49 @@ export default {
           }
         }
       })
+    },
+    declarationModal: function(row) {
+      this.workPara = JSON.parse(JSON.stringify(row))
+      this.files = []
+      this.$refs.upload.clearFiles()
+      this.modal.declarationModal = true
+    },
+    declaration: function() {
+      
+    },
+    handleSuccess(res, file, fileList) {
+      file.url = res.info.url
+      file.name = res.info.name
+      this.files = this.$refs.upload.fileList
+    },
+    handleFormatError(file) {
+      this.$Notice.warning({
+        title: 'The file format is incorrect',
+        desc: 'File format of ' + file.name + ' is incorrect, please select pdf.'
+      })
+    },
+    handleMaxSize(file) {
+      this.$Notice.warning({
+        title: 'Exceeding file size limit',
+        desc: 'File  ' + file.name + ' is too large, no more than 4M.'
+      })
     }
   }
 }
 </script>
+<style scoped>
+.upload-list {
+  display: inline-block;
+  width: 60px;
+  height: 60px;
+  text-align: center;
+  line-height: 60px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #fff;
+  position: relative;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  margin-right: 4px;
+}
+</style>
