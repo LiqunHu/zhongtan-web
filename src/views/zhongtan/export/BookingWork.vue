@@ -87,7 +87,7 @@
       </Table>
       <Page class="m-t-10" :total="table.bookingTable.total" :page-size="table.bookingTable.limit" @on-change="getBookingData"/>
     </panel>
-    <Modal v-model="modal.bookingModal" title="Booking" width="1100">
+    <Modal v-model="modal.bookingModal" title="Booking" width="1200">
       <div style="height: 600px">
         <vue-scroll>
           <Form :model="workPara" :label-width="120" :rules="formRule.ruleBookingModal" ref="formBooking">

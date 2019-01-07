@@ -82,7 +82,7 @@
       </Table>
       <Page class="m-t-10" :total="table.bookingTable.total" :page-size="table.bookingTable.limit" @on-change="getBookingData"/>
     </panel>
-    <Modal v-model="modal.bookingModal" title="Booking" width="1100">
+    <Modal v-model="modal.bookingModal" title="Booking" width="1200">
       <div style="height: 600px">
         <vue-scroll>
           <Form :model="workPara" :label-width="120" :rules="formRule.ruleBookingModal" ref="formPort">
@@ -165,7 +165,7 @@
               </Col>
             </Row>
             <Divider/>
-            <Row v-if="workPara.billlading_state === 'PBK'">
+            <Row v-if="action === 'add' || workPara.billlading_state === 'PBK'">
               <Col span="24">
                 <h4 class="text-middle m-b-10">
                   <b>Cargo Description</b>
@@ -847,21 +847,20 @@ export default {
     },
     actBookingModal: async function() {
       this.workPara = {}
-      this.table.goodsTable.data = [
-        {
-          billlading_goods_container_number: null,
-          billlading_goods_container_type: '',
-          billlading_goods_container_size: '',
-          billlading_goods_type: '',
-          billlading_goods_description: '',
-          billlading_goods_package_number: null,
-          billlading_goods_package_unit: 'BAG',
-          billlading_goods_gross_volume: null,
-          billlading_goods_gross_volume_unit: 'M3',
-          billlading_goods_gross_weight: null,
-          billlading_goods_gross_unit: 'KG'
-        }
-      ]
+      this.table.goodsTable.data = []
+      this.table.goodsTable.data.push({
+        billlading_goods_container_number: null,
+        billlading_goods_container_type: '',
+        billlading_goods_container_size: '',
+        billlading_goods_type: '',
+        billlading_goods_description: '',
+        billlading_goods_package_number: null,
+        billlading_goods_package_unit: 'BAG',
+        billlading_goods_gross_volume: null,
+        billlading_goods_gross_volume_unit: 'M3',
+        billlading_goods_gross_weight: null,
+        billlading_goods_gross_unit: 'KG'
+      })
       this.action = 'add'
       this.$refs.formPort.resetFields()
       this.modal.bookingModal = true

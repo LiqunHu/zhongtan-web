@@ -50,6 +50,11 @@
     </panel>
     <Modal v-model="modal.voyageModal" title="Voyage">
       <Form :model="workPara" :label-width="120" :rules="formRule.ruleVoyageModal" ref="formVoyage">
+        <FormItem label="Vessel Name" prop="vessel_id">
+          <Select v-model="workPara.vessel_id">
+            <Option v-for="item in pagePara.VesselINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+          </Select>
+        </FormItem>
         <FormItem label="Voyage Number" prop="voyage_number">
           <Input placeholder="Voyage Number" v-model="workPara.voyage_number"/>
         </FormItem>
@@ -85,7 +90,7 @@ export default {
             {
               title: 'Vessel Name',
               key: 'vessel_id',
-              render: common.selectRender(this, 'VesselINFO'),
+              render: common.selectRender(this, 'VesselINFO')
             },
             {
               title: 'Voyage Number',
