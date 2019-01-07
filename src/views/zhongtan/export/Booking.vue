@@ -184,6 +184,9 @@
                       <Option v-for="item in pagePara.ContainerSizeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
                     </Select>
                   </template>
+                  <template slot-scope="{ row, index }" slot="billlading_goods_type">
+                    <Input v-model="row.billlading_goods_type" @on-blur="table.goodsTable.data[index] = row"/>
+                  </template>
                   <template slot-scope="{ row, index }" slot="billlading_goods_description">
                     <Input v-model="row.billlading_goods_description" @on-blur="table.goodsTable.data[index] = row"/>
                   </template>
@@ -240,6 +243,12 @@
                     <Select v-model="row.container_size" @on-change="table.containerTable.data[index] = row">
                       <Option v-for="item in pagePara.ContainerSizeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
                     </Select>
+                  </template>
+                  <template slot-scope="{ row, index }" slot="container_goods_type">
+                    <Input v-model="row.container_goods_type" @on-blur="table.containerTable.data[index] = row"/>
+                  </template>
+                  <template slot-scope="{ row, index }" slot="container_goods_description">
+                    <Input v-model="row.container_goods_description" @on-blur="table.containerTable.data[index] = row"/>
                   </template>
                   <template slot-scope="{ row, index }" slot="container_seal_no1">
                     <Input v-model="row.container_seal_no1" @on-blur="table.containerTable.data[index] = row"/>
@@ -542,6 +551,10 @@ export default {
               slot: 'billlading_goods_container_size'
             },
             {
+              title: 'Goods Type',
+              slot: 'billlading_goods_type'
+            },
+            {
               title: 'Description',
               slot: 'billlading_goods_description'
             },
@@ -591,6 +604,14 @@ export default {
               slot: 'container_size'
             },
             {
+              title: 'Goods Type',
+              slot: 'container_goods_type'
+            },
+            {
+              title: 'Description',
+              slot: 'container_goods_description'
+            },
+            {
               title: 'Seal No.',
               slot: 'container_seal_no1'
             },
@@ -636,6 +657,10 @@ export default {
               title: 'Size',
               key: 'billlading_goods_container_size',
               render: common.selectRender(this, 'ContainerSizeINFO')
+            },
+            {
+              title: 'Goods Type',
+              key: 'billlading_goods_type'
             },
             {
               title: 'Description',
@@ -686,6 +711,14 @@ export default {
               title: 'Size',
               key: 'container_size',
               render: common.selectRender(this, 'ContainerSizeINFO')
+            },
+            {
+              title: 'Goods Type',
+              key: 'container_goods_type'
+            },
+            {
+              title: 'Description.',
+              key: 'billlading_goods_description'
             },
             {
               title: 'Seal No.',
@@ -781,6 +814,7 @@ export default {
         billlading_goods_container_number: null,
         billlading_goods_container_type: '',
         billlading_goods_container_size: '',
+        billlading_goods_type: '',
         billlading_goods_description: '',
         billlading_goods_package_number: null,
         billlading_goods_package_unit: 'BAG',
@@ -818,6 +852,7 @@ export default {
           billlading_goods_container_number: null,
           billlading_goods_container_type: '',
           billlading_goods_container_size: '',
+          billlading_goods_type: '',
           billlading_goods_description: '',
           billlading_goods_package_number: null,
           billlading_goods_package_unit: 'BAG',
