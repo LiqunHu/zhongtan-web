@@ -343,6 +343,12 @@
                 <Option v-for="item in pagePara.ContainerSizeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
               </Select>
             </template>
+            <template slot-scope="{ row, index }" slot="container_goods_type">
+              <Input v-model="row.container_goods_type" @on-blur="table.containerTable.data[index] = row"/>
+            </template>
+            <template slot-scope="{ row, index }" slot="container_goods_description">
+              <Input v-model="row.container_goods_description" @on-blur="table.containerTable.data[index] = row"/>
+            </template>
             <template slot-scope="{ row, index }" slot="container_seal_no1">
               <Input v-model="row.container_seal_no1" @on-blur="table.containerTable.data[index] = row"/>
             </template>
