@@ -82,7 +82,7 @@
       </Table>
       <Page class="m-t-10" :total="table.bookingTable.total" :page-size="table.bookingTable.limit" @on-change="getBookingData"/>
     </panel>
-    <Modal v-model="modal.bookingModal" title="Booking" width="1200">
+    <Modal v-model="modal.bookingModal" title="Booking" width="800">
       <div style="height: 600px">
         <vue-scroll>
           <Form :model="workPara" :label-width="120" :rules="formRule.ruleBookingModal" ref="formPort">
@@ -165,121 +165,123 @@
               </Col>
             </Row>
             <Divider/>
-            <Row v-if="action === 'add' || workPara.billlading_state === 'PBK'">
-              <Col span="24">
-                <h4 class="text-middle m-b-10">
-                  <b>Cargo Description</b>
-                </h4>
-                <Table stripe ref="goodsTable" :columns="table.goodsTable.rows" :data="table.goodsTable.data">
-                  <template slot-scope="{ row, index }" slot="billlading_goods_container_number">
-                    <Input v-model="row.billlading_goods_container_number" @on-blur="table.goodsTable.data[index] = row"/>
-                  </template>
-                  <template slot-scope="{ row, index }" slot="billlading_goods_container_type">
-                    <Select v-model="row.billlading_goods_container_type" @on-change="table.goodsTable.data[index] = row">
-                      <Option v-for="item in pagePara.ContainerTypeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-                    </Select>
-                  </template>
-                  <template slot-scope="{ row, index }" slot="billlading_goods_container_size">
-                    <Select v-model="row.billlading_goods_container_size" @on-change="table.goodsTable.data[index] = row">
-                      <Option v-for="item in pagePara.ContainerSizeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-                    </Select>
-                  </template>
-                  <template slot-scope="{ row, index }" slot="billlading_goods_type">
-                    <Input v-model="row.billlading_goods_type" @on-blur="table.goodsTable.data[index] = row"/>
-                  </template>
-                  <template slot-scope="{ row, index }" slot="billlading_goods_description">
-                    <Input v-model="row.billlading_goods_description" @on-blur="table.goodsTable.data[index] = row"/>
-                  </template>
-                  <template slot-scope="{ row, index }" slot="billlading_goods_package_number">
-                    <Input v-model="row.billlading_goods_package_number" @on-blur="table.goodsTable.data[index] = row"/>
-                  </template>
-                  <template slot-scope="{ row, index }" slot="billlading_goods_package_unit">
-                    <Select v-model="row.billlading_goods_package_unit" @on-change="table.goodsTable.data[index] = row">
-                      <Option v-for="item in pagePara.PackageUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-                    </Select>
-                  </template>
-                  <template slot-scope="{ row, index }" slot="billlading_goods_gross_volume">
-                    <Input v-model="row.billlading_goods_gross_volume" @on-blur="table.goodsTable.data[index] = row"/>
-                  </template>
-                  <template slot-scope="{ row, index }" slot="billlading_goods_gross_volume_unit">
-                    <Select v-model="row.billlading_goods_gross_volume_unit" @on-change="table.goodsTable.data[index] = row">
-                      <Option v-for="item in pagePara.VolumeUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-                    </Select>
-                  </template>
-                  <template slot-scope="{ row, index }" slot="billlading_goods_gross_weight">
-                    <Input v-model="row.billlading_goods_gross_weight" @on-blur="table.goodsTable.data[index] = row"/>
-                  </template>
-                  <template slot-scope="{ row, index }" slot="billlading_goods_gross_unit">
-                    <Select v-model="row.billlading_goods_gross_unit" @on-change="table.goodsTable.data[index] = row">
-                      <Option v-for="item in pagePara.WeightUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-                    </Select>
-                  </template>
-                  <template slot-scope="{ row, index }" slot="action">
-                    <a v-if="index === (table.goodsTable.data.length - 1)" href="#" class="btn btn-info btn-icon btn-sm" @click="addGood()">
-                      <i class="fa fa-plus"></i>
-                    </a>
-                    <a v-if="index !== 0" href="#" class="btn btn-danger btn-icon btn-sm" @click="deleteGood(index)">
-                      <i class="fa fa-times"></i>
-                    </a>
-                  </template>
-                </Table>
-              </Col>
-            </Row>
-            <Row v-else>
-              <Col span="24">
-                <h4 class="text-middle m-b-10">
-                  <b>Container Description</b>
-                </h4>
-                <Table stripe ref="containerTable" :columns="table.containerTable.rows" :data="table.containerTable.data">
-                  <template slot-scope="{ row, index }" slot="container_no">
-                    <Input v-model="row.container_no" @on-blur="table.containerTable.data[index] = row"/>
-                  </template>
-                  <template slot-scope="{ row, index }" slot="container_type">
-                    <Select v-model="row.container_type" @on-change="table.containerTable.data[index] = row">
-                      <Option v-for="item in pagePara.ContainerTypeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-                    </Select>
-                  </template>
-                  <template slot-scope="{ row, index }" slot="container_size">
-                    <Select v-model="row.container_size" @on-change="table.containerTable.data[index] = row">
-                      <Option v-for="item in pagePara.ContainerSizeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-                    </Select>
-                  </template>
-                  <template slot-scope="{ row, index }" slot="container_goods_type">
-                    <Input v-model="row.container_goods_type" @on-blur="table.containerTable.data[index] = row"/>
-                  </template>
-                  <template slot-scope="{ row, index }" slot="container_goods_description">
-                    <Input v-model="row.container_goods_description" @on-blur="table.containerTable.data[index] = row"/>
-                  </template>
-                  <template slot-scope="{ row, index }" slot="container_seal_no1">
-                    <Input v-model="row.container_seal_no1" @on-blur="table.containerTable.data[index] = row"/>
-                  </template>
-                  <template slot-scope="{ row, index }" slot="container_package_no">
-                    <Input v-model="row.container_package_no" @on-blur="table.containerTable.data[index] = row"/>
-                  </template>
-                  <template slot-scope="{ row, index }" slot="container_package_unit">
-                    <Select v-model="row.container_package_unit" @on-change="table.containerTable.data[index] = row">
-                      <Option v-for="item in pagePara.PackageUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-                    </Select>
-                  </template>
-                  <template slot-scope="{ row, index }" slot="container_volume">
-                    <Input v-model="row.container_volume" @on-blur="table.containerTable.data[index] = row"/>
-                  </template>
-                  <template slot-scope="{ row, index }" slot="container_volume_unit">
-                    <Select v-model="row.container_volume_unit" @on-change="table.containerTable.data[index] = row">
-                      <Option v-for="item in pagePara.VolumeUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-                    </Select>
-                  </template>
-                  <template slot-scope="{ row, index }" slot="container_weight">
-                    <Input v-model="row.container_weight" @on-blur="table.containerTable.data[index] = row"/>
-                  </template>
-                  <template slot-scope="{ row, index }" slot="container_weight_unit">
-                    <Select v-model="row.container_weight_unit" @on-change="table.containerTable.data[index] = row">
-                      <Option v-for="item in pagePara.WeightUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-                    </Select>
-                  </template>
-                </Table>
-              </Col>
-            </Row>
+            <div style="width: 700px">
+              <Row v-if="action === 'add' || workPara.billlading_state === 'PBK'">
+                <Col span="24">
+                  <h4 class="text-middle m-b-10">
+                    <b>Cargo Description</b>
+                  </h4>
+                  <Table stripe ref="goodsTable" :columns="table.goodsTable.rows" :data="table.goodsTable.data">
+                    <template slot-scope="{ row, index }" slot="billlading_goods_container_number">
+                      <Input v-model="row.billlading_goods_container_number" @on-blur="table.goodsTable.data[index] = row"/>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="billlading_goods_container_type">
+                      <Select v-model="row.billlading_goods_container_type" @on-change="table.goodsTable.data[index] = row">
+                        <Option v-for="item in pagePara.ContainerTypeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                      </Select>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="billlading_goods_container_size">
+                      <Select v-model="row.billlading_goods_container_size" @on-change="table.goodsTable.data[index] = row">
+                        <Option v-for="item in pagePara.ContainerSizeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                      </Select>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="billlading_goods_type">
+                      <Input v-model="row.billlading_goods_type" @on-blur="table.goodsTable.data[index] = row"/>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="billlading_goods_description">
+                      <Input v-model="row.billlading_goods_description" @on-blur="table.goodsTable.data[index] = row"/>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="billlading_goods_package_number">
+                      <Input v-model="row.billlading_goods_package_number" @on-blur="table.goodsTable.data[index] = row"/>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="billlading_goods_package_unit">
+                      <Select v-model="row.billlading_goods_package_unit" @on-change="table.goodsTable.data[index] = row">
+                        <Option v-for="item in pagePara.PackageUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                      </Select>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="billlading_goods_gross_volume">
+                      <Input v-model="row.billlading_goods_gross_volume" @on-blur="table.goodsTable.data[index] = row"/>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="billlading_goods_gross_volume_unit">
+                      <Select v-model="row.billlading_goods_gross_volume_unit" @on-change="table.goodsTable.data[index] = row">
+                        <Option v-for="item in pagePara.VolumeUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                      </Select>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="billlading_goods_gross_weight">
+                      <Input v-model="row.billlading_goods_gross_weight" @on-blur="table.goodsTable.data[index] = row"/>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="billlading_goods_gross_unit">
+                      <Select v-model="row.billlading_goods_gross_unit" @on-change="table.goodsTable.data[index] = row">
+                        <Option v-for="item in pagePara.WeightUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                      </Select>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="action">
+                      <a v-if="index === (table.goodsTable.data.length - 1)" href="#" class="btn btn-info btn-icon btn-sm" @click="addGood()">
+                        <i class="fa fa-plus"></i>
+                      </a>
+                      <a v-if="index !== 0" href="#" class="btn btn-danger btn-icon btn-sm" @click="deleteGood(index)">
+                        <i class="fa fa-times"></i>
+                      </a>
+                    </template>
+                  </Table>
+                </Col>
+              </Row>
+              <Row v-else>
+                <Col span="24">
+                  <h4 class="text-middle m-b-10">
+                    <b>Container Description</b>
+                  </h4>
+                  <Table stripe ref="containerTable" :columns="table.containerTable.rows" :data="table.containerTable.data">
+                    <template slot-scope="{ row, index }" slot="container_no">
+                      <Input v-model="row.container_no" @on-blur="table.containerTable.data[index] = row"/>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="container_type">
+                      <Select v-model="row.container_type" @on-change="table.containerTable.data[index] = row">
+                        <Option v-for="item in pagePara.ContainerTypeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                      </Select>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="container_size">
+                      <Select v-model="row.container_size" @on-change="table.containerTable.data[index] = row">
+                        <Option v-for="item in pagePara.ContainerSizeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                      </Select>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="container_goods_type">
+                      <Input v-model="row.container_goods_type" @on-blur="table.containerTable.data[index] = row"/>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="container_goods_description">
+                      <Input v-model="row.container_goods_description" @on-blur="table.containerTable.data[index] = row"/>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="container_seal_no1">
+                      <Input v-model="row.container_seal_no1" @on-blur="table.containerTable.data[index] = row"/>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="container_package_no">
+                      <Input v-model="row.container_package_no" @on-blur="table.containerTable.data[index] = row"/>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="container_package_unit">
+                      <Select v-model="row.container_package_unit" @on-change="table.containerTable.data[index] = row">
+                        <Option v-for="item in pagePara.PackageUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                      </Select>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="container_volume">
+                      <Input v-model="row.container_volume" @on-blur="table.containerTable.data[index] = row"/>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="container_volume_unit">
+                      <Select v-model="row.container_volume_unit" @on-change="table.containerTable.data[index] = row">
+                        <Option v-for="item in pagePara.VolumeUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                      </Select>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="container_weight">
+                      <Input v-model="row.container_weight" @on-blur="table.containerTable.data[index] = row"/>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="container_weight_unit">
+                      <Select v-model="row.container_weight_unit" @on-change="table.containerTable.data[index] = row">
+                        <Option v-for="item in pagePara.WeightUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                      </Select>
+                    </template>
+                  </Table>
+                </Col>
+              </Row>
+            </div>
             <Divider/>
             <Row>
               <Col span="9">
@@ -546,51 +548,63 @@ export default {
           rows: [
             {
               title: 'Vol.',
-              slot: 'billlading_goods_container_number'
+              slot: 'billlading_goods_container_number',
+              width: 100
             },
             {
               title: 'Type',
-              slot: 'billlading_goods_container_type'
+              slot: 'billlading_goods_container_type',
+              width: 100
             },
             {
               title: 'Size',
-              slot: 'billlading_goods_container_size'
+              slot: 'billlading_goods_container_size',
+              width: 100
             },
             {
               title: 'Goods Type',
-              slot: 'billlading_goods_type'
+              slot: 'billlading_goods_type',
+              width: 100
             },
             {
               title: 'Description',
-              slot: 'billlading_goods_description'
+              slot: 'billlading_goods_description',
+              width: 100
             },
             {
               title: 'Package No',
-              slot: 'billlading_goods_package_number'
+              slot: 'billlading_goods_package_number',
+              width: 100
             },
             {
               title: 'Package Unit',
-              slot: 'billlading_goods_package_unit'
+              slot: 'billlading_goods_package_unit',
+              width: 100
             },
             {
               title: 'Volume',
-              slot: 'billlading_goods_gross_volume'
+              slot: 'billlading_goods_gross_volume',
+              width: 100
             },
             {
               title: 'Volume Unit',
-              slot: 'billlading_goods_gross_volume_unit'
+              slot: 'billlading_goods_gross_volume_unit',
+              width: 100
             },
             {
               title: 'Weight',
-              slot: 'billlading_goods_gross_weight'
+              slot: 'billlading_goods_gross_weight',
+              width: 100
             },
             {
               title: 'Weight Unit',
-              slot: 'billlading_goods_gross_unit'
+              slot: 'billlading_goods_gross_unit',
+              width: 100
             },
             {
               title: 'Action',
-              slot: 'action'
+              slot: 'action',
+              width: 100
             }
           ],
           data: []
@@ -599,51 +613,63 @@ export default {
           rows: [
             {
               title: 'Container No.',
-              slot: 'container_no'
+              slot: 'container_no',
+              width: 100
             },
             {
               title: 'Type',
-              slot: 'container_type'
+              slot: 'container_type',
+              width: 100
             },
             {
               title: 'Size',
-              slot: 'container_size'
+              slot: 'container_size',
+              width: 100
             },
             {
               title: 'Goods Type',
-              slot: 'container_goods_type'
+              slot: 'container_goods_type',
+              width: 100
             },
             {
               title: 'Description',
-              slot: 'container_goods_description'
+              slot: 'container_goods_description',
+              width: 100
             },
             {
               title: 'Seal No.',
-              slot: 'container_seal_no1'
+              slot: 'container_seal_no1',
+              width: 100
             },
             {
               title: 'Package No',
-              slot: 'container_package_no'
+              slot: 'container_package_no',
+              width: 100
             },
             {
               title: 'Package Unit',
-              slot: 'container_package_unit'
+              slot: 'container_package_unit',
+              width: 100
             },
             {
               title: 'Volume',
-              slot: 'container_volume'
+              slot: 'container_volume',
+              width: 100
             },
             {
               title: 'Volume Unit',
-              slot: 'container_volume_unit'
+              slot: 'container_volume_unit',
+              width: 100
             },
             {
               title: 'Weight',
-              slot: 'container_weight'
+              slot: 'container_weight',
+              width: 100
             },
             {
               title: 'Weight Unit',
-              slot: 'container_weight_unit'
+              slot: 'container_weight_unit',
+              width: 100
             }
           ],
           data: []
