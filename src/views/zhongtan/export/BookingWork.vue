@@ -220,6 +220,14 @@
                         <Option v-for="item in pagePara.WeightUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
                       </Select>
                     </template>
+                    <template slot-scope="{ row, index }" slot="billlading_goods_net_weight">
+                      <Input v-model="row.billlading_goods_net_weight" @on-blur="table.goodsTable.data[index] = row"/>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="billlading_goods_net_unit">
+                      <Select v-model="row.billlading_goods_net_unit" @on-change="table.goodsTable.data[index] = row">
+                        <Option v-for="item in pagePara.WeightUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                      </Select>
+                    </template>
                     <template slot-scope="{ row, index }" slot="action">
                       <a v-if="index === (table.goodsTable.data.length - 1)" href="#" class="btn btn-info btn-icon btn-sm" @click="addGood()">
                         <i class="fa fa-plus"></i>
@@ -259,6 +267,9 @@
                     <template slot-scope="{ row, index }" slot="container_seal_no1">
                       <Input v-model="row.container_seal_no1" @on-blur="table.containerTable.data[index] = row"/>
                     </template>
+                    <template slot-scope="{ row, index }" slot="container_freight_indicator">
+                      <Input v-model="row.container_freight_indicator" @on-blur="table.containerTable.data[index] = row"/>
+                    </template>
                     <template slot-scope="{ row, index }" slot="container_package_no">
                       <Input v-model="row.container_package_no" @on-blur="table.containerTable.data[index] = row"/>
                     </template>
@@ -281,6 +292,17 @@
                     <template slot-scope="{ row, index }" slot="container_weight_unit">
                       <Select v-model="row.container_weight_unit" @on-change="table.containerTable.data[index] = row">
                         <Option v-for="item in pagePara.WeightUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                      </Select>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="container_minmum_temperature">
+                      <Input v-model="row.container_minmum_temperature" @on-blur="table.containerTable.data[index] = row"/>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="container_maxmum_temperature">
+                      <Input v-model="row.container_maxmum_temperature" @on-blur="table.containerTable.data[index] = row"/>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="container_refer_plug">
+                      <Select v-model="row.container_refer_plug" @on-change="table.containerTable.data[index] = row">
+                        <Option v-for="item in pagePara.YNINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
                       </Select>
                     </template>
                   </Table>
@@ -601,6 +623,16 @@ export default {
               width: 100
             },
             {
+              title: 'Net Weight',
+              slot: 'billlading_goods_net_weight',
+              width: 100
+            },
+            {
+              title: 'Net Unit',
+              slot: 'billlading_goods_net_unit',
+              width: 100
+            },
+            {
               title: 'Action',
               slot: 'action',
               width: 100
@@ -641,6 +673,11 @@ export default {
               width: 100
             },
             {
+              title: 'Freight Indicator',
+              slot: 'container_freight_indicator',
+              width: 100
+            },
+            {
               title: 'Package No',
               slot: 'container_package_no',
               width: 100
@@ -668,6 +705,21 @@ export default {
             {
               title: 'Weight Unit',
               slot: 'container_weight_unit',
+              width: 100
+            },
+            {
+              title: 'Min Temperature',
+              slot: 'container_minmum_temperature',
+              width: 100
+            },
+            {
+              title: 'Max Temperature',
+              slot: 'container_maxmum_temperature',
+              width: 100
+            },
+            {
+              title: 'Refer Plug',
+              slot: 'container_refer_plug',
               width: 100
             }
           ],
@@ -724,6 +776,15 @@ export default {
               title: 'Weight Unit',
               key: 'billlading_goods_gross_unit',
               render: common.selectRender(this, 'WeightUnitINFO')
+            },
+            {
+              title: 'Net Weight',
+              key: 'billlading_goods_net_weight'
+            },
+            {
+              title: 'Net Unit',
+              key: 'billlading_goods_net_unit',
+              render: common.selectRender(this, 'WeightUnitINFO')
             }
           ]
         },
@@ -756,6 +817,10 @@ export default {
               key: 'container_seal_no1'
             },
             {
+              title: 'Freight Indicator',
+              key: 'container_freight_indicator'
+            },
+            {
               title: 'Package No',
               key: 'container_package_no'
             },
@@ -781,6 +846,19 @@ export default {
               title: 'Weight Unit',
               key: 'container_weight_unit',
               render: common.selectRender(this, 'WeightUnitINFO')
+            },
+            {
+              title: 'Min Temperature',
+              key: 'container_minmum_temperature'
+            },
+            {
+              title: 'Max Temperature',
+              key: 'container_maxmum_temperature'
+            },
+            {
+              title: 'Refer Plug',
+              key: 'container_refer_plug',
+              render: common.selectRender(this, 'YNINFO')
             }
           ]
         }
