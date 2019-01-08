@@ -958,7 +958,9 @@ export default {
         billlading_goods_gross_volume: null,
         billlading_goods_gross_volume_unit: 'M3',
         billlading_goods_gross_weight: null,
-        billlading_goods_gross_unit: 'KG'
+        billlading_goods_gross_unit: 'KG',
+        billlading_goods_net_weight: null,
+        billlading_goods_net_unit: 'KG'
       })
     },
     deleteGood: function(index) {
@@ -996,7 +998,9 @@ export default {
         billlading_goods_gross_volume: null,
         billlading_goods_gross_volume_unit: 'M3',
         billlading_goods_gross_weight: null,
-        billlading_goods_gross_unit: 'KG'
+        billlading_goods_gross_unit: 'KG',
+        billlading_goods_net_weight: null,
+        billlading_goods_net_unit: 'KG'
       })
       this.action = 'add'
       this.$refs.formPort.resetFields()
