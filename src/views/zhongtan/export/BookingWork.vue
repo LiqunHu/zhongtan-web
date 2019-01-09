@@ -57,8 +57,8 @@
               <i class="fa fa-download"></i>
             </a>
           </Tooltip>
-          <Tooltip content="Declaration" v-if="row.billlading_state === 'SL'">
-            <a href="#" class="btn btn-yellow btn-icon btn-sm" @click="pickUpEmptyConfirmModal(row)">
+          <Tooltip content="Reject Loading List" v-if="row.billlading_state === 'SL'">
+            <a href="#" class="btn btn-yellow btn-icon btn-sm" @click="rejectLoadingModal(row)">
               <i class="fa fa-times"></i>
             </a>
           </Tooltip>
@@ -421,6 +421,17 @@
         <Button type="primary" size="large" @click="declaration">Submit</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.rejectLoadingModal" title="Booking">
+      <Form :model="workPara" :label-width="120" :rules="formRule.ruleRejectLoadingModal" ref="formRejectLoading">
+        <FormItem label="Reject Reason" prop="reject_reason">
+          <Input type="textarea" :rows="2" placeholder="Reject Reason" v-model="workPara.reject_reason"/>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.rejectLoadingModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="rejectLoading">Submit</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -433,7 +444,7 @@ export default {
   name: 'BookingWork',
   data: function() {
     return {
-      modal: { bookingModal: false, confirmBookingModal: false, pickUpEmptyConfirmModal: false, declarationModal: false },
+      modal: { bookingModal: false, confirmBookingModal: false, pickUpEmptyConfirmModal: false, declarationModal: false, rejectLoadingModal: false },
       table: {
         bookingTable: {
           rows: [
@@ -1150,6 +1161,25 @@ export default {
       this.$Notice.warning({
         title: 'Exceeding file size limit',
         desc: 'File  ' + file.name + ' is too large, no more than 4M.'
+      })
+    },
+    rejectLoadingModal: function(row) {
+      this.workPara = JSON.parse(JSON.stringify(row))
+      this.$refs.formRejectLoading.resetFields()
+      this.modal.rejectLoadingModal = true
+    },
+    rejectLoading: function(){
+      this.$refs.formRejectLoading.validate(async valid => {
+        if (valid) {
+          try {
+            await this.$http.post(apiUrl + 'rejectLoading', this.workPara)
+            this.$Message.success('reject success')
+            this.getBookingData()
+            this.modal.rejectLoadingModal = false
+          } catch (error) {
+            this.$commonact.fault(error)
+          }
+        }
       })
     }
   }
