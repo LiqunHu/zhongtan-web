@@ -347,89 +347,109 @@
         <Button type="primary" size="large" @click="submitBooking">Submit</Button>
       </div>
     </Modal>
-    <Modal v-model="modal.submitLoadingModal" title="Submit Loading" width="1100">
-      <Row>
-        <Col span="24">
-          <h4 class="text-middle m-b-10">
-            <b>Container Description</b>
-          </h4>
-          <Table stripe ref="containerTable" :columns="table.containerTable.rows" :data="table.containerTable.data">
-            <template slot-scope="{ row, index }" slot="container_no">
-              <Input v-model="row.container_no" @on-blur="table.containerTable.data[index] = row"/>
-            </template>
-            <template slot-scope="{ row, index }" slot="container_type">
-              <Select v-model="row.container_type" @on-change="table.containerTable.data[index] = row">
-                <Option v-for="item in pagePara.ContainerTypeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-              </Select>
-            </template>
-            <template slot-scope="{ row, index }" slot="container_size">
-              <Select v-model="row.container_size" @on-change="table.containerTable.data[index] = row">
-                <Option v-for="item in pagePara.ContainerSizeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-              </Select>
-            </template>
-            <template slot-scope="{ row, index }" slot="container_goods_type">
-              <Input v-model="row.container_goods_type" @on-blur="table.containerTable.data[index] = row"/>
-            </template>
-            <template slot-scope="{ row, index }" slot="container_goods_description">
-              <Input v-model="row.container_goods_description" @on-blur="table.containerTable.data[index] = row"/>
-            </template>
-            <template slot-scope="{ row, index }" slot="container_seal_no1">
-              <Input v-model="row.container_seal_no1" @on-blur="table.containerTable.data[index] = row"/>
-            </template>
-            <template slot-scope="{ row, index }" slot="container_freight_indicator">
-              <Input v-model="row.container_freight_indicator" @on-blur="table.containerTable.data[index] = row"/>
-            </template>
-            <template slot-scope="{ row, index }" slot="container_package_no">
-              <Input v-model="row.container_package_no" @on-blur="table.containerTable.data[index] = row"/>
-            </template>
-            <template slot-scope="{ row, index }" slot="container_package_unit">
-              <Select v-model="row.container_package_unit" @on-change="table.containerTable.data[index] = row">
-                <Option v-for="item in pagePara.PackageUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-              </Select>
-            </template>
-            <template slot-scope="{ row, index }" slot="container_volume">
-              <Input v-model="row.container_volume" @on-blur="table.containerTable.data[index] = row"/>
-            </template>
-            <template slot-scope="{ row, index }" slot="container_volume_unit">
-              <Select v-model="row.container_volume_unit" @on-change="table.containerTable.data[index] = row">
-                <Option v-for="item in pagePara.VolumeUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-              </Select>
-            </template>
-            <template slot-scope="{ row, index }" slot="container_weight">
-              <Input v-model="row.container_weight" @on-blur="table.containerTable.data[index] = row"/>
-            </template>
-            <template slot-scope="{ row, index }" slot="container_weight_unit">
-              <Select v-model="row.container_weight_unit" @on-change="table.containerTable.data[index] = row">
-                <Option v-for="item in pagePara.WeightUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-              </Select>
-            </template>
-            <template slot-scope="{ row, index }" slot="billlading_goods_net_weight">
-              <Input v-model="row.billlading_goods_net_weight" @on-blur="table.goodsTable.data[index] = row"/>
-            </template>
-            <template slot-scope="{ row, index }" slot="billlading_goods_net_unit">
-              <Select v-model="row.billlading_goods_net_unit" @on-change="table.goodsTable.data[index] = row">
-                <Option v-for="item in pagePara.WeightUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-              </Select>
-            </template>
-            <template slot-scope="{ row, index }" slot="container_weight_unit">
-              <Select v-model="row.container_weight_unit" @on-change="table.containerTable.data[index] = row">
-                <Option v-for="item in pagePara.WeightUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-              </Select>
-            </template>
-            <template slot-scope="{ row, index }" slot="container_minmum_temperature">
-              <Input v-model="row.container_minmum_temperature" @on-blur="table.containerTable.data[index] = row"/>
-            </template>
-            <template slot-scope="{ row, index }" slot="container_maxmum_temperature">
-              <Input v-model="row.container_maxmum_temperature" @on-blur="table.containerTable.data[index] = row"/>
-            </template>
-            <template slot-scope="{ row, index }" slot="container_refer_plug">
-              <Select v-model="row.container_refer_plug" @on-change="table.containerTable.data[index] = row">
-                <Option v-for="item in pagePara.YNINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-              </Select>
-            </template>
-          </Table>
-        </Col>
-      </Row>
+    <Modal v-model="modal.submitLoadingModal" title="Submit Loading" width="800">
+      <Form :model="workPara" :label-width="120" :rules="formRule.ruleSubmitLoadingModal" ref="formSubmitLoading">
+        <Row>
+          <Col span="22">
+            <FormItem label="B/L Type" prop="billlading_bl_type">
+              <Input placeholder="B/L Type" v-model="workPara.billlading_bl_type"/>
+            </FormItem>
+            <FormItem label="H B/L No" prop="billlading_hbl_no">
+              <Input placeholder="H B/L No" v-model="workPara.billlading_hbl_no"/>
+            </FormItem>
+            <FormItem label="Type Of Reference" prop="billlading_reference_type">
+              <Input placeholder="Type Of Reference" v-model="workPara.billlading_reference_type"/>
+            </FormItem>
+            <FormItem label="Reference No" prop="billlading_reference_no">
+              <Input placeholder="H B/L No" v-model="workPara.billlading_reference_no"/>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="24">
+            <h4 class="text-middle m-b-10">
+              <b>Container Description</b>
+            </h4>
+            <div style="width: 700px">
+              <Table stripe ref="containerTable" :columns="table.containerTable.rows" :data="table.containerTable.data">
+                <template slot-scope="{ row, index }" slot="container_no">
+                  <Input v-model="row.container_no" @on-blur="table.containerTable.data[index] = row"/>
+                </template>
+                <template slot-scope="{ row, index }" slot="container_type">
+                  <Select v-model="row.container_type" @on-change="table.containerTable.data[index] = row">
+                    <Option v-for="item in pagePara.ContainerTypeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                  </Select>
+                </template>
+                <template slot-scope="{ row, index }" slot="container_size">
+                  <Select v-model="row.container_size" @on-change="table.containerTable.data[index] = row">
+                    <Option v-for="item in pagePara.ContainerSizeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                  </Select>
+                </template>
+                <template slot-scope="{ row, index }" slot="container_goods_type">
+                  <Input v-model="row.container_goods_type" @on-blur="table.containerTable.data[index] = row"/>
+                </template>
+                <template slot-scope="{ row, index }" slot="container_goods_description">
+                  <Input v-model="row.container_goods_description" @on-blur="table.containerTable.data[index] = row"/>
+                </template>
+                <template slot-scope="{ row, index }" slot="container_seal_no1">
+                  <Input v-model="row.container_seal_no1" @on-blur="table.containerTable.data[index] = row"/>
+                </template>
+                <template slot-scope="{ row, index }" slot="container_freight_indicator">
+                  <Input v-model="row.container_freight_indicator" @on-blur="table.containerTable.data[index] = row"/>
+                </template>
+                <template slot-scope="{ row, index }" slot="container_package_no">
+                  <Input v-model="row.container_package_no" @on-blur="table.containerTable.data[index] = row"/>
+                </template>
+                <template slot-scope="{ row, index }" slot="container_package_unit">
+                  <Select v-model="row.container_package_unit" @on-change="table.containerTable.data[index] = row">
+                    <Option v-for="item in pagePara.PackageUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                  </Select>
+                </template>
+                <template slot-scope="{ row, index }" slot="container_volume">
+                  <Input v-model="row.container_volume" @on-blur="table.containerTable.data[index] = row"/>
+                </template>
+                <template slot-scope="{ row, index }" slot="container_volume_unit">
+                  <Select v-model="row.container_volume_unit" @on-change="table.containerTable.data[index] = row">
+                    <Option v-for="item in pagePara.VolumeUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                  </Select>
+                </template>
+                <template slot-scope="{ row, index }" slot="container_weight">
+                  <Input v-model="row.container_weight" @on-blur="table.containerTable.data[index] = row"/>
+                </template>
+                <template slot-scope="{ row, index }" slot="container_weight_unit">
+                  <Select v-model="row.container_weight_unit" @on-change="table.containerTable.data[index] = row">
+                    <Option v-for="item in pagePara.WeightUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                  </Select>
+                </template>
+                <template slot-scope="{ row, index }" slot="billlading_goods_net_weight">
+                  <Input v-model="row.billlading_goods_net_weight" @on-blur="table.goodsTable.data[index] = row"/>
+                </template>
+                <template slot-scope="{ row, index }" slot="billlading_goods_net_unit">
+                  <Select v-model="row.billlading_goods_net_unit" @on-change="table.goodsTable.data[index] = row">
+                    <Option v-for="item in pagePara.WeightUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                  </Select>
+                </template>
+                <template slot-scope="{ row, index }" slot="container_weight_unit">
+                  <Select v-model="row.container_weight_unit" @on-change="table.containerTable.data[index] = row">
+                    <Option v-for="item in pagePara.WeightUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                  </Select>
+                </template>
+                <template slot-scope="{ row, index }" slot="container_minmum_temperature">
+                  <Input v-model="row.container_minmum_temperature" @on-blur="table.containerTable.data[index] = row"/>
+                </template>
+                <template slot-scope="{ row, index }" slot="container_maxmum_temperature">
+                  <Input v-model="row.container_maxmum_temperature" @on-blur="table.containerTable.data[index] = row"/>
+                </template>
+                <template slot-scope="{ row, index }" slot="container_refer_plug">
+                  <Select v-model="row.container_refer_plug" @on-change="table.containerTable.data[index] = row">
+                    <Option v-for="item in pagePara.YNINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                  </Select>
+                </template>
+              </Table>
+            </div>
+          </Col>
+        </Row>
+      </Form>
       <div slot="footer">
         <Button type="text" size="large" @click="modal.submitLoadingModal=false">Cancel</Button>
         <Button type="primary" size="large" @click="submitLoading">Submit</Button>
@@ -908,6 +928,12 @@ export default {
           billlading_copys_num: [{ required: true, trigger: 'change', message: 'Enter Copies B/L' }],
           billlading_stuffing_place: [{ required: true, trigger: 'change', message: 'Enter Stuffing Place' }],
           billlading_freight_currency: [{ required: true, trigger: 'change', message: 'Choose Status' }]
+        },
+        ruleSubmitLoadingModal: {
+          billlading_bl_type: [{ required: true, trigger: 'change', message: 'Enter B/L Type' }],
+          billlading_hbl_no: [{ required: true, trigger: 'change', message: 'Enter H B/L No' }],
+          billlading_reference_type: [{ required: true, trigger: 'change', message: 'Enter Type Of Reference' }],
+          billlading_reference_no: [{ required: true, trigger: 'change', message: 'Enter Reference No' }]
         }
       },
       pagePara: {},
@@ -1067,16 +1093,20 @@ export default {
       this.modal.submitLoadingModal = true
     },
     submitLoading: async function() {
-      for (let c of this.table.containerTable.data) {
-        if (c.container_no === '' || c.container_seal_no1 === '') {
-          return this.$Message.error('Please enter Container No. & Seal No.')
+      this.$refs.formSubmitLoading.validate(async valid => {
+        if (valid) {
+          for (let c of this.table.containerTable.data) {
+            if (c.container_no === '' || c.container_seal_no1 === '') {
+              return this.$Message.error('Please enter Container No. & Seal No.')
+            }
+          }
+          this.workPara.billlading_containers = JSON.parse(JSON.stringify(this.table.containerTable.data))
+          await this.$http.post(apiUrl + 'submitloading', this.workPara)
+          this.$Message.success('submit loading success')
+          this.getBookingData()
+          this.modal.submitLoadingModal = false
         }
-      }
-      this.workPara.billlading_containers = JSON.parse(JSON.stringify(this.table.containerTable.data))
-      await this.$http.post(apiUrl + 'submitloading', this.workPara)
-      this.$Message.success('submit loading success')
-      this.getBookingData()
-      this.modal.submitLoadingModal = false
+      })
     }
   }
 }
