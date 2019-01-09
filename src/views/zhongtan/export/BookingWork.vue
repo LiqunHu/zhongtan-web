@@ -69,7 +69,7 @@
           </Select>
         </template>
         <template slot-scope="{ row, index }" slot="billlading_goods">
-          <Poptip trigger="hover" width="1000">
+          <Poptip trigger="hover" width="800">
             <Button type="text" style="text-decoration:underline">Goods</Button>
             <template slot="content">
               <Table stripe size="small" :columns="table.poptipGoodsTable.rows" :data="row.billlading_goods"></Table>
@@ -77,7 +77,7 @@
           </Poptip>
         </template>
         <template slot-scope="{ row, index }" slot="billlading_containers">
-          <Poptip trigger="hover" width="1000">
+          <Poptip trigger="hover" width="800">
             <Button type="text" style="text-decoration:underline">Containers</Button>
             <template slot="content">
               <Table stripe size="small" :columns="table.poptipContainerTable.rows" :data="row.billlading_containers"></Table>
@@ -729,62 +729,75 @@ export default {
           rows: [
             {
               title: 'Vol.',
-              key: 'billlading_goods_container_number'
+              key: 'billlading_goods_container_number',
+              width: 100
             },
             {
               title: 'Type',
               key: 'billlading_goods_container_type',
-              render: common.selectRender(this, 'ContainerTypeINFO')
+              render: common.selectRender(this, 'ContainerTypeINFO'),
+              width: 100
             },
             {
               title: 'Size',
               key: 'billlading_goods_container_size',
-              render: common.selectRender(this, 'ContainerSizeINFO')
+              render: common.selectRender(this, 'ContainerSizeINFO'),
+              width: 100
             },
             {
               title: 'Goods Type',
-              key: 'billlading_goods_type'
+              key: 'billlading_goods_type',
+              width: 100
             },
             {
               title: 'Description',
               key: 'billlading_goods_description',
-              render: common.tooltipRender()
+              render: common.tooltipRender(),
+              width: 100
             },
             {
               title: 'Package No',
-              key: 'billlading_goods_package_number'
+              key: 'billlading_goods_package_number',
+              width: 100
             },
             {
               title: 'Package Unit',
               key: 'billlading_goods_package_unit',
-              render: common.selectRender(this, 'PackageUnitINFO')
+              render: common.selectRender(this, 'PackageUnitINFO'),
+              width: 100
             },
             {
               title: 'Volume',
-              key: 'billlading_goods_gross_volume'
+              key: 'billlading_goods_gross_volume',
+              width: 100
             },
             {
               title: 'Volume Unit',
               key: 'billlading_goods_gross_volume_unit',
-              render: common.selectRender(this, 'VolumeUnitINFO')
+              render: common.selectRender(this, 'VolumeUnitINFO'),
+              width: 100
             },
             {
               title: 'Weight',
-              key: 'billlading_goods_gross_weight'
+              key: 'billlading_goods_gross_weight',
+              width: 100
             },
             {
               title: 'Weight Unit',
               key: 'billlading_goods_gross_unit',
-              render: common.selectRender(this, 'WeightUnitINFO')
+              render: common.selectRender(this, 'WeightUnitINFO'),
+              width: 100
             },
             {
               title: 'Net Weight',
-              key: 'billlading_goods_net_weight'
+              key: 'billlading_goods_net_weight',
+              width: 100
             },
             {
               title: 'Net Unit',
               key: 'billlading_goods_net_unit',
-              render: common.selectRender(this, 'WeightUnitINFO')
+              render: common.selectRender(this, 'WeightUnitINFO'),
+              width: 100
             }
           ]
         },
@@ -792,73 +805,89 @@ export default {
           rows: [
             {
               title: 'Container No.',
-              key: 'container_no'
+              key: 'container_no',
+              width: 100
             },
             {
               title: 'Type',
               key: 'container_type',
-              render: common.selectRender(this, 'ContainerTypeINFO')
+              render: common.selectRender(this, 'ContainerTypeINFO'),
+              width: 100
             },
             {
               title: 'Size',
               key: 'container_size',
-              render: common.selectRender(this, 'ContainerSizeINFO')
+              render: common.selectRender(this, 'ContainerSizeINFO'),
+              width: 100
             },
             {
               title: 'Goods Type',
-              key: 'container_goods_type'
+              key: 'container_goods_type',
+              width: 100
             },
             {
               title: 'Description.',
-              key: 'billlading_goods_description'
+              key: 'billlading_goods_description',
+              width: 100
             },
             {
               title: 'Seal No.',
-              key: 'container_seal_no1'
+              key: 'container_seal_no1',
+              width: 100
             },
             {
               title: 'Freight Indicator',
-              key: 'container_freight_indicator'
+              key: 'container_freight_indicator',
+              width: 100
             },
             {
               title: 'Package No',
-              key: 'container_package_no'
+              key: 'container_package_no',
+              width: 100
             },
             {
               title: 'Package Unit',
               key: 'container_package_unit',
-              render: common.selectRender(this, 'PackageUnitINFO')
+              render: common.selectRender(this, 'PackageUnitINFO'),
+              width: 100
             },
             {
               title: 'Volume',
-              key: 'container_volume'
+              key: 'container_volume',
+              width: 100
             },
             {
               title: 'Volume Unit',
               key: 'container_volume_unit',
-              render: common.selectRender(this, 'VolumeUnitINFO')
+              render: common.selectRender(this, 'VolumeUnitINFO'),
+              width: 100
             },
             {
               title: 'Weight',
-              key: 'container_weight'
+              key: 'container_weight',
+              width: 100
             },
             {
               title: 'Weight Unit',
               key: 'container_weight_unit',
-              render: common.selectRender(this, 'WeightUnitINFO')
+              render: common.selectRender(this, 'WeightUnitINFO'),
+              width: 100
             },
             {
               title: 'Min Temperature',
-              key: 'container_minmum_temperature'
+              key: 'container_minmum_temperature',
+              width: 100
             },
             {
               title: 'Max Temperature',
-              key: 'container_maxmum_temperature'
+              key: 'container_maxmum_temperature',
+              width: 100
             },
             {
               title: 'Refer Plug',
               key: 'container_refer_plug',
-              render: common.selectRender(this, 'YNINFO')
+              render: common.selectRender(this, 'YNINFO'),
+              width: 100
             }
           ]
         }
