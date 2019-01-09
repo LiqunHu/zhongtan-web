@@ -62,7 +62,7 @@
             <template slot="content">
               <Table stripe size="small" :columns="table.filesTable.rows" :data="row.files">
                 <template slot-scope="{ row, index }" slot="url">
-                  <a :href="row.url" class="btn btn-primary btn-icon btn-sm">
+                  <a :href="row.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
                     <i class="fa fa-download"></i>
                   </a>
                 </template>

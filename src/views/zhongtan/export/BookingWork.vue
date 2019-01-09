@@ -52,9 +52,9 @@
               <i class="fa fa-dot-circle"></i>
             </a>
           </Tooltip>
-          <Tooltip content="Download Loading List for Customs" v-if="row.billlading_state === 'SL'">
-            <a href="#" class="btn btn-primary btn-icon btn-sm">
-              <i class="fa fa-download"></i>
+          <Tooltip content="Submit Loading List to Customs" v-if="row.billlading_state === 'SL'">
+            <a href="#" class="btn btn-primary btn-icon btn-sm" @click="submitCustoms(row)">
+              <i class="fa fa-dot-circle"></i>
             </a>
           </Tooltip>
           <Tooltip content="Reject Loading List" v-if="row.billlading_state === 'SL'">
@@ -69,7 +69,7 @@
             <template slot="content">
               <Table stripe size="small" :columns="table.filesTable.rows" :data="row.files">
                 <template slot-scope="{ row, index }" slot="url">
-                  <a :href="row.url" class="btn btn-primary btn-icon btn-sm">
+                  <a :href="row.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
                     <i class="fa fa-download"></i>
                   </a>
                 </template>
@@ -1161,6 +1161,17 @@ export default {
       this.$Notice.warning({
         title: 'Exceeding file size limit',
         desc: 'File  ' + file.name + ' is too large, no more than 4M.'
+      })
+    },
+    submitCustoms: function(row){
+      this.$commonact.confirm('Submit Loading List to Customs?', async () => {
+        try {
+          await this.$http.post(apiUrl + 'submitCustoms', { billlading_id: row.billlading_id })
+          this.$Message.success('submit success')
+          this.getBookingData()
+        } catch (error) {
+          this.$commonact.fault(error)
+        }
       })
     },
     rejectLoadingModal: function(row) {
