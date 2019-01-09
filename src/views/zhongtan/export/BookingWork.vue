@@ -421,7 +421,7 @@
         <Button type="primary" size="large" @click="declaration">Submit</Button>
       </div>
     </Modal>
-    <Modal v-model="modal.rejectLoadingModal" title="Booking">
+    <Modal v-model="modal.rejectLoadingModal" title="Reject Loading">
       <Form :model="workPara" :label-width="120" :rules="formRule.ruleRejectLoadingModal" ref="formRejectLoading">
         <FormItem label="Reject Reason" prop="reject_reason">
           <Input type="textarea" :rows="2" placeholder="Reject Reason" v-model="workPara.reject_reason"/>

@@ -55,6 +55,11 @@
               <i class="fa fa-dot-circle"></i>
             </a>
           </Tooltip>
+          <Tooltip content="Revert Declare Number" v-if="row.billlading_state === 'SC'">
+            <a href="#" class="btn btn-primary btn-icon btn-sm" @click="revertDeclareNumberModal(row)">
+              <i class="fa fa-dot-circle"></i>
+            </a>
+          </Tooltip>
         </template>
         <template slot-scope="{ row, index }" slot="files">
           <Poptip trigger="hover" width="555">
@@ -467,6 +472,17 @@
         <Button type="primary" size="large" @click="submitLoading">Submit</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.revertDeclareNumberModal" title="Revert Declare Number">
+      <Form :model="workPara" :label-width="120" :rules="formRule.ruleRevertDeclareNumberModal" ref="formRevertDeclareNumber">
+        <FormItem label="Declare Number" prop="billlading_declare_number">
+          <Input :rows="2" placeholder="Declare Number" v-model="workPara.billlading_declare_number"/>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.revertDeclareNumberModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="revertDeclareNumber">Submit</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -479,7 +495,7 @@ export default {
   name: 'Booking',
   data: function() {
     return {
-      modal: { bookingModal: false, submitLoadingModal: false },
+      modal: { bookingModal: false, submitLoadingModal: false, revertDeclareNumberModal: false },
       table: {
         bookingTable: {
           rows: [
@@ -1011,6 +1027,9 @@ export default {
           billlading_hbl_no: [{ required: true, trigger: 'change', message: 'Enter H B/L No' }],
           billlading_reference_type: [{ required: true, trigger: 'change', message: 'Enter Type Of Reference' }],
           billlading_reference_no: [{ required: true, trigger: 'change', message: 'Enter Reference No' }]
+        },
+        ruleRevertDeclareNumberModal: {
+          billlading_declare_number: [{ required: true, trigger: 'change', message: 'Enter Declare Number' }]
         }
       },
       pagePara: {},
@@ -1182,6 +1201,21 @@ export default {
           this.$Message.success('submit loading success')
           this.getBookingData()
           this.modal.submitLoadingModal = false
+        }
+      })
+    },
+    revertDeclareNumberModal: function(row){
+      this.workPara = JSON.parse(JSON.stringify(row))
+      this.$refs.formRevertDeclareNumber.resetFields()
+      this.modal.revertDeclareNumberModal = true
+    },
+    revertDeclareNumber: function(){
+      this.$refs.formRevertDeclareNumber.validate(async valid => {
+        if (valid) {
+          await this.$http.post(apiUrl + 'revertDeclareNumber', this.workPara)
+          this.$Message.success('Revert Declare Number')
+          this.getBookingData()
+          this.modal.revertDeclareNumberModal = false
         }
       })
     }
