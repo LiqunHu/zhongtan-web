@@ -20,13 +20,11 @@
             <div class="form-group m-r-2">
               <DatePicker type="daterange" :value="table.bookingTable.search_data" placeholder="Application Date" style="width: 200px"></DatePicker>
             </div>
-
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="getBookingData(1)">
                 <i class="fa fa-search"></i>
               </button>
             </div>
-
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="actBookingModal">Booking</button>
             </div>
@@ -57,6 +55,20 @@
               <i class="fa fa-dot-circle"></i>
             </a>
           </Tooltip>
+        </template>
+        <template slot-scope="{ row, index }" slot="files">
+          <Poptip trigger="hover" width="555">
+            <Button type="text" style="text-decoration:underline">Files</Button>
+            <template slot="content">
+              <Table stripe size="small" :columns="table.filesTable.rows" :data="row.files">
+                <template slot-scope="{ row, index }" slot="url">
+                  <a :href="row.url" class="btn btn-primary btn-icon btn-sm">
+                    <i class="fa fa-download"></i>
+                  </a>
+                </template>
+              </Table>
+            </template>
+          </Poptip>
         </template>
         <template slot-scope="{ row, index }" slot="billlading_voyage_id">
           <Select v-model="row.billlading_voyage_id" disabled>
@@ -511,6 +523,11 @@ export default {
               width: 100
             },
             {
+              title: 'Files',
+              slot: 'files',
+              width: 100
+            },
+            {
               title: 'Vessel',
               key: 'billlading_vessel_id',
               render: common.selectRender(this, 'VesselINFO'),
@@ -612,6 +629,37 @@ export default {
             moment().format('YYYY-MM-DD')
           ],
           search_text: ''
+        },
+        filesTable: {
+          rows: [
+            {
+              title: 'Create Date',
+              key: 'date',
+              width: 100
+            },
+            {
+              title: 'Type',
+              key: 'filetype',
+              width: 100
+            },
+            {
+              title: 'Name',
+              key: 'name',
+              render: common.tooltipRender(),
+              width: 100
+            },
+            {
+              title: 'Download',
+              slot: 'url',
+              width: 100
+            },
+            {
+              title: 'Remark',
+              key: 'remark',
+              render: common.tooltipRender(),
+              width: 100
+            }
+          ]
         },
         goodsTable: {
           rows: [
