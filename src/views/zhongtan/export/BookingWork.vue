@@ -62,6 +62,11 @@
               <i class="fa fa-times"></i>
             </a>
           </Tooltip>
+          <Tooltip content="Loading Permission" v-if="row.billlading_state === 'RD'">
+            <a href="#" class="btn btn-primary btn-icon btn-sm" @click="loadingPermissionModal(row)">
+              <i class="fa fa-dot-circle"></i>
+            </a>
+          </Tooltip>
         </template>
         <template slot-scope="{ row, index }" slot="files">
           <Poptip trigger="hover" width="555">
@@ -395,7 +400,18 @@
         <Button type="primary" size="large" @click="pickUpEmptyConfirm">Submit</Button>
       </div>
     </Modal>
-    <Modal v-model="modal.declarationModal" title="Declaration">
+    <Modal v-model="modal.rejectLoadingModal" title="Reject Loading">
+      <Form :model="workPara" :label-width="120" :rules="formRule.ruleRejectLoadingModal" ref="formRejectLoading">
+        <FormItem label="Reject Reason" prop="reject_reason">
+          <Input type="textarea" :rows="2" placeholder="Reject Reason" v-model="workPara.reject_reason"/>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.rejectLoadingModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="rejectLoading">Submit</Button>
+      </div>
+    </Modal>
+    <Modal v-model="modal.loadingPermissionModal" title="Loading Permission">
       <div v-for="f in files" v-bind:key="f.name" class="upload-list">
         <Icon type="ios-document" size="60"/>
       </div>
@@ -417,19 +433,8 @@
         </div>
       </Upload>
       <div slot="footer">
-        <Button type="text" size="large" @click="modal.declarationModal=false">Cancel</Button>
-        <Button type="primary" size="large" @click="declaration">Submit</Button>
-      </div>
-    </Modal>
-    <Modal v-model="modal.rejectLoadingModal" title="Reject Loading">
-      <Form :model="workPara" :label-width="120" :rules="formRule.ruleRejectLoadingModal" ref="formRejectLoading">
-        <FormItem label="Reject Reason" prop="reject_reason">
-          <Input type="textarea" :rows="2" placeholder="Reject Reason" v-model="workPara.reject_reason"/>
-        </FormItem>
-      </Form>
-      <div slot="footer">
-        <Button type="text" size="large" @click="modal.rejectLoadingModal=false">Cancel</Button>
-        <Button type="primary" size="large" @click="rejectLoading">Submit</Button>
+        <Button type="text" size="large" @click="modal.loadingPermissionModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="loadingPermission">Submit</Button>
       </div>
     </Modal>
   </div>
@@ -444,7 +449,13 @@ export default {
   name: 'BookingWork',
   data: function() {
     return {
-      modal: { bookingModal: false, confirmBookingModal: false, pickUpEmptyConfirmModal: false, declarationModal: false, rejectLoadingModal: false },
+      modal: {
+        bookingModal: false,
+        confirmBookingModal: false,
+        pickUpEmptyConfirmModal: false,
+        loadingPermissionModal: false,
+        rejectLoadingModal: false
+      },
       table: {
         bookingTable: {
           rows: [
@@ -1139,31 +1150,7 @@ export default {
         }
       })
     },
-    declarationModal: function(row) {
-      this.workPara = JSON.parse(JSON.stringify(row))
-      this.files = []
-      this.$refs.upload.clearFiles()
-      this.modal.declarationModal = true
-    },
-    declaration: function() {},
-    handleSuccess(res, file, fileList) {
-      file.url = res.info.url
-      file.name = res.info.name
-      this.files = this.$refs.upload.fileList
-    },
-    handleFormatError(file) {
-      this.$Notice.warning({
-        title: 'The file format is incorrect',
-        desc: 'File format of ' + file.name + ' is incorrect, please select pdf.'
-      })
-    },
-    handleMaxSize(file) {
-      this.$Notice.warning({
-        title: 'Exceeding file size limit',
-        desc: 'File  ' + file.name + ' is too large, no more than 4M.'
-      })
-    },
-    submitCustoms: function(row){
+    submitCustoms: function(row) {
       this.$commonact.confirm('Submit Loading List to Customs?', async () => {
         try {
           await this.$http.post(apiUrl + 'submitCustoms', { billlading_id: row.billlading_id })
@@ -1179,7 +1166,7 @@ export default {
       this.$refs.formRejectLoading.resetFields()
       this.modal.rejectLoadingModal = true
     },
-    rejectLoading: function(){
+    rejectLoading: function() {
       this.$refs.formRejectLoading.validate(async valid => {
         if (valid) {
           try {
@@ -1191,6 +1178,43 @@ export default {
             this.$commonact.fault(error)
           }
         }
+      })
+    },
+    loadingPermissionModal: function(row) {
+      this.workPara = JSON.parse(JSON.stringify(row))
+      this.files = []
+      this.$refs.upload.clearFiles()
+      this.modal.loadingPermissionModal = true
+    },
+    loadingPermission: async function() {
+      try {
+        if(this.files.length <1){
+          return this.$Message.error('Please upload loading permission')
+        }
+        this.workPara.permission_files = this.files
+        await this.$http.post(apiUrl + 'loadingPermission', this.workPara)
+        this.$Message.success('submit success')
+        this.getBookingData()
+        this.modal.loadingPermissionModal = false
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
+    handleSuccess(res, file, fileList) {
+      file.url = res.info.url
+      file.name = res.info.name
+      this.files = this.$refs.upload.fileList
+    },
+    handleFormatError(file) {
+      this.$Notice.warning({
+        title: 'The file format is incorrect',
+        desc: 'File format of ' + file.name + ' is incorrect, please select pdf.'
+      })
+    },
+    handleMaxSize(file) {
+      this.$Notice.warning({
+        title: 'Exceeding file size limit',
+        desc: 'File  ' + file.name + ' is too large, no more than 4M.'
       })
     }
   }
