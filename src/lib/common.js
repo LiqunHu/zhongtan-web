@@ -191,6 +191,7 @@ let tooltipFormat = value => {
     return value
   }
 }
+
 exports.tooltipRender = () => {
   return (h, params) => {
     return h(
@@ -215,4 +216,11 @@ exports.tooltipRender = () => {
       ]
     )
   }
+}
+
+exports.getTableHeight = function() {
+  let topOffset = 370
+  let height = window.innerHeight
+  height = height - topOffset
+  return height
 }

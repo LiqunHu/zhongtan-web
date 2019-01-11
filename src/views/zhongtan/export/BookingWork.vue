@@ -28,7 +28,7 @@
           </div>
         </div>
       </template>
-      <Table stripe size="small" ref="bookingTable" :columns="table.bookingTable.rows" :data="table.bookingTable.data">
+      <Table stripe size="small" ref="bookingTable" :columns="table.bookingTable.rows" :data="table.bookingTable.data" :height="table.bookingTable.height">
         <template slot-scope="{ row, index }" slot="edit">
           <Tooltip content="Edit bill lading">
             <a href="#" class="btn btn-info btn-icon btn-sm" @click="modifyBookingModal(row)">
@@ -595,6 +595,7 @@ export default {
             }
           ],
           data: [],
+          height: common.getTableHeight(),
           limit: 10,
           offset: 0,
           total: 0,
