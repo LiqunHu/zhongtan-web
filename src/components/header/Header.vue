@@ -100,10 +100,9 @@ export default {
     },
     dropdownWork: function(name) {
       if (name === 'logout') {
-        // console.log(3333)
         this.$http.post('/api/auth/signout', {})
         this.logout()
-        this.$router.push({ path: '/admin' })
+        window.location.href="/admin/"
       } else if (name === 'profile') {
         this.$router.push({ path: '/admin/common/system/UserProfile' })
       }

@@ -37,7 +37,7 @@
               <a href="/contact">Contract</a>
             </li>
             <li>
-              <a href="/admin">Login</a>
+              <a href="/admin/">Login</a>
             </li>
           </ul>
         </div>
