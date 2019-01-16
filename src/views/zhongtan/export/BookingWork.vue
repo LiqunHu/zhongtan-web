@@ -648,62 +648,62 @@ export default {
             {
               title: 'Type',
               slot: 'billlading_goods_container_type',
-              width: 100
+              width: 120
             },
             {
               title: 'Size',
               slot: 'billlading_goods_container_size',
-              width: 100
+              width: 120
             },
             {
               title: 'Goods Type',
               slot: 'billlading_goods_type',
-              width: 100
+              width: 120
             },
             {
               title: 'Description',
               slot: 'billlading_goods_description',
-              width: 100
+              width: 120
             },
             {
               title: 'Package No',
               slot: 'billlading_goods_package_number',
-              width: 100
+              width: 120
             },
             {
               title: 'Package Unit',
               slot: 'billlading_goods_package_unit',
-              width: 100
+              width: 120
             },
             {
               title: 'Volume',
               slot: 'billlading_goods_gross_volume',
-              width: 100
+              width: 120
             },
             {
               title: 'Volume Unit',
               slot: 'billlading_goods_gross_volume_unit',
-              width: 100
+              width: 120
             },
             {
               title: 'Weight',
               slot: 'billlading_goods_gross_weight',
-              width: 100
+              width: 120
             },
             {
               title: 'Weight Unit',
               slot: 'billlading_goods_gross_unit',
-              width: 100
+              width: 120
             },
             {
               title: 'Net Weight',
               slot: 'billlading_goods_net_weight',
-              width: 100
+              width: 120
             },
             {
               title: 'Net Unit',
               slot: 'billlading_goods_net_unit',
-              width: 100
+              width: 120
             },
             {
               title: 'Action',
@@ -723,52 +723,52 @@ export default {
             {
               title: 'Type',
               slot: 'container_type',
-              width: 100
+              width: 120
             },
             {
               title: 'Size',
               slot: 'container_size',
-              width: 100
+              width: 120
             },
             {
               title: 'Goods Type',
               slot: 'container_goods_type',
-              width: 100
+              width: 120
             },
             {
               title: 'Description',
               slot: 'container_goods_description',
-              width: 100
+              width: 120
             },
             {
               title: 'Seal No.',
               slot: 'container_seal_no1',
-              width: 100
+              width: 120
             },
             {
               title: 'Freight Indicator',
               slot: 'container_freight_indicator',
-              width: 100
+              width: 120
             },
             {
               title: 'Package No',
               slot: 'container_package_no',
-              width: 100
+              width: 120
             },
             {
               title: 'Package Unit',
               slot: 'container_package_unit',
-              width: 100
+              width: 120
             },
             {
               title: 'Volume',
               slot: 'container_volume',
-              width: 100
+              width: 120
             },
             {
               title: 'Volume Unit',
               slot: 'container_volume_unit',
-              width: 100
+              width: 120
             },
             {
               title: 'Weight',
@@ -778,22 +778,22 @@ export default {
             {
               title: 'Weight Unit',
               slot: 'container_weight_unit',
-              width: 100
+              width: 120
             },
             {
               title: 'Min Temperature',
               slot: 'container_minmum_temperature',
-              width: 100
+              width: 120
             },
             {
               title: 'Max Temperature',
               slot: 'container_maxmum_temperature',
-              width: 100
+              width: 120
             },
             {
               title: 'Refer Plug',
               slot: 'container_refer_plug',
-              width: 100
+              width: 120
             }
           ],
           data: []
