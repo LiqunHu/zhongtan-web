@@ -88,7 +88,7 @@ export default {
             {
               title: 'Vessel Service',
               key: 'vessel_service_name',
-              render: common.selectRender(this, 'VesselServiceINFO'),
+              render: common.selectRender(this, 'VesselServiceINFO')
             },
             {
               title: 'Vessel Name',
