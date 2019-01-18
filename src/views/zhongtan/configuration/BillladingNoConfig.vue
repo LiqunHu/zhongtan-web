@@ -33,10 +33,7 @@
       </template>
       <Table stripe ref="dataTable" :columns="table.dataTable.rows" :data="table.dataTable.data">
         <template slot-scope="{ row, index }" slot="action">
-          <a href="#" class="btn btn-info btn-icon btn-sm" @click="modifyDataModal(row)">
-            <i class="fa fa-edit"></i>
-          </a>
-          <a href="#" class="btn btn-danger btn-icon btn-sm" @click="deleteData(row)">
+          <a href="#" class="btn btn-danger btn-icon btn-sm" @click="deleteData(row)" v-show="row.state === '1'">
             <i class="fa fa-times"></i>
           </a>
         </template>
@@ -44,7 +41,7 @@
       <Page class="m-t-10" :total="table.dataTable.total" :page-size="table.dataTable.limit" @on-change="getTableData"/>
     </panel>
     <Modal v-model="modal.dataModal" title="Billladingno Batch">
-      <Form :model="workPara" :label-width="120" :rules="formRule.ruleDataModal" ref="formData">
+      <Form :model="workPara" :label-width="150" :rules="formRule.ruleDataModal" ref="formData">
         <FormItem label="Vessel Service" prop="billladingno_batch_vessel_service">
           <Select v-model="workPara.billladingno_batch_vessel_service">
             <Option v-for="item in pagePara.VesselServiceINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
@@ -60,9 +57,9 @@
           <Input placeholder="Number Start" v-model="workPara.billladingno_batch_number_start"/>
         </FormItem>
         <FormItem label="Billlading No Count" prop="billladingno_batch_count">
-          <Input placeholder="Billlading No Count" v-model="workPara.billladingno_batch_count"/>
+          <Input placeholder="Billlading No Count" v-model="workPara.billladingno_batch_count" @on-blur="genRangeString()"/>
         </FormItem>
-        Number Range: {{rangeString}}
+        <FormItem label="Number Range">{{rangeString}}</FormItem>
       </Form>
       <div slot="footer">
         <Button type="text" size="large" @click="modal.dataModal=false">Cancel</Button>
@@ -111,6 +108,11 @@ export default {
               key: 'billladingno_batch_count'
             },
             {
+              title: 'State',
+              key: 'state',
+              render: common.selectRender(this, 'STATUSINFO')
+            },
+            {
               title: 'Action',
               slot: 'action'
             }
@@ -132,9 +134,7 @@ export default {
         }
       },
       pagePara: {},
-      oldPara: {},
       workPara: {},
-      action: '',
       rangeString: ''
     }
   },
@@ -175,17 +175,6 @@ export default {
     },
     addDataModal: async function() {
       this.workPara = {}
-      this.action = 'add'
-      this.$refs.formData.resetFields()
-      this.modal.dataModal = true
-    },
-    modifyDataModal: async function(row) {
-      let actrow = JSON.parse(JSON.stringify(row))
-      delete actrow._index
-      delete actrow._rowKey
-      this.oldPara = JSON.parse(JSON.stringify(actrow))
-      this.workPara = JSON.parse(JSON.stringify(actrow))
-      this.action = 'modify'
       this.$refs.formData.resetFields()
       this.modal.dataModal = true
     },
@@ -193,13 +182,8 @@ export default {
       this.$refs.formData.validate(async valid => {
         if (valid) {
           try {
-            if (this.action === 'add') {
-              await this.$http.post(apiUrl + 'add', this.workPara)
-              this.$Message.success('add port success')
-            } else if (this.action === 'modify') {
-              await this.$http.post(apiUrl + 'modify', { old: this.oldPara, new: this.workPara })
-              this.$Message.success('modify port success')
-            }
+            await this.$http.post(apiUrl + 'add', this.workPara)
+            this.$Message.success('add port success')
             this.getTableData()
             this.modal.dataModal = false
           } catch (error) {
@@ -209,13 +193,26 @@ export default {
       })
     },
     deleteData: function(row) {
-      this.$commonact.confirm('delete confirmed?', async () => {
+      this.$commonact.confirm('cancel the batch confirmed? The rest b/l No. will invalid', async () => {
         try {
-          await this.$http.post(apiUrl + 'delete', { voyage_id: row.voyage_id })
-          this.$Message.success('delete success')
+          await this.$http.post(apiUrl + 'delete', { billladingno_batch_id: row.billladingno_batch_id })
+          this.$Message.success('cancel success')
           this.getTableData()
         } catch (error) {
           this.$commonact.fault(error)
+        }
+      })
+    },
+    genRangeString: function() {
+      this.$refs.formData.validate(async valid => {
+        if (valid) {
+          let fixStr = this.workPara.billladingno_batch_fix_string
+          let numLen = parseInt(this.workPara.billladingno_batch_number_length) * -1
+          let numStart = parseInt(this.workPara.billladingno_batch_number_start)
+          let blCount = parseInt(this.workPara.billladingno_batch_count)
+          let blStart = fixStr + ('0000000000000000000000000000000' + numStart).slice(numLen)
+          let blEnd = fixStr + ('0000000000000000000000000000000' + (numStart + blCount)).slice(numLen)
+          this.rangeString = blStart + ' ---- ' + blEnd
         }
       })
     }
