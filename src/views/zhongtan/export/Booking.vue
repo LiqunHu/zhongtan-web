@@ -520,7 +520,7 @@ export default {
             {
               title: 'S/O',
               key: 'billlading_no',
-              width: 100,
+              width: 130,
               fixed: 'left'
             },
             {
@@ -562,7 +562,7 @@ export default {
             {
               title: 'Gontainers',
               slot: 'billlading_containers',
-              width: 100
+              width: 120
             },
             {
               title: 'Loading Port',
@@ -580,58 +580,58 @@ export default {
               title: 'Delivery Place',
               key: 'billlading_delivery_place',
               render: common.tooltipRender(),
-              width: 100
+              width: 130
             },
             {
               title: 'Stuffing Place',
               key: 'billlading_stuffing_place',
               render: common.tooltipRender(),
-              width: 100
+              width: 120
             },
             {
               title: 'Stuffing Date',
               key: 'billlading_stuffing_date',
-              width: 100
+              width: 120
             },
             {
               title: 'Stuffing requirement',
               key: 'billlading_stuffing_requirement',
               render: common.tooltipRender(),
-              width: 100
+              width: 170
             },
             {
               title: 'Consignee Name',
               key: 'billlading_consignee_name',
               render: common.tooltipRender(),
-              width: 100
+              width: 140
             },
             {
               title: 'Consignee Address',
               key: 'billlading_consignee_address',
               render: common.tooltipRender(),
-              width: 100
+              width: 150
             },
             {
               title: 'Consignee telephone',
               key: 'billlading_consignee_tel',
-              width: 100
+              width: 170
             },
             {
               title: 'Notify Name',
               key: 'billlading_notify_name',
               render: common.tooltipRender(),
-              width: 100
+              width: 130
             },
             {
               title: 'Notify Address',
               key: 'billlading_notify_address',
               render: common.tooltipRender(),
-              width: 100
+              width: 130
             },
             {
               title: 'Notify telephone',
               key: 'billlading_notify_tel',
-              width: 100
+              width: 140
             }
           ],
           data: [],
@@ -652,7 +652,7 @@ export default {
             {
               title: 'Create Date',
               key: 'date',
-              width: 100
+              width: 120
             },
             {
               title: 'Type',
