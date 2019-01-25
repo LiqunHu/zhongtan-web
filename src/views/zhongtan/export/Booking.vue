@@ -788,7 +788,7 @@ export default {
             {
               title: 'Freight Indicator',
               slot: 'container_freight_indicator',
-              width: 120
+              width: 150
             },
             {
               title: 'Package No',
@@ -823,12 +823,12 @@ export default {
             {
               title: 'Min Temperature',
               slot: 'container_minmum_temperature',
-              width: 120
+              width: 150
             },
             {
               title: 'Max Temperature',
               slot: 'container_maxmum_temperature',
-              width: 120
+              width: 150
             },
             {
               title: 'Refer Plug',
@@ -860,24 +860,24 @@ export default {
             {
               title: 'Goods Type',
               key: 'billlading_goods_type',
-              width: 100
+              width: 120
             },
             {
               title: 'Description',
               key: 'billlading_goods_description',
               render: common.tooltipRender(),
-              width: 100
+              width: 120
             },
             {
               title: 'Package No',
               key: 'billlading_goods_package_number',
-              width: 100
+              width: 120
             },
             {
               title: 'Package Unit',
               key: 'billlading_goods_package_unit',
               render: common.selectRender(this, 'PackageUnitINFO'),
-              width: 100
+              width: 130
             },
             {
               title: 'Volume',
@@ -888,12 +888,12 @@ export default {
               title: 'Volume Unit',
               key: 'billlading_goods_gross_volume_unit',
               render: common.selectRender(this, 'VolumeUnitINFO'),
-              width: 100
+              width: 120
             },
             {
               title: 'Gross Weight',
               key: 'billlading_goods_gross_weight',
-              width: 100
+              width: 130
             },
             {
               title: 'Gross Unit',
@@ -904,7 +904,7 @@ export default {
             {
               title: 'Net Weight',
               key: 'billlading_goods_net_weight',
-              width: 100
+              width: 120
             },
             {
               title: 'Net Unit',
@@ -919,7 +919,7 @@ export default {
             {
               title: 'Container No.',
               key: 'container_no',
-              width: 100
+              width: 140
             },
             {
               title: 'Type',
@@ -936,12 +936,12 @@ export default {
             {
               title: 'Goods Type',
               key: 'container_goods_type',
-              width: 100
+              width: 120
             },
             {
               title: 'Description.',
               key: 'billlading_goods_description',
-              width: 100
+              width: 120
             },
             {
               title: 'Seal No.',
@@ -951,18 +951,18 @@ export default {
             {
               title: 'Freight Indicator',
               key: 'container_freight_indicator',
-              width: 100
+              width: 150
             },
             {
               title: 'Package No',
               key: 'container_package_no',
-              width: 100
+              width: 120
             },
             {
               title: 'Package Unit',
               key: 'container_package_unit',
               render: common.selectRender(this, 'PackageUnitINFO'),
-              width: 100
+              width: 120
             },
             {
               title: 'Volume',
@@ -973,7 +973,7 @@ export default {
               title: 'Volume Unit',
               key: 'container_volume_unit',
               render: common.selectRender(this, 'VolumeUnitINFO'),
-              width: 100
+              width: 120
             },
             {
               title: 'Weight',
@@ -984,17 +984,17 @@ export default {
               title: 'Weight Unit',
               key: 'container_weight_unit',
               render: common.selectRender(this, 'WeightUnitINFO'),
-              width: 100
+              width: 120
             },
             {
               title: 'Min Temperature',
               key: 'container_minmum_temperature',
-              width: 100
+              width: 150
             },
             {
               title: 'Max Temperature',
               key: 'container_maxmum_temperature',
-              width: 100
+              width: 150
             },
             {
               title: 'Refer Plug',

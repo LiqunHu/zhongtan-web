@@ -185,10 +185,14 @@ exports.selectRender = (_self, key) => {
 }
 
 let tooltipFormat = value => {
-  if (value.length > 8) {
-    return value.substring(0, 5) + '...'
+  if (value) {
+    if (value.length > 8) {
+      return value.substring(0, 5) + '...'
+    } else {
+      return value
+    }
   } else {
-    return value
+    return ''
   }
 }
 
@@ -219,8 +223,7 @@ exports.tooltipRender = () => {
 }
 
 exports.getTableHeight = function() {
-  let topOffset = 370
   let height = window.innerHeight
-  height = height - topOffset
+  height = height * 0.65
   return height
 }
