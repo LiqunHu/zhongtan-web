@@ -68,6 +68,16 @@
             </a>
           </Tooltip>
         </template>
+        <template slot-scope="{ row, index }" slot="shipperINFO">
+          <Poptip trigger="hover" width="300">
+            <Button type="text" style="text-decoration:underline">{{row.shipperINFO.name}}</Button>
+            <template slot="content">
+              Phone: {{row.shipperINFO.phone}}<br/>
+              Email: {{row.shipperINFO.email}}<br/>
+              Address: {{row.shipperINFO.address}}<br/>
+            </template>
+          </Poptip>
+        </template>
         <template slot-scope="{ row, index }" slot="files">
           <Poptip trigger="hover" width="555">
             <Button type="text" style="text-decoration:underline">Files</Button>
@@ -496,6 +506,11 @@ export default {
             {
               title: 'Book Date',
               key: 'booking_date',
+              width: 100
+            },
+            {
+              title: 'Shipper',
+              slot: 'shipperINFO',
               width: 100
             },
             {
