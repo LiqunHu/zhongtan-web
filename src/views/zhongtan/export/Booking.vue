@@ -681,9 +681,9 @@ export default {
         goodsTable: {
           rows: [
             {
-              title: 'Vol.',
+              title: 'Container Vol.',
               slot: 'billlading_goods_container_number',
-              width: 100
+              width: 140
             },
             {
               title: 'Type',
@@ -841,9 +841,9 @@ export default {
         poptipGoodsTable: {
           rows: [
             {
-              title: 'Vol.',
+              title: 'Container Vol.',
               key: 'billlading_goods_container_number',
-              width: 100
+              width: 140
             },
             {
               title: 'Type',
@@ -1076,13 +1076,13 @@ export default {
         billlading_goods_container_size: '',
         billlading_goods_type: '',
         billlading_goods_description: '',
-        billlading_goods_package_number: null,
+        billlading_goods_package_number: '',
         billlading_goods_package_unit: 'BAG',
-        billlading_goods_gross_volume: null,
+        billlading_goods_gross_volume: '',
         billlading_goods_gross_volume_unit: 'M3',
-        billlading_goods_gross_weight: null,
+        billlading_goods_gross_weight: '',
         billlading_goods_gross_unit: 'KG',
-        billlading_goods_net_weight: null,
+        billlading_goods_net_weight: '',
         billlading_goods_net_unit: 'KG'
       })
     },
