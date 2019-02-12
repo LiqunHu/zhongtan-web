@@ -154,33 +154,47 @@ exports.treeIconRender = (h, { root, node, data }, _self, treeRef, folderIcon, m
   }
 }
 
+// exports.selectRender = (_self, key) => {
+//   return (h, params) => {
+//     let options = []
+//     _self.pagePara[key].forEach(item => {
+//       options.push(
+//         h(
+//           'Option',
+//           {
+//             props: {
+//               value: item.id,
+//               key: item.id
+//             }
+//           },
+//           item.text
+//         )
+//       )
+//     })
+//     return h(
+//       'Select',
+//       {
+//         props: {
+//           value: params.row[params.column.key],
+//           disabled: true
+//         }
+//       },
+//       options
+//     )
+//   }
+// }
+
+// 因为效率问题
 exports.selectRender = (_self, key) => {
   return (h, params) => {
-    let options = []
-    _self.pagePara[key].forEach(item => {
-      options.push(
-        h(
-          'Option',
-          {
-            props: {
-              value: item.id,
-              key: item.id
-            }
-          },
-          item.text
-        )
-      )
-    })
-    return h(
-      'Select',
-      {
-        props: {
-          value: params.row[params.column.key],
-          disabled: true
-        }
-      },
-      options
-    )
+    let text = ''
+    for (let item of _self.pagePara[key]) {
+      if (item.id === params.row[params.column.key]) {
+        text = item.text
+        break
+      }
+    }
+    return h('span', {}, text)
   }
 }
 
