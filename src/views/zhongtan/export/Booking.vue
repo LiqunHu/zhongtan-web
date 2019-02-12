@@ -520,7 +520,7 @@ export default {
             {
               title: 'S/O',
               key: 'billlading_no',
-              width: 130,
+              width: 150,
               fixed: 'left'
             },
             {
