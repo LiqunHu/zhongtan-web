@@ -18,7 +18,7 @@
         <div class="panel-toolbar">
           <div class="form-inline">
             <div class="form-group m-r-2">
-              <DatePicker type="daterange" :value="table.bookingTable.search_data" placeholder="Application Date" style="width: 200px"></DatePicker>
+              <DatePicker type="daterange" :value="table.bookingTable.search_data.date" placeholder="Application Date" style="width: 200px" @on-change="searchData"></DatePicker>
             </div>
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="getBookingData(1)">
@@ -647,13 +647,14 @@ export default {
           limit: 10,
           offset: 0,
           total: 0,
-          search_data: [
-            moment()
-              .subtract(10, 'days')
-              .format('YYYY-MM-DD'),
-            moment().format('YYYY-MM-DD')
-          ],
-          search_text: ''
+          search_data: {
+            date: [
+              moment()
+                .subtract(10, 'days')
+                .format('YYYY-MM-DD'),
+              moment().format('YYYY-MM-DD')
+            ]
+          }
         },
         filesTable: {
           rows: [
@@ -1065,6 +1066,9 @@ export default {
     initPage()
   },
   methods: {
+    searchData: function(e) {
+      this.table.bookingTable.search_data.date = JSON.parse(JSON.stringify(e))
+    },
     vesselChange: async function(value) {
       let rsp = await this.$http.post(apiUrl + 'searchVoyage', {
         vessel_id: value
@@ -1103,11 +1107,14 @@ export default {
           this.table.bookingTable.offset = (index - 1) * this.table.bookingTable.limit
         }
 
-        let response = await this.$http.post(apiUrl + 'search', {
-          search_text: this.table.bookingTable.search_text,
+        let searchPara = {
+          start_date: this.table.bookingTable.search_data.date[0],
+          end_date: this.table.bookingTable.search_data.date[1],
           offset: this.table.bookingTable.offset,
           limit: this.table.bookingTable.limit
-        })
+        }
+
+        let response = await this.$http.post(apiUrl + 'search', searchPara)
         let data = response.data.info
         this.table.bookingTable.total = data.total
         this.table.bookingTable.data = JSON.parse(JSON.stringify(data.rows))
@@ -1213,12 +1220,12 @@ export default {
         }
       })
     },
-    revertDeclareNumberModal: function(row){
+    revertDeclareNumberModal: function(row) {
       this.workPara = JSON.parse(JSON.stringify(row))
       this.$refs.formRevertDeclareNumber.resetFields()
       this.modal.revertDeclareNumberModal = true
     },
-    revertDeclareNumber: function(){
+    revertDeclareNumber: function() {
       this.$refs.formRevertDeclareNumber.validate(async valid => {
         if (valid) {
           await this.$http.post(apiUrl + 'revertDeclareNumber', this.workPara)

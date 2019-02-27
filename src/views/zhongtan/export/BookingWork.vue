@@ -32,6 +32,18 @@
                 <Option v-for="item in table.bookingTable.search_data.shipper.options" :value="item.id" :key="item.id">{{item.text}}</Option>
               </Select>
             </div>
+            <div class="form-group m-r-2">
+              <Select
+                v-model="table.bookingTable.search_data.vessel.value"
+                filterable
+                remote
+                :remote-method="searchVessel"
+                :loading="table.bookingTable.search_data.vessel.loading"
+                placeholder="vessel"
+              >
+                <Option v-for="item in table.bookingTable.search_data.vessel.options" :value="item.id" :key="item.id">{{item.text}}</Option>
+              </Select>
+            </div>
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="getBookingData(1)">
                 <i class="fa fa-search"></i>
@@ -648,6 +660,11 @@ export default {
               options: [],
               value: '',
               loading: false
+            },
+            vessel: {
+              options: [],
+              value: '',
+              loading: false
             }
           }
         },
@@ -1076,6 +1093,18 @@ export default {
         this.table.bookingTable.search_data.shipper.options = []
       }
     },
+    searchVessel: async function(query) {
+      if (query !== '') {
+        this.table.bookingTable.search_data.vessel.loading = true
+        let response = await this.$http.post(apiUrl + 'searchVessel', {
+          search_text: query
+        })
+        this.table.bookingTable.search_data.vessel.options = JSON.parse(JSON.stringify(response.data.info.VesselINFO))
+        this.table.bookingTable.search_data.vessel.loading = false
+      } else {
+        this.table.bookingTable.search_data.vessel.options = []
+      }
+    },
     vesselChange: async function(value) {
       let rsp = await this.$http.post(apiUrl + 'searchVoyage', {
         vessel_id: value
@@ -1121,6 +1150,10 @@ export default {
 
         if (this.table.bookingTable.search_data.shipper.value) {
           searchPara.shipper = this.table.bookingTable.search_data.shipper.value
+        }
+
+        if (this.table.bookingTable.search_data.vessel.value) {
+          searchPara.vessel = this.table.bookingTable.search_data.vessel.value
         }
 
         let response = await this.$http.post(apiUrl + 'search', searchPara)
