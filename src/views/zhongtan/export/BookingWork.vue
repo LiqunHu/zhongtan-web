@@ -18,7 +18,19 @@
         <div class="panel-toolbar">
           <div class="form-inline">
             <div class="form-group m-r-2">
-              <DatePicker type="daterange" :value="table.bookingTable.search_data" placeholder="Application Date" style="width: 200px"></DatePicker>
+              <DatePicker type="daterange" :value="table.bookingTable.search_data.date" placeholder="Application Date" style="width: 200px" @on-change="searchData"></DatePicker>
+            </div>
+            <div class="form-group m-r-2">
+              <Select
+                v-model="table.bookingTable.search_data.shipper.value"
+                filterable
+                remote
+                :remote-method="searchShipper"
+                :loading="table.bookingTable.search_data.shipper.loading"
+                placeholder="shipper"
+              >
+                <Option v-for="item in table.bookingTable.search_data.shipper.options" :value="item.id" :key="item.id">{{item.text}}</Option>
+              </Select>
             </div>
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="getBookingData(1)">
@@ -72,9 +84,12 @@
           <Poptip trigger="hover" width="300">
             <Button type="text" style="text-decoration:underline">{{row.shipperINFO.name}}</Button>
             <template slot="content">
-              Phone: {{row.shipperINFO.phone}}<br/>
-              Email: {{row.shipperINFO.email}}<br/>
-              Address: {{row.shipperINFO.address}}<br/>
+              Phone: {{row.shipperINFO.phone}}
+              <br>
+              Email: {{row.shipperINFO.email}}
+              <br>
+              Address: {{row.shipperINFO.address}}
+              <br>
             </template>
           </Poptip>
         </template>
@@ -622,13 +637,19 @@ export default {
           limit: 10,
           offset: 0,
           total: 0,
-          search_data: [
-            moment()
-              .subtract(10, 'days')
-              .format('YYYY-MM-DD'),
-            moment().format('YYYY-MM-DD')
-          ],
-          search_text: ''
+          search_data: {
+            date: [
+              moment()
+                .subtract(10, 'days')
+                .format('YYYY-MM-DD'),
+              moment().format('YYYY-MM-DD')
+            ],
+            shipper: {
+              options: [],
+              value: '',
+              loading: false
+            }
+          }
         },
         filesTable: {
           rows: [
@@ -1040,6 +1061,21 @@ export default {
     initPage()
   },
   methods: {
+    searchData: function(e) {
+      this.table.bookingTable.search_data.date = JSON.parse(JSON.stringify(e))
+    },
+    searchShipper: async function(query) {
+      if (query !== '') {
+        this.table.bookingTable.search_data.shipper.loading = true
+        let response = await this.$http.post(apiUrl + 'searchShipper', {
+          search_text: query
+        })
+        this.table.bookingTable.search_data.shipper.options = JSON.parse(JSON.stringify(response.data.info.shipperINFO))
+        this.table.bookingTable.search_data.shipper.loading = false
+      } else {
+        this.table.bookingTable.search_data.shipper.options = []
+      }
+    },
     vesselChange: async function(value) {
       let rsp = await this.$http.post(apiUrl + 'searchVoyage', {
         vessel_id: value
@@ -1076,11 +1112,18 @@ export default {
           this.table.bookingTable.offset = (index - 1) * this.table.bookingTable.limit
         }
 
-        let response = await this.$http.post(apiUrl + 'search', {
-          search_text: this.table.bookingTable.search_text,
+        let searchPara = {
+          start_date: this.table.bookingTable.search_data.date[0],
+          end_date: this.table.bookingTable.search_data.date[1],
           offset: this.table.bookingTable.offset,
           limit: this.table.bookingTable.limit
-        })
+        }
+
+        if (this.table.bookingTable.search_data.shipper.value) {
+          searchPara.shipper = this.table.bookingTable.search_data.shipper.value
+        }
+
+        let response = await this.$http.post(apiUrl + 'search', searchPara)
         let data = response.data.info
         this.table.bookingTable.total = data.total
         this.table.bookingTable.data = JSON.parse(JSON.stringify(data.rows))
@@ -1212,7 +1255,7 @@ export default {
     },
     loadingPermission: async function() {
       try {
-        if(this.files.length <1){
+        if (this.files.length < 1) {
           return this.$Message.error('Please upload loading permission')
         }
         this.workPara.permission_files = this.files
