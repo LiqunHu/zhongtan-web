@@ -35,25 +35,25 @@
                 </button>
                 <Dropdown-menu slot="list">
                   <CheckboxGroup v-model="table.bookingTable.ColumnsChecked" @on-change="changeTableColumns">
-                    <Checkbox label="Book Date"></Checkbox>
-                    <Checkbox label="Files"></Checkbox>
-                    <Checkbox label="Vessel"></Checkbox>
-                    <Checkbox label="Voyage"></Checkbox>
-                    <Checkbox label="Goods"></Checkbox>
-                    <Checkbox label="Containers"></Checkbox>
-                    <Checkbox label="Loading Port"></Checkbox>
-                    <Checkbox label="Discharge Port"></Checkbox>
-                    <Checkbox label="Delivery Place"></Checkbox>
-                    <Checkbox label="Stuffing Place"></Checkbox>
-                    <Checkbox label="Stuffing Date"></Checkbox>
-                    <Checkbox label="Stuffing requirement"></Checkbox>
-                    <Checkbox label="CSO"></Checkbox>
-                    <Checkbox label="Consignee Name"></Checkbox>
-                    <Checkbox label="Consignee Address"></Checkbox>
-                    <Checkbox label="Consignee telephone"></Checkbox>
-                    <Checkbox label="Notify Name"></Checkbox>
-                    <Checkbox label="Notify Address"></Checkbox>
-                    <Checkbox label="Notify telephone"></Checkbox>
+                    <Checkbox label="Book Date" style></Checkbox>
+                    <Checkbox label="Files" class="check-item"></Checkbox>
+                    <Checkbox label="Vessel" class="check-item"></Checkbox>
+                    <Checkbox label="Voyage" class="check-item"></Checkbox>
+                    <Checkbox label="Goods" class="check-item"></Checkbox>
+                    <Checkbox label="Containers" class="check-item"></Checkbox>
+                    <Checkbox label="Loading Port" class="check-item"></Checkbox>
+                    <Checkbox label="Discharge Port" class="check-item"></Checkbox>
+                    <Checkbox label="Delivery Place" class="check-item"></Checkbox>
+                    <Checkbox label="Stuffing Place" class="check-item"></Checkbox>
+                    <Checkbox label="Stuffing Date" class="check-item"></Checkbox>
+                    <Checkbox label="Stuffing requirement" class="check-item"></Checkbox>
+                    <Checkbox label="CSO" class="check-item"></Checkbox>
+                    <Checkbox label="Consignee Name" class="check-item"></Checkbox>
+                    <Checkbox label="Consignee Address" class="check-item"></Checkbox>
+                    <Checkbox label="Consignee telephone" class="check-item"></Checkbox>
+                    <Checkbox label="Notify Name" class="check-item"></Checkbox>
+                    <Checkbox label="Notify Address" class="check-item"></Checkbox>
+                    <Checkbox label="Notify telephone" class="check-item"></Checkbox>
                   </CheckboxGroup>
                 </Dropdown-menu>
               </Dropdown>
@@ -1266,7 +1266,7 @@ export default {
     changeTableColumns: function() {
       this.table.bookingTable.columns = JSON.parse(JSON.stringify(this.table.bookingTable.fixColumns))
       for (let c of this.table.bookingTable.fullColumns) {
-        if(this.table.bookingTable.ColumnsChecked.indexOf(c.title) >= 0){
+        if (this.table.bookingTable.ColumnsChecked.indexOf(c.title) >= 0) {
           this.table.bookingTable.columns.push(c)
         }
       }
@@ -1440,3 +1440,9 @@ export default {
   }
 }
 </script>
+<style scoped>
+.check-item {
+  padding: 2px 8px;
+  justify-content: flex-start;
+}
+</style>

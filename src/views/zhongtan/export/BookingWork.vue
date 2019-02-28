@@ -56,26 +56,26 @@
                 </button>
                 <Dropdown-menu slot="list">
                   <CheckboxGroup v-model="table.bookingTable.ColumnsChecked" @on-change="changeTableColumns">
-                    <Checkbox label="Book Date"></Checkbox>
-                    <Checkbox label="Shipper"></Checkbox>
-                    <Checkbox label="Files"></Checkbox>
-                    <Checkbox label="Vessel"></Checkbox>
-                    <Checkbox label="Voyage"></Checkbox>
-                    <Checkbox label="Goods"></Checkbox>
-                    <Checkbox label="Containers"></Checkbox>
-                    <Checkbox label="Loading Port"></Checkbox>
-                    <Checkbox label="Discharge Port"></Checkbox>
-                    <Checkbox label="Delivery Place"></Checkbox>
-                    <Checkbox label="Stuffing Place"></Checkbox>
-                    <Checkbox label="Stuffing Date"></Checkbox>
-                    <Checkbox label="Stuffing requirement"></Checkbox>
-                    <Checkbox label="CSO"></Checkbox>
-                    <Checkbox label="Consignee Name"></Checkbox>
-                    <Checkbox label="Consignee Address"></Checkbox>
-                    <Checkbox label="Consignee telephone"></Checkbox>
-                    <Checkbox label="Notify Name"></Checkbox>
-                    <Checkbox label="Notify Address"></Checkbox>
-                    <Checkbox label="Notify telephone"></Checkbox>
+                    <Checkbox label="Book Date" class="check-item"></Checkbox>
+                    <Checkbox label="Shipper" class="check-item"></Checkbox>
+                    <Checkbox label="Files" class="check-item"></Checkbox>
+                    <Checkbox label="Vessel" class="check-item"></Checkbox>
+                    <Checkbox label="Voyage" class="check-item"></Checkbox>
+                    <Checkbox label="Goods" class="check-item"></Checkbox>
+                    <Checkbox label="Containers" class="check-item"></Checkbox>
+                    <Checkbox label="Loading Port" class="check-item"></Checkbox>
+                    <Checkbox label="Discharge Port" class="check-item"></Checkbox>
+                    <Checkbox label="Delivery Place" class="check-item"></Checkbox>
+                    <Checkbox label="Stuffing Place" class="check-item"></Checkbox>
+                    <Checkbox label="Stuffing Date" class="check-item"></Checkbox>
+                    <Checkbox label="Stuffing requirement" class="check-item"></Checkbox>
+                    <Checkbox label="CSO" class="check-item"></Checkbox>
+                    <Checkbox label="Consignee Name" class="check-item"></Checkbox>
+                    <Checkbox label="Consignee Address" class="check-item"></Checkbox>
+                    <Checkbox label="Consignee telephone" class="check-item"></Checkbox>
+                    <Checkbox label="Notify Name" class="check-item"></Checkbox>
+                    <Checkbox label="Notify Address" class="check-item"></Checkbox>
+                    <Checkbox label="Notify telephone" class="check-item"></Checkbox>
                   </CheckboxGroup>
                 </Dropdown-menu>
               </Dropdown>
@@ -1544,5 +1544,9 @@ export default {
   position: relative;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
   margin-right: 4px;
+}
+.check-item {
+  padding: 2px 8px;
+  justify-content: flex-start;
 }
 </style>
