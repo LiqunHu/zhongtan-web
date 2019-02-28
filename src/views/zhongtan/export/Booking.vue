@@ -28,10 +28,40 @@
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="actBookingModal">Booking</button>
             </div>
+            <div class="ml-auto">
+              <Dropdown>
+                <button type="button" class="btn btn-info">下拉菜单
+                  <Icon type="ios-arrow-down"></Icon>
+                </button>
+                <Dropdown-menu slot="list">
+                  <CheckboxGroup v-model="table.bookingTable.ColumnsChecked" @on-change="changeTableColumns">
+                    <Checkbox label="Book Date"></Checkbox>
+                    <Checkbox label="Files"></Checkbox>
+                    <Checkbox label="Vessel"></Checkbox>
+                    <Checkbox label="Voyage"></Checkbox>
+                    <Checkbox label="Goods"></Checkbox>
+                    <Checkbox label="Containers"></Checkbox>
+                    <Checkbox label="Loading Port"></Checkbox>
+                    <Checkbox label="Discharge Port"></Checkbox>
+                    <Checkbox label="Delivery Place"></Checkbox>
+                    <Checkbox label="Stuffing Place"></Checkbox>
+                    <Checkbox label="Stuffing Date"></Checkbox>
+                    <Checkbox label="Stuffing requirement"></Checkbox>
+                    <Checkbox label="CSO"></Checkbox>
+                    <Checkbox label="Consignee Name"></Checkbox>
+                    <Checkbox label="Consignee Address"></Checkbox>
+                    <Checkbox label="Consignee telephone"></Checkbox>
+                    <Checkbox label="Notify Name"></Checkbox>
+                    <Checkbox label="Notify Address"></Checkbox>
+                    <Checkbox label="Notify telephone"></Checkbox>
+                  </CheckboxGroup>
+                </Dropdown-menu>
+              </Dropdown>
+            </div>
           </div>
         </div>
       </template>
-      <Table stripe size="small" ref="bookingTable" :columns="table.bookingTable.rows" :data="table.bookingTable.data" :height="table.bookingTable.height">
+      <Table stripe size="small" ref="bookingTable" :columns="table.bookingTable.columns" :data="table.bookingTable.data" :height="table.bookingTable.height">
         <template slot-scope="{ row, index }" slot="edit">
           <Tooltip content="Edit bill lading">
             <a href="#" class="btn btn-info btn-icon btn-sm" @click="modifyBookingModal(row)">
@@ -65,7 +95,7 @@
           <Poptip trigger="hover" width="555">
             <Button type="text" style="text-decoration:underline">Files</Button>
             <template slot="content">
-              <Table stripe size="small" :columns="table.filesTable.rows" :data="row.files">
+              <Table stripe size="small" :columns="table.filesTable.columns" :data="row.files">
                 <template slot-scope="{ row, index }" slot="url">
                   <a :href="row.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
                     <i class="fa fa-download"></i>
@@ -84,7 +114,7 @@
           <Poptip trigger="hover" width="800">
             <Button type="text" style="text-decoration:underline">Goods</Button>
             <template slot="content">
-              <Table stripe size="small" :columns="table.poptipGoodsTable.rows" :data="row.billlading_goods"></Table>
+              <Table stripe size="small" :columns="table.poptipGoodsTable.columns" :data="row.billlading_goods"></Table>
             </template>
           </Poptip>
         </template>
@@ -92,7 +122,7 @@
           <Poptip trigger="hover" width="800">
             <Button type="text" style="text-decoration:underline">Containers</Button>
             <template slot="content">
-              <Table stripe size="small" :columns="table.poptipContainerTable.rows" :data="row.billlading_containers"></Table>
+              <Table stripe size="small" :columns="table.poptipContainerTable.columns" :data="row.billlading_containers"></Table>
             </template>
           </Poptip>
         </template>
@@ -191,7 +221,7 @@
                   <h4 class="text-middle m-b-10">
                     <b>Cargo Description</b>
                   </h4>
-                  <Table stripe ref="goodsTable" :columns="table.goodsTable.rows" :data="table.goodsTable.data">
+                  <Table stripe ref="goodsTable" :columns="table.goodsTable.columns" :data="table.goodsTable.data">
                     <template slot-scope="{ row, index }" slot="billlading_goods_container_number">
                       <Input v-model="row.billlading_goods_container_number" @on-blur="table.goodsTable.data[index] = row"/>
                     </template>
@@ -259,7 +289,7 @@
                   <h4 class="text-middle m-b-10">
                     <b>Container Description</b>
                   </h4>
-                  <Table stripe ref="containerTable" :columns="table.containerTable.rows" :data="table.containerTable.data">
+                  <Table stripe ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data">
                     <template slot-scope="{ row, index }" slot="container_no">
                       <Input v-model="row.container_no" @on-blur="table.containerTable.data[index] = row"/>
                     </template>
@@ -391,7 +421,7 @@
               <b>Container Description</b>
             </h4>
             <div style="width: 700px">
-              <Table stripe ref="containerTable" :columns="table.containerTable.rows" :data="table.containerTable.data">
+              <Table stripe ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data">
                 <template slot-scope="{ row, index }" slot="container_no">
                   <Input v-model="row.container_no" @on-blur="table.containerTable.data[index] = row"/>
                 </template>
@@ -501,7 +531,150 @@ export default {
       modal: { bookingModal: false, submitLoadingModal: false, revertDeclareNumberModal: false },
       table: {
         bookingTable: {
-          rows: [
+          fixColumns: [
+            {
+              type: 'index',
+              width: 40,
+              align: 'center',
+              fixed: 'left'
+            },
+            {
+              title: 'Edit',
+              slot: 'edit',
+              width: 60,
+              fixed: 'left'
+            },
+            {
+              title: 'Action',
+              slot: 'action',
+              width: 100,
+              fixed: 'left'
+            },
+            {
+              title: 'S/O',
+              key: 'billlading_no',
+              width: 150,
+              fixed: 'left'
+            },
+            {
+              title: 'Status',
+              key: 'billlading_state',
+              render: (h, params) => {
+                let info = this.pagePara.BLSTATUSINFO.find(element => element.id === params.row.billlading_state)
+                return h('span', { class: 'label ' + info.style }, info.text)
+              },
+              width: 150,
+              fixed: 'left'
+            }
+          ],
+          fullColumns: [
+            {
+              title: 'Book Date',
+              key: 'booking_date',
+              width: 100
+            },
+            {
+              title: 'Files',
+              slot: 'files',
+              width: 100
+            },
+            {
+              title: 'Vessel',
+              key: 'billlading_vessel_id',
+              render: common.selectRender(this, 'VesselINFO'),
+              width: 100
+            },
+            {
+              title: 'Voyage',
+              slot: 'billlading_voyage_id',
+              width: 180
+            },
+            {
+              title: 'Goods',
+              slot: 'billlading_goods',
+              width: 100
+            },
+            {
+              title: 'Gontainers',
+              slot: 'billlading_containers',
+              width: 120
+            },
+            {
+              title: 'Loading Port',
+              key: 'billlading_loading_port_id',
+              render: common.selectRender(this, 'PortINFO'),
+              width: 140
+            },
+            {
+              title: 'Discharge Port',
+              key: 'billlading_discharge_port_id',
+              render: common.selectRender(this, 'PortINFO'),
+              width: 140
+            },
+            {
+              title: 'Delivery Place',
+              key: 'billlading_delivery_place',
+              render: common.tooltipRender(),
+              width: 130
+            },
+            {
+              title: 'Stuffing Place',
+              key: 'billlading_stuffing_place',
+              render: common.tooltipRender(),
+              width: 120
+            },
+            {
+              title: 'Stuffing Date',
+              key: 'billlading_stuffing_date',
+              width: 120
+            },
+            {
+              title: 'Stuffing requirement',
+              key: 'billlading_stuffing_requirement',
+              render: common.tooltipRender(),
+              width: 170
+            },
+            {
+              title: 'CSO',
+              key: 'billlading_cso',
+              width: 120
+            },
+            {
+              title: 'Consignee Name',
+              key: 'billlading_consignee_name',
+              render: common.tooltipRender(),
+              width: 140
+            },
+            {
+              title: 'Consignee Address',
+              key: 'billlading_consignee_address',
+              render: common.tooltipRender(),
+              width: 150
+            },
+            {
+              title: 'Consignee telephone',
+              key: 'billlading_consignee_tel',
+              width: 170
+            },
+            {
+              title: 'Notify Name',
+              key: 'billlading_notify_name',
+              render: common.tooltipRender(),
+              width: 130
+            },
+            {
+              title: 'Notify Address',
+              key: 'billlading_notify_address',
+              render: common.tooltipRender(),
+              width: 130
+            },
+            {
+              title: 'Notify telephone',
+              key: 'billlading_notify_tel',
+              width: 140
+            }
+          ],
+          columns: [
             {
               type: 'index',
               width: 40,
@@ -642,6 +815,27 @@ export default {
               width: 140
             }
           ],
+          ColumnsChecked: [
+            'Book Date',
+            'Files',
+            'Vessel',
+            'Voyage',
+            'Goods',
+            'Containers',
+            'Loading Port',
+            'Discharge Port',
+            'Delivery Place',
+            'Stuffing Place',
+            'Stuffing Date',
+            'Stuffing requirement',
+            'CSO',
+            'Consignee Name',
+            'Consignee Address',
+            'Consignee telephone',
+            'Notify Name',
+            'Notify Address',
+            'Notify telephone'
+          ],
           data: [],
           height: common.getTableHeight(),
           limit: 10,
@@ -657,7 +851,7 @@ export default {
           }
         },
         filesTable: {
-          rows: [
+          columns: [
             {
               title: 'Create Date',
               key: 'date',
@@ -688,7 +882,7 @@ export default {
           ]
         },
         goodsTable: {
-          rows: [
+          columns: [
             {
               title: 'Container Vol.',
               slot: 'billlading_goods_container_number',
@@ -763,7 +957,7 @@ export default {
           data: []
         },
         containerTable: {
-          rows: [
+          columns: [
             {
               title: 'Container No.',
               slot: 'container_no',
@@ -848,7 +1042,7 @@ export default {
           data: []
         },
         poptipGoodsTable: {
-          rows: [
+          columns: [
             {
               title: 'Container Vol.',
               key: 'billlading_goods_container_number',
@@ -924,7 +1118,7 @@ export default {
           ]
         },
         poptipContainerTable: {
-          rows: [
+          columns: [
             {
               title: 'Container No.',
               key: 'container_no',
@@ -1068,6 +1262,14 @@ export default {
   methods: {
     searchData: function(e) {
       this.table.bookingTable.search_data.date = JSON.parse(JSON.stringify(e))
+    },
+    changeTableColumns: function() {
+      this.table.bookingTable.columns = JSON.parse(JSON.stringify(this.table.bookingTable.fixColumns))
+      for (let c of this.table.bookingTable.fullColumns) {
+        if(this.table.bookingTable.ColumnsChecked.indexOf(c.title) >= 0){
+          this.table.bookingTable.columns.push(c)
+        }
+      }
     },
     vesselChange: async function(value) {
       let rsp = await this.$http.post(apiUrl + 'searchVoyage', {
