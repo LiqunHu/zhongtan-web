@@ -35,7 +35,7 @@
                 </button>
                 <Dropdown-menu slot="list">
                   <CheckboxGroup v-model="table.bookingTable.ColumnsChecked" @on-change="changeTableColumns">
-                    <Checkbox label="Book Date" style></Checkbox>
+                    <Checkbox label="Book Date" class="check-item"></Checkbox>
                     <Checkbox label="Files" class="check-item"></Checkbox>
                     <Checkbox label="Vessel" class="check-item"></Checkbox>
                     <Checkbox label="Voyage" class="check-item"></Checkbox>
