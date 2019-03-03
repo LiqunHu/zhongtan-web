@@ -30,7 +30,8 @@
             </div>
             <div class="ml-auto">
               <Dropdown>
-                <button type="button" class="btn btn-info">下拉菜单
+                <button type="button" class="btn btn-info">
+                  <i class="fas fa-lg fa-fw m-r-10 fa-th"></i>
                   <Icon type="ios-arrow-down"></Icon>
                 </button>
                 <Dropdown-menu slot="list">
@@ -75,7 +76,7 @@
               <i class="fa fa-times"></i>
             </a>
           </Tooltip>
-          <Tooltip content="Pick up empty" v-if="row.billlading_state === 'BK'">
+          <Tooltip content="Request container" v-if="row.billlading_state === 'BK'">
             <a href="#" class="btn btn-primary btn-icon btn-sm" @click="pickUpEmpty(row)">
               <i class="fa fa-dot-circle"></i>
             </a>
@@ -221,7 +222,7 @@
                   <h4 class="text-middle m-b-10">
                     <b>Cargo Description</b>
                   </h4>
-                  <Table stripe ref="goodsTable" :columns="table.goodsTable.columns" :data="table.goodsTable.data">
+                  <Table stripe size="small" ref="goodsTable" :columns="table.goodsTable.columns" :data="table.goodsTable.data">
                     <template slot-scope="{ row, index }" slot="billlading_goods_container_number">
                       <Input v-model="row.billlading_goods_container_number" @on-blur="table.goodsTable.data[index] = row"/>
                     </template>
@@ -289,7 +290,7 @@
                   <h4 class="text-middle m-b-10">
                     <b>Container Description</b>
                   </h4>
-                  <Table stripe ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data">
+                  <Table stripe size="small" ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data">
                     <template slot-scope="{ row, index }" slot="container_no">
                       <Input v-model="row.container_no" @on-blur="table.containerTable.data[index] = row"/>
                     </template>
@@ -421,7 +422,7 @@
               <b>Container Description</b>
             </h4>
             <div style="width: 700px">
-              <Table stripe ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data">
+              <Table stripe size="small" ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data">
                 <template slot-scope="{ row, index }" slot="container_no">
                   <Input v-model="row.container_no" @on-blur="table.containerTable.data[index] = row"/>
                 </template>
@@ -1391,7 +1392,7 @@ export default {
       })
     },
     pickUpEmpty: function(row) {
-      this.$commonact.confirm('Pick up empty?', async () => {
+      this.$commonact.confirm('Request container?', async () => {
         try {
           await this.$http.post(apiUrl + 'pickUpEmpty', { billlading_id: row.billlading_id })
           this.$Message.success('Successful operation')
