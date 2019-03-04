@@ -445,6 +445,16 @@
     </Modal>
     <Modal v-model="modal.confirmBookingModal" title="Booking">
       <Form :model="workPara" :label-width="120" :rules="formRule.ruleConfirmBookingModal" ref="formConfirmBooking">
+        <FormItem label="Vessel" prop="billlading_vessel_id">
+          <Select v-model="workPara.billlading_vessel_id" @on-change="vesselChange">
+            <Option v-for="item in pagePara.VesselINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="Voyage" prop="billlading_voyage_id">
+          <Select v-model="workPara.billlading_voyage_id">
+            <Option v-for="item in VoyageINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+          </Select>
+        </FormItem>
         <FormItem label="Freight Currency" prop="billlading_freight_currency">
           <Select v-model="workPara.billlading_freight_currency">
             <Option v-for="item in pagePara.PayCurrencyINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
@@ -1247,6 +1257,8 @@ export default {
           billlading_freight_currency: [{ required: true, trigger: 'change', message: 'Choose Status' }]
         },
         ruleConfirmBookingModal: {
+          billlading_vessel_id: [{ required: true, type: 'number', trigger: 'change', message: 'Choose vessel' }],
+          billlading_voyage_id: [{ required: true, type: 'number', trigger: 'change', message: 'Choose voyage' }],
           billlading_freight_currency: [{ required: true, trigger: 'change', message: 'Choose Currency' }],
           billlading_freight_charge: [{ required: true, trigger: 'change', message: 'Enter Freight Charge' }]
         },
@@ -1311,7 +1323,7 @@ export default {
     changeTableColumns: function() {
       this.table.bookingTable.columns = JSON.parse(JSON.stringify(this.table.bookingTable.fixColumns))
       for (let c of this.table.bookingTable.fullColumns) {
-        if(this.table.bookingTable.ColumnsChecked.indexOf(c.title) >= 0){
+        if (this.table.bookingTable.ColumnsChecked.indexOf(c.title) >= 0) {
           this.table.bookingTable.columns.push(c)
         }
       }
@@ -1383,6 +1395,7 @@ export default {
       this.workPara = JSON.parse(JSON.stringify(actrow))
       this.table.goodsTable.data = JSON.parse(JSON.stringify(actrow.billlading_goods))
       this.table.containerTable.data = JSON.parse(JSON.stringify(actrow.billlading_containers))
+      this.VoyageINFO = JSON.parse(JSON.stringify(actrow.VoyageINFO))
       this.action = 'modify'
       this.$refs.formBooking.resetFields()
       this.modal.bookingModal = true
@@ -1425,6 +1438,7 @@ export default {
       delete actrow._rowKey
       this.workPara = JSON.parse(JSON.stringify(actrow))
       this.workPara.billlading_freight_charge = '0.00'
+      this.VoyageINFO = JSON.parse(JSON.stringify(actrow.VoyageINFO))
       this.modal.confirmBookingModal = true
     },
     confirmBookingAct: function() {
@@ -1532,6 +1546,11 @@ export default {
 }
 </script>
 <style scoped>
+/deep/ .ivu-table-cell {
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
 .upload-list {
   display: inline-block;
   width: 60px;

@@ -104,8 +104,12 @@ export default {
               key: 'billladingno_batch_number_start'
             },
             {
-              title: 'Billlading No Count',
+              title: 'BL. Count',
               key: 'billladingno_batch_count'
+            },
+            {
+              title: 'BL. Used',
+              key: 'billladingno_batch_use_count'
             },
             {
               title: 'State',
@@ -211,7 +215,7 @@ export default {
           let numStart = parseInt(this.workPara.billladingno_batch_number_start)
           let blCount = parseInt(this.workPara.billladingno_batch_count)
           let blStart = fixStr + ('0000000000000000000000000000000' + numStart).slice(numLen)
-          let blEnd = fixStr + ('0000000000000000000000000000000' + (numStart + blCount)).slice(numLen)
+          let blEnd = fixStr + ('0000000000000000000000000000000' + (numStart + blCount - 1)).slice(numLen)
           this.rangeString = blStart + ' ---- ' + blEnd
         }
       })

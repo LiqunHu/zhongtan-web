@@ -1211,8 +1211,6 @@ export default {
       },
       formRule: {
         ruleBookingModal: {
-          billlading_vessel_id: [{ required: true, type: 'number', trigger: 'change', message: 'Choose vessel' }],
-          billlading_voyage_id: [{ required: true, type: 'number', trigger: 'change', message: 'Choose voyage' }],
           billlading_consignee_name: [{ required: true, trigger: 'change', message: 'Enter consignee name' }],
           billlading_consignee_address: [{ required: true, trigger: 'change', message: 'Enter consignee address' }],
           billlading_consignee_tel: [{ required: true, trigger: 'change', message: 'Enter consignee telephone' }],
@@ -1355,6 +1353,7 @@ export default {
       this.workPara = JSON.parse(JSON.stringify(actrow))
       this.table.goodsTable.data = JSON.parse(JSON.stringify(actrow.billlading_goods))
       this.table.containerTable.data = JSON.parse(JSON.stringify(actrow.billlading_containers))
+      this.VoyageINFO = JSON.parse(JSON.stringify(actrow.VoyageINFO))
       this.action = 'modify'
       this.$refs.formPort.resetFields()
       this.modal.bookingModal = true
@@ -1442,6 +1441,11 @@ export default {
 }
 </script>
 <style scoped>
+/deep/ .ivu-table-cell {
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
 .check-item {
   padding: 2px 8px;
   justify-content: flex-start;

@@ -25,10 +25,10 @@
         <!-- BEGIN profile-header-tab -->
         <ul class="profile-header-tab nav nav-tabs">
           <li class="nav-item">
-            <a href="javascript:;" v-on:click="show('about')" v-bind:class="{ 'active': tab.about }" class="nav-link" data-toggle="tab">设置</a>
+            <a href="javascript:;" v-on:click="show('about')" v-bind:class="{ 'active': tab.about }" class="nav-link" data-toggle="tab">Configure</a>
           </li>
           <li class="nav-item">
-            <a href="javascript:;" v-on:click="show('password')" v-bind:class="{ 'active': tab.password }" class="nav-link" data-toggle="tab">密码</a>
+            <a href="javascript:;" v-on:click="show('password')" v-bind:class="{ 'active': tab.password }" class="nav-link" data-toggle="tab">Password</a>
           </li>
         </ul>
         <!-- END profile-header-tab -->
@@ -171,19 +171,19 @@
         <!-- end #profile-about tab -->
         <!-- begin #profile-about tab -->
         <div class="tab-pane fade" v-bind:class="{ 'show active': tab.password }">
-          <h4 class="m-t-0 m-b-20">设置密码</h4>
+          <h4 class="m-t-0 m-b-20">Set Password</h4>
           <Form ref="formPasswordChange" :model="workPara" :label-width="80" :rules="formRule.rulePasswordChage" style="width: 500px">
-            <FormItem label="原密码" prop="old_password">
+            <FormItem label="Original Passwoed" prop="old_password">
               <Input type="password" v-model="workPara.old_password"/>
             </FormItem>
-            <FormItem label="新密码" prop="password">
+            <FormItem label="New Passwoed" prop="password">
               <Input type="password" v-model="workPara.password"/>
             </FormItem>
-            <FormItem label="再次输入" prop="repassword">
+            <FormItem label="Re-type Passwoed" prop="repassword">
               <Input type="password" v-model="workPara.repassword"/>
             </FormItem>
             <FormItem>
-              <Button type="primary" @click="changePassword">提交</Button>
+              <Button type="primary" @click="changePassword">Commit</Button>
             </FormItem>
           </Form>
         </div>
@@ -205,7 +205,7 @@ export default {
   data() {
     const validatePass = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('请输入新密码'))
+        callback(new Error('Please enter a new password'))
       } else {
         if (this.workPara.repassword !== '') {
           // 对第二个密码框单独验证
@@ -217,9 +217,9 @@ export default {
 
     const validatePassCheck = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('请再次输入你的新密码'))
+        callback(new Error('Please enter your new password again'))
       } else if (value !== this.workPara.password) {
-        callback(new Error('两次输入密码不一致!'))
+        callback(new Error('The two passwords do not match!'))
       } else {
         callback()
       }
@@ -275,7 +275,7 @@ export default {
           old_password: CryptoJS.MD5(this.workPara.old_password).toString(),
           password: this.workPara.password
         })
-        this.$Message.success('修改密码成功')
+        this.$Message.success('Password changed successfully')
       } catch (error) {
         this.$commonact.fault(error)
       }
