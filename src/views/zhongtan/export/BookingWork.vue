@@ -50,36 +50,38 @@
               </button>
             </div>
             <div class="ml-auto">
-              <Dropdown>
-                <button type="button" class="btn btn-info">
-                  <i class="fas fa-lg fa-fw m-r-10 fa-th"></i>
-                  <Icon type="ios-arrow-down"></Icon>
+              <div class="btn-group">
+                <Dropdown class="btn btn-info">
+                  <i class="fas fa-lg fa-fw fa-th"></i>
+                  <Dropdown-menu slot="list">
+                    <CheckboxGroup v-model="table.bookingTable.ColumnsChecked" @on-change="changeTableColumns">
+                      <Checkbox label="Book Date" class="check-item"></Checkbox>
+                      <Checkbox label="Shipper" class="check-item"></Checkbox>
+                      <Checkbox label="Files" class="check-item"></Checkbox>
+                      <Checkbox label="Vessel" class="check-item"></Checkbox>
+                      <Checkbox label="Voyage" class="check-item"></Checkbox>
+                      <Checkbox label="Goods" class="check-item"></Checkbox>
+                      <Checkbox label="Containers" class="check-item"></Checkbox>
+                      <Checkbox label="Loading Port" class="check-item"></Checkbox>
+                      <Checkbox label="Discharge Port" class="check-item"></Checkbox>
+                      <Checkbox label="Delivery Place" class="check-item"></Checkbox>
+                      <Checkbox label="Stuffing Place" class="check-item"></Checkbox>
+                      <Checkbox label="Stuffing Date" class="check-item"></Checkbox>
+                      <Checkbox label="Stuffing requirement" class="check-item"></Checkbox>
+                      <Checkbox label="CSO" class="check-item"></Checkbox>
+                      <Checkbox label="Consignee Name" class="check-item"></Checkbox>
+                      <Checkbox label="Consignee Address" class="check-item"></Checkbox>
+                      <Checkbox label="Consignee telephone" class="check-item"></Checkbox>
+                      <Checkbox label="Notify Name" class="check-item"></Checkbox>
+                      <Checkbox label="Notify Address" class="check-item"></Checkbox>
+                      <Checkbox label="Notify telephone" class="check-item"></Checkbox>
+                    </CheckboxGroup>
+                  </Dropdown-menu>
+                </Dropdown>
+                <button class="btn btn-info" @click="downBooking">
+                  <i class="fas fa-lg fa-fw fa-download"></i>
                 </button>
-                <Dropdown-menu slot="list">
-                  <CheckboxGroup v-model="table.bookingTable.ColumnsChecked" @on-change="changeTableColumns">
-                    <Checkbox label="Book Date" class="check-item"></Checkbox>
-                    <Checkbox label="Shipper" class="check-item"></Checkbox>
-                    <Checkbox label="Files" class="check-item"></Checkbox>
-                    <Checkbox label="Vessel" class="check-item"></Checkbox>
-                    <Checkbox label="Voyage" class="check-item"></Checkbox>
-                    <Checkbox label="Goods" class="check-item"></Checkbox>
-                    <Checkbox label="Containers" class="check-item"></Checkbox>
-                    <Checkbox label="Loading Port" class="check-item"></Checkbox>
-                    <Checkbox label="Discharge Port" class="check-item"></Checkbox>
-                    <Checkbox label="Delivery Place" class="check-item"></Checkbox>
-                    <Checkbox label="Stuffing Place" class="check-item"></Checkbox>
-                    <Checkbox label="Stuffing Date" class="check-item"></Checkbox>
-                    <Checkbox label="Stuffing requirement" class="check-item"></Checkbox>
-                    <Checkbox label="CSO" class="check-item"></Checkbox>
-                    <Checkbox label="Consignee Name" class="check-item"></Checkbox>
-                    <Checkbox label="Consignee Address" class="check-item"></Checkbox>
-                    <Checkbox label="Consignee telephone" class="check-item"></Checkbox>
-                    <Checkbox label="Notify Name" class="check-item"></Checkbox>
-                    <Checkbox label="Notify Address" class="check-item"></Checkbox>
-                    <Checkbox label="Notify telephone" class="check-item"></Checkbox>
-                  </CheckboxGroup>
-                </Dropdown-menu>
-              </Dropdown>
+              </div>
             </div>
           </div>
         </div>
@@ -1320,6 +1322,11 @@ export default {
         this.table.bookingTable.search_data.vessel.options = []
       }
     },
+    downBooking: function() {
+      this.$refs.bookingTable.exportCsv({
+        filename: 'Booking List'
+      })
+    },
     changeTableColumns: function() {
       this.table.bookingTable.columns = JSON.parse(JSON.stringify(this.table.bookingTable.fixColumns))
       for (let c of this.table.bookingTable.fullColumns) {
@@ -1547,8 +1554,8 @@ export default {
 </script>
 <style scoped>
 /deep/ .ivu-table-cell {
-    padding-left: 2px;
-    padding-right: 2px;
+  padding-left: 2px;
+  padding-right: 2px;
 }
 
 .upload-list {
