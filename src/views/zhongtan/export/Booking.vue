@@ -890,13 +890,13 @@ export default {
               width: 140
             },
             {
-              title: 'Type',
-              slot: 'billlading_goods_container_type',
+              title: 'Size',
+              slot: 'billlading_goods_container_size',
               width: 120
             },
             {
-              title: 'Size',
-              slot: 'billlading_goods_container_size',
+              title: 'Type',
+              slot: 'billlading_goods_container_type',
               width: 120
             },
             {
@@ -965,13 +965,13 @@ export default {
               width: 120
             },
             {
-              title: 'Type',
-              slot: 'container_type',
+              title: 'Size',
+              slot: 'container_size',
               width: 120
             },
             {
-              title: 'Size',
-              slot: 'container_size',
+              title: 'Type',
+              slot: 'container_type',
               width: 120
             },
             {
@@ -1050,15 +1050,15 @@ export default {
               width: 140
             },
             {
-              title: 'Type',
-              key: 'billlading_goods_container_type',
-              render: common.selectRender(this, 'ContainerTypeINFO'),
-              width: 100
-            },
-            {
               title: 'Size',
               key: 'billlading_goods_container_size',
               render: common.selectRender(this, 'ContainerSizeINFO'),
+              width: 100
+            },
+            {
+              title: 'Type',
+              key: 'billlading_goods_container_type',
+              render: common.selectRender(this, 'ContainerTypeINFO'),
               width: 100
             },
             {
@@ -1126,15 +1126,15 @@ export default {
               width: 140
             },
             {
-              title: 'Type',
-              key: 'container_type',
-              render: common.selectRender(this, 'ContainerTypeINFO'),
-              width: 100
-            },
-            {
               title: 'Size',
               key: 'container_size',
               render: common.selectRender(this, 'ContainerSizeINFO'),
+              width: 100
+            },
+            {
+              title: 'Type',
+              key: 'container_type',
+              render: common.selectRender(this, 'ContainerTypeINFO'),
               width: 100
             },
             {
