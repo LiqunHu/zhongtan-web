@@ -22,14 +22,14 @@
             </div>
             <div class="form-group m-r-2">
               <Select
-                v-model="table.bookingTable.search_data.shipper.value"
+                v-model="table.bookingTable.search_data.customer.value"
                 filterable
                 remote
-                :remote-method="searchShipper"
-                :loading="table.bookingTable.search_data.shipper.loading"
-                placeholder="shipper"
+                :remote-method="searchCustomer"
+                :loading="table.bookingTable.search_data.customer.loading"
+                placeholder="customer"
               >
-                <Option v-for="item in table.bookingTable.search_data.shipper.options" :value="item.id" :key="item.id">{{item.text}}</Option>
+                <Option v-for="item in table.bookingTable.search_data.customer.options" :value="item.id" :key="item.id">{{item.text}}</Option>
               </Select>
             </div>
             <div class="form-group m-r-2">
@@ -69,6 +69,9 @@
                       <Checkbox label="Stuffing Date" class="check-item"></Checkbox>
                       <Checkbox label="Stuffing requirement" class="check-item"></Checkbox>
                       <Checkbox label="CSO" class="check-item"></Checkbox>
+                      <Checkbox label="Shipper Name" class="check-item"></Checkbox>
+                      <Checkbox label="Shipper Address" class="check-item"></Checkbox>
+                      <Checkbox label="Shipper telephone" class="check-item"></Checkbox>
                       <Checkbox label="Consignee Name" class="check-item"></Checkbox>
                       <Checkbox label="Consignee Address" class="check-item"></Checkbox>
                       <Checkbox label="Consignee telephone" class="check-item"></Checkbox>
@@ -126,15 +129,15 @@
             </a>
           </Tooltip>
         </template>
-        <template slot-scope="{ row, index }" slot="shipperINFO">
+        <template slot-scope="{ row, index }" slot="customerINFO">
           <Poptip trigger="hover" width="300">
-            <Button type="text" style="text-decoration:underline">{{row.shipperINFO.name}}</Button>
+            <Button type="text" style="text-decoration:underline">{{row.customerINFO.name}}</Button>
             <template slot="content">
-              Phone: {{row.shipperINFO.phone}}
+              Phone: {{row.customerINFO.phone}}
               <br>
-              Email: {{row.shipperINFO.email}}
+              Email: {{row.customerINFO.email}}
               <br>
-              Address: {{row.shipperINFO.address}}
+              Address: {{row.customerINFO.address}}
               <br>
             </template>
           </Poptip>
@@ -195,6 +198,33 @@
                     <Option v-for="item in VoyageINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
                   </Select>
                 </FormItem>
+              </Col>
+            </Row>
+            <Divider/>
+            <Row>
+              <Col span="9">
+                <h4 class="text-middle m-b-10">
+                  <b>Shipper (Name & Address)</b>
+                </h4>
+                <FormItem label="Name" prop="billlading_shipper_name">
+                  <Input placeholder="Name" v-model="workPara.billlading_shipper_name"/>
+                </FormItem>
+                <FormItem label="Address" prop="billlading_shipper_address">
+                  <Input type="textarea" :rows="2" placeholder="Address" v-model="workPara.billlading_shipper_address"/>
+                </FormItem>
+                <FormItem label="telephone" prop="billlading_shipper_tel">
+                  <Input placeholder="telephone" v-model="workPara.billlading_shipper_tel"/>
+                </FormItem>
+              </Col>
+              <Col offset="3" span="9">
+                <strong>
+                  <h4>CHINESE-TANZANIAN JOINT SHIPPING COMPANY.</h4>
+                  <br>
+                  <br>31, KISUTU ROAD
+                  <br>P. O. Box – 696, Dar Es Salaam, Tanzania.
+                  <br>Tel: +255 (22) 2113389
+                  <br>Fax: +255 (22) 2113388
+                </strong>
               </Col>
             </Row>
             <Divider/>
@@ -585,8 +615,8 @@ export default {
               width: 100
             },
             {
-              title: 'Shipper',
-              slot: 'shipperINFO',
+              title: 'Customer',
+              slot: 'CustomerINFO',
               width: 100
             },
             {
@@ -654,6 +684,23 @@ export default {
               title: 'CSO',
               key: 'billlading_cso',
               width: 120
+            },
+            {
+              title: 'Shipper Name',
+              key: 'billlading_shipper_name',
+              render: common.tooltipRender(),
+              width: 140
+            },
+            {
+              title: 'Shipper Address',
+              key: 'billlading_shipper_address',
+              render: common.tooltipRender(),
+              width: 150
+            },
+            {
+              title: 'Shipper telephone',
+              key: 'billlading_shipper_tel',
+              width: 170
             },
             {
               title: 'Consignee Name',
@@ -731,8 +778,8 @@ export default {
               width: 100
             },
             {
-              title: 'Shipper',
-              slot: 'shipperINFO',
+              title: 'Customer',
+              slot: 'customerINFO',
               width: 100
             },
             {
@@ -802,6 +849,23 @@ export default {
               width: 120
             },
             {
+              title: 'Shipper Name',
+              key: 'billlading_shipper_name',
+              render: common.tooltipRender(),
+              width: 140
+            },
+            {
+              title: 'Shipper Address',
+              key: 'billlading_shipper_address',
+              render: common.tooltipRender(),
+              width: 150
+            },
+            {
+              title: 'Shipper telephone',
+              key: 'billlading_shipper_tel',
+              width: 170
+            },
+            {
               title: 'Consignee Name',
               key: 'billlading_consignee_name',
               render: common.tooltipRender(),
@@ -851,6 +915,9 @@ export default {
             'Stuffing Date',
             'Stuffing requirement',
             'CSO',
+            'Shipper Name',
+            'Shipper Address',
+            'Shipper telephone',
             'Consignee Name',
             'Consignee Address',
             'Consignee telephone',
@@ -870,7 +937,7 @@ export default {
                 .format('YYYY-MM-DD'),
               moment().format('YYYY-MM-DD')
             ],
-            shipper: {
+            customer: {
               options: [],
               value: '',
               loading: false
@@ -1298,16 +1365,16 @@ export default {
     searchData: function(e) {
       this.table.bookingTable.search_data.date = JSON.parse(JSON.stringify(e))
     },
-    searchShipper: async function(query) {
+    searchCustomer: async function(query) {
       if (query !== '') {
-        this.table.bookingTable.search_data.shipper.loading = true
-        let response = await this.$http.post(apiUrl + 'searchShipper', {
+        this.table.bookingTable.search_data.customer.loading = true
+        let response = await this.$http.post(apiUrl + 'searchCustomer', {
           search_text: query
         })
-        this.table.bookingTable.search_data.shipper.options = JSON.parse(JSON.stringify(response.data.info.shipperINFO))
-        this.table.bookingTable.search_data.shipper.loading = false
+        this.table.bookingTable.search_data.customer.options = JSON.parse(JSON.stringify(response.data.info.customerINFO))
+        this.table.bookingTable.search_data.customer.loading = false
       } else {
-        this.table.bookingTable.search_data.shipper.options = []
+        this.table.bookingTable.search_data.customer.options = []
       }
     },
     searchVessel: async function(query) {
@@ -1378,8 +1445,8 @@ export default {
           limit: this.table.bookingTable.limit
         }
 
-        if (this.table.bookingTable.search_data.shipper.value) {
-          searchPara.shipper = this.table.bookingTable.search_data.shipper.value
+        if (this.table.bookingTable.search_data.customer.value) {
+          searchPara.customer = this.table.bookingTable.search_data.customer.value
         }
 
         if (this.table.bookingTable.search_data.vessel.value) {

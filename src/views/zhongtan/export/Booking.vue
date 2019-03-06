@@ -47,6 +47,9 @@
                       <Checkbox label="Stuffing Date" class="check-item"></Checkbox>
                       <Checkbox label="Stuffing requirement" class="check-item"></Checkbox>
                       <Checkbox label="CSO" class="check-item"></Checkbox>
+                      <Checkbox label="Shipper Name" class="check-item"></Checkbox>
+                      <Checkbox label="Shipper Address" class="check-item"></Checkbox>
+                      <Checkbox label="Shipper telephone" class="check-item"></Checkbox>
                       <Checkbox label="Consignee Name" class="check-item"></Checkbox>
                       <Checkbox label="Consignee Address" class="check-item"></Checkbox>
                       <Checkbox label="Consignee telephone" class="check-item"></Checkbox>
@@ -150,6 +153,33 @@
                     <Option v-for="item in VoyageINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
                   </Select>
                 </FormItem>
+              </Col>
+            </Row>
+            <Divider/>
+            <Row>
+              <Col span="9">
+                <h4 class="text-middle m-b-10">
+                  <b>Shipper (Name & Address)</b>
+                </h4>
+                <FormItem label="Name" prop="billlading_shipper_name">
+                  <Input placeholder="Name" v-model="workPara.billlading_shipper_name"/>
+                </FormItem>
+                <FormItem label="Address" prop="billlading_shipper_address">
+                  <Input type="textarea" :rows="2" placeholder="Address" v-model="workPara.billlading_shipper_address"/>
+                </FormItem>
+                <FormItem label="telephone" prop="billlading_shipper_tel">
+                  <Input placeholder="telephone" v-model="workPara.billlading_shipper_tel"/>
+                </FormItem>
+              </Col>
+              <Col offset="3" span="9">
+                <strong>
+                  <h4>CHINESE-TANZANIAN JOINT SHIPPING COMPANY.</h4>
+                  <br>
+                  <br>31, KISUTU ROAD
+                  <br>P. O. Box – 696, Dar Es Salaam, Tanzania.
+                  <br>Tel: +255 (22) 2113389
+                  <br>Fax: +255 (22) 2113388
+                </strong>
               </Col>
             </Row>
             <Divider/>
@@ -643,6 +673,23 @@ export default {
               width: 120
             },
             {
+              title: 'Shipper Name',
+              key: 'billlading_shipper_name',
+              render: common.tooltipRender(),
+              width: 140
+            },
+            {
+              title: 'Shipper Address',
+              key: 'billlading_shipper_address',
+              render: common.tooltipRender(),
+              width: 150
+            },
+            {
+              title: 'Shipper telephone',
+              key: 'billlading_shipper_tel',
+              width: 170
+            },
+            {
               title: 'Consignee Name',
               key: 'billlading_consignee_name',
               render: common.tooltipRender(),
@@ -784,6 +831,23 @@ export default {
               width: 120
             },
             {
+              title: 'Shipper Name',
+              key: 'billlading_shipper_name',
+              render: common.tooltipRender(),
+              width: 140
+            },
+            {
+              title: 'Shipper Address',
+              key: 'billlading_shipper_address',
+              render: common.tooltipRender(),
+              width: 150
+            },
+            {
+              title: 'Shipper telephone',
+              key: 'billlading_shipper_tel',
+              width: 170
+            },
+            {
               title: 'Consignee Name',
               key: 'billlading_consignee_name',
               render: common.tooltipRender(),
@@ -832,6 +896,9 @@ export default {
             'Stuffing Date',
             'Stuffing requirement',
             'CSO',
+            'Shipper Name',
+            'Shipper Address',
+            'Shipper telephone',
             'Consignee Name',
             'Consignee Address',
             'Consignee telephone',
