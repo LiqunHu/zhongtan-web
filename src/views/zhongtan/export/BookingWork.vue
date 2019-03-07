@@ -21,6 +21,11 @@
               <DatePicker type="daterange" :value="table.bookingTable.search_data.date" placeholder="Application Date" style="width: 200px" @on-change="searchData"></DatePicker>
             </div>
             <div class="form-group m-r-2">
+              <Select v-model="table.bookingTable.search_data.billlading_state" style="width:180px">
+                <Option v-for="item in pagePara.BLSTATUSINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+              </Select>
+            </div>
+            <div class="form-group m-r-2">
               <Select
                 v-model="table.bookingTable.search_data.customer.value"
                 filterable
@@ -43,6 +48,9 @@
               >
                 <Option v-for="item in table.bookingTable.search_data.vessel.options" :value="item.id" :key="item.id">{{item.text}}</Option>
               </Select>
+            </div>
+            <div class="form-group m-r-2">
+              <Input placeholder="S/O" v-model="table.bookingTable.search_data.search_text"/>
             </div>
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="getBookingData(1)">
@@ -946,7 +954,9 @@ export default {
               options: [],
               value: '',
               loading: false
-            }
+            },
+            billlading_state: '',
+            search_text: ''
           }
         },
         filesTable: {
@@ -1445,12 +1455,20 @@ export default {
           limit: this.table.bookingTable.limit
         }
 
+        if (this.table.bookingTable.search_data.billlading_state) {
+          searchPara.billlading_state = this.table.bookingTable.search_data.billlading_state
+        }
+
         if (this.table.bookingTable.search_data.customer.value) {
           searchPara.customer = this.table.bookingTable.search_data.customer.value
         }
 
         if (this.table.bookingTable.search_data.vessel.value) {
           searchPara.vessel = this.table.bookingTable.search_data.vessel.value
+        }
+
+        if (this.table.bookingTable.search_data.search_text) {
+          searchPara.search_text = this.table.bookingTable.search_data.search_text
         }
 
         let response = await this.$http.post(apiUrl + 'search', searchPara)
