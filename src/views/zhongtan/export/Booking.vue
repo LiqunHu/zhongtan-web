@@ -81,6 +81,11 @@
               <i class="fa fa-times"></i>
             </a>
           </Tooltip>
+          <Tooltip content="Download BOOKING List" v-if="row.billlading_state !== 'PBK'">
+            <a href="#" class="btn btn-green btn-icon btn-sm" @click="DownloadBooking(row)">
+              <i class="fa fa-download"></i>
+            </a>
+          </Tooltip>
           <Tooltip content="Request container" v-if="row.billlading_state === 'BK'">
             <a href="#" class="btn btn-primary btn-icon btn-sm" @click="pickUpEmpty(row)">
               <i class="fa fa-dot-circle"></i>
@@ -136,9 +141,12 @@
           <Poptip trigger="hover" width="200">
             <Button type="text" style="text-decoration:underline">{{row.fees.sum_fee}}</Button>
             <template slot="content">
-              TEU Standard: {{row.fees.billlading_teu_standard}} <br/>
-              FEU Standard: {{row.fees.billlading_feu_standard}} <br/>
-              FEU High Cube: {{row.fees.billlading_feu_high_cube}} <br/>
+              TEU Standard: {{row.fees.billlading_teu_standard}}
+              <br>
+              FEU Standard: {{row.fees.billlading_feu_standard}}
+              <br>
+              FEU High Cube: {{row.fees.billlading_feu_high_cube}}
+              <br>
             </template>
           </Poptip>
         </template>
@@ -1481,6 +1489,30 @@ export default {
           this.$commonact.fault(error)
         }
       })
+    },
+    DownloadBooking: async function() {
+      try {
+        let response = await this.$http.request({
+          url: apiUrl + 'downloadBooking',
+          method: 'post',
+          data: {},
+          responseType: 'blob'
+        })
+
+        let blob = response.data
+        let reader = new FileReader()
+        reader.readAsDataURL(blob)
+        reader.onload = e => {
+          let a = document.createElement('a')
+          a.download = "aa.docx"
+          a.href = e.target.result
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+        }
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
     },
     pickUpEmpty: function(row) {
       this.$commonact.confirm('Request container?', async () => {
