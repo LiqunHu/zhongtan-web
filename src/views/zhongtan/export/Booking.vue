@@ -1490,12 +1490,12 @@ export default {
         }
       })
     },
-    DownloadBooking: async function() {
+    DownloadBooking: async function(row) {
       try {
         let response = await this.$http.request({
           url: apiUrl + 'downloadBooking',
           method: 'post',
-          data: {},
+          data: { billlading_id: row.billlading_id },
           responseType: 'blob'
         })
 
@@ -1504,7 +1504,7 @@ export default {
         reader.readAsDataURL(blob)
         reader.onload = e => {
           let a = document.createElement('a')
-          a.download = "aa.docx"
+          a.download = "Booking list for " + row.billlading_no + ".docx"
           a.href = e.target.result
           document.body.appendChild(a)
           a.click()
