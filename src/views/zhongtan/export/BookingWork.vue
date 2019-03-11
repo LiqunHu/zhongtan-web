@@ -495,13 +495,17 @@
             <Option v-for="item in VoyageINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
           </Select>
         </FormItem>
-        <FormItem label="Freight Currency" prop="billlading_freight_currency">
-          <Select v-model="workPara.billlading_freight_currency">
-            <Option v-for="item in pagePara.PayCurrencyINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-          </Select>
+        <FormItem label="CSO" prop="billlading_cso">
+          <Input placeholder="CSO" v-model="workPara.billlading_cso"/>
         </FormItem>
-        <FormItem label="Freight Charge" prop="billlading_freight_charge">
-          <Input placeholder="Freight Charge" v-model="workPara.billlading_freight_charge"/>
+        <FormItem label="TEU standard" prop="billlading_teu_standard">
+          <Input placeholder="TEU standard" v-model="workPara.billlading_teu_standard"/>
+        </FormItem>
+        <FormItem label="FEU standard" prop="billlading_feu_standard">
+          <Input placeholder="FEU standard" v-model="workPara.billlading_feu_standard"/>
+        </FormItem>
+        <FormItem label="FEU high cube" prop="billlading_feu_high_cube">
+          <Input placeholder="FEU high cube" v-model="workPara.billlading_feu_high_cube"/>
         </FormItem>
       </Form>
       <div slot="footer">

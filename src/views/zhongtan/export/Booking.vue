@@ -236,9 +236,6 @@
                 </FormItem>
               </Col>
               <Col offset="3" span="9">
-                <FormItem label="CSO" prop="billlading_cso">
-                  <Input placeholder="CSO" v-model="workPara.billlading_cso"/>
-                </FormItem>
                 <FormItem label="No of Original B/L" prop="billlading_original_num">
                   <Input placeholder="No of Original B/L" v-model="workPara.billlading_original_num"/>
                 </FormItem>
