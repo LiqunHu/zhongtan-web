@@ -132,6 +132,16 @@
             </template>
           </Poptip>
         </template>
+        <template slot-scope="{ row, index }" slot="fees">
+          <Poptip trigger="hover" width="200">
+            <Button type="text" style="text-decoration:underline">{{row.fees.sum_fee}}</Button>
+            <template slot="content">
+              TEU Standard: {{row.fees.billlading_teu_standard}} <br/>
+              FEU Standard: {{row.fees.billlading_feu_standard}} <br/>
+              FEU High Cube: {{row.fees.billlading_feu_high_cube}} <br/>
+            </template>
+          </Poptip>
+        </template>
       </Table>
       <Page class="m-t-10" :total="table.bookingTable.total" :page-size="table.bookingTable.limit" @on-change="getBookingData"/>
     </panel>
@@ -630,6 +640,11 @@ export default {
               width: 120
             },
             {
+              title: 'Fee',
+              slot: 'fees',
+              width: 120
+            },
+            {
               title: 'Loading Port',
               key: 'billlading_loading_port_id',
               render: common.selectRender(this, 'PortINFO'),
@@ -788,6 +803,11 @@ export default {
               width: 120
             },
             {
+              title: 'Fee',
+              slot: 'fees',
+              width: 120
+            },
+            {
               title: 'Loading Port',
               key: 'billlading_loading_port_id',
               render: common.selectRender(this, 'PortINFO'),
@@ -886,6 +906,7 @@ export default {
             'Voyage',
             'Goods',
             'Containers',
+            'Fee',
             'Loading Port',
             'Discharge Port',
             'Delivery Place',
