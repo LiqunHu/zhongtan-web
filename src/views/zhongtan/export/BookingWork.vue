@@ -116,6 +116,11 @@
               <i class="fa fa-times"></i>
             </a>
           </Tooltip>
+          <Tooltip content="Download BOOKING" v-if="row.billlading_state !== 'PBK'">
+            <a href="#" class="btn btn-green btn-icon btn-sm" @click="DownloadBooking(row)">
+              <i class="fa fa-download"></i>
+            </a>
+          </Tooltip>
           <Tooltip content="Request container confirm" v-if="row.billlading_state === 'PA'">
             <a href="#" class="btn btn-primary btn-icon btn-sm" @click="pickUpEmptyConfirmModal(row)">
               <i class="fa fa-dot-circle"></i>
@@ -189,9 +194,12 @@
           <Poptip trigger="hover" width="200">
             <Button type="text" style="text-decoration:underline">{{row.fees.sum_fee}}</Button>
             <template slot="content">
-              TEU Standard: {{row.fees.billlading_teu_standard}} <br/>
-              FEU Standard: {{row.fees.billlading_feu_standard}} <br/>
-              FEU High Cube: {{row.fees.billlading_feu_high_cube}} <br/>
+              TEU Standard: {{row.fees.billlading_teu_standard}}
+              <br>
+              FEU Standard: {{row.fees.billlading_feu_standard}}
+              <br>
+              FEU High Cube: {{row.fees.billlading_feu_high_cube}}
+              <br>
             </template>
           </Poptip>
         </template>
@@ -1516,6 +1524,30 @@ export default {
       this.action = 'modify'
       this.$refs.formBooking.resetFields()
       this.modal.bookingModal = true
+    },
+    DownloadBooking: async function(row) {
+      try {
+        let response = await this.$http.request({
+          url: apiUrl + 'downloadBooking',
+          method: 'post',
+          data: { billlading_id: row.billlading_id },
+          responseType: 'blob'
+        })
+
+        let blob = response.data
+        let reader = new FileReader()
+        reader.readAsDataURL(blob)
+        reader.onload = e => {
+          let a = document.createElement('a')
+          a.download = 'Booking list for ' + row.billlading_no + '.docx'
+          a.href = e.target.result
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+        }
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
     },
     submitBooking: function() {
       this.$refs.formBooking.validate(async valid => {
