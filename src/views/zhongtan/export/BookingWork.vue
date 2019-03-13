@@ -1372,7 +1372,11 @@ export default {
           billlading_vessel_id: [{ required: true, type: 'number', trigger: 'change', message: 'Choose vessel' }],
           billlading_voyage_id: [{ required: true, type: 'number', trigger: 'change', message: 'Choose voyage' }],
           billlading_freight_currency: [{ required: true, trigger: 'change', message: 'Choose Currency' }],
-          billlading_freight_charge: [{ required: true, trigger: 'change', message: 'Enter Freight Charge' }]
+          billlading_freight_charge: [{ required: true, trigger: 'change', message: 'Enter Freight Charge' }],
+          billlading_cso: [{ required: true, trigger: 'change', message: 'Enter CSO' }],
+          billlading_teu_standard: [{ required: true, trigger: 'change', message: 'Enter TEU standard' }],
+          billlading_feu_standard: [{ required: true, trigger: 'change', message: 'Enter FEU standard' }],
+          billlading_feu_high_cube: [{ required: true, trigger: 'change', message: 'Enter FEU high cube' }]
         },
         rulePickUpEmptyConfirmModal: {
           container_manager_id: [{ required: true, type: 'number', trigger: 'change', message: 'Choose Continer Manager' }]
