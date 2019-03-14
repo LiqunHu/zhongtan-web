@@ -1565,11 +1565,11 @@ export default {
     submitLoading: async function() {
       this.$refs.formSubmitLoading.validate(async valid => {
         if (valid) {
-          for (let c of this.table.containerTable.data) {
-            if (c.container_no === '' || c.container_seal_no1 === '') {
-              return this.$Message.error('Please enter Container No. & Seal No.')
-            }
-          }
+          // for (let c of this.table.containerTable.data) {
+          //   if (c.container_no === '' || c.container_seal_no1 === '') {
+          //     return this.$Message.error('Please enter Container No. & Seal No.')
+          //   }
+          // }
           this.workPara.billlading_containers = JSON.parse(JSON.stringify(this.table.containerTable.data))
           this.workPara.files = JSON.parse(JSON.stringify(this.files))
           await this.$http.post(apiUrl + 'submitloading', this.workPara)
