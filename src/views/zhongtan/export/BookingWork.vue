@@ -493,6 +493,24 @@
                 </FormItem>
               </Col>
             </Row>
+            <Divider/>
+            <Row v-if="userInfo.user_service_name === 'ALL'">
+              <Col span="9">
+                <h4 class="text-middle m-b-10">
+                  <b>Fee</b>
+                </h4>
+                <FormItem label="TEU standard" prop="billlading_teu_standard">
+                  <Input placeholder="TEU standard" v-model="workPara.billlading_teu_standard"/>
+                </FormItem>
+                <FormItem label="FEU standard" prop="billlading_feu_standard">
+                  <Input placeholder="FEU standard" v-model="workPara.billlading_feu_standard"/>
+                </FormItem>
+                <FormItem label="FEU high cube" prop="billlading_feu_high_cube">
+                  <Input placeholder="FEU high cube" v-model="workPara.billlading_feu_high_cube"/>
+                </FormItem>
+              </Col>
+              <Col offset="3" span="9"></Col>
+            </Row>
           </Form>
         </vue-scroll>
       </div>
@@ -584,6 +602,7 @@
   </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 import PageOptions from '../../../config/PageOptions.vue'
 const moment = require('moment')
 const common = require('@/lib/common')
@@ -1391,6 +1410,11 @@ export default {
       a: true,
       headers: common.uploadHeaders()
     }
+  },
+  computed: {
+    ...mapState('access', {
+      userInfo: state => state.userInfo
+    })
   },
   created() {
     PageOptions.pageEmpty = false
