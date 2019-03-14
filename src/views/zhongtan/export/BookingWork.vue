@@ -500,13 +500,13 @@
                   <b>Fee</b>
                 </h4>
                 <FormItem label="TEU standard" prop="billlading_teu_standard">
-                  <Input placeholder="TEU standard" v-model="workPara.billlading_teu_standard"/>
+                  <Input placeholder="TEU standard" v-model="workPara.fees.billlading_teu_standard"/>
                 </FormItem>
                 <FormItem label="FEU standard" prop="billlading_feu_standard">
-                  <Input placeholder="FEU standard" v-model="workPara.billlading_feu_standard"/>
+                  <Input placeholder="FEU standard" v-model="workPara.fees.billlading_feu_standard"/>
                 </FormItem>
                 <FormItem label="FEU high cube" prop="billlading_feu_high_cube">
-                  <Input placeholder="FEU high cube" v-model="workPara.billlading_feu_high_cube"/>
+                  <Input placeholder="FEU high cube" v-model="workPara.fees.billlading_feu_high_cube"/>
                 </FormItem>
               </Col>
               <Col offset="3" span="9"></Col>
