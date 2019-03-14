@@ -509,14 +509,14 @@
                 <h4 class="text-middle m-b-10">
                   <b>Fee</b>
                 </h4>
-                <FormItem label="TEU standard" prop="billlading_teu_standard">
-                  <Input placeholder="TEU standard" v-model="workPara.fees.billlading_teu_standard"/>
+                <FormItem label="TEU standard11" prop="billlading_teu_standard_f">
+                  <Input placeholder="TEU standard" v-model="workPara.billlading_teu_standard_f"/>
                 </FormItem>
-                <FormItem label="FEU standard" prop="billlading_feu_standard">
-                  <Input placeholder="FEU standard" v-model="workPara.fees.billlading_feu_standard"/>
+                <FormItem label="FEU standard11" prop="billlading_feu_standard_f">
+                  <Input placeholder="FEU standard" v-model="workPara.billlading_feu_standard_f"/>
                 </FormItem>
-                <FormItem label="FEU high cube" prop="billlading_feu_high_cube">
-                  <Input placeholder="FEU high cube" v-model="workPara.fees.billlading_feu_high_cube"/>
+                <FormItem label="FEU high cube11" prop="billlading_feu_high_cube_f">
+                  <Input placeholder="FEU high cube" v-model="workPara.billlading_feu_high_cube_f"/>
                 </FormItem>
               </Col>
             </Row>
