@@ -464,6 +464,32 @@
           </Col>
         </Row>
         <Row>
+          <Col span="8">
+            <Upload ref="ticts_upload" :headers="headers" type="drag" :on-success="handleTICTSSuccess" action="/api/zhongtan/export/Booking/upload">
+              <div style="padding: 20px 0">
+                <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+                <p>TICTS</p>
+              </div>
+            </Upload>
+          </Col>
+          <Col span="8">
+            <Upload ref="tpa_upload" :headers="headers" type="drag" :on-success="handleTPASuccess" action="/api/zhongtan/export/Booking/upload">
+              <div style="padding: 20px 0">
+                <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+                <p>TPA</p>
+              </div>
+            </Upload>
+          </Col>
+          <Col span="8">
+            <Upload ref="customer_upload" :headers="headers" type="drag" :on-success="handleCUSTOMERSuccess" action="/api/zhongtan/export/Booking/upload">
+              <div style="padding: 20px 0">
+                <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+                <p>CUSTOMER</p>
+              </div>
+            </Upload>
+          </Col>
+        </Row>
+        <Row>
           <Col span="24">
             <h4 class="text-middle m-b-10">
               <b>Container Description</b>
@@ -956,7 +982,7 @@ export default {
             {
               title: 'Type',
               key: 'filetype',
-              width: 100
+              width: 150
             },
             {
               title: 'Name',
@@ -1334,7 +1360,13 @@ export default {
       VoyageINFO: [],
       oldPara: {},
       workPara: {},
-      action: ''
+      action: '',
+      headers: common.uploadHeaders(),
+      files: {
+        ticts: { url: '', name: '' },
+        tpa: { url: '', name: '' },
+        customer: { url: '', name: '' }
+      }
     }
   },
   created() {
@@ -1504,7 +1536,7 @@ export default {
         reader.readAsDataURL(blob)
         reader.onload = e => {
           let a = document.createElement('a')
-          a.download = "Booking list for " + row.billlading_no + ".docx"
+          a.download = 'Booking list for ' + row.billlading_no + '.docx'
           a.href = e.target.result
           document.body.appendChild(a)
           a.click()
@@ -1539,6 +1571,7 @@ export default {
             }
           }
           this.workPara.billlading_containers = JSON.parse(JSON.stringify(this.table.containerTable.data))
+          this.workPara.files = JSON.parse(JSON.stringify(this.files))
           await this.$http.post(apiUrl + 'submitloading', this.workPara)
           this.$Message.success('submit loading success')
           this.getBookingData()
@@ -1560,6 +1593,18 @@ export default {
           this.modal.revertDeclareNumberModal = false
         }
       })
+    },
+    handleTICTSSuccess(res, file, fileList) {
+      this.files.ticts.url = res.info.url
+      this.files.ticts.name = res.info.name
+    },
+    handleTPASuccess(res, file, fileList) {
+      this.files.tpa.url = res.info.url
+      this.files.tpa.name = res.info.name
+    },
+    handleCUSTOMERSuccess(res, file, fileList) {
+      this.files.customer.url = res.info.url
+      this.files.customer.name = res.info.name
     }
   }
 }

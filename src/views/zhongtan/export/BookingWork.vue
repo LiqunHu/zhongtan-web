@@ -1002,7 +1002,7 @@ export default {
             {
               title: 'Type',
               key: 'filetype',
-              width: 100
+              width: 150
             },
             {
               title: 'Name',
