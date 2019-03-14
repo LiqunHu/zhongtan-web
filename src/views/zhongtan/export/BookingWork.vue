@@ -497,6 +497,16 @@
             <Row v-if="userInfo.user_service_name === 'ALL'">
               <Col span="9">
                 <h4 class="text-middle m-b-10">
+                  <b>State</b>
+                </h4>
+                <FormItem label="Status" prop="billlading_state">
+                  <Select placement="top" v-model="workPara.billlading_state">
+                    <Option v-for="item in pagePara.BLSTATUSINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                  </Select>
+                </FormItem>
+              </Col>
+              <Col offset="3" span="9">
+                <h4 class="text-middle m-b-10">
                   <b>Fee</b>
                 </h4>
                 <FormItem label="TEU standard" prop="billlading_teu_standard">
@@ -509,7 +519,6 @@
                   <Input placeholder="FEU high cube" v-model="workPara.fees.billlading_feu_high_cube"/>
                 </FormItem>
               </Col>
-              <Col offset="3" span="9"></Col>
             </Row>
           </Form>
         </vue-scroll>
