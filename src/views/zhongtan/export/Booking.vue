@@ -481,10 +481,10 @@
             </Upload>
           </Col>
           <Col span="8">
-            <Upload ref="custom_upload" :headers="headers" type="drag" :on-success="handleCUSTOMSuccess" action="/api/zhongtan/export/Booking/upload">
+            <Upload ref="customs_upload" :headers="headers" type="drag" :on-success="handleCUSTOMSSuccess" action="/api/zhongtan/export/Booking/upload">
               <div style="padding: 20px 0">
                 <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
-                <p>CUSTOM</p>
+                <p>CUSTOMS</p>
               </div>
             </Upload>
           </Col>
@@ -1365,7 +1365,7 @@ export default {
       files: {
         ticts: { url: '', name: '' },
         tpa: { url: '', name: '' },
-        custom: { url: '', name: '' }
+        customs: { url: '', name: '' }
       }
     }
   },
@@ -1602,9 +1602,9 @@ export default {
       this.files.tpa.url = res.info.url
       this.files.tpa.name = res.info.name
     },
-    handleCUSTOMSuccess(res, file, fileList) {
-      this.files.custom.url = res.info.url
-      this.files.custom.name = res.info.name
+    handleCUSTOMSSuccess(res, file, fileList) {
+      this.files.customs.url = res.info.url
+      this.files.customs.name = res.info.name
     }
   }
 }
