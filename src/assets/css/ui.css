@@ -30,11 +30,15 @@
     background-color: #00a7d0;
   }
   
+  .label-clearance-goods {
+    background-color: #5ac594;
+  }
+
   .label-loading-permission {
-    background-color: #6ee1df;
+    background-color: #00a65a;
   }
   
   .label-bill-lading {
-    background-color: #39cccc;
+    background-color: #008d4c;
   }
   

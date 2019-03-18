@@ -136,12 +136,12 @@
               <i class="fa fa-times"></i>
             </a>
           </Tooltip>
-          <Tooltip content="Revert Declare Number" v-if="row.billlading_state === 'SC'">
+          <Tooltip content="Revert Declare Number" v-if="row.billlading_state === 'RD'">
             <a href="#" class="btn btn-primary btn-icon btn-sm" @click="revertDeclareNumberModal(row)">
               <i class="fa fa-dot-circle"></i>
             </a>
           </Tooltip>
-          <Tooltip content="Loading Permission" v-if="row.billlading_state === 'RD'">
+          <Tooltip content="Loading Permission" v-if="row.billlading_state === 'CG'">
             <a href="#" class="btn btn-primary btn-icon btn-sm" @click="loadingPermissionModal(row)">
               <i class="fa fa-dot-circle"></i>
             </a>

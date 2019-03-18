@@ -96,6 +96,11 @@
               <i class="fa fa-dot-circle"></i>
             </a>
           </Tooltip>
+          <Tooltip content="Clearance of Goods" v-if="row.billlading_state === 'RD'">
+            <a href="#" class="btn btn-primary btn-icon btn-sm" @click="clearanceOfGoods(row)">
+              <i class="fa fa-dot-circle"></i>
+            </a>
+          </Tooltip>
         </template>
         <template slot-scope="{ row, index }" slot="files">
           <Poptip trigger="hover" width="555">
@@ -1557,6 +1562,17 @@ export default {
           this.$Message.success('submit loading success')
           this.getBookingData()
           this.modal.submitLoadingModal = false
+        }
+      })
+    },
+    clearanceOfGoods: function(row) {
+      this.$commonact.confirm('Clearance of goods?', async () => {
+        try {
+          await this.$http.post(apiUrl + 'clearanceOfGoods', { billlading_id: row.billlading_id })
+          this.$Message.success('Successful operation')
+          this.getBookingData()
+        } catch (error) {
+          this.$commonact.fault(error)
         }
       })
     },
