@@ -986,7 +986,7 @@ export default {
           search_data: {
             date: [
               moment()
-                .subtract(10, 'days')
+                .subtract(30, 'days')
                 .format('YYYY-MM-DD'),
               moment().format('YYYY-MM-DD')
             ]
