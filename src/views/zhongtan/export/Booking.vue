@@ -36,6 +36,7 @@
                     <CheckboxGroup v-model="table.bookingTable.ColumnsChecked" @on-change="changeTableColumns">
                       <Checkbox label="Book Date" class="check-item"></Checkbox>
                       <Checkbox label="Files" class="check-item"></Checkbox>
+                      <Checkbox label="Declare Number" class="check-item"></Checkbox>
                       <Checkbox label="Vessel" class="check-item"></Checkbox>
                       <Checkbox label="Voyage" class="check-item"></Checkbox>
                       <Checkbox label="Goods" class="check-item"></Checkbox>
@@ -673,6 +674,11 @@ export default {
               width: 100
             },
             {
+              title: 'Declare Number',
+              key: 'billlading_declare_number',
+              width: 120
+            },
+            {
               title: 'Vessel',
               key: 'billlading_vessel_id',
               render: common.selectRender(this, 'VesselINFO'),
@@ -836,6 +842,11 @@ export default {
               width: 100
             },
             {
+              title: 'Declare Number',
+              key: 'billlading_declare_number',
+              width: 120
+            },
+            {
               title: 'Vessel',
               key: 'billlading_vessel_id',
               render: common.selectRender(this, 'VesselINFO'),
@@ -956,6 +967,7 @@ export default {
           ColumnsChecked: [
             'Book Date',
             'Files',
+            'Declare Number',
             'Vessel',
             'Voyage',
             'Goods',
