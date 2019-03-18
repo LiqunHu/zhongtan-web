@@ -1,44 +1,43 @@
 .ivu-spin-fix {
-    background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .label-booking {
-    background-color: #81b5d4;
-  }
-  
-  .label-pickup-apply {
-    background-color: #3c8dbc;
-  }
-  
-  .label-pickup-confirm {
-    background-color: #357ca5;
-  }
-  
-  .label-submit-loading {
-    background-color: #5ad6f5;
-  }
-  
-  .label-reject-loading {
-    background-color: #f39c12;
-  }
-  
-  .label-submit-customs {
-    background-color: #00c0ef;
-  }
-  
-  .label-revert-declare {
-    background-color: #00a7d0;
-  }
-  
-  .label-clearance-goods {
-    background-color: #5ac594;
-  }
+  background-color: #81b5d4;
+}
 
-  .label-loading-permission {
-    background-color: #00a65a;
-  }
-  
-  .label-bill-lading {
-    background-color: #008d4c;
-  }
-  
+.label-pickup-apply {
+  background-color: #3c8dbc;
+}
+
+.label-pickup-confirm {
+  background-color: #357ca5;
+}
+
+.label-submit-loading {
+  background-color: #5ad6f5;
+}
+
+.label-reject-loading {
+  background-color: #f39c12;
+}
+
+.label-submit-customs {
+  background-color: #00c0ef;
+}
+
+.label-revert-declare {
+  background-color: #00a7d0;
+}
+
+.label-clearance-goods {
+  background-color: #5ac594;
+}
+
+.label-loading-permission {
+  background-color: #00a65a;
+}
+
+.label-shipping-instruction {
+  background-color: #008d4c;
+}
