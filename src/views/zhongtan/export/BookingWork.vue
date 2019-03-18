@@ -137,12 +137,12 @@
               <i class="fa fa-times"></i>
             </a>
           </Tooltip>
-          <Tooltip content="Revert Declare Number" v-if="row.billlading_state === 'SC'">
-            <a href="#" class="btn btn-primary btn-icon btn-sm" @click="revertDeclareNumberModal(row)">
+          <Tooltip content="Feedback Declare Number" v-if="row.billlading_state === 'SC'">
+            <a href="#" class="btn btn-primary btn-icon btn-sm" @click="feedbackDeclareNumberModal(row)">
               <i class="fa fa-dot-circle"></i>
             </a>
           </Tooltip>
-          <Tooltip content="Loading Permission" v-if="row.billlading_state === 'CG'">
+          <Tooltip content="Loading Permission" v-if="row.billlading_state === 'CA'">
             <a href="#" class="btn btn-primary btn-icon btn-sm" @click="loadingPermissionModal(row)">
               <i class="fa fa-dot-circle"></i>
             </a>
@@ -588,15 +588,15 @@
         <Button type="primary" size="large" @click="rejectLoading">Submit</Button>
       </div>
     </Modal>
-    <Modal v-model="modal.revertDeclareNumberModal" title="Revert Declare Number">
+    <Modal v-model="modal.feedbackDeclareNumberModal" title="Revert Declare Number">
       <Form :model="workPara" :label-width="120" :rules="formRule.ruleRevertDeclareNumberModal" ref="formRevertDeclareNumber">
         <FormItem label="Declare Number" prop="billlading_declare_number">
           <Input :rows="2" placeholder="Declare Number" v-model="workPara.billlading_declare_number"/>
         </FormItem>
       </Form>
       <div slot="footer">
-        <Button type="text" size="large" @click="modal.revertDeclareNumberModal=false">Cancel</Button>
-        <Button type="primary" size="large" @click="revertDeclareNumber">Submit</Button>
+        <Button type="text" size="large" @click="modal.feedbackDeclareNumberModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="feedbackDeclareNumber">Submit</Button>
       </div>
     </Modal>
     <Modal v-model="modal.loadingPermissionModal" title="Loading Permission">
@@ -644,7 +644,7 @@ export default {
         pickUpEmptyConfirmModal: false,
         loadingPermissionModal: false,
         rejectLoadingModal: false,
-        revertDeclareNumberModal: false
+        feedbackDeclareNumberModal: false
       },
       table: {
         bookingTable: {
@@ -698,6 +698,7 @@ export default {
             {
               title: 'Declare Number',
               key: 'billlading_declare_number',
+              render: common.tooltipRender(),
               width: 120
             },
             {
@@ -871,6 +872,7 @@ export default {
             {
               title: 'Declare Number',
               key: 'billlading_declare_number',
+              render: common.tooltipRender(),
               width: 120
             },
             {
@@ -1723,18 +1725,18 @@ export default {
         }
       })
     },
-    revertDeclareNumberModal: function(row) {
+    feedbackDeclareNumberModal: function(row) {
       this.workPara = JSON.parse(JSON.stringify(row))
       this.$refs.formRevertDeclareNumber.resetFields()
-      this.modal.revertDeclareNumberModal = true
+      this.modal.feedbackDeclareNumberModal = true
     },
-    revertDeclareNumber: function() {
+    feedbackDeclareNumber: function() {
       this.$refs.formRevertDeclareNumber.validate(async valid => {
         if (valid) {
-          await this.$http.post(apiUrl + 'revertDeclareNumber', this.workPara)
-          this.$Message.success('Revert Declare Number')
+          await this.$http.post(apiUrl + 'feedbackDeclareNumber', this.workPara)
+          this.$Message.success('Feedback Declare Number')
           this.getBookingData()
-          this.modal.revertDeclareNumberModal = false
+          this.modal.feedbackDeclareNumberModal = false
         }
       })
     },

@@ -97,12 +97,12 @@
               <i class="fa fa-dot-circle"></i>
             </a>
           </Tooltip>
-          <Tooltip content="Clearance of Goods" v-if="row.billlading_state === 'RD'">
-            <a href="#" class="btn btn-primary btn-icon btn-sm" @click="clearanceOfGoods(row)">
+          <Tooltip content="Clearance Approval" v-if="row.billlading_state === 'FD'">
+            <a href="#" class="btn btn-primary btn-icon btn-sm" @click="clearanceApproval(row)">
               <i class="fa fa-dot-circle"></i>
             </a>
           </Tooltip>
-          <Tooltip content="Shipping Instruction" v-if="row.billlading_state === 'CG'">
+          <Tooltip content="Shipping Instruction" v-if="row.billlading_state === 'LP'">
             <a href="#" class="btn btn-primary btn-icon btn-sm" @click="shippingInstructionModal(row)">
               <i class="fa fa-dot-circle"></i>
             </a>
@@ -676,6 +676,7 @@ export default {
             {
               title: 'Declare Number',
               key: 'billlading_declare_number',
+              render: common.tooltipRender(),
               width: 120
             },
             {
@@ -844,6 +845,7 @@ export default {
             {
               title: 'Declare Number',
               key: 'billlading_declare_number',
+              render: common.tooltipRender(),
               width: 120
             },
             {
@@ -1609,10 +1611,10 @@ export default {
         }
       })
     },
-    clearanceOfGoods: function(row) {
+    clearanceApproval: function(row) {
       this.$commonact.confirm('Clearance of goods?', async () => {
         try {
-          await this.$http.post(apiUrl + 'clearanceOfGoods', { billlading_id: row.billlading_id })
+          await this.$http.post(apiUrl + 'clearanceApproval', { billlading_id: row.billlading_id })
           this.$Message.success('Successful operation')
           this.getBookingData()
         } catch (error) {
