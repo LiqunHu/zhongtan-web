@@ -131,12 +131,12 @@
               <i class="fa fa-dot-circle"></i>
             </a>
           </Tooltip>
-          <Tooltip content="Reject Loading List" v-if="row.billlading_state === 'SC'">
+          <Tooltip content="Reject Loading List" v-if="row.billlading_state === 'SL'">
             <a href="#" class="btn btn-yellow btn-icon btn-sm" @click="rejectLoadingModal(row)">
               <i class="fa fa-times"></i>
             </a>
           </Tooltip>
-          <Tooltip content="Revert Declare Number" v-if="row.billlading_state === 'RD'">
+          <Tooltip content="Revert Declare Number" v-if="row.billlading_state === 'SC'">
             <a href="#" class="btn btn-primary btn-icon btn-sm" @click="revertDeclareNumberModal(row)">
               <i class="fa fa-dot-circle"></i>
             </a>
