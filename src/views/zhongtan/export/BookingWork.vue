@@ -131,7 +131,7 @@
               <i class="fa fa-dot-circle"></i>
             </a>
           </Tooltip>
-          <Tooltip content="Reject Loading List" v-if="row.billlading_state === 'SL'">
+          <Tooltip content="Reject Loading List" v-if="row.billlading_state === 'SC'">
             <a href="#" class="btn btn-yellow btn-icon btn-sm" @click="rejectLoadingModal(row)">
               <i class="fa fa-times"></i>
             </a>
