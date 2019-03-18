@@ -1680,6 +1680,21 @@ export default {
   padding-right: 2px;
 }
 
+.upload-list {
+  display: inline-block;
+  width: 60px;
+  height: 60px;
+  text-align: center;
+  line-height: 60px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #fff;
+  position: relative;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  margin-right: 4px;
+}
+
 .check-item {
   padding: 2px 8px;
   justify-content: flex-start;
