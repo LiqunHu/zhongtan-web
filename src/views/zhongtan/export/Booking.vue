@@ -107,7 +107,7 @@
               <i class="fa fa-dot-circle"></i>
             </a>
           </Tooltip>
-          <Tooltip content="Submit Bill Of Lading" v-if="row.billlading_state === 'FBD'">
+          <Tooltip content="Submit Bill Of Lading" v-if="row.billlading_state === 'FBD' || row.billlading_state === 'RBL'">
             <a href="#" class="btn btn-primary btn-icon btn-sm" @click="submitBillladingModal(row)">
               <i class="fa fa-dot-circle"></i>
             </a>

@@ -157,6 +157,11 @@
               <i class="fa fa-dot-circle"></i>
             </a>
           </Tooltip>
+          <Tooltip content="Reject Billlading" v-if="row.billlading_state === 'SBL'">
+            <a href="#" class="btn btn-danger btn-icon btn-sm" @click="rejectBillladingModal(row)">
+              <i class="fa fa-window-close"></i>
+            </a>
+          </Tooltip>
         </template>
         <template slot-scope="{ row, index }" slot="customerINFO">
           <Poptip trigger="hover" width="300">
@@ -661,6 +666,17 @@
         <Button type="primary" size="large" @click="feedbackBLDraft">Submit</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.rejectBillladingModal" title="Reject Bill Of Lading">
+      <Form :model="workPara" :label-width="100">
+        <FormItem label="Reason" prop="reject_reason">
+          <Input type="textarea" :rows="4" placeholder="Remark" v-model="workPara.uploadfile_remark"/>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.rejectBillladingModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="rejectBilllading">Submit</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -681,7 +697,8 @@ export default {
         loadingPermissionModal: false,
         rejectLoadingModal: false,
         feedbackDeclareNumberModal: false,
-        feedbackBLDraftModal: false
+        feedbackBLDraftModal: false,
+        rejectBillladingModal: false
       },
       table: {
         bookingTable: {
@@ -1824,6 +1841,21 @@ export default {
         this.$Message.success('submit success')
         this.getBookingData()
         this.modal.feedbackBLDraftModal = false
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
+    rejectBillladingModal: async function(row) {
+      this.workPara = JSON.parse(JSON.stringify(row))
+      this.workPara.reject_reason = ''
+      this.modal.rejectBillladingModal = true
+    },
+    rejectBilllading: async function() {
+      try {
+        await this.$http.post(apiUrl + 'rejectBilllading', this.workPara)
+        this.$Message.success('reject success')
+        this.getBookingData()
+        this.modal.rejectBillladingModal = false
       } catch (error) {
         this.$commonact.fault(error)
       }
