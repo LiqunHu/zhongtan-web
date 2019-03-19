@@ -152,6 +152,11 @@
               <i class="fa fa-dot-circle"></i>
             </a>
           </Tooltip>
+          <Tooltip content="Send CDS" v-if="row.billlading_state === 'SI'">
+            <a href="#" class="btn btn-primary btn-icon btn-sm" @click="sendCDS(row)">
+              <i class="fa fa-dot-circle"></i>
+            </a>
+          </Tooltip>
         </template>
         <template slot-scope="{ row, index }" slot="customerINFO">
           <Poptip trigger="hover" width="300">
