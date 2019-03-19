@@ -107,6 +107,11 @@
               <i class="fa fa-dot-circle"></i>
             </a>
           </Tooltip>
+          <Tooltip content="Submit Bill Of Lading" v-if="row.billlading_state === 'FBD'">
+            <a href="#" class="btn btn-primary btn-icon btn-sm" @click="submitBillladingModal(row)">
+              <i class="fa fa-dot-circle"></i>
+            </a>
+          </Tooltip>
         </template>
         <template slot-scope="{ row, index }" slot="files">
           <Poptip trigger="hover" width="555">
@@ -609,6 +614,39 @@
       <div slot="footer">
         <Button type="text" size="large" @click="modal.shippingInstructionModal=false">Cancel</Button>
         <Button type="primary" size="large" @click="shippingInstruction">Submit</Button>
+      </div>
+    </Modal>
+    <Modal v-model="modal.submitBillladingModal" title="Submit Bill Of Lading">
+      <Form :model="workPara" :label-width="100">
+        <FormItem label="Remark" prop="uploadfile_remark">
+          <Input type="textarea" :rows="4" placeholder="Remark" v-model="workPara.uploadfile_remark"/>
+        </FormItem>
+        <FormItem label="Files">
+          <div v-for="f in files.fileList" v-bind:key="f.name" class="upload-list">
+            <Icon type="ios-document" size="60"/>
+          </div>
+          <Upload
+            ref="sbupload"
+            :headers="headers"
+            :show-upload-list="false"
+            :on-success="handleSBSuccess"
+            :format="['xlsx']"
+            :max-size="4096"
+            :on-format-error="handleFormatError"
+            :on-exceeded-size="handleMaxSize"
+            type="drag"
+            action="/api/zhongtan/export/Booking/upload"
+            style="display: inline-block;width:58px;"
+          >
+            <div style="width: 58px;height:58px;line-height: 58px;">
+              <Icon type="md-add" size="20"></Icon>
+            </div>
+          </Upload>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.submitBillladingModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="submitBilllading">Submit</Button>
       </div>
     </Modal>
   </div>
@@ -1641,6 +1679,31 @@ export default {
       } catch (error) {
         this.$commonact.fault(error)
       }
+    },
+    submitBillladingModal: function(row) {
+      this.workPara = JSON.parse(JSON.stringify(row))
+      this.files.fileList = []
+      this.$refs.sbupload.clearFiles()
+      this.modal.submitBillladingModal = true
+    },
+    submitBilllading: async function() {
+      try {
+        if (this.files.fileList.length < 1) {
+          return this.$Message.error('Please upload Bill Of Lading')
+        }
+        this.workPara.bl_files = this.files.fileList
+        await this.$http.post(apiUrl + 'submitBilllading', this.workPara)
+        this.$Message.success('submit success')
+        this.getBookingData()
+        this.modal.submitBillladingModal = false
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
+    handleSBSuccess(res, file, fileList) {
+      file.url = res.info.url
+      file.name = res.info.name
+      this.files.fileList = JSON.parse(JSON.stringify(this.$refs.sbupload.fileList))
     },
     handleTICTSSuccess(res, file, fileList) {
       this.files.ticts.url = res.info.url

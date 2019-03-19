@@ -49,3 +49,15 @@
 .label-feedback-bl-draft {
   background-color: #39cccc;
 }
+
+.label-submit-billlading {
+  background-color: #30bbbb;
+}
+
+.label-reject-billlading {
+  background-color: #ff851b;
+}
+
+.label-approve-billlading {
+  background-color: #555299;
+}
