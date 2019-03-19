@@ -162,6 +162,11 @@
               <i class="fa fa-window-close"></i>
             </a>
           </Tooltip>
+          <Tooltip content="Approve Billlading" v-if="row.billlading_state === 'SBL'">
+            <a href="#" class="btn btn-primary btn-icon btn-sm" @click="approveBilllading(row)">
+              <i class="fa fa-dot-circle"></i>
+            </a>
+          </Tooltip>
         </template>
         <template slot-scope="{ row, index }" slot="customerINFO">
           <Poptip trigger="hover" width="300">
@@ -1859,6 +1864,17 @@ export default {
       } catch (error) {
         this.$commonact.fault(error)
       }
+    },
+    approveBilllading: async function(row) {
+      this.$commonact.confirm('Approve Billlading?', async () => {
+        try {
+          await this.$http.post(apiUrl + 'approveBilllading', { billlading_id: row.billlading_id })
+          this.$Message.success('approve success')
+          this.getBookingData()
+        } catch (error) {
+          this.$commonact.fault(error)
+        }
+      })
     },
     handleSuccess(res, file, fileList) {
       file.url = res.info.url
