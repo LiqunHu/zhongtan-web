@@ -152,8 +152,8 @@
               <i class="fa fa-dot-circle"></i>
             </a>
           </Tooltip>
-          <Tooltip content="Send CDS" v-if="row.billlading_state === 'SI'">
-            <a href="#" class="btn btn-primary btn-icon btn-sm" @click="sendCDS(row)">
+          <Tooltip content="Feedback Billlading Draft" v-if="row.billlading_state === 'CP'">
+            <a href="#" class="btn btn-primary btn-icon btn-sm" @click="feedbackBLDraftModal(row)">
               <i class="fa fa-dot-circle"></i>
             </a>
           </Tooltip>
@@ -635,6 +635,32 @@
         <Button type="primary" size="large" @click="loadingPermission">Submit</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.feedbackBLDraftModal" title="Billlading Draft">
+      <div v-for="f in files" v-bind:key="f.name" class="upload-list">
+        <Icon type="ios-document" size="60"/>
+      </div>
+      <Upload
+        ref="blupload"
+        :headers="headers"
+        :show-upload-list="false"
+        :on-success="handleBLSuccess"
+        :format="['pdf']"
+        :max-size="4096"
+        :on-format-error="handleFormatError"
+        :on-exceeded-size="handleMaxSize"
+        type="drag"
+        action="/api/zhongtan/export/BookingWork/upload"
+        style="display: inline-block;width:58px;"
+      >
+        <div style="width: 58px;height:58px;line-height: 58px;">
+          <Icon type="md-add" size="20"></Icon>
+        </div>
+      </Upload>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.feedbackBLDraftModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="feedbackBLDraft">Submit</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -654,7 +680,8 @@ export default {
         pickUpEmptyConfirmModal: false,
         loadingPermissionModal: false,
         rejectLoadingModal: false,
-        feedbackDeclareNumberModal: false
+        feedbackDeclareNumberModal: false,
+        feedbackBLDraftModal: false
       },
       table: {
         bookingTable: {
@@ -1781,10 +1808,35 @@ export default {
         }
       })
     },
+    feedbackBLDraftModal: function(row) {
+      this.workPara = JSON.parse(JSON.stringify(row))
+      this.files = []
+      this.$refs.blupload.clearFiles()
+      this.modal.feedbackBLDraftModal = true
+    },
+    feedbackBLDraft: async function() {
+      try {
+        if (this.files.length < 1) {
+          return this.$Message.error('Please upload Billlading Draft')
+        }
+        this.workPara.bl_files = this.files
+        await this.$http.post(apiUrl + 'feedbackBLDraft', this.workPara)
+        this.$Message.success('submit success')
+        this.getBookingData()
+        this.modal.feedbackBLDraftModal = false
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
     handleSuccess(res, file, fileList) {
       file.url = res.info.url
       file.name = res.info.name
       this.files = this.$refs.upload.fileList
+    },
+    handleBLSuccess(res, file, fileList) {
+      file.url = res.info.url
+      file.name = res.info.name
+      this.files = this.$refs.blupload.fileList
     },
     handleFormatError(file) {
       this.$Notice.warning({
