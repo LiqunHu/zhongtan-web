@@ -147,6 +147,11 @@
               <i class="fa fa-dot-circle"></i>
             </a>
           </Tooltip>
+          <Tooltip content="Send CDS" v-if="row.billlading_state === 'SI'">
+            <a href="#" class="btn btn-primary btn-icon btn-sm" @click="sendCDS(row)">
+              <i class="fa fa-dot-circle"></i>
+            </a>
+          </Tooltip>
         </template>
         <template slot-scope="{ row, index }" slot="customerINFO">
           <Poptip trigger="hover" width="300">
@@ -1759,6 +1764,17 @@ export default {
       } catch (error) {
         this.$commonact.fault(error)
       }
+    },
+    sendCDS: async function(row) {
+      this.$commonact.confirm('Send CDS?', async () => {
+        try {
+          await this.$http.post(apiUrl + 'sendCDS', { billlading_id: row.billlading_id })
+          this.$Message.success('send CDS success')
+          this.getBookingData()
+        } catch (error) {
+          this.$commonact.fault(error)
+        }
+      })
     },
     handleSuccess(res, file, fileList) {
       file.url = res.info.url
