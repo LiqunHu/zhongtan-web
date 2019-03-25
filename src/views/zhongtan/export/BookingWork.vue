@@ -654,7 +654,7 @@
         :headers="headers"
         :show-upload-list="false"
         :on-success="handleBLSuccess"
-        :format="['xlsx']"
+        :format="['pdf']"
         :max-size="4096"
         :on-format-error="handleFormatError"
         :on-exceeded-size="handleMaxSize"
