@@ -157,6 +157,11 @@
               <i class="fa fa-dot-circle"></i>
             </a>
           </Tooltip>
+          <Tooltip content="Generate Invoice" v-if="row.billlading_state === 'FBD'">
+            <a href="#" class="btn btn-success btn-icon btn-sm" @click="generateInvoiceModal(row)">
+              <i class="fa fa-money-bill-alt"></i>
+            </a>
+          </Tooltip>
         </template>
         <template slot-scope="{ row, index }" slot="customerINFO">
           <Poptip trigger="hover" width="300">
@@ -668,6 +673,35 @@
         <Button type="primary" size="large" @click="feedbackBLDraft">Submit</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.generateInvoiceModal" title="Generate Invoice">
+      <Form :model="workPara" :label-width="150">
+        <h4 class="text-middle m-b-10">
+          <b>Invoice</b>
+        </h4>
+        <FormItem label="FREIGHT" prop="billlading_invoice_freight">
+          <Input placeholder="FREIGHT" v-model="workPara.invoice_freight"/>
+        </FormItem>
+        <FormItem label="B/LANDING" prop="billlading_invoice_blanding">
+          <Input placeholder="B/LANDING" v-model="workPara.invoice_blanding"/>
+        </FormItem>
+        <FormItem label="TASAC" prop="billlading_invoice_tasac">
+          <Input placeholder="TASAC" v-model="workPara.invoice_tasac"/>
+        </FormItem>
+        <FormItem label="AMMENDMENT FEE" prop="billlading_invoice_ammendment">
+          <Input placeholder="AMMENDMENT FEE" v-model="workPara.invoice_ammendment"/>
+        </FormItem>
+        <FormItem label="ISP" prop="billlading_invoice_isp">
+          <Input placeholder="ISP" v-model="workPara.invoice_isp"/>
+        </FormItem>
+        <FormItem label="SURCHAGE" prop="billlading_invoice_surchage">
+          <Input placeholder="SURCHAGE" v-model="workPara.invoice_surchage"/>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.generateInvoiceModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="generateInvoice">Submit</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -688,7 +722,8 @@ export default {
         loadingPermissionModal: false,
         rejectLoadingModal: false,
         feedbackDeclareNumberModal: false,
-        feedbackBLDraftModal: false
+        feedbackBLDraftModal: false,
+        generateInvoiceModal: false
       },
       table: {
         bookingTable: {
@@ -1831,6 +1866,20 @@ export default {
         this.$Message.success('submit success')
         this.getBookingData()
         this.modal.feedbackBLDraftModal = false
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
+    generateInvoiceModal: async function(row) {
+      this.workPara = JSON.parse(JSON.stringify(row))
+      this.modal.generateInvoiceModal = true
+    },
+    generateInvoice: async function() {
+      try {
+        await this.$http.post(apiUrl + 'generateInvoice', this.workPara)
+        this.$Message.success('submit success')
+        this.getBookingData()
+        this.modal.loadingPermissionModal = false
       } catch (error) {
         this.$commonact.fault(error)
       }

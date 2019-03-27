@@ -61,6 +61,9 @@
         <FormItem label="ETA Date" prop="voyage_eta_date">
           <DatePicker type="date" v-model="workPara.voyage_eta_date"></DatePicker>
         </FormItem>
+        <FormItem label="ATD Date" prop="voyage_atd_date">
+          <DatePicker type="date" v-model="workPara.voyage_atd_date"></DatePicker>
+        </FormItem>
       </Form>
       <div slot="footer">
         <Button type="text" size="large" @click="modal.voyageModal=false">Cancel</Button>
@@ -99,6 +102,10 @@ export default {
             {
               title: 'ETA DATE',
               key: 'voyage_eta_date'
+            },
+            {
+              title: 'ATD DATE',
+              key: 'voyage_atd_date'
             },
             {
               title: 'Action',
