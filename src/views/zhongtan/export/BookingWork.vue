@@ -152,18 +152,8 @@
               <i class="fa fa-dot-circle"></i>
             </a>
           </Tooltip>
-          <Tooltip content="Feedback Billlading Draft" v-if="row.billlading_state === 'CP'">
+          <Tooltip content="Feedback Billlading Draft" v-if="row.billlading_state === 'CP'||row.billlading_state === 'FBD'">
             <a href="#" class="btn btn-primary btn-icon btn-sm" @click="feedbackBLDraftModal(row)">
-              <i class="fa fa-dot-circle"></i>
-            </a>
-          </Tooltip>
-          <Tooltip content="Reject Billlading" v-if="row.billlading_state === 'SBL'">
-            <a href="#" class="btn btn-danger btn-icon btn-sm" @click="rejectBillladingModal(row)">
-              <i class="fa fa-window-close"></i>
-            </a>
-          </Tooltip>
-          <Tooltip content="Approve Billlading" v-if="row.billlading_state === 'SBL'">
-            <a href="#" class="btn btn-primary btn-icon btn-sm" @click="approveBilllading(row)">
               <i class="fa fa-dot-circle"></i>
             </a>
           </Tooltip>
@@ -646,40 +636,36 @@
       </div>
     </Modal>
     <Modal v-model="modal.feedbackBLDraftModal" title="Billlading Draft">
-      <div v-for="f in files" v-bind:key="f.name" class="upload-list">
-        <Icon type="ios-document" size="60"/>
-      </div>
-      <Upload
-        ref="blupload"
-        :headers="headers"
-        :show-upload-list="false"
-        :on-success="handleBLSuccess"
-        :format="['pdf']"
-        :max-size="4096"
-        :on-format-error="handleFormatError"
-        :on-exceeded-size="handleMaxSize"
-        type="drag"
-        action="/api/zhongtan/export/BookingWork/upload"
-        style="display: inline-block;width:58px;"
-      >
-        <div style="width: 58px;height:58px;line-height: 58px;">
-          <Icon type="md-add" size="20"></Icon>
-        </div>
-      </Upload>
-      <div slot="footer">
-        <Button type="text" size="large" @click="modal.feedbackBLDraftModal=false">Cancel</Button>
-        <Button type="primary" size="large" @click="feedbackBLDraft">Submit</Button>
-      </div>
-    </Modal>
-    <Modal v-model="modal.rejectBillladingModal" title="Reject Bill Of Lading">
       <Form :model="workPara" :label-width="100">
-        <FormItem label="Reason" prop="reject_reason">
+        <FormItem label="Remark" prop="uploadfile_remark">
           <Input type="textarea" :rows="4" placeholder="Remark" v-model="workPara.uploadfile_remark"/>
+        </FormItem>
+        <FormItem label="Files">
+          <div v-for="f in files" v-bind:key="f.name" class="upload-list">
+            <Icon type="ios-document" size="60"/>
+          </div>
+          <Upload
+            ref="blupload"
+            :headers="headers"
+            :show-upload-list="false"
+            :on-success="handleBLSuccess"
+            :format="['pdf']"
+            :max-size="4096"
+            :on-format-error="handleFormatError"
+            :on-exceeded-size="handleMaxSize"
+            type="drag"
+            action="/api/zhongtan/export/BookingWork/upload"
+            style="display: inline-block;width:58px;"
+          >
+            <div style="width: 58px;height:58px;line-height: 58px;">
+              <Icon type="md-add" size="20"></Icon>
+            </div>
+          </Upload>
         </FormItem>
       </Form>
       <div slot="footer">
-        <Button type="text" size="large" @click="modal.rejectBillladingModal=false">Cancel</Button>
-        <Button type="primary" size="large" @click="rejectBilllading">Submit</Button>
+        <Button type="text" size="large" @click="modal.feedbackBLDraftModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="feedbackBLDraft">Submit</Button>
       </div>
     </Modal>
   </div>
@@ -702,8 +688,7 @@ export default {
         loadingPermissionModal: false,
         rejectLoadingModal: false,
         feedbackDeclareNumberModal: false,
-        feedbackBLDraftModal: false,
-        rejectBillladingModal: false
+        feedbackBLDraftModal: false
       },
       table: {
         bookingTable: {
@@ -1849,32 +1834,6 @@ export default {
       } catch (error) {
         this.$commonact.fault(error)
       }
-    },
-    rejectBillladingModal: async function(row) {
-      this.workPara = JSON.parse(JSON.stringify(row))
-      this.workPara.reject_reason = ''
-      this.modal.rejectBillladingModal = true
-    },
-    rejectBilllading: async function() {
-      try {
-        await this.$http.post(apiUrl + 'rejectBilllading', this.workPara)
-        this.$Message.success('reject success')
-        this.getBookingData()
-        this.modal.rejectBillladingModal = false
-      } catch (error) {
-        this.$commonact.fault(error)
-      }
-    },
-    approveBilllading: async function(row) {
-      this.$commonact.confirm('Approve Billlading?', async () => {
-        try {
-          await this.$http.post(apiUrl + 'approveBilllading', { billlading_id: row.billlading_id })
-          this.$Message.success('approve success')
-          this.getBookingData()
-        } catch (error) {
-          this.$commonact.fault(error)
-        }
-      })
     },
     handleSuccess(res, file, fileList) {
       file.url = res.info.url
