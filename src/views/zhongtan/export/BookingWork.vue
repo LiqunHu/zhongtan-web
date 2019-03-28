@@ -117,7 +117,7 @@
               <i class="fa fa-times"></i>
             </a>
           </Tooltip>
-          <Tooltip content="Download BOOKING APPLICATION" v-if="row.billlading_state !== 'PBK'">
+          <Tooltip content="Download BOOKING APPLICATION" v-if="row.billlading_state !== 'PBK' && row.billlading_state !== 'PS' && row.billlading_state !== 'FBD' && row.billlading_state !== 'CP' && row.billlading_state !== 'SI'">
             <a href="#" class="btn btn-green btn-icon btn-sm" @click="DownloadBooking(row)">
               <i class="fa fa-download"></i>
             </a>
@@ -674,27 +674,27 @@
       </div>
     </Modal>
     <Modal v-model="modal.generateInvoiceModal" title="Generate Invoice">
-      <Form :model="workPara" :label-width="150">
+      <Form :model="workPara" :label-width="150" :rules="formRule.ruleGenerateInvoiceModal" ref="generateInvoice">
         <h4 class="text-middle m-b-10">
           <b>Invoice</b>
         </h4>
         <FormItem label="FREIGHT" prop="billlading_invoice_freight">
-          <Input placeholder="FREIGHT" v-model="workPara.invoice_freight"/>
+          <Input placeholder="FREIGHT" v-model="workPara.billlading_invoice_freight"/>
         </FormItem>
         <FormItem label="B/LANDING" prop="billlading_invoice_blanding">
-          <Input placeholder="B/LANDING" v-model="workPara.invoice_blanding"/>
+          <Input placeholder="B/LANDING" v-model="workPara.billlading_invoice_blanding"/>
         </FormItem>
         <FormItem label="TASAC" prop="billlading_invoice_tasac">
-          <Input placeholder="TASAC" v-model="workPara.invoice_tasac"/>
+          <Input placeholder="TASAC" v-model="workPara.billlading_invoice_tasac"/>
         </FormItem>
         <FormItem label="AMMENDMENT FEE" prop="billlading_invoice_ammendment">
-          <Input placeholder="AMMENDMENT FEE" v-model="workPara.invoice_ammendment"/>
+          <Input placeholder="AMMENDMENT FEE" v-model="workPara.billlading_invoice_ammendment"/>
         </FormItem>
         <FormItem label="ISP" prop="billlading_invoice_isp">
-          <Input placeholder="ISP" v-model="workPara.invoice_isp"/>
+          <Input placeholder="ISP" v-model="workPara.billlading_invoice_isp"/>
         </FormItem>
         <FormItem label="SURCHAGE" prop="billlading_invoice_surchage">
-          <Input placeholder="SURCHAGE" v-model="workPara.invoice_surchage"/>
+          <Input placeholder="SURCHAGE" v-model="workPara.billlading_invoice_surchage"/>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -1521,6 +1521,14 @@ export default {
         },
         ruleRevertDeclareNumberModal: {
           billlading_declare_number: [{ required: true, trigger: 'change', message: 'Enter Declare Number' }]
+        },
+        ruleGenerateInvoiceModal: {
+          billlading_invoice_freight: [{ required: true, trigger: 'change', message: 'Enter FREIGHT' }],
+          billlading_invoice_blanding: [{ required: true, trigger: 'change', message: 'Enter B/LANDING' }],
+          billlading_invoice_tasac: [{ required: true, trigger: 'change', message: 'Enter TASAC' }],
+          billlading_invoice_ammendment: [{ required: true, trigger: 'change', message: 'Enter AMMENDMENT FEE' }],
+          billlading_invoice_isp: [{ required: true, trigger: 'change', message: 'Enter ISP' }],
+          billlading_invoice_surchage: [{ required: true, trigger: 'change', message: 'Enter SURCHAGE' }]
         }
       },
       pagePara: {},
@@ -1872,17 +1880,22 @@ export default {
     },
     generateInvoiceModal: async function(row) {
       this.workPara = JSON.parse(JSON.stringify(row))
+      this.$refs.generateInvoice.resetFields()
       this.modal.generateInvoiceModal = true
     },
     generateInvoice: async function() {
-      try {
-        await this.$http.post(apiUrl + 'generateInvoice', this.workPara)
-        this.$Message.success('submit success')
-        this.getBookingData()
-        this.modal.loadingPermissionModal = false
-      } catch (error) {
-        this.$commonact.fault(error)
-      }
+      this.$refs.generateInvoice.validate(async valid => {
+        try {
+          if (valid) {
+            await this.$http.post(apiUrl + 'generateInvoice', this.workPara)
+            this.$Message.success('submit success')
+            this.getBookingData()
+            this.modal.generateInvoiceModal = false
+          }
+        } catch (error) {
+          this.$commonact.fault(error)
+        }
+      })
     },
     handleSuccess(res, file, fileList) {
       file.url = res.info.url

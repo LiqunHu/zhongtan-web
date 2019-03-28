@@ -50,14 +50,6 @@
   background-color: #39cccc;
 }
 
-.label-submit-billlading {
-  background-color: #30bbbb;
-}
-
-.label-reject-billlading {
-  background-color: #ff851b;
-}
-
-.label-approve-billlading {
+.label-pending-settlement {
   background-color: #555299;
 }

@@ -123,7 +123,8 @@ export default {
         ruleVoyageModal: {
           vessel_id: [{ required: true, type: 'number', trigger: 'change', message: 'Choose vessel' }],
           voyage_number: [{ required: true, trigger: 'change', message: 'Enter voyage number' }],
-          voyage_eta_date: [{ required: true, type: 'date', trigger: 'change', message: 'Please select date' }]
+          voyage_eta_date: [{ required: true, type: 'date', trigger: 'change', message: 'Please select date' }],
+          voyage_atd_date: [{ required: true, type: 'date', trigger: 'change', message: 'Please select date' }]
         }
       },
       pagePara: {},

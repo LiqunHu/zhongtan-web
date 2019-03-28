@@ -82,7 +82,7 @@
               <i class="fa fa-times"></i>
             </a>
           </Tooltip>
-          <Tooltip content="Download BOOKING APPLICATION" v-if="row.billlading_state !== 'PBK'">
+          <Tooltip content="Download BOOKING APPLICATION" v-if="row.billlading_state !== 'PBK' && row.billlading_state !== 'PS' && row.billlading_state !== 'FBD' && row.billlading_state !== 'CP' && row.billlading_state !== 'SI'">
             <a href="#" class="btn btn-green btn-icon btn-sm" @click="DownloadBooking(row)">
               <i class="fa fa-download"></i>
             </a>
