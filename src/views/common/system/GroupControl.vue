@@ -70,8 +70,8 @@ export default {
           usergroup_name: [{ required: true, trigger: 'change' }]
         },
         rulePermissionModal: {
-          usergroup_code: [{ required: true, trigger: 'change' }],
-          usergroup_name: [{ required: true, trigger: 'change' }]
+          // usergroup_code: [{ required: true, trigger: 'change' }],
+          // usergroup_name: [{ required: true, trigger: 'change' }]
         }
       },
       workPara: {},
