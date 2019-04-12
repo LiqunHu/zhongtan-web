@@ -19,6 +19,7 @@ const routes = [
   { path: '/admin/zhongtan/configuration/BillladingNoConfig', component: resolve => require(['@/views/zhongtan/configuration/BillladingNoConfig'], resolve) },
   { path: '/admin/zhongtan/export/Booking', component: resolve => require(['@/views/zhongtan/export/Booking'], resolve) },
   { path: '/admin/zhongtan/export/BookingWork', component: resolve => require(['@/views/zhongtan/export/BookingWork'], resolve) },
+  { path: '/admin/zhongtan/export/Receipt', component: resolve => require(['@/views/zhongtan/export/Receipt'], resolve) },
   { path: '/admin/zhongtan/web/SailSchedule', component: resolve => require(['@/views/zhongtan/web/SailSchedule'], resolve) },
   { path: '/admin/zhongtan/web/WebConfig', component: resolve => require(['@/views/zhongtan/web/WebConfig'], resolve) }
 ]
