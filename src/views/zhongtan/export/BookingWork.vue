@@ -64,6 +64,7 @@
                   <Dropdown-menu slot="list">
                     <CheckboxGroup v-model="table.bookingTable.ColumnsChecked" @on-change="changeTableColumns">
                       <Checkbox label="Book Date" class="check-item"></Checkbox>
+                      <Checkbox label="Fee" class="check-item"></Checkbox>
                       <Checkbox label="Shipper" class="check-item"></Checkbox>
                       <Checkbox label="Declare Number" class="check-item"></Checkbox>
                       <Checkbox label="Files" class="check-item"></Checkbox>
@@ -163,6 +164,25 @@
             </a>
           </Tooltip>
         </template>
+        <template slot-scope="{ row, index }" slot="fees">
+          <Poptip trigger="hover" width="200">
+            <Button type="text" style="text-decoration:underline">{{row.fees.sum_fee}}</Button>
+            <template slot="content">
+              FREIGHT: {{row.fees.billlading_invoice_freight}}
+              <br>
+              B/LANDING: {{row.fees.billlading_invoice_blanding}}
+              <br>
+              TASAC: {{row.fees.billlading_invoice_tasac}}
+              <br>
+              AMMENDMENT FEE: {{row.fees.billlading_invoice_ammendment}}
+              <br>
+              ISP: {{row.fees.billlading_invoice_isp}}
+              <br>
+              SURCHAGE: {{row.fees.billlading_invoice_surchage}}
+              <br>
+            </template>
+          </Poptip>
+        </template>
         <template slot-scope="{ row, index }" slot="customerINFO">
           <Poptip trigger="hover" width="300">
             <Button type="text" style="text-decoration:underline">{{row.customerINFO.name}}</Button>
@@ -208,19 +228,6 @@
             <Button type="text" style="text-decoration:underline">Containers</Button>
             <template slot="content">
               <Table stripe size="small" :columns="table.poptipContainerTable.columns" :data="row.billlading_containers"></Table>
-            </template>
-          </Poptip>
-        </template>
-        <template slot-scope="{ row, index }" slot="fees">
-          <Poptip trigger="hover" width="200">
-            <Button type="text" style="text-decoration:underline">{{row.fees.sum_fee}}</Button>
-            <template slot="content">
-              TEU Standard: {{row.fees.billlading_teu_standard}}
-              <br>
-              FEU Standard: {{row.fees.billlading_feu_standard}}
-              <br>
-              FEU High Cube: {{row.fees.billlading_feu_high_cube}}
-              <br>
             </template>
           </Poptip>
         </template>
@@ -530,14 +537,23 @@
                 <h4 class="text-middle m-b-10">
                   <b>Fee</b>
                 </h4>
-                <FormItem label="TEU standard11" prop="billlading_teu_standard_f">
-                  <Input placeholder="TEU standard" v-model="workPara.billlading_teu_standard_f"/>
+                <FormItem label="FREIGHT" prop="billlading_invoice_freight_f">
+                  <Input placeholder="FREIGHT" v-model="workPara.billlading_invoice_freight_f"/>
                 </FormItem>
-                <FormItem label="FEU standard11" prop="billlading_feu_standard_f">
-                  <Input placeholder="FEU standard" v-model="workPara.billlading_feu_standard_f"/>
+                <FormItem label="B/LANDING" prop="billlading_feu_standard_f">
+                  <Input placeholder="B/LANDING" v-model="workPara.billlading_invoice_blanding_f"/>
                 </FormItem>
-                <FormItem label="FEU high cube11" prop="billlading_feu_high_cube_f">
-                  <Input placeholder="FEU high cube" v-model="workPara.billlading_feu_high_cube_f"/>
+                <FormItem label="TASAC" prop="billlading_invoice_tasac_f">
+                  <Input placeholder="TASAC" v-model="workPara.billlading_invoice_tasac_f"/>
+                </FormItem>
+                <FormItem label="AMMENDMENT FEE" prop="billlading_invoice_ammendment_f">
+                  <Input placeholder="AMMENDMENT FEE" v-model="workPara.billlading_invoice_ammendment_f"/>
+                </FormItem>
+                <FormItem label="ISP" prop="billlading_invoice_isp_f">
+                  <Input placeholder="ISP" v-model="workPara.billlading_invoice_isp_f"/>
+                </FormItem>
+                <FormItem label="SURCHAGE" prop="billlading_invoice_surchage_f">
+                  <Input placeholder="SURCHAGE" v-model="workPara.billlading_invoice_surchage_f"/>
                 </FormItem>
               </Col>
             </Row>
@@ -564,14 +580,23 @@
         <FormItem label="CSO" prop="billlading_cso">
           <Input placeholder="CSO" v-model="workPara.billlading_cso"/>
         </FormItem>
-        <FormItem label="TEU standard" prop="billlading_teu_standard">
-          <Input placeholder="TEU standard" v-model="workPara.billlading_teu_standard"/>
+        <FormItem label="FREIGHT" prop="billlading_invoice_freight">
+          <Input placeholder="FREIGHT" v-model="workPara.billlading_invoice_freight"/>
         </FormItem>
-        <FormItem label="FEU standard" prop="billlading_feu_standard">
-          <Input placeholder="FEU standard" v-model="workPara.billlading_feu_standard"/>
+        <FormItem label="B/LANDING" prop="billlading_invoice_blanding">
+          <Input placeholder="B/LANDING" v-model="workPara.billlading_invoice_blanding"/>
         </FormItem>
-        <FormItem label="FEU high cube" prop="billlading_feu_high_cube">
-          <Input placeholder="FEU high cube" v-model="workPara.billlading_feu_high_cube"/>
+        <FormItem label="TASAC" prop="billlading_invoice_tasac">
+          <Input placeholder="TASAC" v-model="workPara.billlading_invoice_tasac"/>
+        </FormItem>
+        <FormItem label="AMMENDMENT FEE" prop="billlading_invoice_ammendment">
+          <Input placeholder="AMMENDMENT FEE" v-model="workPara.billlading_invoice_ammendment"/>
+        </FormItem>
+        <FormItem label="ISP" prop="billlading_invoice_isp">
+          <Input placeholder="ISP" v-model="workPara.billlading_invoice_isp"/>
+        </FormItem>
+        <FormItem label="SURCHAGE" prop="billlading_invoice_surchage">
+          <Input placeholder="SURCHAGE" v-model="workPara.billlading_invoice_surchage"/>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -770,6 +795,11 @@ export default {
               width: 100
             },
             {
+              title: 'Fee',
+              slot: 'fees',
+              width: 120
+            },
+            {
               title: 'Customer',
               slot: 'CustomerINFO',
               width: 100
@@ -804,11 +834,6 @@ export default {
             {
               title: 'Containers',
               slot: 'billlading_containers',
-              width: 120
-            },
-            {
-              title: 'Fee',
-              slot: 'fees',
               width: 120
             },
             {
@@ -944,6 +969,11 @@ export default {
               width: 100
             },
             {
+              title: 'Fee',
+              slot: 'fees',
+              width: 120
+            },
+            {
               title: 'Customer',
               slot: 'customerINFO',
               width: 100
@@ -978,11 +1008,6 @@ export default {
             {
               title: 'Containers',
               slot: 'billlading_containers',
-              width: 120
-            },
-            {
-              title: 'Fee',
-              slot: 'fees',
               width: 120
             },
             {
@@ -1079,6 +1104,7 @@ export default {
           ],
           ColumnsChecked: [
             'Book Date',
+            'Fee',
             'Shipper',
             'Declare Number',
             'Files',
@@ -1086,7 +1112,6 @@ export default {
             'Voyage',
             'Goods',
             'Containers',
-            'Fee',
             'Loading Port',
             'Discharge Port',
             'Delivery Place',
@@ -1511,10 +1536,7 @@ export default {
           billlading_voyage_id: [{ required: true, type: 'number', trigger: 'change', message: 'Choose voyage' }],
           billlading_freight_currency: [{ required: true, trigger: 'change', message: 'Choose Currency' }],
           billlading_freight_charge: [{ required: true, trigger: 'change', message: 'Enter Freight Charge' }],
-          billlading_cso: [{ required: true, trigger: 'change', message: 'Enter CSO' }],
-          billlading_teu_standard: [{ required: true, trigger: 'change', message: 'Enter TEU standard' }],
-          billlading_feu_standard: [{ required: true, trigger: 'change', message: 'Enter FEU standard' }],
-          billlading_feu_high_cube: [{ required: true, trigger: 'change', message: 'Enter FEU high cube' }]
+          billlading_cso: [{ required: true, trigger: 'change', message: 'Enter CSO' }]
         },
         rulePickUpEmptyConfirmModal: {
           container_manager_id: [{ required: true, type: 'number', trigger: 'change', message: 'Choose Continer Manager' }]
@@ -1943,7 +1965,7 @@ export default {
   margin-right: 4px;
 }
 .check-item {
-  padding: 2px 8px;
+  width: 150px;
   justify-content: flex-start;
 }
 </style>

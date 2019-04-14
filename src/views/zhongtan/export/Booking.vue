@@ -35,6 +35,7 @@
                   <Dropdown-menu slot="list">
                     <CheckboxGroup v-model="table.bookingTable.ColumnsChecked" @on-change="changeTableColumns">
                       <Checkbox label="Book Date" class="check-item"></Checkbox>
+                      <Checkbox label="Fee" class="check-item"></Checkbox>
                       <Checkbox label="Files" class="check-item"></Checkbox>
                       <Checkbox label="Declare Number" class="check-item"></Checkbox>
                       <Checkbox label="Vessel" class="check-item"></Checkbox>
@@ -82,7 +83,10 @@
               <i class="fa fa-times"></i>
             </a>
           </Tooltip>
-          <Tooltip content="Download BOOKING APPLICATION" v-if="row.billlading_state !== 'PBK' && row.billlading_state !== 'PS' && row.billlading_state !== 'FBD' && row.billlading_state !== 'CP' && row.billlading_state !== 'SI'">
+          <Tooltip
+            content="Download BOOKING APPLICATION"
+            v-if="row.billlading_state !== 'PBK' && row.billlading_state !== 'PS' && row.billlading_state !== 'FBD' && row.billlading_state !== 'CP' && row.billlading_state !== 'SI'"
+          >
             <a href="#" class="btn btn-green btn-icon btn-sm" @click="DownloadBooking(row)">
               <i class="fa fa-download"></i>
             </a>
@@ -107,6 +111,25 @@
               <i class="fa fa-dot-circle"></i>
             </a>
           </Tooltip>
+        </template>
+        <template slot-scope="{ row, index }" slot="fees">
+          <Poptip trigger="hover" width="200">
+            <Button type="text" style="text-decoration:underline">{{row.fees.sum_fee}}</Button>
+            <template slot="content">
+              FREIGHT: {{row.fees.billlading_invoice_freight}}
+              <br>
+              B/LANDING: {{row.fees.billlading_invoice_blanding}}
+              <br>
+              TASAC: {{row.fees.billlading_invoice_tasac}}
+              <br>
+              AMMENDMENT FEE: {{row.fees.billlading_invoice_ammendment}}
+              <br>
+              ISP: {{row.fees.billlading_invoice_isp}}
+              <br>
+              SURCHAGE: {{row.fees.billlading_invoice_surchage}}
+              <br>
+            </template>
+          </Poptip>
         </template>
         <template slot-scope="{ row, index }" slot="files">
           <Poptip trigger="hover" width="555">
@@ -140,19 +163,6 @@
             <Button type="text" style="text-decoration:underline">Containers</Button>
             <template slot="content">
               <Table stripe size="small" :columns="table.poptipContainerTable.columns" :data="row.billlading_containers"></Table>
-            </template>
-          </Poptip>
-        </template>
-        <template slot-scope="{ row, index }" slot="fees">
-          <Poptip trigger="hover" width="200">
-            <Button type="text" style="text-decoration:underline">{{row.fees.sum_fee}}</Button>
-            <template slot="content">
-              TEU Standard: {{row.fees.billlading_teu_standard}}
-              <br>
-              FEU Standard: {{row.fees.billlading_feu_standard}}
-              <br>
-              FEU High Cube: {{row.fees.billlading_feu_high_cube}}
-              <br>
             </template>
           </Poptip>
         </template>
@@ -676,6 +686,11 @@ export default {
               width: 100
             },
             {
+              title: 'Fee',
+              slot: 'fees',
+              width: 120
+            },
+            {
               title: 'Files',
               slot: 'files',
               width: 100
@@ -705,11 +720,6 @@ export default {
             {
               title: 'Gontainers',
               slot: 'billlading_containers',
-              width: 120
-            },
-            {
-              title: 'Fee',
-              slot: 'fees',
               width: 120
             },
             {
@@ -845,6 +855,11 @@ export default {
               width: 100
             },
             {
+              title: 'Fee',
+              slot: 'fees',
+              width: 120
+            },
+            {
               title: 'Files',
               slot: 'files',
               width: 100
@@ -874,11 +889,6 @@ export default {
             {
               title: 'Gontainers',
               slot: 'billlading_containers',
-              width: 120
-            },
-            {
-              title: 'Fee',
-              slot: 'fees',
               width: 120
             },
             {
@@ -975,13 +985,13 @@ export default {
           ],
           ColumnsChecked: [
             'Book Date',
+            'Fee',
             'Files',
             'Declare Number',
             'Vessel',
             'Voyage',
             'Goods',
             'Containers',
-            'Fee',
             'Loading Port',
             'Discharge Port',
             'Delivery Place',
@@ -1708,7 +1718,7 @@ export default {
 }
 
 .check-item {
-  padding: 2px 8px;
+  width: 150px;
   justify-content: flex-start;
 }
 </style>
