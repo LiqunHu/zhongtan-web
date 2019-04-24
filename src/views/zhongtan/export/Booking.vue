@@ -444,7 +444,7 @@
                   </Select>
                 </FormItem>
                 <FormItem label="Payable at" prop="billlading_pay_date">
-                  <DatePicker type="date" placement="top" v-model="workPara.billlading_pay_date"></DatePicker>
+                  <Input placeholder="Payable at" v-model="workPara.billlading_pay_date"/>
                 </FormItem>
                 <FormItem label="Status" prop="billlading_freight_currency">
                   <Select placement="top" v-model="workPara.billlading_freight_currency">

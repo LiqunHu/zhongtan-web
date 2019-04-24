@@ -108,14 +108,14 @@
           </Tooltip>
         </template>
         <template slot-scope="{ row, index }" slot="action">
+          <Tooltip content="Cancel bill lading" v-if="row.billlading_state === 'PBK' || userInfo.user_service_name === 'ALL'">
+            <a href="#" class="btn btn-danger btn-icon btn-sm" @click="cancelBooking(row)">
+              <i class="fa fa-times"></i>
+            </a>
+          </Tooltip>
           <Tooltip content="Booking bill lading" v-if="row.billlading_state === 'PBK'">
             <a href="#" class="btn btn-primary btn-icon btn-sm" @click="confirmBookingModal(row)">
               <i class="fa fa-dot-circle"></i>
-            </a>
-          </Tooltip>
-          <Tooltip content="Cancel bill lading" v-if="row.billlading_state === 'PBK'">
-            <a href="#" class="btn btn-danger btn-icon btn-sm" @click="cancelBooking(row)">
-              <i class="fa fa-times"></i>
             </a>
           </Tooltip>
           <Tooltip content="Download BOOKING APPLICATION" v-if="row.billlading_state !== 'PBK' && row.billlading_state !== 'PS' && row.billlading_state !== 'FBD' && row.billlading_state !== 'CP' && row.billlading_state !== 'SI'">
