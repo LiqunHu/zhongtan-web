@@ -506,6 +506,9 @@
                 <h4 class="text-middle m-b-10">
                   <b>Payment</b>
                 </h4>
+                <FormItem label="Forwarder" prop="billlading_forwarder_name">
+                  <Input placeholder="Forwarder" v-model="workPara.billlading_forwarder_name"/>
+                </FormItem>
                 <FormItem label="Pay type" prop="billlading_stuffing_place">
                   <Select>
                     <Option v-for="item in pagePara.PayTypeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
@@ -1529,6 +1532,7 @@ export default {
           billlading_original_num: [{ required: true, trigger: 'change', message: 'Enter Original B/L' }],
           billlading_copys_num: [{ required: true, trigger: 'change', message: 'Enter Copies B/L' }],
           billlading_stuffing_place: [{ required: true, trigger: 'change', message: 'Enter Stuffing Place' }],
+          billlading_forwarder_name: [{ required: true, trigger: 'change', message: 'Choose Status' }],
           billlading_freight_currency: [{ required: true, trigger: 'change', message: 'Choose Status' }]
         },
         ruleConfirmBookingModal: {
