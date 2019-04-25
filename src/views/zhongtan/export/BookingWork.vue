@@ -771,7 +771,7 @@ export default {
             {
               title: 'Action',
               slot: 'action',
-              width: 100,
+              width: 130,
               fixed: 'left'
             },
             {
@@ -947,7 +947,7 @@ export default {
             {
               title: 'Action',
               slot: 'action',
-              width: 100,
+              width: 130,
               fixed: 'left'
             },
             {
@@ -1259,7 +1259,7 @@ export default {
             {
               title: 'Action',
               slot: 'action',
-              width: 100
+              width: 130
             }
           ],
           data: []
