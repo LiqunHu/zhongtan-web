@@ -217,6 +217,7 @@ exports.tooltipRender = () => {
       {
         props: {
           trigger: 'hover',
+          transfer: true,
           content: params.row[params.column.key]
         }
       },
