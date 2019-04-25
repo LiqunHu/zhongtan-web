@@ -165,7 +165,7 @@
           </Tooltip>
         </template>
         <template slot-scope="{ row, index }" slot="fees">
-          <Poptip trigger="hover" width="200">
+          <Poptip trigger="hover" placement="bottom" :transfer="true" width="200">
             <Button type="text" style="text-decoration:underline">{{row.fees.sum_fee}}</Button>
             <template slot="content">
               FREIGHT: {{row.fees.billlading_invoice_freight}}
@@ -184,7 +184,7 @@
           </Poptip>
         </template>
         <template slot-scope="{ row, index }" slot="customerINFO">
-          <Poptip trigger="hover" width="300">
+          <Poptip trigger="hover"  placement="bottom" :transfer="true" width="300">
             <Button type="text" style="text-decoration:underline">{{row.customerINFO.name}}</Button>
             <template slot="content">
               Phone: {{row.customerINFO.phone}}
@@ -197,7 +197,7 @@
           </Poptip>
         </template>
         <template slot-scope="{ row, index }" slot="files">
-          <Poptip trigger="hover" width="555">
+          <Poptip trigger="hover"  placement="bottom" :transfer="true" width="555">
             <Button type="text" style="text-decoration:underline">Files</Button>
             <template slot="content">
               <Table stripe size="small" :columns="table.filesTable.columns" :data="row.files">
@@ -216,7 +216,7 @@
           </Select>
         </template>
         <template slot-scope="{ row, index }" slot="billlading_goods">
-          <Poptip trigger="hover" width="800">
+          <Poptip trigger="hover"  placement="bottom" :transfer="true" width="800">
             <Button type="text" style="text-decoration:underline">Goods</Button>
             <template slot="content">
               <Table stripe size="small" :columns="table.poptipGoodsTable.columns" :data="row.billlading_goods"></Table>
@@ -224,7 +224,7 @@
           </Poptip>
         </template>
         <template slot-scope="{ row, index }" slot="billlading_containers">
-          <Poptip trigger="hover" width="800">
+          <Poptip trigger="hover"  placement="bottom" :transfer="true" width="800">
             <Button type="text" style="text-decoration:underline">Containers</Button>
             <template slot="content">
               <Table stripe size="small" :columns="table.poptipContainerTable.columns" :data="row.billlading_containers"></Table>
