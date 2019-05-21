@@ -186,7 +186,7 @@ export default {
     deleteData: function(row) {
       this.$commonact.confirm('delete confirmed?', async () => {
         try {
-          await this.$http.post(apiUrl + 'delete', { voyage_id: row.voyage_id })
+          await this.$http.post(apiUrl + 'delete', { container_manager_id: row.container_manager_id })
           this.$Message.success('delete success')
           this.getTableData()
         } catch (error) {
