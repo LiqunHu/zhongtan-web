@@ -173,13 +173,13 @@
         <div class="tab-pane fade" v-bind:class="{ 'show active': tab.password }">
           <h4 class="m-t-0 m-b-20">Set Password</h4>
           <Form ref="formPasswordChange" :model="workPara" :label-width="80" :rules="formRule.rulePasswordChage" style="width: 500px">
-            <FormItem label="Original Passwoed" prop="old_password">
+            <FormItem label="Original Password" prop="old_password">
               <Input type="password" v-model="workPara.old_password"/>
             </FormItem>
-            <FormItem label="New Passwoed" prop="password">
+            <FormItem label="New Password" prop="password">
               <Input type="password" v-model="workPara.password"/>
             </FormItem>
-            <FormItem label="Re-type Passwoed" prop="repassword">
+            <FormItem label="Re-type Password" prop="repassword">
               <Input type="password" v-model="workPara.repassword"/>
             </FormItem>
             <FormItem>
