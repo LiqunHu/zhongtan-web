@@ -290,12 +290,12 @@
                       <Input v-model="row.billlading_goods_container_number" @on-blur="table.goodsTable.data[index] = row"/>
                     </template>
                     <template slot-scope="{ row, index }" slot="billlading_goods_container_type">
-                      <Select v-model="row.billlading_goods_container_type" @on-change="table.goodsTable.data[index] = row">
+                      <Select transfer="true" v-model="row.billlading_goods_container_type" @on-change="table.goodsTable.data[index] = row">
                         <Option v-for="item in pagePara.ContainerTypeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
                       </Select>
                     </template>
                     <template slot-scope="{ row, index }" slot="billlading_goods_container_size">
-                      <Select v-model="row.billlading_goods_container_size" @on-change="table.goodsTable.data[index] = row">
+                      <Select transfer="true" v-model="row.billlading_goods_container_size" @on-change="table.goodsTable.data[index] = row">
                         <Option v-for="item in pagePara.ContainerSizeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
                       </Select>
                     </template>
@@ -309,7 +309,7 @@
                       <Input v-model="row.billlading_goods_package_number" @on-blur="table.goodsTable.data[index] = row"/>
                     </template>
                     <template slot-scope="{ row, index }" slot="billlading_goods_package_unit">
-                      <Select v-model="row.billlading_goods_package_unit" @on-change="table.goodsTable.data[index] = row">
+                      <Select transfer="true" v-model="row.billlading_goods_package_unit" @on-change="table.goodsTable.data[index] = row">
                         <Option v-for="item in pagePara.PackageUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
                       </Select>
                     </template>
@@ -317,7 +317,7 @@
                       <Input v-model="row.billlading_goods_gross_volume" @on-blur="table.goodsTable.data[index] = row"/>
                     </template>
                     <template slot-scope="{ row, index }" slot="billlading_goods_gross_volume_unit">
-                      <Select v-model="row.billlading_goods_gross_volume_unit" @on-change="table.goodsTable.data[index] = row">
+                      <Select transfer="true" v-model="row.billlading_goods_gross_volume_unit" @on-change="table.goodsTable.data[index] = row">
                         <Option v-for="item in pagePara.VolumeUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
                       </Select>
                     </template>
@@ -325,7 +325,7 @@
                       <Input v-model="row.billlading_goods_gross_weight" @on-blur="table.goodsTable.data[index] = row"/>
                     </template>
                     <template slot-scope="{ row, index }" slot="billlading_goods_gross_unit">
-                      <Select v-model="row.billlading_goods_gross_unit" @on-change="table.goodsTable.data[index] = row">
+                      <Select transfer="true" v-model="row.billlading_goods_gross_unit" @on-change="table.goodsTable.data[index] = row">
                         <Option v-for="item in pagePara.WeightUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
                       </Select>
                     </template>
@@ -333,7 +333,7 @@
                       <Input v-model="row.billlading_goods_net_weight" @on-blur="table.goodsTable.data[index] = row"/>
                     </template>
                     <template slot-scope="{ row, index }" slot="billlading_goods_net_unit">
-                      <Select v-model="row.billlading_goods_net_unit" @on-change="table.goodsTable.data[index] = row">
+                      <Select transfer="true" v-model="row.billlading_goods_net_unit" @on-change="table.goodsTable.data[index] = row">
                         <Option v-for="item in pagePara.WeightUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
                       </Select>
                     </template>
@@ -358,12 +358,12 @@
                       <Input v-model="row.container_no" @on-blur="table.containerTable.data[index] = row"/>
                     </template>
                     <template slot-scope="{ row, index }" slot="container_type">
-                      <Select v-model="row.container_type" @on-change="table.containerTable.data[index] = row">
+                      <Select transfer="true" v-model="row.container_type" @on-change="table.containerTable.data[index] = row">
                         <Option v-for="item in pagePara.ContainerTypeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
                       </Select>
                     </template>
                     <template slot-scope="{ row, index }" slot="container_size">
-                      <Select v-model="row.container_size" @on-change="table.containerTable.data[index] = row">
+                      <Select transfer="true" v-model="row.container_size" @on-change="table.containerTable.data[index] = row">
                         <Option v-for="item in pagePara.ContainerSizeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
                       </Select>
                     </template>
@@ -383,7 +383,7 @@
                       <Input v-model="row.container_package_no" @on-blur="table.containerTable.data[index] = row"/>
                     </template>
                     <template slot-scope="{ row, index }" slot="container_package_unit">
-                      <Select v-model="row.container_package_unit" @on-change="table.containerTable.data[index] = row">
+                      <Select transfer="true" v-model="row.container_package_unit" @on-change="table.containerTable.data[index] = row">
                         <Option v-for="item in pagePara.PackageUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
                       </Select>
                     </template>
@@ -391,7 +391,7 @@
                       <Input v-model="row.container_volume" @on-blur="table.containerTable.data[index] = row"/>
                     </template>
                     <template slot-scope="{ row, index }" slot="container_volume_unit">
-                      <Select v-model="row.container_volume_unit" @on-change="table.containerTable.data[index] = row">
+                      <Select transfer="true" v-model="row.container_volume_unit" @on-change="table.containerTable.data[index] = row">
                         <Option v-for="item in pagePara.VolumeUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
                       </Select>
                     </template>
@@ -399,7 +399,7 @@
                       <Input v-model="row.container_weight" @on-blur="table.containerTable.data[index] = row"/>
                     </template>
                     <template slot-scope="{ row, index }" slot="container_weight_unit">
-                      <Select v-model="row.container_weight_unit" @on-change="table.containerTable.data[index] = row">
+                      <Select transfer="true" v-model="row.container_weight_unit" @on-change="table.containerTable.data[index] = row">
                         <Option v-for="item in pagePara.WeightUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
                       </Select>
                     </template>
@@ -410,7 +410,7 @@
                       <Input v-model="row.container_maxmum_temperature" @on-blur="table.containerTable.data[index] = row"/>
                     </template>
                     <template slot-scope="{ row, index }" slot="container_refer_plug">
-                      <Select v-model="row.container_refer_plug" @on-change="table.containerTable.data[index] = row">
+                      <Select transfer="true" v-model="row.container_refer_plug" @on-change="table.containerTable.data[index] = row">
                         <Option v-for="item in pagePara.YNINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
                       </Select>
                     </template>
