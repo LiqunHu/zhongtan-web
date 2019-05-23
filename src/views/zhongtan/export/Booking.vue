@@ -101,7 +101,7 @@
               <i class="fa fa-dot-circle"></i>
             </a>
           </Tooltip>
-          <Tooltip content="Declearance Approval" v-if="row.billlading_state === 'FD'">
+          <Tooltip content="Declarance Approval" v-if="row.billlading_state === 'FD'">
             <a href="#" class="btn btn-primary btn-icon btn-sm" @click="declaranceApproval(row)">
               <i class="fa fa-dot-circle"></i>
             </a>
