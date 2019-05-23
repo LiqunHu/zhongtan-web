@@ -102,7 +102,7 @@
             </a>
           </Tooltip>
           <Tooltip content="Declearance Approval" v-if="row.billlading_state === 'FD'">
-            <a href="#" class="btn btn-primary btn-icon btn-sm" @click="declearanceApproval(row)">
+            <a href="#" class="btn btn-primary btn-icon btn-sm" @click="declaranceApproval(row)">
               <i class="fa fa-dot-circle"></i>
             </a>
           </Tooltip>
@@ -1632,10 +1632,10 @@ export default {
         }
       })
     },
-    declearanceApproval: function(row) {
-      this.$commonact.confirm('declearance of goods?', async () => {
+    declaranceApproval: function(row) {
+      this.$commonact.confirm('declarance of done?', async () => {
         try {
-          await this.$http.post(apiUrl + 'declearanceApproval', { billlading_id: row.billlading_id })
+          await this.$http.post(apiUrl + 'declaranceApproval', { billlading_id: row.billlading_id })
           this.$Message.success('Successful operation')
           this.getBookingData()
         } catch (error) {
