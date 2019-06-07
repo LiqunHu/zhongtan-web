@@ -59,13 +59,6 @@
       <Table stripe ref="importTable" :columns="table.importTable.rows" :data="table.importTable.data"></Table>
       <Page class="m-t-10" :total="table.importTable.total" :page-size="table.importTable.limit" @on-change="getImportData"/>
     </panel>
-    <Modal v-model="modal.importModal" title="Import">
-      <Form :model="workPara" :label-width="100" :rules="formRule.ruleImportModal" ref="formImport"></Form>
-      <div slot="footer">
-        <Button type="text" size="large" @click="modal.importModal=false">Cancel</Button>
-        <Button type="primary" size="large" @click="submitLoad">Submit</Button>
-      </div>
-    </Modal>
   </div>
 </template>
 <script>
@@ -80,7 +73,7 @@ export default {
   components: { expandRow },
   data: function() {
     return {
-      modal: { importModal: false },
+      modal: { },
       table: {
         importTable: {
           rows: [
@@ -213,23 +206,12 @@ export default {
       this.$refs.formUser.resetFields()
       this.modal.importModal = true
     },
-    submitLoad: function() {
-      this.$refs.formUser.validate(async valid => {
-        if (valid) {
-          try {
-            this.getImportData()
-            this.modal.importModal = false
-          } catch (error) {
-            this.$commonact.fault(error)
-          }
-        }
-      })
-    },
     handleImportSuccess(res, file, fileList) {
       this.$Notice.success({
         title: 'Success',
         desc: 'File Import Success'
       })
+      this.getImportData()
     },
     handleImportError(error, file, fileList) {
       this.$Notice.error({
