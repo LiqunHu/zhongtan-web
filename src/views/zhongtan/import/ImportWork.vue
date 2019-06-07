@@ -44,6 +44,7 @@
                 :headers="headers"
                 :format="['xml']"
                 :max-size="4096"
+                :before-upload="handleImportbefore"
                 :on-success="handleImportSuccess"
                 :on-error="handleImportError"
                 :on-format-error="handleFormatError"
@@ -73,7 +74,7 @@ export default {
   components: { expandRow },
   data: function() {
     return {
-      modal: { },
+      modal: {},
       table: {
         importTable: {
           rows: [
@@ -206,7 +207,11 @@ export default {
       this.$refs.formUser.resetFields()
       this.modal.importModal = true
     },
+    handleImportbefore(file) {
+      this.$Spin.show()
+    },
     handleImportSuccess(res, file, fileList) {
+      this.$Spin.hide()
       this.$Notice.success({
         title: 'Success',
         desc: 'File Import Success'
@@ -214,6 +219,7 @@ export default {
       this.getImportData()
     },
     handleImportError(error, file, fileList) {
+      this.$Spin.hide()
       this.$Notice.error({
         title: 'Error',
         desc: 'File Import Failed'
