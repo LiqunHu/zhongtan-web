@@ -21,7 +21,13 @@
               <DatePicker type="daterange" :value="table.importTable.search_data.date" placeholder="Application Date" style="width: 200px" @on-change="searchData"></DatePicker>
             </div>
             <div class="form-group m-r-2">
+              <input type="text" class="form-control" v-model="table.importTable.search_data.vessel" placeholder="vessel" style="width: 100px">
+            </div>
+            <div class="form-group m-r-2">
               <input type="text" class="form-control" v-model="table.importTable.search_data.voyage" placeholder="Voyage" style="width: 100px">
+            </div>
+            <div class="form-group m-r-2">
+              <input type="text" class="form-control" v-model="table.importTable.search_data.bl" placeholder="BL No." style="width: 150px">
             </div>
             <div class="input-group m-r-10">
               <input type="text" placeholder="Search Name Phone" v-model="table.importTable.search_text" class="form-control">
@@ -139,7 +145,9 @@ export default {
                 .format('YYYY-MM-DD'),
               moment().format('YYYY-MM-DD')
             ],
+            vessel: '',
             voyage: '',
+            bl: '',
             search_text: ''
           }
         }
@@ -180,21 +188,21 @@ export default {
           this.table.importTable.offset = (index - 1) * this.table.importTable.limit
         }
 
-        if (this.table.importTable.search_data.voyage) {
-          let searchPara = {
-            start_date: this.table.importTable.search_data.date[0],
-            end_date: this.table.importTable.search_data.date[1],
-            voyage: this.table.importTable.search_data.voyage,
-            search_text: this.table.importTable.search_text,
-            offset: this.table.importTable.offset,
-            limit: this.table.importTable.limit
-          }
-
-          let response = await this.$http.post(apiUrl + 'search', searchPara)
-          let data = response.data.info
-          this.table.importTable.total = data.total
-          this.table.importTable.data = JSON.parse(JSON.stringify(data.rows))
+        let searchPara = {
+          start_date: this.table.importTable.search_data.date[0],
+          end_date: this.table.importTable.search_data.date[1],
+          vessel: this.table.importTable.search_data.vessel,
+          voyage: this.table.importTable.search_data.voyage,
+          bl: this.table.importTable.search_data.bl,
+          search_text: this.table.importTable.search_text,
+          offset: this.table.importTable.offset,
+          limit: this.table.importTable.limit
         }
+
+        let response = await this.$http.post(apiUrl + 'search', searchPara)
+        let data = response.data.info
+        this.table.importTable.total = data.total
+        this.table.importTable.data = JSON.parse(JSON.stringify(data.rows))
       } catch (error) {
         this.$commonact.fault(error)
       }
