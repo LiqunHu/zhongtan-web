@@ -210,6 +210,19 @@ let tooltipFormat = value => {
   }
 }
 
+let brFormat = value => {
+  let sarry = _.split(value.replace(/\r\n/g, '<br/>'), '<br/>', 2)
+  if (sarry) {
+    if (sarry[0]) {
+      return sarry[0]
+    } else {
+      return sarry[1]
+    }
+  } else {
+    return ''
+  }
+}
+
 exports.tooltipRender = () => {
   return (h, params) => {
     return h(
@@ -233,6 +246,71 @@ exports.tooltipRender = () => {
           },
           tooltipFormat(params.row[params.column.key])
         )
+      ]
+    )
+  }
+}
+
+exports.tooltipWidthRender = width => {
+  return (h, params) => {
+    return h(
+      'Poptip',
+      {
+        props: {
+          trigger: 'hover',
+          placement: 'bottom',
+          'max-width': width,
+          transfer: true,
+          content: params.row[params.column.key]
+        }
+      },
+      [
+        h(
+          'Button',
+          {
+            style: 'text-decoration:underline',
+            props: {
+              type: 'text'
+            }
+          },
+          tooltipFormat(params.row[params.column.key])
+        )
+      ]
+    )
+  }
+}
+
+exports.tooltipBrRender = () => {
+  return (h, params) => {
+    return h(
+      'Poptip',
+      {
+        props: {
+          trigger: 'hover',
+          placement: 'bottom',
+          transfer: true
+        }
+      },
+      [
+        h(
+          'Button',
+          {
+            style: 'text-decoration:underline',
+            props: {
+              type: 'text'
+            }
+          },
+          brFormat(params.row[params.column.key])
+        ),
+        h('div', {
+          slot: 'content',
+          style: {
+            whiteSpace: 'normal'
+          },
+          domProps: {
+            innerHTML: params.row[params.column.key].replace(/\r\n/g, '<br/>')
+          }
+        })
       ]
     )
   }
