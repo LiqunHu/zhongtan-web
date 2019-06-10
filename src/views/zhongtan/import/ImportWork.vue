@@ -21,6 +21,18 @@
               <DatePicker type="daterange" :value="table.importTable.search_data.date" placeholder="Application Date" style="width: 200px" @on-change="searchData"></DatePicker>
             </div>
             <div class="form-group m-r-2">
+              <Select
+                v-model="table.importTable.search_data.customer.value"
+                filterable
+                remote
+                :remote-method="searchCustomer"
+                :loading="table.importTable.search_data.customer.loading"
+                placeholder="customer"
+              >
+                <Option v-for="item in table.importTable.search_data.customer.options" :value="item.id" :key="item.id">{{item.text}}</Option>
+              </Select>
+            </div>
+            <div class="form-group m-r-2">
               <input type="text" class="form-control" v-model="table.importTable.search_data.vessel" placeholder="vessel" style="width: 100px">
             </div>
             <div class="form-group m-r-2">
@@ -54,10 +66,31 @@
                 <button type="button" class="btn btn-info">Load</button>
               </Upload>
             </div>
+            <div class="form-group m-r-10">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-info" @click="getImportData(1)">
+                  Assign
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </template>
-      <Table stripe ref="importTable" :columns="table.importTable.rows" :data="table.importTable.data"></Table>
+      <Table stripe ref="importTable" :columns="table.importTable.rows" :data="table.importTable.data">
+        <template slot-scope="{ row, index }" slot="customerINFO">
+          <Poptip trigger="hover"  placement="bottom" :transfer="true" width="300">
+            <Button type="text" style="text-decoration:underline">{{row.customerINFO.name}}</Button>
+            <template slot="content">
+              Phone: {{row.customerINFO.phone}}
+              <br>
+              Email: {{row.customerINFO.email}}
+              <br>
+              Address: {{row.customerINFO.address}}
+              <br>
+            </template>
+          </Poptip>
+        </template>
+      </Table>
       <Page class="m-t-10" :total="table.importTable.total" :page-size="table.importTable.limit" @on-change="getImportData"/>
     </panel>
   </div>
@@ -79,6 +112,11 @@ export default {
         importTable: {
           rows: [
             {
+              type: 'selection',
+              width: 60,
+              align: 'center'
+            },
+            {
               type: 'expand',
               width: 50,
               render: (h, params) => {
@@ -88,6 +126,11 @@ export default {
                   }
                 })
               }
+            },
+            {
+              title: 'Customer',
+              slot: 'customerINFO',
+              width: 100
             },
             {
               title: 'Service',
@@ -139,6 +182,11 @@ export default {
                 .format('YYYY-MM-DD'),
               moment().format('YYYY-MM-DD')
             ],
+            customer: {
+              options: [],
+              value: '',
+              loading: false
+            },
             vessel: '',
             voyage: '',
             bl: '',
@@ -176,6 +224,18 @@ export default {
     searchData: function(e) {
       this.table.importTable.search_data.date = JSON.parse(JSON.stringify(e))
     },
+    searchCustomer: async function(query) {
+      if (query !== '') {
+        this.table.importTable.search_data.customer.loading = true
+        let response = await this.$http.post(apiUrl + 'searchCustomer', {
+          search_text: query
+        })
+        this.table.importTable.search_data.customer.options = JSON.parse(JSON.stringify(response.data.info.customerINFO))
+        this.table.importTable.search_data.customer.loading = false
+      } else {
+        this.table.importTable.search_data.customer.options = []
+      }
+    },
     getImportData: async function(index) {
       try {
         if (index) {
@@ -191,6 +251,10 @@ export default {
           search_text: this.table.importTable.search_text,
           offset: this.table.importTable.offset,
           limit: this.table.importTable.limit
+        }
+
+        if (this.table.importTable.search_data.customer.value) {
+          searchPara.customer = this.table.importTable.search_data.customer.value
         }
 
         let response = await this.$http.post(apiUrl + 'search', searchPara)
