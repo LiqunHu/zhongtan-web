@@ -24,6 +24,7 @@
               <Select
                 v-model="table.importTable.search_data.customer.value"
                 filterable
+                clearable
                 remote
                 :remote-method="searchCustomer"
                 :loading="table.importTable.search_data.customer.loading"
@@ -68,9 +69,7 @@
             </div>
             <div class="form-group m-r-10">
               <div class="input-group-append">
-                <button type="button" class="btn btn-info" @click="getImportData(1)">
-                  Assign
-                </button>
+                <button type="button" class="btn btn-info" @click="assignCuatomer()">Assign</button>
               </div>
             </div>
           </div>
@@ -78,7 +77,7 @@
       </template>
       <Table stripe ref="importTable" :columns="table.importTable.rows" :data="table.importTable.data">
         <template slot-scope="{ row, index }" slot="customerINFO">
-          <Poptip trigger="hover"  placement="bottom" :transfer="true" width="300">
+          <Poptip trigger="hover" placement="bottom" :transfer="true" width="300">
             <Button type="text" style="text-decoration:underline">{{row.customerINFO.name}}</Button>
             <template slot="content">
               Phone: {{row.customerINFO.phone}}
@@ -130,7 +129,7 @@ export default {
             {
               title: 'Customer',
               slot: 'customerINFO',
-              width: 100
+              width: 150
             },
             {
               title: 'Service',
@@ -300,6 +299,35 @@ export default {
         title: 'Exceeding file size limit',
         desc: 'File  ' + file.name + ' is too large, no more than 4M.'
       })
+    },
+    assignCuatomer() {
+      let _self = this
+      if (_self.table.importTable.search_data.customer.value) {
+        let sels = _self.$refs.importTable.getSelection()
+        if (sels.length === 0) {
+          return _self.$Message.warning('Please select bls.')
+        }
+
+        _self.$commonact.confirm(`Assign the select BL. to ${_self.table.importTable.search_data.customer.options[0].text}?`, async () => {
+          try {
+            let bls = []
+            for (let s of sels) {
+              bls.push(s.import_billlading_id)
+            }
+
+            await _self.$http.post(apiUrl + 'assignCustomer', {
+              bls: bls,
+              customer_id: _self.table.importTable.search_data.customer.value
+            })
+            _self.$Message.success('assign success')
+            _self.getImportData()
+          } catch (error) {
+            _self.$commonact.fault(error)
+          }
+        })
+      } else {
+        _self.$Message.warning('Please select a customer')
+      }
     }
   }
 }
