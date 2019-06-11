@@ -40,9 +40,9 @@
               <input type="text" class="form-control" v-model="table.importTable.search_data.voyage" placeholder="Voyage" style="width: 100px">
             </div>
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="table.importTable.search_data.bl" placeholder="BL No." style="width: 150px">
+              <input type="text" class="form-control" v-model="table.importTable.search_data.bl" placeholder="BL No." style="width: 130px">
             </div>
-            <div class="input-group m-r-10">
+            <div class="input-group m-r-3">
               <input type="text" placeholder="Search Name Phone" v-model="table.importTable.search_text" class="form-control">
               <div class="input-group-append">
                 <button type="button" class="btn btn-info" @click="getImportData(1)">
@@ -50,7 +50,7 @@
                 </button>
               </div>
             </div>
-            <div class="form-group m-r-10">
+            <div class="form-group m-r-3">
               <Upload
                 ref="upload"
                 :show-upload-list="false"
@@ -67,14 +67,19 @@
                 <button type="button" class="btn btn-info">Load</button>
               </Upload>
             </div>
-            <div class="form-group m-r-10">
+            <div class="form-group m-r-3">
               <div class="input-group-append">
                 <button type="button" class="btn btn-info" @click="assignCuatomer()">Assign</button>
               </div>
             </div>
-            <div class="form-group m-r-10">
+            <div class="form-group m-r-3">
               <div class="input-group-append">
                 <button type="button" class="btn btn-info" @click="exportMBL()">MBL</button>
+              </div>
+            </div>
+            <div class="form-group m-r-3">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-info" @click="exportCBL()">CBL</button>
               </div>
             </div>
           </div>
@@ -364,6 +369,45 @@ export default {
         reader.onload = e => {
           let a = document.createElement('a')
           a.download = 'MBL_UPLOAD.csv'
+          a.href = e.target.result
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+        }
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
+    exportCBL: async function() {
+      try {
+        let searchPara = {
+          start_date: this.table.importTable.search_data.date[0],
+          end_date: this.table.importTable.search_data.date[1],
+          vessel: this.table.importTable.search_data.vessel,
+          voyage: this.table.importTable.search_data.voyage,
+          bl: this.table.importTable.search_data.bl,
+          search_text: this.table.importTable.search_text,
+          offset: this.table.importTable.offset,
+          limit: this.table.importTable.limit
+        }
+
+        if (this.table.importTable.search_data.customer.value) {
+          searchPara.customer = this.table.importTable.search_data.customer.value
+        }
+
+        let response = await this.$http.request({
+          url: apiUrl + 'exportCBL',
+          method: 'post',
+          data: searchPara,
+          responseType: 'blob'
+        })
+
+        let blob = response.data
+        let reader = new FileReader()
+        reader.readAsDataURL(blob)
+        reader.onload = e => {
+          let a = document.createElement('a')
+          a.download = 'CBL_UPLOAD.csv'
           a.href = e.target.result
           document.body.appendChild(a)
           a.click()
