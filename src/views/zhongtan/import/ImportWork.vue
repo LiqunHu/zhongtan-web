@@ -99,6 +99,10 @@
             </template>
           </Poptip>
         </template>
+
+        <template slot-scope="{ row, index }" slot="Vessel">
+          ({{row.import_billlading_vessel_code}}){{row.import_billlading_vessel_name}}
+        </template>
       </Table>
       <Page class="m-t-10" :total="table.importTable.total" :page-size="table.importTable.limit" @on-change="getImportData"/>
     </panel>
@@ -148,8 +152,8 @@ export default {
             },
             {
               title: 'Vessel',
-              key: 'import_billlading_vessel_code',
-              width: 150
+              slot: 'Vessel',
+              width: 170
             },
             {
               title: 'voyage',
