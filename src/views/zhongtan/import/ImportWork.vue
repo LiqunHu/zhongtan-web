@@ -34,7 +34,9 @@
               </Select>
             </div>
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="table.importTable.search_data.vessel" placeholder="vessel" style="width: 100px">
+              <Select v-model="table.importTable.search_data.vessel" clearable style="width:150px" placeholder="Vessel">
+                <Option v-for="item in pagePara.SHIPSINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+              </Select>
             </div>
             <div class="form-group m-r-2">
               <input type="text" class="form-control" v-model="table.importTable.search_data.voyage" placeholder="Voyage" style="width: 100px">
@@ -43,12 +45,9 @@
               <input type="text" class="form-control" v-model="table.importTable.search_data.bl" placeholder="BL No." style="width: 130px">
             </div>
             <div class="input-group m-r-3">
-              <input type="text" placeholder="Search Name Phone" v-model="table.importTable.search_text" class="form-control">
-              <div class="input-group-append">
-                <button type="button" class="btn btn-info" @click="getImportData(1)">
-                  <i class="fa fa-search"></i>
-                </button>
-              </div>
+              <button type="button" class="btn btn-info" @click="getImportData(1)">
+                <i class="fa fa-search"></i>
+              </button>
             </div>
             <div class="form-group m-r-3">
               <Upload
@@ -99,10 +98,7 @@
             </template>
           </Poptip>
         </template>
-
-        <template slot-scope="{ row, index }" slot="Vessel">
-          ({{row.import_billlading_vessel_code}}){{row.import_billlading_vessel_name}}
-        </template>
+        <template slot-scope="{ row, index }" slot="Vessel">({{row.import_billlading_vessel_code}}){{row.import_billlading_vessel_name}}</template>
       </Table>
       <Page class="m-t-10" :total="table.importTable.total" :page-size="table.importTable.limit" @on-change="getImportData"/>
     </panel>
@@ -221,19 +217,18 @@ export default {
     PageOptions.pageEmpty = false
   },
   mounted: function() {
-    const initPage = async () => {
+    this.getPara()
+    this.getImportData(1)
+  },
+  methods: {
+    getPara: async function() {
       try {
         let response = await this.$http.post(apiUrl + 'init', {})
         this.pagePara = JSON.parse(JSON.stringify(response.data.info))
       } catch (error) {
         this.$commonact.fault(error)
       }
-    }
-
-    initPage()
-    this.getImportData(1)
-  },
-  methods: {
+    },
     searchData: function(e) {
       this.table.importTable.search_data.date = JSON.parse(JSON.stringify(e))
     },
@@ -293,6 +288,7 @@ export default {
         title: 'Success',
         desc: 'File Import Success'
       })
+      this.getPara()
       this.getImportData()
     },
     handleImportError(error, file, fileList) {
