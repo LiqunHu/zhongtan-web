@@ -100,7 +100,14 @@
         </template>
         <template slot-scope="{ row, index }" slot="Vessel">({{row.import_billlading_vessel_code}}){{row.import_billlading_vessel_name}}</template>
       </Table>
-      <Page class="m-t-10" :total="table.importTable.total" :page-size="table.importTable.limit" @on-change="getImportData"/>
+      <Row>
+        <Col span="20">
+          <Page class="m-t-10" :total="table.importTable.total" :page-size="table.importTable.limit" @on-change="getImportData"/>
+        </Col>
+        <Col span="4">
+          <div class="total">Total: {{table.importTable.total}}</div>
+        </Col>
+      </Row>
     </panel>
   </div>
 </template>
@@ -420,3 +427,9 @@ export default {
   }
 }
 </script>
+<style scoped>
+.total {
+  padding-top: 20px;
+  font-size: 12px;
+}
+</style>
