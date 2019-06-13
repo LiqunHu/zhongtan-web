@@ -156,7 +156,7 @@ export default {
             {
               title: 'Vessel',
               slot: 'Vessel',
-              width: 170
+              width: 200
             },
             {
               title: 'voyage',
@@ -194,7 +194,7 @@ export default {
           search_data: {
             date: [
               moment()
-                .subtract(30, 'days')
+                .subtract(7, 'days')
                 .format('YYYY-MM-DD'),
               moment().format('YYYY-MM-DD')
             ],
