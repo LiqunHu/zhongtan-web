@@ -32,11 +32,6 @@
         </div>
       </template>
       <Table stripe ref="portTable" :columns="table.portTable.rows" :data="table.portTable.data">
-        <template slot-scope="{ row, index }" slot="port_country">
-          <Select v-model="row.port_country" disabled>
-            <Option v-for="item in pagePara.PortCountryINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-          </Select>
-        </template>
         <template slot-scope="{ row, index }" slot="action">
           <a href="#" class="btn btn-info btn-icon btn-sm" @click="modifyPortModal(row)">
             <i class="fa fa-edit"></i>
@@ -60,9 +55,7 @@
           <Input placeholder="Port Code" v-model="workPara.port_code"/>
         </FormItem>
         <FormItem label="Port Country" prop="port_country">
-          <Select v-model="workPara.port_country">
-            <Option v-for="item in pagePara.PortCountryINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-          </Select>
+          <Input placeholder="Port Code" v-model="workPara.port_country"/>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -91,7 +84,7 @@ export default {
             },
             {
               title: 'Port Country',
-              slot: 'port_country'
+              key: 'port_country'
             },
             {
               title: 'Port Name',
@@ -122,7 +115,7 @@ export default {
           port_name: [{ required: true, trigger: 'change', message: 'Enter port name' }],
           port_name_cn: [{ required: true, trigger: 'change', message: 'Enter port name cn' }],
           port_code: [{ required: true, trigger: 'change', message: 'Enter port code' }],
-          port_country: [{ required: true, trigger: 'change', message: 'Choose port country' }]
+          port_country: [{ required: true, trigger: 'change', message: 'Enter port country' }]
         }
       },
       pagePara: {},
