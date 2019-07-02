@@ -450,7 +450,7 @@ export default {
         reader.readAsDataURL(blob)
         reader.onload = e => {
           let a = document.createElement('a')
-          a.download = 'Booking list for ' + row.billlading_no + '.docx'
+          a.download = row.ca0 + ' ' + row.import_billlading_no+ '.docx'
           a.href = e.target.result
           document.body.appendChild(a)
           a.click()
