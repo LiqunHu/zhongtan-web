@@ -85,6 +85,13 @@
         </div>
       </template>
       <Table stripe ref="importTable" :columns="table.importTable.rows" :data="table.importTable.data">
+        <template slot-scope="{ row, index }" slot="action">
+          <Tooltip content="Download B/L">
+            <a href="#" class="btn btn-green btn-icon btn-sm" @click="downLoadBL(row)">
+              <i class="fa fa-download"></i>
+            </a>
+          </Tooltip>
+        </template>
         <template slot-scope="{ row, index }" slot="customerINFO">
           <Poptip trigger="hover" placement="bottom" :transfer="true" width="300">
             <Button type="text" style="text-decoration:underline">{{row.customerINFO.name}}</Button>
@@ -142,6 +149,11 @@ export default {
                   }
                 })
               }
+            },
+            {
+              title: 'Action',
+              slot: 'action',
+              width: 130
             },
             {
               title: 'Customer',
@@ -415,6 +427,30 @@ export default {
         reader.onload = e => {
           let a = document.createElement('a')
           a.download = 'CBL_UPLOAD.csv'
+          a.href = e.target.result
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+        }
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
+    downLoadBL: async function(row) {
+      try {
+        let response = await this.$http.request({
+          url: apiUrl + 'downloadBL',
+          method: 'post',
+          data: { import_billlading_id: row.import_billlading_id },
+          responseType: 'blob'
+        })
+
+        let blob = response.data
+        let reader = new FileReader()
+        reader.readAsDataURL(blob)
+        reader.onload = e => {
+          let a = document.createElement('a')
+          a.download = 'Booking list for ' + row.billlading_no + '.docx'
           a.href = e.target.result
           document.body.appendChild(a)
           a.click()
