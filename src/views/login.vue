@@ -133,13 +133,13 @@ export default {
               _self.$router.push({ path: '/admin/dashboard/home' })
             })
           } else {
-            _self.errorMessage = '系统错误'
+            _self.errorMessage = 'System error'
             _self.isA = true
             _self.logout()
           }
         })
         .catch(function() {
-          _self.errorMessage = '用户名或者密码错误'
+          _self.errorMessage = 'Wrong user name or password'
           _self.isA = true
           _self.logout()
         })
