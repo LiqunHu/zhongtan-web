@@ -1510,6 +1510,7 @@ export default {
     },
     actBookingModal: async function() {
       this.workPara = {}
+      this.workPara.billlading_loading_port_id = 3
       this.table.goodsTable.data = []
       this.table.goodsTable.data.push({
         billlading_goods_container_number: null,
