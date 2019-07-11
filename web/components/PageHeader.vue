@@ -55,7 +55,7 @@
           <h1>SINOTASHIP</h1>
           <h3>PROFESSIONAL</h3>
           <p>WE TAKE CARE OF YOUR GOODS
-            <br>DELIVER WORD WILD.
+            <br>DELIVER WORD WIDE.
           </p>
         </div>
       </div>
