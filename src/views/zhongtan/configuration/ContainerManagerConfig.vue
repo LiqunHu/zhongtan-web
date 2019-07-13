@@ -18,7 +18,7 @@
         <div class="panel-toolbar">
           <div class="form-inline">
             <div class="input-group m-r-10">
-              <input type="text" placeholder="voyage name、operator、code" v-model="table.dataTable.search_text" class="form-control">
+              <input type="text" placeholder="voyage name、operator、code" v-model="table.dataTable.search_text" class="form-control" />
               <div class="input-group-append">
                 <button type="button" class="btn btn-info" @click="getTableData(1)">
                   <i class="fa fa-search"></i>
@@ -46,15 +46,15 @@
           </a>
         </template>
       </Table>
-      <Page class="m-t-10" :total="table.dataTable.total" :page-size="table.dataTable.limit" @on-change="getTableData"/>
+      <Page class="m-t-10" :total="table.dataTable.total" :page-size="table.dataTable.limit" @on-change="getTableData" />
     </panel>
     <Modal v-model="modal.dataModal" title="Container Manager">
       <Form :model="workPara" :label-width="120" :rules="formRule.ruleDataModal" ref="formData">
         <FormItem label="Manager Name" prop="container_manager_name">
-          <Input placeholder="Manager Name" v-model="workPara.container_manager_name"/>
+          <Input placeholder="Manager Name" v-model="workPara.container_manager_name" />
         </FormItem>
         <FormItem label="Manager Email" prop="container_manager_email">
-          <Input type="email" placeholder="Manager Email" v-model="workPara.container_manager_email"/>
+          <Input placeholder="Manager Email" v-model="workPara.container_manager_email" />If there are more than one, Separated with,
         </FormItem>
       </Form>
       <div slot="footer">
@@ -66,6 +66,7 @@
 </template>
 <script>
 import PageOptions from '../../../config/PageOptions.vue'
+const Isemail = require('isemail')
 const apiUrl = '/api/zhongtan/configuration/ContainerManagerConfig/'
 
 export default {
@@ -104,7 +105,24 @@ export default {
       formRule: {
         ruleDataModal: {
           container_manager_name: [{ required: true, trigger: 'change', message: 'Enter manager name' }],
-          container_manager_email: [{ required: true, type: 'email', trigger: 'change', message: 'Enter manager email' }]
+          container_manager_email: [
+            {
+              required: true,
+              validator: (rule, value, callback) => {
+                let mails = value.split(',')
+                for (let m of mails) {
+                  if (m) {
+                    if (!Isemail.validate(m)) {
+                      return callback(new Error('Enter manager email'))
+                    }
+                  }
+                }
+                callback()
+              },
+              trigger: 'change',
+              message: 'Enter manager email'
+            }
+          ]
         }
       },
       pagePara: {},
