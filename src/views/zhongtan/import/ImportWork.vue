@@ -50,7 +50,7 @@
               </button>
             </div>
             <div class="form-group m-r-3">
-              <Upload
+              <!-- <Upload
                 ref="upload"
                 :show-upload-list="false"
                 :headers="headers"
@@ -64,7 +64,8 @@
                 action="/api/zhongtan/import/ImportWork/uploadImport"
               >
                 <button type="button" class="btn btn-info">Load</button>
-              </Upload>
+              </Upload> -->
+              <button type="button" class="btn btn-info" @click="loadImportModal">Load</button>
             </div>
             <div class="form-group m-r-3">
               <div class="input-group-append">
@@ -116,6 +117,39 @@
         </Col>
       </Row>
     </panel>
+    <Modal v-model="modal.importModal" title="Import">
+      <Form :model="workPara" :label-width="100">
+        <FormItem label="Arrive Date" prop="arrive_date">
+          <DatePicker type="date" placeholder="Arrive Date" v-model="workPara.arrive_date"></DatePicker>
+        </FormItem>
+        <FormItem label="Files">
+          <div v-for="f in files.fileList" v-bind:key="f.name" class="upload-list">
+            <Icon type="ios-document" size="60"/>
+          </div>
+          <Upload
+            ref="upload"
+            :headers="headers"
+            :show-upload-list="false"
+            :on-success="handleSuccess"
+            :format="['xml']"
+            :max-size="4096"
+            :on-format-error="handleFormatError"
+            :on-exceeded-size="handleMaxSize"
+            type="drag"
+            action="/api/zhongtan/import/ImportWork//upload"
+            style="display: inline-block;width:58px;"
+          >
+            <div style="width: 58px;height:58px;line-height: 58px;">
+              <Icon type="md-add" size="20"></Icon>
+            </div>
+          </Upload>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.importModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="importData">Submit</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -132,6 +166,7 @@ export default {
     return {
       modal: {},
       table: {
+        modal: { importModal: false },
         importTable: {
           rows: [
             {
@@ -229,7 +264,10 @@ export default {
       oldPara: {},
       workPara: {},
       headers: common.uploadHeaders(),
-      action: ''
+      action: '',
+      files: {
+        fileList: []
+      }
     }
   },
   created() {
@@ -295,8 +333,12 @@ export default {
     loadImportModal: async function() {
       this.workPara = {}
       this.action = 'add'
-      this.$refs.formUser.resetFields()
       this.modal.importModal = true
+    },
+    handleSuccess(res, file, fileList) {
+      file.url = res.info.url
+      file.name = res.info.name
+      this.files.fileList = JSON.parse(JSON.stringify(this.$refs.upload.fileList))
     },
     handleImportbefore(file) {
       this.$Spin.show()
@@ -328,6 +370,20 @@ export default {
         title: 'Exceeding file size limit',
         desc: 'File  ' + file.name + ' is too large, no more than 4M.'
       })
+    },
+    importData: async function() {
+      try {
+        if (this.files.fileList.length < 1) {
+          return this.$Message.error('Please upload xml file')
+        }
+        this.workPara.upload_files = this.files.fileList
+        await this.$http.post(apiUrl + 'uploadImport', this.workPara)
+        this.$Message.success('submit success')
+        this.getImportData()
+        this.modal.importModal = false
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
     },
     assignCuatomer() {
       let _self = this
@@ -467,5 +523,20 @@ export default {
 .total {
   padding-top: 20px;
   font-size: 12px;
+}
+
+.upload-list {
+  display: inline-block;
+  width: 60px;
+  height: 60px;
+  text-align: center;
+  line-height: 60px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #fff;
+  position: relative;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  margin-right: 4px;
 }
 </style>
