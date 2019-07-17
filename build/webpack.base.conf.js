@@ -52,7 +52,7 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [resolve('src'), resolve('test'), resolve('/node_modules/_vue-ins-progress-bar@1.0.0@vue-ins-progress-bar')]
+        include: [resolve('src'), resolve('test'), resolve('/node_modules/_vue-ins-progress-bar@1.0.0@vue-ins-progress-bar'), resolve('/node_modules/_isemail@3.2.0@isemail')]
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
