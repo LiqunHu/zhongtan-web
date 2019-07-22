@@ -63,6 +63,7 @@
                   <i class="fas fa-lg fa-fw fa-th"></i>
                   <Dropdown-menu slot="list">
                     <CheckboxGroup v-model="table.bookingTable.ColumnsChecked" @on-change="changeTableColumns">
+                      <Checkbox label="Service" class="check-item"></Checkbox>
                       <Checkbox label="Book Date" class="check-item"></Checkbox>
                       <Checkbox label="Fee" class="check-item"></Checkbox>
                       <Checkbox label="Shipper" class="check-item"></Checkbox>
@@ -793,6 +794,12 @@ export default {
           ],
           fullColumns: [
             {
+              title: 'Service',
+              key: 'billlading_service_name',
+              render: common.selectRender(this, 'VesselServiceINFO'),
+              width: 100
+            },
+            {
               title: 'Book Date',
               key: 'booking_date',
               width: 100
@@ -967,6 +974,12 @@ export default {
               fixed: 'left'
             },
             {
+              title: 'Service',
+              key: 'billlading_service_name',
+              render: common.selectRender(this, 'VesselServiceINFO'),
+              width: 100
+            },
+            {
               title: 'Book Date',
               key: 'booking_date',
               width: 100
@@ -1106,6 +1119,7 @@ export default {
             }
           ],
           ColumnsChecked: [
+            'Service',
             'Book Date',
             'Fee',
             'Shipper',
