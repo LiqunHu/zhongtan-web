@@ -50,6 +50,9 @@
         <FormItem label="Fix String" prop="billladingno_batch_fix_string">
           <Input placeholder="Fix String" v-model="workPara.billladingno_batch_fix_string"/>
         </FormItem>
+        <FormItem label="Fix String End" prop="billladingno_batch_fix_string_end">
+          <Input placeholder="Fix StringEnd" v-model="workPara.billladingno_batch_fix_string_end"/>
+        </FormItem>
         <FormItem label="Number String Length" prop="billladingno_batch_number_length">
           <Input placeholder="Number Length" v-model="workPara.billladingno_batch_number_length"/>
         </FormItem>
@@ -94,6 +97,10 @@ export default {
             {
               title: 'Fix String',
               key: 'billladingno_batch_fix_string'
+            },
+            {
+              title: 'Fix String End',
+              key: 'billladingno_batch_fix_string_end'
             },
             {
               title: 'Number String Length',
@@ -214,8 +221,8 @@ export default {
           let numLen = parseInt(this.workPara.billladingno_batch_number_length) * -1
           let numStart = parseInt(this.workPara.billladingno_batch_number_start)
           let blCount = parseInt(this.workPara.billladingno_batch_count)
-          let blStart = fixStr + ('0000000000000000000000000000000' + numStart).slice(numLen)
-          let blEnd = fixStr + ('0000000000000000000000000000000' + (numStart + blCount - 1)).slice(numLen)
+          let blStart = fixStr + ('0000000000000000000000000000000' + numStart).slice(numLen) + (this.workPara.billladingno_batch_fix_string_end || '')
+          let blEnd = fixStr + ('0000000000000000000000000000000' + (numStart + blCount - 1)).slice(numLen) + (this.workPara.billladingno_batch_fix_string_end  || '')
           this.rangeString = blStart + ' ---- ' + blEnd
         }
       })
