@@ -39,10 +39,10 @@
               </Select>
             </div>
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="table.importTable.search_data.voyage" placeholder="Voyage" style="width: 100px">
+              <input type="text" class="form-control" v-model="table.importTable.search_data.voyage" placeholder="Voyage" style="width: 100px" />
             </div>
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="table.importTable.search_data.bl" placeholder="BL No." style="width: 130px">
+              <input type="text" class="form-control" v-model="table.importTable.search_data.bl" placeholder="BL No." style="width: 130px" />
             </div>
             <div class="input-group m-r-3">
               <button type="button" class="btn btn-info" @click="getImportData(1)">
@@ -64,7 +64,7 @@
                 action="/api/zhongtan/import/ImportWork/uploadImport"
               >
                 <button type="button" class="btn btn-info">Load</button>
-              </Upload> -->
+              </Upload>-->
               <button type="button" class="btn btn-info" @click="loadImportModal">Load</button>
             </div>
             <div class="form-group m-r-3">
@@ -88,7 +88,7 @@
       <Table stripe ref="importTable" :columns="table.importTable.rows" :data="table.importTable.data">
         <template slot-scope="{ row, index }" slot="action">
           <Tooltip content="Download B/L">
-            <a href="#" class="btn btn-green btn-icon btn-sm" @click="downLoadBL(row)">
+            <a href="#" class="btn btn-green btn-icon btn-sm" @click="actDownLoadBLModal(row)">
               <i class="fa fa-download"></i>
             </a>
           </Tooltip>
@@ -98,11 +98,11 @@
             <Button type="text" style="text-decoration:underline">{{row.customerINFO.name}}</Button>
             <template slot="content">
               Phone: {{row.customerINFO.phone}}
-              <br>
+              <br />
               Email: {{row.customerINFO.email}}
-              <br>
+              <br />
               Address: {{row.customerINFO.address}}
-              <br>
+              <br />
             </template>
           </Poptip>
         </template>
@@ -110,7 +110,7 @@
       </Table>
       <Row>
         <Col span="20">
-          <Page class="m-t-10" :total="table.importTable.total" :page-size="table.importTable.limit" @on-change="getImportData"/>
+          <Page class="m-t-10" :total="table.importTable.total" :page-size="table.importTable.limit" @on-change="getImportData" />
         </Col>
         <Col span="4">
           <div class="total">Total: {{table.importTable.total}}</div>
@@ -124,7 +124,7 @@
         </FormItem>
         <FormItem label="Files">
           <div v-for="f in files.fileList" v-bind:key="f.name" class="upload-list">
-            <Icon type="ios-document" size="60"/>
+            <Icon type="ios-document" size="60" />
           </div>
           <Upload
             ref="upload"
@@ -150,10 +150,148 @@
         <Button type="primary" size="large" @click="importData">Submit</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.downLoadBLModal" title="Download BL" width="800">
+      <Form :model="workPara" :label-width="120">
+        <Row>
+          <Col>
+            <FormItem label="Deliver to" prop="deliver_to">
+              <Input type="textarea" :rows="2" placeholder="Deliver to" v-model="workPara.deliver_to" />
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="9">
+            <FormItem label="BL Date" prop="bl_date">
+              <DatePicker type="date" placeholder="BL Date" v-model="workPara.bl_date"></DatePicker>
+            </FormItem>
+          </Col>
+          <Col offset="3" span="9">
+            <FormItem label="Valid to" prop="valid_to">
+              <DatePicker type="date" placeholder="Valid to" v-model="workPara.valid_to"></DatePicker>
+            </FormItem>
+          </Col>
+        </Row>
+        <Divider />
+        <Row>
+          <Col span="9">
+            <FormItem label="Consignee Name" prop="consignee_name">
+              <Input type="textarea" :rows="4" placeholder="Consignee Name" v-model="workPara.consignee_name" />
+            </FormItem>
+          </Col>
+          <Col offset="3" span="9">
+            <FormItem label="Delivery Order No" prop="delivery_order_no">
+              <Input placeholder="Delivery Order No" v-model="workPara.delivery_order_no" />
+            </FormItem>
+            <FormItem label="B/L NO." prop="bl_no">
+              <Input placeholder="B/L NO." v-model="workPara.bl_no" />
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="9">
+            <FormItem label="Address: " prop="consignee_address">
+              <Input type="textarea" :rows="4" placeholder="Address" v-model="workPara.consignee_address" />
+            </FormItem>
+          </Col>
+          <Col offset="3" span="9">
+            <FormItem label="Vessel" prop="vessel">
+              <Input placeholder="Vessel" v-model="workPara.vessel" />
+            </FormItem>
+            <FormItem label="Voyage" prop="voyage">
+              <Input placeholder="Voyage" v-model="workPara.voyage" />
+            </FormItem>
+          </Col>
+        </Row>
+        <Divider />
+        <Row>
+          <Col span="8">
+            <FormItem label="POL/ETD" prop="etd">
+              <DatePicker type="date" placeholder="POL/ETD" v-model="workPara.etd"></DatePicker>
+            </FormItem>
+          </Col>
+          <Col span="8">
+            <FormItem label="POD/ETA" prop="eta">
+              <DatePicker type="date" placeholder="POD/RTA" v-model="workPara.eta"></DatePicker>
+            </FormItem>
+          </Col>
+          <Col span="8">
+            <FormItem label="ICD/TERMINAL" prop="terminal">
+              <Input placeholder="ICD/TERMINAL" v-model="workPara.terminal" />
+            </FormItem>
+          </Col>
+        </Row>
+        <Divider />
+        <Row>
+          <Col>
+            <Table stripe size="small" ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data">
+              <template slot-scope="{ row, index }" slot="container_no">
+                <Input v-model="row.container_no" @on-blur="table.containerTable.data[index] = row" />
+              </template>
+              <template slot-scope="{ row, index }" slot="seal_no">
+                <Input v-model="row.seal_no" @on-blur="table.containerTable.data[index] = row" />
+              </template>
+              <template slot-scope="{ row, index }" slot="container_size">
+                <Input v-model="row.container_size" @on-blur="table.containerTable.data[index] = row" />
+              </template>
+              <template slot-scope="{ row, index }" slot="container_marks">
+                <Input v-model="row.container_marks" @on-blur="table.containerTable.data[index] = row" />
+              </template>
+              <template slot-scope="{ row, index }" slot="container_tare">
+                <Input v-model="row.container_tare" @on-blur="table.containerTable.data[index] = row" />
+              </template>
+              <template slot-scope="{ row, index }" slot="container_count">
+                <Input v-model="row.container_count" @on-blur="table.containerTable.data[index] = row" />
+              </template>
+              <template slot-scope="{ row, index }" slot="container_commodity">
+                <Input v-model="row.container_commodity" @on-blur="table.containerTable.data[index] = row" />
+              </template>
+              <template slot-scope="{ row, index }" slot="container_net_weight">
+                <Input v-model="row.container_net_weight" @on-blur="table.containerTable.data[index] = row" />
+              </template>
+              <template slot-scope="{ row, index }" slot="container_cbm">
+                <Input v-model="row.container_cbm" @on-blur="table.containerTable.data[index] = row" />
+              </template>
+            </Table>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <FormItem label="TOTAL CONTAINERS" prop="container_count">
+              <Input placeholder="TOTAL NO. OF CONTAINERS PER SIZE/TYPE " v-model="workPara.container_count" />
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="9">
+            <FormItem label="Total Net weight" prop="net_weight">
+              <Input placeholder="Total Net weight" v-model="workPara.net_weight" />
+            </FormItem>
+          </Col>
+          <Col offset="3" span="9">
+            <FormItem label="Total CMB" prop="total_cmb">
+              <Input placeholder="Total CMB" v-model="workPara.total_cmb" />
+            </FormItem>
+          </Col>
+        </Row>
+        <Divider />
+        <Row>
+          <Col>
+            <FormItem label="Receiving and delivery system" prop="receiving_delivery">
+              <Input placeholder="Receiving and delivery system" v-model="workPara.receiving_delivery" />
+            </FormItem>
+          </Col>
+        </Row>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.downLoadBLModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="downLoadBL">Submit</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
 import PageOptions from '../../../config/PageOptions.vue'
+import _ from "lodash"
 const moment = require('moment')
 const common = require('@/lib/common')
 import expandRow from '../../../components/import/import-expand.vue'
@@ -164,9 +302,8 @@ export default {
   components: { expandRow },
   data: function() {
     return {
-      modal: {},
+      modal: { importModal: false, downLoadBLModal: false },
       table: {
-        modal: { importModal: false },
         importTable: {
           rows: [
             {
@@ -255,6 +392,56 @@ export default {
             bl: '',
             search_text: ''
           }
+        },
+        containerTable: {
+          columns: [
+            {
+              title: 'Container No.',
+              slot: 'container_no',
+              width: 120
+            },
+            {
+              title: 'Seal No.',
+              slot: 'seal_no',
+              width: 120
+            },
+            {
+              title: 'Size',
+              slot: 'container_size',
+              width: 120
+            },
+            {
+              title: 'Marks & Numbers',
+              slot: 'container_marks',
+              width: 120
+            },
+            {
+              title: 'Tare',
+              slot: 'container_tare',
+              width: 120
+            },
+            {
+              title: 'PCS/QTY',
+              slot: 'container_count',
+              width: 120
+            },
+            {
+              title: 'Commodity',
+              slot: 'container_commodity',
+              width: 150
+            },
+            {
+              title: 'Net WT KGM',
+              slot: 'container_net_weight',
+              width: 120
+            },
+            {
+              title: 'CBM',
+              slot: 'container_cbm',
+              width: 120
+            }
+          ],
+          data: []
         }
       },
       formRule: {
@@ -492,21 +679,78 @@ export default {
         this.$commonact.fault(error)
       }
     },
-    downLoadBL: async function(row) {
+    actDownLoadBLModal: function(row) {
+      this.workPara = {}
+      this.workPara.import_billlading_id = row.import_billlading_id
+      this.workPara.deliver_to = ''
+      this.workPara.bl_date = moment().format('YYYY-MM-DD')
+      this.workPara.valid_to = ''
+      let cary = row.import_billlading_consignee.split('<br/>')
+      this.workPara.consignee_name = cary.length > 0 ? cary[0].replace(/\r\n/g, '') : ''
+      this.workPara.consignee_address =
+        cary.length > 1
+          ? _.takeRight(cary, cary.length - 1)
+              .join(' ')
+              .replace(/\r\n/g, '')
+          : ''
+      this.workPara.delivery_order_no = ''
+      this.workPara.bl_no = row.import_billlading_no
+      this.workPara.vessel = row.import_billlading_vessel_name
+      this.workPara.voyage = row.import_billlading_voyage
+      this.workPara.etd = ''
+      this.workPara.eta = ''
+      this.workPara.terminal = ''
+      this.table.containerTable.data = []
+      if (row.container.length > 0) {
+        for (let c of row.container) {
+          this.table.containerTable.data.push({
+            container_no: c.import_billlading_container_num,
+            seal_no: c.import_billlading_container_seal,
+            container_size: c.import_billlading_container_type,
+            container_marks: 'N/M',
+            container_tare: c.import_billlading_container_tare_weight,
+            container_count: c.import_billlading_container_package_cnt + c.import_billlading_container_cnt_unit,
+            container_commodity: '',
+            container_net_weight: c.import_billlading_container_weight,
+            container_cbm: c.import_billlading_container_cmb
+          })
+        }
+      } else {
+        this.table.containerTable.data.push({
+          container_no: '',
+          seal_no: '',
+          container_size: '',
+          container_marks: 'N/M',
+          container_tare: '',
+          container_count: '',
+          container_commodity: '',
+          container_net_weight: '',
+          container_cbm: ''
+        })
+      }
+      this.workPara.container_count = row.container.length + 'X' + row.container[0].import_billlading_container_type
+      this.workPara.net_weight = row.import_billlading_total_gross_weight_kg
+      this.workPara.total_cmb = row.import_billlading_total_volume_cbm
+      this.workPara.receiving_delivery = ''
+
+      this.modal.downLoadBLModal = true
+    },
+    downLoadBL: async function() {
       try {
+        this.workPara.containers = this.table.containerTable.data
         let response = await this.$http.request({
           url: apiUrl + 'downloadBL',
           method: 'post',
-          data: { import_billlading_id: row.import_billlading_id },
+          data: this.workPara,
           responseType: 'blob'
         })
-
+        this.modal.downLoadBLModal = false
         let blob = response.data
         let reader = new FileReader()
         reader.readAsDataURL(blob)
         reader.onload = e => {
           let a = document.createElement('a')
-          a.download = row.ca0 + ' ' + row.import_billlading_no+ '.docx'
+          a.download = this.workPara.consignee_name + ' ' + this.workPara.import_billlading_no + '.docx'
           a.href = e.target.result
           document.body.appendChild(a)
           a.click()
