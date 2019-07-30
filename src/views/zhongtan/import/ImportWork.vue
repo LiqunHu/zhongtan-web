@@ -709,10 +709,10 @@ export default {
             container_size: c.import_billlading_container_type,
             container_marks: 'N/M',
             container_tare: c.import_billlading_container_tare_weight,
-            container_count: c.import_billlading_container_package_cnt + c.import_billlading_container_cnt_unit,
+            container_count: c.import_billlading_container_package_cnt + ' ' + row.goods[0].import_billlading_goods_package_unit,
             container_commodity: '',
             container_net_weight: c.import_billlading_container_weight,
-            container_cbm: c.import_billlading_container_cmb
+            container_cbm: parseFloat(row.import_billlading_total_volume_cbm) / row.container.length
           })
         }
       } else {
@@ -731,12 +731,16 @@ export default {
       this.workPara.container_count = row.container.length + 'X' + row.container[0].import_billlading_container_type
       this.workPara.net_weight = row.import_billlading_total_gross_weight_kg
       this.workPara.total_cmb = row.import_billlading_total_volume_cbm
-      this.workPara.receiving_delivery = ''
+      this.workPara.receiving_delivery = row.container[0].import_billlading_container_traffic_mode
 
       this.modal.downLoadBLModal = true
     },
     downLoadBL: async function() {
       try {
+        this.workPara.bl_date = moment(this.workPara.bl_date).format('YYYY-MM-DD')
+        this.workPara.valid_to = moment(this.workPara.valid_to).format('YYYY-MM-DD')
+        this.workPara.etd = moment(this.workPara.etd).format('YYYY-MM-DD')
+        this.workPara.eta = moment(this.workPara.eta).format('YYYY-MM-DD')
         this.workPara.containers = this.table.containerTable.data
         let response = await this.$http.request({
           url: apiUrl + 'downloadBL',
