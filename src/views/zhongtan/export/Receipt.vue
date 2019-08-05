@@ -49,7 +49,7 @@
       </template>
       <Table stripe ref="bookingTable" :columns="table.bookingTable.rows" :data="table.bookingTable.data">
         <template slot-scope="{ row, index }" slot="action">
-          <Tooltip content="Booking bill lading" v-if="row.billlading_state === 'PS'">
+          <Tooltip content="Booking bill lading" v-if="row.billlading_state === 'IV'">
             <a href="#" class="btn btn-primary btn-icon btn-sm" @click="invoiceModal(row)">
               <i class="fa fa-money-bill-alt"></i>
             </a>
