@@ -581,6 +581,9 @@
             <Option v-for="item in VoyageINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
           </Select>
         </FormItem>
+        <FormItem label="Billlading No." prop="billlading_no">
+          <Input placeholder="Billlading No." v-model="workPara.billlading_no"/>
+        </FormItem>
         <FormItem label="CSO" prop="billlading_cso">
           <Input placeholder="CSO" v-model="workPara.billlading_cso"/>
         </FormItem>
@@ -1552,6 +1555,7 @@ export default {
         ruleConfirmBookingModal: {
           billlading_vessel_id: [{ required: true, type: 'number', trigger: 'change', message: 'Choose vessel' }],
           billlading_voyage_id: [{ required: true, type: 'number', trigger: 'change', message: 'Choose voyage' }],
+          billlading_no: [{ required: true, trigger: 'change', message: 'Enter BL NO.' }],
           billlading_freight_currency: [{ required: true, trigger: 'change', message: 'Choose Currency' }],
           billlading_freight_charge: [{ required: true, trigger: 'change', message: 'Enter Freight Charge' }],
           billlading_cso: [{ required: true, trigger: 'change', message: 'Enter CSO' }]
