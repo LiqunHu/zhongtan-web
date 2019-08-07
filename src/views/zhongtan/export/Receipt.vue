@@ -49,8 +49,8 @@
       </template>
       <Table stripe ref="bookingTable" :columns="table.bookingTable.rows" :data="table.bookingTable.data">
         <template slot-scope="{ row, index }" slot="action">
-          <Tooltip content="Booking bill lading" v-if="row.billlading_state === 'IV'">
-            <a href="#" class="btn btn-primary btn-icon btn-sm" @click="invoiceModal(row)">
+          <Tooltip content="Receipt" v-if="row.billlading_state === 'IV'">
+            <a href="#" class="btn btn-primary btn-icon btn-sm" @click="receiptModal(row)">
               <i class="fa fa-money-bill-alt"></i>
             </a>
           </Tooltip>
@@ -60,30 +60,50 @@
             <Button type="text" style="text-decoration:underline">{{row.customerINFO.name}}</Button>
             <template slot="content">
               Phone: {{row.customerINFO.phone}}
-              <br>
+              <br />
               Email: {{row.customerINFO.email}}
-              <br>
+              <br />
               Address: {{row.customerINFO.address}}
-              <br>
+              <br />
+            </template>
+          </Poptip>
+        </template>
+        <template slot-scope="{ row, index }" slot="files">
+          <Poptip trigger="hover" placement="bottom" :transfer="true" width="555">
+            <Button type="text" style="text-decoration:underline">Files</Button>
+            <template slot="content">
+              <Table stripe size="small" :columns="table.filesTable.columns" :data="row.files">
+                <template slot-scope="{ row, index }" slot="url">
+                  <a :href="row.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
+                    <i class="fa fa-download"></i>
+                  </a>
+                </template>
+              </Table>
             </template>
           </Poptip>
         </template>
       </Table>
-      <Page class="m-t-10" :total="table.bookingTable.total" :page-size="table.bookingTable.limit" @on-change="getBookingData"/>
+      <Page class="m-t-10" :total="table.bookingTable.total" :page-size="table.bookingTable.limit" @on-change="getBookingData" />
     </panel>
-    <Modal v-model="modal.invoiceModal" title="invoice">
-      <Form :model="workPara" :label-width="150" :rules="formRule.ruleInvoiceModal" ref="invoice">
+    <Modal v-model="modal.receiptModal" title="Receipt">
+      <Form :model="workPara" :label-width="150" :rules="formRule.ruleInvoiceModal" ref="receipt">
         <h4 class="text-middle m-b-10">
-          <b>Invoice</b>
+          <b>Receipt</b>
         </h4>
-        <FormItem label="Invoice Money" prop="billlading_invoice_money">
-          <Input placeholder="Invoice Money" v-model="workPara.billlading_invoice_money"/>
+        <FormItem label="Received from" prop="billlading_received_from">
+          <Input placeholder="Received from" v-model="workPara.billlading_received_from" />
+        </FormItem>
+        <FormItem label="Sum" prop="sum_fee">
+          <Input placeholder="Sum" v-model="workPara.sum_fee" :disabled="true"/>
+        </FormItem>
+        <FormItem label="Receipt Money" prop="billlading_received">
+          <Input placeholder="Receipt Money" v-model="workPara.billlading_received" />
         </FormItem>
       </Form>
 
       <div slot="footer">
-        <Button type="text" size="large" @click="modal.invoiceModal=false">Cancel</Button>
-        <Button type="primary" size="large" @click="invoice">Submit</Button>
+        <Button type="text" size="large" @click="modal.receiptModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="receipt">Submit</Button>
       </div>
     </Modal>
   </div>
@@ -91,14 +111,14 @@
 <script>
 import PageOptions from '../../../config/PageOptions.vue'
 const moment = require('moment')
-// const common = require('@/lib/common')
+const common = require('@/lib/common')
 const apiUrl = '/api/zhongtan/export/Receipt/'
 
 export default {
   name: 'Receipt',
   data: function() {
     return {
-      modal: { invoiceModal: false },
+      modal: { receiptModal: false },
       table: {
         bookingTable: {
           rows: [
@@ -118,6 +138,11 @@ export default {
               width: 100
             },
             {
+              title: 'Files',
+              slot: 'files',
+              width: 100
+            },
+            {
               title: 'S/O',
               key: 'billlading_no',
               width: 150
@@ -133,31 +158,48 @@ export default {
             },
             {
               title: 'SUM',
-              key: 'sum_fee'
+              key: 'sum_fee',
+              width: 100
+            },
+            {
+              title: 'FROM',
+              key: 'billlading_received_from',
+              width: 100
+            },
+            {
+              title: 'RECEIVED',
+              key: 'billlading_received',
+              width: 100
             },
             {
               title: 'FREIGHT',
-              key: 'billlading_invoice_freight'
+              key: 'billlading_invoice_freight',
+              width: 100
             },
             {
               title: 'B/LANDING',
-              key: 'billlading_invoice_blanding'
+              key: 'billlading_invoice_blanding',
+              width: 100
             },
             {
               title: 'TASAC',
-              key: 'billlading_invoice_tasac'
+              key: 'billlading_invoice_tasac',
+              width: 100
             },
             {
               title: 'AMMENDMENT FEE',
-              key: 'billlading_invoice_ammendment'
+              key: 'billlading_invoice_ammendment',
+              width: 100
             },
             {
               title: 'ISP',
-              key: 'billlading_invoice_isp'
+              key: 'billlading_invoice_isp',
+              width: 100
             },
             {
               title: 'SURCHAGE',
-              key: 'billlading_invoice_surchage'
+              key: 'billlading_invoice_surchage',
+              width: 100
             }
           ],
           data: [],
@@ -179,6 +221,37 @@ export default {
             billlading_state: '',
             search_text: ''
           }
+        },
+        filesTable: {
+          columns: [
+            {
+              title: 'Create Date',
+              key: 'date',
+              width: 120
+            },
+            {
+              title: 'Type',
+              key: 'filetype',
+              width: 150
+            },
+            {
+              title: 'Name',
+              key: 'name',
+              render: common.tooltipRender(),
+              width: 100
+            },
+            {
+              title: 'Download',
+              slot: 'url',
+              width: 100
+            },
+            {
+              title: 'Remark',
+              key: 'remark',
+              render: common.tooltipRender(),
+              width: 100
+            }
+          ]
         }
       },
       formRule: {
@@ -257,19 +330,20 @@ export default {
         this.$commonact.fault(error)
       }
     },
-    invoiceModal: async function(row) {
+    receiptModal: async function(row) {
       this.workPara = JSON.parse(JSON.stringify(row))
-      this.$refs.invoice.resetFields()
-      this.modal.invoiceModal = true
+      this.$refs.receipt.resetFields()
+      this.workPara.billlading_received_from = row.customerINFO.name
+      this.modal.receiptModal = true
     },
-    invoice: async function() {
-      this.$refs.invoice.validate(async valid => {
+    receipt: async function() {
+      this.$refs.receipt.validate(async valid => {
         try {
           if (valid) {
-            await this.$http.post(apiUrl + 'invoice', this.workPara)
+            await this.$http.post(apiUrl + 'receipt', this.workPara)
             this.$Message.success('submit success')
             this.getBookingData()
-            this.modal.invoiceModal = false
+            this.modal.receiptModal = false
           }
         } catch (error) {
           this.$commonact.fault(error)

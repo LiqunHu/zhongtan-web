@@ -50,10 +50,10 @@
   background-color: #39cccc;
 }
 
-.label-pending-settlement {
-  background-color: #555299;
-}
-
 .label-invoice {
   background-color: #587ea3;
+}
+
+.label-receipt {
+  background-color: #555299;
 }
