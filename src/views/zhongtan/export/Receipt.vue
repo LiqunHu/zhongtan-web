@@ -110,6 +110,7 @@
 </template>
 <script>
 import PageOptions from '../../../config/PageOptions.vue'
+import printJS from 'print-js'
 const moment = require('moment')
 const common = require('@/lib/common')
 const apiUrl = '/api/zhongtan/export/Receipt/'
@@ -340,7 +341,8 @@ export default {
       this.$refs.receipt.validate(async valid => {
         try {
           if (valid) {
-            await this.$http.post(apiUrl + 'receipt', this.workPara)
+            let response = await this.$http.post(apiUrl + 'receipt', this.workPara)
+            printJS(response.data.info.url)
             this.$Message.success('submit success')
             this.getBookingData()
             this.modal.receiptModal = false
