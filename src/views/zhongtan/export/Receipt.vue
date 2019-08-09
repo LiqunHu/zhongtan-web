@@ -141,7 +141,7 @@ export default {
             {
               title: 'Receipt No.',
               key: 'billlading_receipt_no',
-              width: 130
+              width: 150
             },
             {
               title: 'Customer',
