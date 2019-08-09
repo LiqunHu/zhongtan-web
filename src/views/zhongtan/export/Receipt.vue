@@ -262,6 +262,7 @@ export default {
       },
       formRule: {
         ruleInvoiceModal: {
+          billlading_receipt_type: [{ required: true, trigger: 'change', message: 'Choose Receipt Type' }],
           billlading_invoice_money: [{ required: true, trigger: 'change', message: 'Enter Invoice money' }]
         }
       },
