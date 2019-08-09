@@ -54,6 +54,11 @@
               <i class="fa fa-money-bill-alt"></i>
             </a>
           </Tooltip>
+          <Tooltip content="Download Receipt" v-if="row.billlading_state === 'RE'">
+            <a href="#" class="btn btn-green btn-icon btn-sm" @click="downloadReceipt(row)">
+              <i class="fa fa-download"></i>
+            </a>
+          </Tooltip>
         </template>
         <template slot-scope="{ row, index }" slot="customerINFO">
           <Poptip trigger="hover" width="300">
@@ -362,6 +367,9 @@ export default {
           this.$commonact.fault(error)
         }
       })
+    },
+    downloadReceipt: function(row) {
+      printJS(row.files[0].url)
     }
   }
 }
