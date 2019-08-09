@@ -139,6 +139,11 @@ export default {
               width: 100
             },
             {
+              title: 'Receipt No.',
+              key: 'billlading_receipt_no',
+              width: 130
+            },
+            {
               title: 'Customer',
               slot: 'customerINFO',
               width: 100
