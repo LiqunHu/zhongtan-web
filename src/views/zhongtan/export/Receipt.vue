@@ -90,11 +90,16 @@
         <h4 class="text-middle m-b-10">
           <b>Receipt</b>
         </h4>
+        <FormItem label="Receipt Type" prop="billlading_receipt_type">
+          <Select v-model="workPara.billlading_receipt_type">
+            <Option v-for="item in pagePara.RECEIPT_TYPE_INFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+          </Select>
+        </FormItem>
         <FormItem label="Received from" prop="billlading_received_from">
           <Input placeholder="Received from" v-model="workPara.billlading_received_from" />
         </FormItem>
         <FormItem label="Sum" prop="sum_fee">
-          <Input placeholder="Sum" v-model="workPara.sum_fee" :disabled="true"/>
+          <Input placeholder="Sum" v-model="workPara.sum_fee" :disabled="true" />
         </FormItem>
         <FormItem label="Receipt Money" prop="billlading_received">
           <Input placeholder="Receipt Money" v-model="workPara.billlading_received" />
