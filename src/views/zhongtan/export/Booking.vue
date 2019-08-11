@@ -113,26 +113,26 @@
           </Tooltip>
         </template>
         <template slot-scope="{ row, index }" slot="fees">
-          <Poptip trigger="hover"  placement="bottom" :transfer="true" width="200">
+          <Poptip trigger="hover" placement="bottom" :transfer="true" width="200">
             <Button type="text" style="text-decoration:underline">{{row.fees.sum_fee}}</Button>
             <template slot="content">
               FREIGHT: {{row.fees.billlading_invoice_freight}}
-              <br>
+              <br />
               B/LANDING: {{row.fees.billlading_invoice_blanding}}
-              <br>
+              <br />
               TASAC: {{row.fees.billlading_invoice_tasac}}
-              <br>
+              <br />
               AMMENDMENT FEE: {{row.fees.billlading_invoice_ammendment}}
-              <br>
+              <br />
               ISP: {{row.fees.billlading_invoice_isp}}
-              <br>
+              <br />
               SURCHAGE: {{row.fees.billlading_invoice_surchage}}
-              <br>
+              <br />
             </template>
           </Poptip>
         </template>
         <template slot-scope="{ row, index }" slot="files">
-          <Poptip trigger="hover"  placement="bottom" :transfer="true" width="555">
+          <Poptip trigger="hover" placement="bottom" :transfer="true" width="555">
             <Button type="text" style="text-decoration:underline">Files</Button>
             <template slot="content">
               <Table stripe size="small" :columns="table.filesTable.columns" :data="row.files">
@@ -151,7 +151,7 @@
           </Select>
         </template>
         <template slot-scope="{ row, index }" slot="billlading_goods">
-          <Poptip trigger="hover"  placement="bottom" :transfer="true" width="800">
+          <Poptip trigger="hover" placement="bottom" :transfer="true" width="800">
             <Button type="text" style="text-decoration:underline">Goods</Button>
             <template slot="content">
               <Table stripe size="small" :columns="table.poptipGoodsTable.columns" :data="row.billlading_goods"></Table>
@@ -159,7 +159,7 @@
           </Poptip>
         </template>
         <template slot-scope="{ row, index }" slot="billlading_containers">
-          <Poptip trigger="hover"  placement="bottom" :transfer="true" width="800">
+          <Poptip trigger="hover" placement="bottom" :transfer="true" width="800">
             <Button type="text" style="text-decoration:underline">Containers</Button>
             <template slot="content">
               <Table stripe size="small" :columns="table.poptipContainerTable.columns" :data="row.billlading_containers"></Table>
@@ -167,297 +167,309 @@
           </Poptip>
         </template>
       </Table>
-      <Page class="m-t-10" :total="table.bookingTable.total" :page-size="table.bookingTable.limit" @on-change="getBookingData"/>
+      <Page class="m-t-10" :total="table.bookingTable.total" :page-size="table.bookingTable.limit" @on-change="getBookingData" />
     </panel>
     <Modal v-model="modal.bookingModal" title="Booking" width="800">
       <div style="height: 600px">
-        <vue-scroll>
-          <Form :model="workPara" :label-width="120" :rules="formRule.ruleBookingModal" ref="formPort">
-            <Row>
-              <Col span="9">
-                <FormItem label="Vessel" prop="billlading_vessel_id">
-                  <Select v-model="workPara.billlading_vessel_id" @on-change="vesselChange">
-                    <Option v-for="item in pagePara.VesselINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-                  </Select>
-                </FormItem>
-              </Col>
-              <Col offset="3" span="9">
-                <FormItem label="Voyage" prop="billlading_voyage_id">
-                  <Select v-model="workPara.billlading_voyage_id">
-                    <Option v-for="item in VoyageINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-                  </Select>
-                </FormItem>
-              </Col>
-            </Row>
-            <Divider/>
-            <Row>
-              <Col span="9">
-                <h4 class="text-middle m-b-10">
-                  <b>Shipper (Name & Address)</b>
-                </h4>
-                <FormItem label="Name" prop="billlading_shipper_name">
-                  <Input placeholder="Name" v-model="workPara.billlading_shipper_name"/>
-                </FormItem>
-                <FormItem label="Address" prop="billlading_shipper_address">
-                  <Input type="textarea" :rows="2" placeholder="Address" v-model="workPara.billlading_shipper_address"/>
-                </FormItem>
-                <FormItem label="telephone" prop="billlading_shipper_tel">
-                  <Input placeholder="telephone" v-model="workPara.billlading_shipper_tel"/>
-                </FormItem>
-              </Col>
-              <Col offset="3" span="9">
-                <strong>
-                  <h4>CHINESE-TANZANIAN JOINT SHIPPING COMPANY.</h4>
-                  <br>
-                  <br>31, KISUTU ROAD
-                  <br>P. O. Box – 696, Dar Es Salaam, Tanzania.
-                  <br>Tel: +255 (22) 2113389
-                  <br>Fax: +255 (22) 2113388
-                </strong>
-              </Col>
-            </Row>
-            <Divider/>
-            <Row>
-              <Col span="9">
-                <h4 class="text-middle m-b-10">
-                  <b>Consignee (Name & Address)</b>
-                </h4>
-                <FormItem label="Name" prop="billlading_consignee_name">
-                  <Input placeholder="Name" v-model="workPara.billlading_consignee_name"/>
-                </FormItem>
-                <FormItem label="Address" prop="billlading_consignee_address">
-                  <Input type="textarea" :rows="2" placeholder="Address" v-model="workPara.billlading_consignee_address"/>
-                </FormItem>
-                <FormItem label="telephone" prop="billlading_consignee_tel">
-                  <Input placeholder="telephone" v-model="workPara.billlading_consignee_tel"/>
-                </FormItem>
-              </Col>
-              <Col offset="1" span="1">
-                <button type="button" class="btn btn-default" @click="sameCopy">
-                  <i class="fa fa-angle-double-right"></i>
-                </button>
-              </Col>
-              <Col offset="1" span="9">
-                <h4 class="text-middle m-b-10">
-                  <b>Notify Party (Name & Address)</b>
-                </h4>
-                <FormItem label="Name" prop="billlading_notify_name">
-                  <Input placeholder="Name" v-model="workPara.billlading_notify_name"/>
-                </FormItem>
-                <FormItem label="Address" prop="billlading_notify_address">
-                  <Input type="textarea" :rows="2" placeholder="Address" v-model="workPara.billlading_notify_address"/>
-                </FormItem>
-                <FormItem label="telephone" prop="billlading_notify_tel">
-                  <Input placeholder="telephone" v-model="workPara.billlading_notify_tel"/>
-                </FormItem>
-              </Col>
-            </Row>
-            <Divider/>
-            <Row>
-              <Col span="9">
-                <FormItem label="Port of Loading" prop="billlading_loading_port_id">
-                  <Select v-model="workPara.billlading_loading_port_id">
-                    <Option v-for="item in pagePara.PortINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-                  </Select>
-                </FormItem>
-                <FormItem label="Port of Discharg" prop="billlading_discharge_port_id">
-                  <Select v-model="workPara.billlading_discharge_port_id">
-                    <Option v-for="item in pagePara.PortINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-                  </Select>
-                </FormItem>
-                <FormItem label="Place of Deliver" prop="billlading_delivery_place">
-                  <Input type="textarea" :rows="2" placeholder="Place of Deliver" v-model="workPara.billlading_delivery_place"/>
-                </FormItem>
-              </Col>
-              <Col offset="3" span="9">
-                <FormItem label="No of Original B/L" prop="billlading_original_num">
-                  <Input placeholder="No of Original B/L" v-model="workPara.billlading_original_num"/>
-                </FormItem>
-                <FormItem label="No of Copies B/L" prop="billlading_copys_num">
-                  <Input placeholder="No of Copies B/L" v-model="workPara.billlading_copys_num"/>
-                </FormItem>
-              </Col>
-            </Row>
-            <Divider/>
-            <div style="width: 700px">
-              <Row v-if="action === 'add' || workPara.billlading_state === 'PBK'">
-                <Col span="24">
-                  <h4 class="text-middle m-b-10">
-                    <b>Cargo Description</b>
-                  </h4>
-                  <Table stripe size="small" ref="goodsTable" :columns="table.goodsTable.columns" :data="table.goodsTable.data">
-                    <template slot-scope="{ row, index }" slot="billlading_goods_container_number">
-                      <Input v-model="row.billlading_goods_container_number" @on-blur="table.goodsTable.data[index] = row"/>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="billlading_goods_container_type">
-                      <Select :transfer="true" v-model="row.billlading_goods_container_type" @on-change="table.goodsTable.data[index] = row">
-                        <Option v-for="item in pagePara.ContainerTypeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+        <Row>
+          <Col span="4">
+            <h4 class="m-b-10">Template</h4>
+            <Button class="m-b-10" type="primary" size="small">Add</Button>
+            <Table stripe size="small" :columns="table.templateTable.columns" :data="table.templateTable.data">
+              <template slot-scope="{ row, index }" slot="action">
+              </template>
+            </Table>
+          </Col>
+          <Col span="20">
+            <vue-scroll>
+              <Form :model="workPara" :label-width="120" :rules="formRule.ruleBookingModal" ref="formPort">
+                <Row>
+                  <Col span="9">
+                    <FormItem label="Vessel" prop="billlading_vessel_id">
+                      <Select v-model="workPara.billlading_vessel_id" @on-change="vesselChange">
+                        <Option v-for="item in pagePara.VesselINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
                       </Select>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="billlading_goods_container_size">
-                      <Select :transfer="true" v-model="row.billlading_goods_container_size" @on-change="table.goodsTable.data[index] = row">
-                        <Option v-for="item in pagePara.ContainerSizeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                    </FormItem>
+                  </Col>
+                  <Col offset="3" span="9">
+                    <FormItem label="Voyage" prop="billlading_voyage_id">
+                      <Select v-model="workPara.billlading_voyage_id">
+                        <Option v-for="item in VoyageINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
                       </Select>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="billlading_goods_type">
-                      <Input v-model="row.billlading_goods_type" @on-blur="table.goodsTable.data[index] = row"/>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="billlading_goods_description">
-                      <Input v-model="row.billlading_goods_description" @on-blur="table.goodsTable.data[index] = row"/>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="billlading_goods_package_number">
-                      <Input v-model="row.billlading_goods_package_number" @on-blur="table.goodsTable.data[index] = row"/>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="billlading_goods_package_unit">
-                      <Select :transfer="true" v-model="row.billlading_goods_package_unit" @on-change="table.goodsTable.data[index] = row">
-                        <Option v-for="item in pagePara.PackageUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                    </FormItem>
+                  </Col>
+                </Row>
+                <Divider />
+                <Row>
+                  <Col span="9">
+                    <h4 class="text-middle m-b-10">
+                      <b>Shipper (Name & Address)</b>
+                    </h4>
+                    <FormItem label="Name" prop="billlading_shipper_name">
+                      <Input placeholder="Name" v-model="workPara.billlading_shipper_name" />
+                    </FormItem>
+                    <FormItem label="Address" prop="billlading_shipper_address">
+                      <Input type="textarea" :rows="2" placeholder="Address" v-model="workPara.billlading_shipper_address" />
+                    </FormItem>
+                    <FormItem label="telephone" prop="billlading_shipper_tel">
+                      <Input placeholder="telephone" v-model="workPara.billlading_shipper_tel" />
+                    </FormItem>
+                  </Col>
+                  <Col offset="3" span="9">
+                    <strong>
+                      <h4>CHINESE-TANZANIAN JOINT SHIPPING COMPANY.</h4>
+                      <br />
+                      <br />31, KISUTU ROAD
+                      <br />P. O. Box – 696, Dar Es Salaam, Tanzania.
+                      <br />Tel: +255 (22) 2113389
+                      <br />Fax: +255 (22) 2113388
+                    </strong>
+                  </Col>
+                </Row>
+                <Divider />
+                <Row>
+                  <Col span="9">
+                    <h4 class="text-middle m-b-10">
+                      <b>Consignee (Name & Address)</b>
+                    </h4>
+                    <FormItem label="Name" prop="billlading_consignee_name">
+                      <Input placeholder="Name" v-model="workPara.billlading_consignee_name" />
+                    </FormItem>
+                    <FormItem label="Address" prop="billlading_consignee_address">
+                      <Input type="textarea" :rows="2" placeholder="Address" v-model="workPara.billlading_consignee_address" />
+                    </FormItem>
+                    <FormItem label="telephone" prop="billlading_consignee_tel">
+                      <Input placeholder="telephone" v-model="workPara.billlading_consignee_tel" />
+                    </FormItem>
+                  </Col>
+                  <Col offset="1" span="1">
+                    <button type="button" class="btn btn-default" @click="sameCopy">
+                      <i class="fa fa-angle-double-right"></i>
+                    </button>
+                  </Col>
+                  <Col offset="1" span="9">
+                    <h4 class="text-middle m-b-10">
+                      <b>Notify Party (Name & Address)</b>
+                    </h4>
+                    <FormItem label="Name" prop="billlading_notify_name">
+                      <Input placeholder="Name" v-model="workPara.billlading_notify_name" />
+                    </FormItem>
+                    <FormItem label="Address" prop="billlading_notify_address">
+                      <Input type="textarea" :rows="2" placeholder="Address" v-model="workPara.billlading_notify_address" />
+                    </FormItem>
+                    <FormItem label="telephone" prop="billlading_notify_tel">
+                      <Input placeholder="telephone" v-model="workPara.billlading_notify_tel" />
+                    </FormItem>
+                  </Col>
+                </Row>
+                <Divider />
+                <Row>
+                  <Col span="9">
+                    <FormItem label="Port of Loading" prop="billlading_loading_port_id">
+                      <Select v-model="workPara.billlading_loading_port_id">
+                        <Option v-for="item in pagePara.PortINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
                       </Select>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="billlading_goods_gross_volume">
-                      <Input v-model="row.billlading_goods_gross_volume" @on-blur="table.goodsTable.data[index] = row"/>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="billlading_goods_gross_volume_unit">
-                      <Select :transfer="true" v-model="row.billlading_goods_gross_volume_unit" @on-change="table.goodsTable.data[index] = row">
-                        <Option v-for="item in pagePara.VolumeUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                    </FormItem>
+                    <FormItem label="Port of Discharg" prop="billlading_discharge_port_id">
+                      <Select v-model="workPara.billlading_discharge_port_id">
+                        <Option v-for="item in pagePara.PortINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
                       </Select>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="billlading_goods_gross_weight">
-                      <Input v-model="row.billlading_goods_gross_weight" @on-blur="table.goodsTable.data[index] = row"/>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="billlading_goods_gross_unit">
-                      <Select :draggable="true" v-model="row.billlading_goods_gross_unit" @on-change="table.goodsTable.data[index] = row">
-                        <Option v-for="item in pagePara.WeightUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                    </FormItem>
+                    <FormItem label="Place of Deliver" prop="billlading_delivery_place">
+                      <Input type="textarea" :rows="2" placeholder="Place of Deliver" v-model="workPara.billlading_delivery_place" />
+                    </FormItem>
+                  </Col>
+                  <Col offset="3" span="9">
+                    <FormItem label="No of Original B/L" prop="billlading_original_num">
+                      <Input placeholder="No of Original B/L" v-model="workPara.billlading_original_num" />
+                    </FormItem>
+                    <FormItem label="No of Copies B/L" prop="billlading_copys_num">
+                      <Input placeholder="No of Copies B/L" v-model="workPara.billlading_copys_num" />
+                    </FormItem>
+                  </Col>
+                </Row>
+                <Divider />
+                <div style="width: 700px">
+                  <Row v-if="action === 'add' || workPara.billlading_state === 'PBK'">
+                    <Col span="24">
+                      <h4 class="text-middle m-b-10">
+                        <b>Cargo Description</b>
+                      </h4>
+                      <Table stripe size="small" ref="goodsTable" :columns="table.goodsTable.columns" :data="table.goodsTable.data">
+                        <template slot-scope="{ row, index }" slot="billlading_goods_container_number">
+                          <Input v-model="row.billlading_goods_container_number" @on-blur="table.goodsTable.data[index] = row" />
+                        </template>
+                        <template slot-scope="{ row, index }" slot="billlading_goods_container_type">
+                          <Select :transfer="true" v-model="row.billlading_goods_container_type" @on-change="table.goodsTable.data[index] = row">
+                            <Option v-for="item in pagePara.ContainerTypeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                          </Select>
+                        </template>
+                        <template slot-scope="{ row, index }" slot="billlading_goods_container_size">
+                          <Select :transfer="true" v-model="row.billlading_goods_container_size" @on-change="table.goodsTable.data[index] = row">
+                            <Option v-for="item in pagePara.ContainerSizeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                          </Select>
+                        </template>
+                        <template slot-scope="{ row, index }" slot="billlading_goods_type">
+                          <Input v-model="row.billlading_goods_type" @on-blur="table.goodsTable.data[index] = row" />
+                        </template>
+                        <template slot-scope="{ row, index }" slot="billlading_goods_description">
+                          <Input v-model="row.billlading_goods_description" @on-blur="table.goodsTable.data[index] = row" />
+                        </template>
+                        <template slot-scope="{ row, index }" slot="billlading_goods_package_number">
+                          <Input v-model="row.billlading_goods_package_number" @on-blur="table.goodsTable.data[index] = row" />
+                        </template>
+                        <template slot-scope="{ row, index }" slot="billlading_goods_package_unit">
+                          <Select :transfer="true" v-model="row.billlading_goods_package_unit" @on-change="table.goodsTable.data[index] = row">
+                            <Option v-for="item in pagePara.PackageUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                          </Select>
+                        </template>
+                        <template slot-scope="{ row, index }" slot="billlading_goods_gross_volume">
+                          <Input v-model="row.billlading_goods_gross_volume" @on-blur="table.goodsTable.data[index] = row" />
+                        </template>
+                        <template slot-scope="{ row, index }" slot="billlading_goods_gross_volume_unit">
+                          <Select :transfer="true" v-model="row.billlading_goods_gross_volume_unit" @on-change="table.goodsTable.data[index] = row">
+                            <Option v-for="item in pagePara.VolumeUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                          </Select>
+                        </template>
+                        <template slot-scope="{ row, index }" slot="billlading_goods_gross_weight">
+                          <Input v-model="row.billlading_goods_gross_weight" @on-blur="table.goodsTable.data[index] = row" />
+                        </template>
+                        <template slot-scope="{ row, index }" slot="billlading_goods_gross_unit">
+                          <Select :draggable="true" v-model="row.billlading_goods_gross_unit" @on-change="table.goodsTable.data[index] = row">
+                            <Option v-for="item in pagePara.WeightUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                          </Select>
+                        </template>
+                        <template slot-scope="{ row, index }" slot="billlading_goods_net_weight">
+                          <Input v-model="row.billlading_goods_net_weight" @on-blur="table.goodsTable.data[index] = row" />
+                        </template>
+                        <template slot-scope="{ row, index }" slot="billlading_goods_net_unit">
+                          <Select :transfer="true" v-model="row.billlading_goods_net_unit" @on-change="table.goodsTable.data[index] = row">
+                            <Option v-for="item in pagePara.WeightUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                          </Select>
+                        </template>
+                        <template slot-scope="{ row, index }" slot="action">
+                          <a v-if="index === (table.goodsTable.data.length - 1)" href="#" class="btn btn-info btn-icon btn-sm" @click="addGood()">
+                            <i class="fa fa-plus"></i>
+                          </a>
+                          <a v-if="index !== 0" href="#" class="btn btn-danger btn-icon btn-sm" @click="deleteGood(index)">
+                            <i class="fa fa-times"></i>
+                          </a>
+                        </template>
+                      </Table>
+                    </Col>
+                  </Row>
+                  <Row v-else>
+                    <Col span="24">
+                      <h4 class="text-middle m-b-10">
+                        <b>Container Description</b>
+                      </h4>
+                      <Table stripe size="small" ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data">
+                        <template slot-scope="{ row, index }" slot="container_no">
+                          <Input v-model="row.container_no" @on-blur="table.containerTable.data[index] = row" />
+                        </template>
+                        <template slot-scope="{ row, index }" slot="container_type">
+                          <Select :transfer="true" v-model="row.container_type" @on-change="table.containerTable.data[index] = row">
+                            <Option v-for="item in pagePara.ContainerTypeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                          </Select>
+                        </template>
+                        <template slot-scope="{ row, index }" slot="container_size">
+                          <Select :transfer="true" v-model="row.container_size" @on-change="table.containerTable.data[index] = row">
+                            <Option v-for="item in pagePara.ContainerSizeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                          </Select>
+                        </template>
+                        <template slot-scope="{ row, index }" slot="container_goods_type">
+                          <Input v-model="row.container_goods_type" @on-blur="table.containerTable.data[index] = row" />
+                        </template>
+                        <template slot-scope="{ row, index }" slot="container_goods_description">
+                          <Input v-model="row.container_goods_description" @on-blur="table.containerTable.data[index] = row" />
+                        </template>
+                        <template slot-scope="{ row, index }" slot="container_seal_no1">
+                          <Input v-model="row.container_seal_no1" @on-blur="table.containerTable.data[index] = row" />
+                        </template>
+                        <template slot-scope="{ row, index }" slot="container_freight_indicator">
+                          <Input v-model="row.container_freight_indicator" @on-blur="table.containerTable.data[index] = row" />
+                        </template>
+                        <template slot-scope="{ row, index }" slot="container_package_no">
+                          <Input v-model="row.container_package_no" @on-blur="table.containerTable.data[index] = row" />
+                        </template>
+                        <template slot-scope="{ row, index }" slot="container_package_unit">
+                          <Select :transfer="true" v-model="row.container_package_unit" @on-change="table.containerTable.data[index] = row">
+                            <Option v-for="item in pagePara.PackageUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                          </Select>
+                        </template>
+                        <template slot-scope="{ row, index }" slot="container_volume">
+                          <Input v-model="row.container_volume" @on-blur="table.containerTable.data[index] = row" />
+                        </template>
+                        <template slot-scope="{ row, index }" slot="container_volume_unit">
+                          <Select :transfer="true" v-model="row.container_volume_unit" @on-change="table.containerTable.data[index] = row">
+                            <Option v-for="item in pagePara.VolumeUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                          </Select>
+                        </template>
+                        <template slot-scope="{ row, index }" slot="container_weight">
+                          <Input v-model="row.container_weight" @on-blur="table.containerTable.data[index] = row" />
+                        </template>
+                        <template slot-scope="{ row, index }" slot="container_weight_unit">
+                          <Select :transfer="true" v-model="row.container_weight_unit" @on-change="table.containerTable.data[index] = row">
+                            <Option v-for="item in pagePara.WeightUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                          </Select>
+                        </template>
+                        <template slot-scope="{ row, index }" slot="container_minmum_temperature">
+                          <Input v-model="row.container_minmum_temperature" @on-blur="table.containerTable.data[index] = row" />
+                        </template>
+                        <template slot-scope="{ row, index }" slot="container_maxmum_temperature">
+                          <Input v-model="row.container_maxmum_temperature" @on-blur="table.containerTable.data[index] = row" />
+                        </template>
+                        <template slot-scope="{ row, index }" slot="container_refer_plug">
+                          <Select :transfer="true" v-model="row.container_refer_plug" @on-change="table.containerTable.data[index] = row">
+                            <Option v-for="item in pagePara.YNINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                          </Select>
+                        </template>
+                      </Table>
+                    </Col>
+                  </Row>
+                </div>
+                <Divider />
+                <Row>
+                  <Col span="9">
+                    <h4 class="text-middle m-b-10">
+                      <b>Stuffing & Equipment</b>
+                    </h4>
+                    <FormItem label="Place" prop="billlading_stuffing_place">
+                      <Input placeholder="Place" v-model="workPara.billlading_stuffing_place" />
+                    </FormItem>
+                    <FormItem label="Expected date" prop="billlading_stuffing_date">
+                      <DatePicker type="date" placement="top" v-model="workPara.billlading_stuffing_date"></DatePicker>
+                    </FormItem>
+                    <FormItem label="Special requirement" prop="billlading_stuffing_requirement">
+                      <Input type="textarea" :rows="2" placeholder="Special requirement" v-model="workPara.billlading_stuffing_requirement" />
+                    </FormItem>
+                  </Col>
+                  <Col offset="3" span="9">
+                    <h4 class="text-middle m-b-10">
+                      <b>Payment</b>
+                    </h4>
+                    <FormItem label="Forwarder" prop="billlading_forwarder_name">
+                      <Input placeholder="Forwarder" v-model="workPara.billlading_forwarder_name" />
+                    </FormItem>
+                    <FormItem label="Pay type" prop="billlading_stuffing_place">
+                      <Select>
+                        <Option v-for="item in pagePara.PayTypeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
                       </Select>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="billlading_goods_net_weight">
-                      <Input v-model="row.billlading_goods_net_weight" @on-blur="table.goodsTable.data[index] = row"/>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="billlading_goods_net_unit">
-                      <Select :transfer="true" v-model="row.billlading_goods_net_unit" @on-change="table.goodsTable.data[index] = row">
-                        <Option v-for="item in pagePara.WeightUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                    </FormItem>
+                    <FormItem label="Payable at" prop="billlading_pay_date">
+                      <Input placeholder="Payable at" v-model="workPara.billlading_pay_date" />
+                    </FormItem>
+                    <FormItem label="Status" prop="billlading_freight_currency">
+                      <Select placement="top" v-model="workPara.billlading_freight_currency">
+                        <Option v-for="item in pagePara.PayCurrencyINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
                       </Select>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="action">
-                      <a v-if="index === (table.goodsTable.data.length - 1)" href="#" class="btn btn-info btn-icon btn-sm" @click="addGood()">
-                        <i class="fa fa-plus"></i>
-                      </a>
-                      <a v-if="index !== 0" href="#" class="btn btn-danger btn-icon btn-sm" @click="deleteGood(index)">
-                        <i class="fa fa-times"></i>
-                      </a>
-                    </template>
-                  </Table>
-                </Col>
-              </Row>
-              <Row v-else>
-                <Col span="24">
-                  <h4 class="text-middle m-b-10">
-                    <b>Container Description</b>
-                  </h4>
-                  <Table stripe size="small" ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data">
-                    <template slot-scope="{ row, index }" slot="container_no">
-                      <Input v-model="row.container_no" @on-blur="table.containerTable.data[index] = row"/>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="container_type">
-                      <Select :transfer="true" v-model="row.container_type" @on-change="table.containerTable.data[index] = row">
-                        <Option v-for="item in pagePara.ContainerTypeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-                      </Select>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="container_size">
-                      <Select :transfer="true" v-model="row.container_size" @on-change="table.containerTable.data[index] = row">
-                        <Option v-for="item in pagePara.ContainerSizeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-                      </Select>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="container_goods_type">
-                      <Input v-model="row.container_goods_type" @on-blur="table.containerTable.data[index] = row"/>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="container_goods_description">
-                      <Input v-model="row.container_goods_description" @on-blur="table.containerTable.data[index] = row"/>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="container_seal_no1">
-                      <Input v-model="row.container_seal_no1" @on-blur="table.containerTable.data[index] = row"/>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="container_freight_indicator">
-                      <Input v-model="row.container_freight_indicator" @on-blur="table.containerTable.data[index] = row"/>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="container_package_no">
-                      <Input v-model="row.container_package_no" @on-blur="table.containerTable.data[index] = row"/>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="container_package_unit">
-                      <Select :transfer="true" v-model="row.container_package_unit" @on-change="table.containerTable.data[index] = row">
-                        <Option v-for="item in pagePara.PackageUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-                      </Select>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="container_volume">
-                      <Input v-model="row.container_volume" @on-blur="table.containerTable.data[index] = row"/>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="container_volume_unit">
-                      <Select :transfer="true" v-model="row.container_volume_unit" @on-change="table.containerTable.data[index] = row">
-                        <Option v-for="item in pagePara.VolumeUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-                      </Select>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="container_weight">
-                      <Input v-model="row.container_weight" @on-blur="table.containerTable.data[index] = row"/>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="container_weight_unit">
-                      <Select :transfer="true" v-model="row.container_weight_unit" @on-change="table.containerTable.data[index] = row">
-                        <Option v-for="item in pagePara.WeightUnitINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-                      </Select>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="container_minmum_temperature">
-                      <Input v-model="row.container_minmum_temperature" @on-blur="table.containerTable.data[index] = row"/>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="container_maxmum_temperature">
-                      <Input v-model="row.container_maxmum_temperature" @on-blur="table.containerTable.data[index] = row"/>
-                    </template>
-                    <template slot-scope="{ row, index }" slot="container_refer_plug">
-                      <Select :transfer="true" v-model="row.container_refer_plug" @on-change="table.containerTable.data[index] = row">
-                        <Option v-for="item in pagePara.YNINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-                      </Select>
-                    </template>
-                  </Table>
-                </Col>
-              </Row>
-            </div>
-            <Divider/>
-            <Row>
-              <Col span="9">
-                <h4 class="text-middle m-b-10">
-                  <b>Stuffing & Equipment</b>
-                </h4>
-                <FormItem label="Place" prop="billlading_stuffing_place">
-                  <Input placeholder="Place" v-model="workPara.billlading_stuffing_place"/>
-                </FormItem>
-                <FormItem label="Expected date" prop="billlading_stuffing_date">
-                  <DatePicker type="date" placement="top" v-model="workPara.billlading_stuffing_date"></DatePicker>
-                </FormItem>
-                <FormItem label="Special requirement" prop="billlading_stuffing_requirement">
-                  <Input type="textarea" :rows="2" placeholder="Special requirement" v-model="workPara.billlading_stuffing_requirement"/>
-                </FormItem>
-              </Col>
-              <Col offset="3" span="9">
-                <h4 class="text-middle m-b-10">
-                  <b>Payment</b>
-                </h4>
-                <FormItem label="Forwarder" prop="billlading_forwarder_name">
-                  <Input placeholder="Forwarder" v-model="workPara.billlading_forwarder_name"/>
-                </FormItem>
-                <FormItem label="Pay type" prop="billlading_stuffing_place">
-                  <Select>
-                    <Option v-for="item in pagePara.PayTypeINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-                  </Select>
-                </FormItem>
-                <FormItem label="Payable at" prop="billlading_pay_date">
-                  <Input placeholder="Payable at" v-model="workPara.billlading_pay_date"/>
-                </FormItem>
-                <FormItem label="Status" prop="billlading_freight_currency">
-                  <Select placement="top" v-model="workPara.billlading_freight_currency">
-                    <Option v-for="item in pagePara.PayCurrencyINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-                  </Select>
-                </FormItem>
-              </Col>
-            </Row>
-          </Form>
-        </vue-scroll>
+                    </FormItem>
+                  </Col>
+                </Row>
+              </Form>
+            </vue-scroll>
+          </Col>
+        </Row>
       </div>
       <div slot="footer">
         <Button type="text" size="large" @click="modal.bookingModal=false">Cancel</Button>
@@ -469,16 +481,16 @@
         <Row>
           <Col span="22">
             <FormItem label="B/L Type" prop="billlading_bl_type">
-              <Input placeholder="B/L Type" v-model="workPara.billlading_bl_type"/>
+              <Input placeholder="B/L Type" v-model="workPara.billlading_bl_type" />
             </FormItem>
             <FormItem label="H B/L No" prop="billlading_hbl_no">
-              <Input placeholder="H B/L No" v-model="workPara.billlading_hbl_no"/>
+              <Input placeholder="H B/L No" v-model="workPara.billlading_hbl_no" />
             </FormItem>
             <FormItem label="Type Of Reference" prop="billlading_reference_type">
-              <Input placeholder="Type Of Reference" v-model="workPara.billlading_reference_type"/>
+              <Input placeholder="Type Of Reference" v-model="workPara.billlading_reference_type" />
             </FormItem>
             <FormItem label="Reference No" prop="billlading_reference_no">
-              <Input placeholder="H B/L No" v-model="workPara.billlading_reference_no"/>
+              <Input placeholder="H B/L No" v-model="workPara.billlading_reference_no" />
             </FormItem>
           </Col>
         </Row>
@@ -516,7 +528,7 @@
             <div style="width: 700px">
               <Table stripe size="small" ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data">
                 <template slot-scope="{ row, index }" slot="container_no">
-                  <Input v-model="row.container_no" @on-blur="table.containerTable.data[index] = row"/>
+                  <Input v-model="row.container_no" @on-blur="table.containerTable.data[index] = row" />
                 </template>
                 <template slot-scope="{ row, index }" slot="container_type">
                   <Select v-model="row.container_type" @on-change="table.containerTable.data[index] = row">
@@ -529,19 +541,19 @@
                   </Select>
                 </template>
                 <template slot-scope="{ row, index }" slot="container_goods_type">
-                  <Input v-model="row.container_goods_type" @on-blur="table.containerTable.data[index] = row"/>
+                  <Input v-model="row.container_goods_type" @on-blur="table.containerTable.data[index] = row" />
                 </template>
                 <template slot-scope="{ row, index }" slot="container_goods_description">
-                  <Input v-model="row.container_goods_description" @on-blur="table.containerTable.data[index] = row"/>
+                  <Input v-model="row.container_goods_description" @on-blur="table.containerTable.data[index] = row" />
                 </template>
                 <template slot-scope="{ row, index }" slot="container_seal_no1">
-                  <Input v-model="row.container_seal_no1" @on-blur="table.containerTable.data[index] = row"/>
+                  <Input v-model="row.container_seal_no1" @on-blur="table.containerTable.data[index] = row" />
                 </template>
                 <template slot-scope="{ row, index }" slot="container_freight_indicator">
-                  <Input v-model="row.container_freight_indicator" @on-blur="table.containerTable.data[index] = row"/>
+                  <Input v-model="row.container_freight_indicator" @on-blur="table.containerTable.data[index] = row" />
                 </template>
                 <template slot-scope="{ row, index }" slot="container_package_no">
-                  <Input v-model="row.container_package_no" @on-blur="table.containerTable.data[index] = row"/>
+                  <Input v-model="row.container_package_no" @on-blur="table.containerTable.data[index] = row" />
                 </template>
                 <template slot-scope="{ row, index }" slot="container_package_unit">
                   <Select v-model="row.container_package_unit" @on-change="table.containerTable.data[index] = row">
@@ -549,7 +561,7 @@
                   </Select>
                 </template>
                 <template slot-scope="{ row, index }" slot="container_volume">
-                  <Input v-model="row.container_volume" @on-blur="table.containerTable.data[index] = row"/>
+                  <Input v-model="row.container_volume" @on-blur="table.containerTable.data[index] = row" />
                 </template>
                 <template slot-scope="{ row, index }" slot="container_volume_unit">
                   <Select v-model="row.container_volume_unit" @on-change="table.containerTable.data[index] = row">
@@ -557,7 +569,7 @@
                   </Select>
                 </template>
                 <template slot-scope="{ row, index }" slot="container_weight">
-                  <Input v-model="row.container_weight" @on-blur="table.containerTable.data[index] = row"/>
+                  <Input v-model="row.container_weight" @on-blur="table.containerTable.data[index] = row" />
                 </template>
                 <template slot-scope="{ row, index }" slot="container_weight_unit">
                   <Select v-model="row.container_weight_unit" @on-change="table.containerTable.data[index] = row">
@@ -565,7 +577,7 @@
                   </Select>
                 </template>
                 <template slot-scope="{ row, index }" slot="billlading_goods_net_weight">
-                  <Input v-model="row.billlading_goods_net_weight" @on-blur="table.goodsTable.data[index] = row"/>
+                  <Input v-model="row.billlading_goods_net_weight" @on-blur="table.goodsTable.data[index] = row" />
                 </template>
                 <template slot-scope="{ row, index }" slot="billlading_goods_net_unit">
                   <Select v-model="row.billlading_goods_net_unit" @on-change="table.goodsTable.data[index] = row">
@@ -578,10 +590,10 @@
                   </Select>
                 </template>
                 <template slot-scope="{ row, index }" slot="container_minmum_temperature">
-                  <Input v-model="row.container_minmum_temperature" @on-blur="table.containerTable.data[index] = row"/>
+                  <Input v-model="row.container_minmum_temperature" @on-blur="table.containerTable.data[index] = row" />
                 </template>
                 <template slot-scope="{ row, index }" slot="container_maxmum_temperature">
-                  <Input v-model="row.container_maxmum_temperature" @on-blur="table.containerTable.data[index] = row"/>
+                  <Input v-model="row.container_maxmum_temperature" @on-blur="table.containerTable.data[index] = row" />
                 </template>
                 <template slot-scope="{ row, index }" slot="container_refer_plug">
                   <Select v-model="row.container_refer_plug" @on-change="table.containerTable.data[index] = row">
@@ -601,11 +613,11 @@
     <Modal v-model="modal.shippingInstructionModal" title="Shipping Instruction">
       <Form :model="workPara" :label-width="100">
         <FormItem label="Remark" prop="uploadfile_remark">
-          <Input type="textarea" :rows="4" placeholder="Remark" v-model="workPara.uploadfile_remark"/>
+          <Input type="textarea" :rows="4" placeholder="Remark" v-model="workPara.uploadfile_remark" />
         </FormItem>
         <FormItem label="Files">
           <div v-for="f in files.fileList" v-bind:key="f.name" class="upload-list">
-            <Icon type="ios-document" size="60"/>
+            <Icon type="ios-document" size="60" />
           </div>
           <Upload
             ref="upload"
@@ -1382,7 +1394,20 @@ export default {
               width: 100
             }
           ]
-        }
+        },
+        templateTable: {
+          columns:[
+            {
+              title: 'Name',
+              key: 'billlading_template_name'
+            },
+            {
+              title: 'Action',
+              slot: 'action'
+            }
+          ],
+          data: []
+        },
       },
       formRule: {
         ruleBookingModal: {
