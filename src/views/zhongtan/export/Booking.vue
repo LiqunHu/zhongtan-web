@@ -169,18 +169,24 @@
       </Table>
       <Page class="m-t-10" :total="table.bookingTable.total" :page-size="table.bookingTable.limit" @on-change="getBookingData" />
     </panel>
-    <Modal v-model="modal.bookingModal" title="Booking" width="800">
-      <div style="height: 600px">
+    <Modal v-model="modal.bookingModal" title="Booking" width="1200">
+      <div style="height: 700px">
         <Row>
-          <Col span="4">
+          <Col span="4" v-if="action === 'add'">
             <h4 class="m-b-10">Template</h4>
-            <Button class="m-b-10" type="primary" size="small">Add</Button>
+            <Button class="m-b-10" type="primary" size="small" @click="addBLTemplateModal">Add</Button>
             <Table stripe size="small" :columns="table.templateTable.columns" :data="table.templateTable.data">
+              <template slot-scope="{ row, index }" slot="billlading_template_name">
+                <Button type="success" size="small" @click="useTemplate(row)">{{row.billlading_template_name}}</Button>
+              </template>
               <template slot-scope="{ row, index }" slot="action">
+                <a href="#" class="btn btn-danger btn-icon btn-sm" @click="deleteTemplate(row)">
+                  <i class="fa fa-times"></i>
+                </a>
               </template>
             </Table>
           </Col>
-          <Col span="20">
+          <Col offset="1" span="19">
             <vue-scroll>
               <Form :model="workPara" :label-width="120" :rules="formRule.ruleBookingModal" ref="formPort">
                 <Row>
@@ -643,6 +649,20 @@
         <Button type="primary" size="large" @click="shippingInstruction">Submit</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.templateModal" title="BL Template">
+      <Form :model="templatePara" :label-width="100" :rules="formRule.ruleTemplateModal" ref="formTemplateModal">
+        <FormItem label="Template BL. no" prop="billlading_no">
+          <Input placeholder="Template BL. no" v-model="templatePara.billlading_no" />
+        </FormItem>
+        <FormItem label="Name" prop="billlading_template_name">
+          <Input placeholder="Name" v-model="templatePara.billlading_template_name" />
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.templateModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="addBLTemplate">Submit</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -655,7 +675,7 @@ export default {
   name: 'Booking',
   data: function() {
     return {
-      modal: { bookingModal: false, submitLoadingModal: false, shippingInstructionModal: false },
+      modal: { bookingModal: false, submitLoadingModal: false, shippingInstructionModal: false, templateModal: false },
       table: {
         bookingTable: {
           fixColumns: [
@@ -1396,18 +1416,18 @@ export default {
           ]
         },
         templateTable: {
-          columns:[
+          columns: [
             {
               title: 'Name',
-              key: 'billlading_template_name'
+              slot: 'billlading_template_name'
             },
             {
-              title: 'Action',
+              title: '',
               slot: 'action'
             }
           ],
           data: []
-        },
+        }
       },
       formRule: {
         ruleBookingModal: {
@@ -1431,12 +1451,17 @@ export default {
           billlading_hbl_no: [{ required: true, trigger: 'change', message: 'Enter H B/L No' }],
           billlading_reference_type: [{ required: true, trigger: 'change', message: 'Enter Type Of Reference' }],
           billlading_reference_no: [{ required: true, trigger: 'change', message: 'Enter Reference No' }]
+        },
+        ruleTemplateModal: {
+          billlading_no: [{ required: true, trigger: 'change', message: 'Enter B/L No' }],
+          billlading_template_name: [{ required: true, trigger: 'change', message: 'Enter B/L Name' }]
         }
       },
       pagePara: {},
       VoyageINFO: [],
       oldPara: {},
       workPara: {},
+      templatePara: {},
       action: '',
       headers: common.uploadHeaders(),
       files: {
@@ -1456,6 +1481,7 @@ export default {
         let response = await this.$http.post(apiUrl + 'init', {})
         this.pagePara = JSON.parse(JSON.stringify(response.data.info))
         this.getBookingData(1)
+        this.getBLTemplateData()
       } catch (error) {
         this.$commonact.fault(error)
       }
@@ -1722,6 +1748,54 @@ export default {
         title: 'Exceeding file size limit',
         desc: 'File  ' + file.name + ' is too large, no more than 4M.'
       })
+    },
+    addBLTemplateModal: function() {
+      this.templatePara = {}
+      this.$refs.formTemplateModal.resetFields()
+      this.modal.templateModal = true
+    },
+    addBLTemplate: async function() {
+      this.$refs.formTemplateModal.validate(async valid => {
+        if (valid) {
+          try {
+            await this.$http.post(apiUrl + 'addTemplate', this.templatePara)
+            this.$Message.success('add template success')
+            // this.getBookingData()
+            this.getBLTemplateData()
+            this.modal.templateModal = false
+          } catch (error) {
+            this.$commonact.fault(error)
+          }
+        }
+      })
+    },
+    getBLTemplateData: async function() {
+      try {
+        let response = await this.$http.post(apiUrl + 'searchTemplate', this.workPara)
+        this.table.templateTable.data = JSON.parse(JSON.stringify(response.data.info))
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
+    deleteTemplate: async function(row) {
+      this.$commonact.confirm('Delete template '+ row.billlading_template_name, async () => {
+        try {
+          await this.$http.post(apiUrl + 'deleteTemplate', { billlading_template_id: row.billlading_template_id })
+          this.$Message.success('Delete Success')
+          this.getBLTemplateData()
+        } catch (error) {
+          this.$commonact.fault(error)
+        }
+      })
+    },
+    useTemplate: async function(row) {
+      try {
+        let response = await this.$http.post(apiUrl + 'useTemplate', row)
+        this.workPara = JSON.parse(JSON.stringify(response.data.info))
+        this.table.goodsTable.data = JSON.parse(JSON.stringify(this.workPara.billlading_goods))
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
     }
   }
 }
