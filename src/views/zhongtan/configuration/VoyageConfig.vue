@@ -41,9 +41,9 @@
           <a href="#" class="btn btn-info btn-icon btn-sm" @click="modifyVesselModal(row)">
             <i class="fa fa-edit"></i>
           </a>
-          <a href="#" class="btn btn-danger btn-icon btn-sm" @click="deleteVessel(row)">
+          <!-- <a href="#" class="btn btn-danger btn-icon btn-sm" @click="deleteVessel(row)">
             <i class="fa fa-times"></i>
-          </a>
+          </a> -->
         </template>
       </Table>
       <Page class="m-t-10" :total="table.voyageTable.total" :page-size="table.voyageTable.limit" @on-change="getVoyageData"/>
@@ -63,6 +63,11 @@
         </FormItem>
         <FormItem label="ATD Date" prop="voyage_atd_date">
           <DatePicker type="date" v-model="workPara.voyage_atd_date"></DatePicker>
+        </FormItem>
+        <FormItem label="State" prop="state">
+          <Select v-model="workPara.state" v-show="action === 'modify'">
+            <Option v-for="item in pagePara.STATUSINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+          </Select>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -106,6 +111,11 @@ export default {
             {
               title: 'ATD DATE',
               key: 'voyage_atd_date'
+            },
+            {
+              title: 'State',
+              key: 'state',
+              render: common.selectRender(this, 'STATUSINFO')
             },
             {
               title: 'Action',
