@@ -529,12 +529,15 @@
             <Row v-if="userInfo.user_service_name === 'ALL'">
               <Col span="9">
                 <h4 class="text-middle m-b-10">
-                  <b>State</b>
+                  <b>Important</b>
                 </h4>
                 <FormItem label="Status" prop="billlading_state">
                   <Select placement="top" v-model="workPara.billlading_state">
                     <Option v-for="item in pagePara.BLSTATUSINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
                   </Select>
+                </FormItem>
+                <FormItem label="BL. No" prop="billlading_no">
+                  <Input placeholder="BL. No" v-model="workPara.billlading_no"/>
                 </FormItem>
               </Col>
               <Col offset="3" span="9">
