@@ -172,12 +172,13 @@
     <Modal v-model="modal.bookingModal" title="Booking" width="1200">
       <div style="height: 700px">
         <Row>
-          <Col span="4" v-if="action === 'add'">
+          <Col span="4">
             <h4 class="m-b-10">Template</h4>
             <Button class="m-b-10" type="primary" size="small" @click="addBLTemplateModal">Add</Button>
             <Table stripe size="small" :columns="table.templateTable.columns" :data="table.templateTable.data">
               <template slot-scope="{ row, index }" slot="billlading_template_name">
-                <Button type="success" size="small" @click="useTemplate(row)">{{row.billlading_template_name}}</Button>
+                <Button type="success" v-if="action === 'add'" size="small" @click="useTemplate(row)">{{row.billlading_template_name}}</Button>
+                <div v-if="action !== 'add'">{{row.billlading_template_name}}</div>
               </template>
               <template slot-scope="{ row, index }" slot="action">
                 <a href="#" class="btn btn-danger btn-icon btn-sm" @click="deleteTemplate(row)">
@@ -652,7 +653,7 @@
     <Modal v-model="modal.templateModal" title="BL Template">
       <Form :model="templatePara" :label-width="100" :rules="formRule.ruleTemplateModal" ref="formTemplateModal">
         <FormItem label="Template BL. no" prop="billlading_no">
-          <Input placeholder="Template BL. no" v-model="templatePara.billlading_no" />
+          <Input placeholder="Template BL. no" v-model="templatePara.billlading_no" disabled="action === 'modify'"/>
         </FormItem>
         <FormItem label="Name" prop="billlading_template_name">
           <Input placeholder="Name" v-model="templatePara.billlading_template_name" />
@@ -1751,6 +1752,7 @@ export default {
     },
     addBLTemplateModal: function() {
       this.templatePara = {}
+      this.templatePara.billlading_no = this.workPara.billlading_no || ''
       this.$refs.formTemplateModal.resetFields()
       this.modal.templateModal = true
     },
