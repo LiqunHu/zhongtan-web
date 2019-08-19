@@ -1602,6 +1602,11 @@ export default {
           try {
             this.workPara.billlading_goods = JSON.parse(JSON.stringify(this.table.goodsTable.data))
             this.workPara.billlading_containers = JSON.parse(JSON.stringify(this.table.containerTable.data))
+            for(let g of this.workPara.billlading_goods) {
+              if(g.billlading_goods_container_number > 100) {
+                return this.$Message.error('over the container number limit.')
+              }
+            }
             if (this.action === 'add') {
               await this.$http.post(apiUrl + 'booking', this.workPara)
               this.$Message.success('booking success')
