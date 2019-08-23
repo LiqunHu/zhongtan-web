@@ -1621,6 +1621,9 @@ export default {
         if (valid) {
           try {
             this.workPara.billlading_goods = JSON.parse(JSON.stringify(this.table.goodsTable.data))
+            if (this.table.goodsTable.data.length < 1) {
+              return this.$Message.error('Please add goods.')
+            }
             this.workPara.billlading_containers = JSON.parse(JSON.stringify(this.table.containerTable.data))
             for (let g of this.workPara.billlading_goods) {
               if (g.billlading_goods_container_number > 100) {
