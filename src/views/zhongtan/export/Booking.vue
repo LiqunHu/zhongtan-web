@@ -653,7 +653,7 @@
     <Modal v-model="modal.templateModal" title="BL Template">
       <Form :model="templatePara" :label-width="100" :rules="formRule.ruleTemplateModal" ref="formTemplateModal">
         <FormItem label="Template BL. no" prop="billlading_no">
-          <Input placeholder="Template BL. no" v-model="templatePara.billlading_no" disabled="action === 'modify'"/>
+          <Input placeholder="Template BL. no" v-model="templatePara.billlading_no" disabled="action === 'modify'" />
         </FormItem>
         <FormItem label="Name" prop="billlading_template_name">
           <Input placeholder="Name" v-model="templatePara.billlading_template_name" />
@@ -1589,7 +1589,27 @@ export default {
       delete actrow._rowKey
       this.oldPara = JSON.parse(JSON.stringify(actrow))
       this.workPara = JSON.parse(JSON.stringify(actrow))
-      this.table.goodsTable.data = JSON.parse(JSON.stringify(actrow.billlading_goods))
+      if (actrow.billlading_goods.length > 0) {
+        this.table.goodsTable.data = JSON.parse(JSON.stringify(actrow.billlading_goods))
+      } else {
+        this.table.goodsTable.data = []
+        this.table.goodsTable.data.push({
+          billlading_goods_container_number: null,
+          billlading_goods_container_type: '',
+          billlading_goods_container_size: '',
+          billlading_goods_type: '',
+          billlading_goods_description: '',
+          billlading_goods_package_number: null,
+          billlading_goods_package_unit: 'BAG',
+          billlading_goods_gross_volume: null,
+          billlading_goods_gross_volume_unit: 'M3',
+          billlading_goods_gross_weight: null,
+          billlading_goods_gross_unit: 'KG',
+          billlading_goods_net_weight: null,
+          billlading_goods_net_unit: 'KG'
+        })
+      }
+
       this.table.containerTable.data = JSON.parse(JSON.stringify(actrow.billlading_containers))
       this.VoyageINFO = JSON.parse(JSON.stringify(actrow.VoyageINFO))
       this.action = 'modify'
@@ -1602,8 +1622,8 @@ export default {
           try {
             this.workPara.billlading_goods = JSON.parse(JSON.stringify(this.table.goodsTable.data))
             this.workPara.billlading_containers = JSON.parse(JSON.stringify(this.table.containerTable.data))
-            for(let g of this.workPara.billlading_goods) {
-              if(g.billlading_goods_container_number > 100) {
+            for (let g of this.workPara.billlading_goods) {
+              if (g.billlading_goods_container_number > 100) {
                 return this.$Message.error('over the container number limit.')
               }
             }
@@ -1785,7 +1805,7 @@ export default {
       }
     },
     deleteTemplate: async function(row) {
-      this.$commonact.confirm('Delete template '+ row.billlading_template_name, async () => {
+      this.$commonact.confirm('Delete template ' + row.billlading_template_name, async () => {
         try {
           await this.$http.post(apiUrl + 'deleteTemplate', { billlading_template_id: row.billlading_template_id })
           this.$Message.success('Delete Success')

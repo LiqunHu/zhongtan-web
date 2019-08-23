@@ -50,7 +50,7 @@
               </Select>
             </div>
             <div class="form-group m-r-2">
-              <Input placeholder="S/O" v-model="table.bookingTable.search_data.search_text"/>
+              <Input placeholder="S/O" v-model="table.bookingTable.search_data.search_text" />
             </div>
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="getBookingData(1)">
@@ -119,7 +119,10 @@
               <i class="fa fa-dot-circle"></i>
             </a>
           </Tooltip>
-          <Tooltip content="Download BOOKING APPLICATION" v-if="row.billlading_state !== 'PBK' && row.billlading_state !== 'IV' && row.billlading_state !== 'FBD' && row.billlading_state !== 'CP' && row.billlading_state !== 'SI'">
+          <Tooltip
+            content="Download BOOKING APPLICATION"
+            v-if="row.billlading_state !== 'PBK' && row.billlading_state !== 'IV' && row.billlading_state !== 'FBD' && row.billlading_state !== 'CP' && row.billlading_state !== 'SI'"
+          >
             <a href="#" class="btn btn-green btn-icon btn-sm" @click="DownloadBooking(row)">
               <i class="fa fa-download"></i>
             </a>
@@ -170,35 +173,35 @@
             <Button type="text" style="text-decoration:underline">{{row.fees.sum_fee}}</Button>
             <template slot="content">
               FREIGHT: {{row.fees.billlading_invoice_freight}}
-              <br>
+              <br />
               B/LANDING: {{row.fees.billlading_invoice_blanding}}
-              <br>
+              <br />
               TASAC: {{row.fees.billlading_invoice_tasac}}
-              <br>
+              <br />
               AMMENDMENT FEE: {{row.fees.billlading_invoice_ammendment}}
-              <br>
+              <br />
               ISP: {{row.fees.billlading_invoice_isp}}
-              <br>
+              <br />
               SURCHAGE: {{row.fees.billlading_invoice_surchage}}
-              <br>
+              <br />
             </template>
           </Poptip>
         </template>
         <template slot-scope="{ row, index }" slot="customerINFO">
-          <Poptip trigger="hover"  placement="bottom" :transfer="true" width="300">
+          <Poptip trigger="hover" placement="bottom" :transfer="true" width="300">
             <Button type="text" style="text-decoration:underline">{{row.customerINFO.name}}</Button>
             <template slot="content">
               Phone: {{row.customerINFO.phone}}
-              <br>
+              <br />
               Email: {{row.customerINFO.email}}
-              <br>
+              <br />
               Address: {{row.customerINFO.address}}
-              <br>
+              <br />
             </template>
           </Poptip>
         </template>
         <template slot-scope="{ row, index }" slot="files">
-          <Poptip trigger="hover"  placement="bottom" :transfer="true" width="555">
+          <Poptip trigger="hover" placement="bottom" :transfer="true" width="555">
             <Button type="text" style="text-decoration:underline">Files</Button>
             <template slot="content">
               <Table stripe size="small" :columns="table.filesTable.columns" :data="row.files">
@@ -217,7 +220,7 @@
           </Select>
         </template>
         <template slot-scope="{ row, index }" slot="billlading_goods">
-          <Poptip trigger="hover"  placement="bottom" :transfer="true" width="800">
+          <Poptip trigger="hover" placement="bottom" :transfer="true" width="800">
             <Button type="text" style="text-decoration:underline">Goods</Button>
             <template slot="content">
               <Table stripe size="small" :columns="table.poptipGoodsTable.columns" :data="row.billlading_goods"></Table>
@@ -225,7 +228,7 @@
           </Poptip>
         </template>
         <template slot-scope="{ row, index }" slot="billlading_containers">
-          <Poptip trigger="hover"  placement="bottom" :transfer="true" width="800">
+          <Poptip trigger="hover" placement="bottom" :transfer="true" width="800">
             <Button type="text" style="text-decoration:underline">Containers</Button>
             <template slot="content">
               <Table stripe size="small" :columns="table.poptipContainerTable.columns" :data="row.billlading_containers"></Table>
@@ -233,7 +236,7 @@
           </Poptip>
         </template>
       </Table>
-      <Page class="m-t-10" :total="table.bookingTable.total" :page-size="table.bookingTable.limit" @on-change="getBookingData"/>
+      <Page class="m-t-10" :total="table.bookingTable.total" :page-size="table.bookingTable.limit" @on-change="getBookingData" />
     </panel>
     <Modal v-model="modal.bookingModal" title="Booking" width="800">
       <div style="height: 600px">
@@ -255,47 +258,47 @@
                 </FormItem>
               </Col>
             </Row>
-            <Divider/>
+            <Divider />
             <Row>
               <Col span="9">
                 <h4 class="text-middle m-b-10">
                   <b>Shipper (Name & Address)</b>
                 </h4>
                 <FormItem label="Name" prop="billlading_shipper_name">
-                  <Input placeholder="Name" v-model="workPara.billlading_shipper_name"/>
+                  <Input placeholder="Name" v-model="workPara.billlading_shipper_name" />
                 </FormItem>
                 <FormItem label="Address" prop="billlading_shipper_address">
-                  <Input type="textarea" :rows="2" placeholder="Address" v-model="workPara.billlading_shipper_address"/>
+                  <Input type="textarea" :rows="2" placeholder="Address" v-model="workPara.billlading_shipper_address" />
                 </FormItem>
                 <FormItem label="telephone" prop="billlading_shipper_tel">
-                  <Input placeholder="telephone" v-model="workPara.billlading_shipper_tel"/>
+                  <Input placeholder="telephone" v-model="workPara.billlading_shipper_tel" />
                 </FormItem>
               </Col>
               <Col offset="3" span="9">
                 <strong>
                   <h4>CHINESE-TANZANIAN JOINT SHIPPING COMPANY.</h4>
-                  <br>
-                  <br>31, KISUTU ROAD
-                  <br>P. O. Box – 696, Dar Es Salaam, Tanzania.
-                  <br>Tel: +255 (22) 2113389
-                  <br>Fax: +255 (22) 2113388
+                  <br />
+                  <br />31, KISUTU ROAD
+                  <br />P. O. Box – 696, Dar Es Salaam, Tanzania.
+                  <br />Tel: +255 (22) 2113389
+                  <br />Fax: +255 (22) 2113388
                 </strong>
               </Col>
             </Row>
-            <Divider/>
+            <Divider />
             <Row>
               <Col span="9">
                 <h4 class="text-middle m-b-10">
                   <b>Consignee (Name & Address)</b>
                 </h4>
                 <FormItem label="Name" prop="billlading_consignee_name">
-                  <Input placeholder="Name" v-model="workPara.billlading_consignee_name"/>
+                  <Input placeholder="Name" v-model="workPara.billlading_consignee_name" />
                 </FormItem>
                 <FormItem label="Address" prop="billlading_consignee_address">
-                  <Input type="textarea" :rows="2" placeholder="Address" v-model="workPara.billlading_consignee_address"/>
+                  <Input type="textarea" :rows="2" placeholder="Address" v-model="workPara.billlading_consignee_address" />
                 </FormItem>
                 <FormItem label="telephone" prop="billlading_consignee_tel">
-                  <Input placeholder="telephone" v-model="workPara.billlading_consignee_tel"/>
+                  <Input placeholder="telephone" v-model="workPara.billlading_consignee_tel" />
                 </FormItem>
               </Col>
               <Col offset="1" span="1">
@@ -308,17 +311,17 @@
                   <b>Notify Party (Name & Address)</b>
                 </h4>
                 <FormItem label="Name" prop="billlading_notify_name">
-                  <Input placeholder="Name" v-model="workPara.billlading_notify_name"/>
+                  <Input placeholder="Name" v-model="workPara.billlading_notify_name" />
                 </FormItem>
                 <FormItem label="Address" prop="billlading_notify_address">
-                  <Input type="textarea" :rows="2" placeholder="Address" v-model="workPara.billlading_notify_address"/>
+                  <Input type="textarea" :rows="2" placeholder="Address" v-model="workPara.billlading_notify_address" />
                 </FormItem>
                 <FormItem label="telephone" prop="billlading_notify_tel">
-                  <Input placeholder="telephone" v-model="workPara.billlading_notify_tel"/>
+                  <Input placeholder="telephone" v-model="workPara.billlading_notify_tel" />
                 </FormItem>
               </Col>
             </Row>
-            <Divider/>
+            <Divider />
             <Row>
               <Col span="9">
                 <FormItem label="Port of Loading" prop="billlading_loading_port_id">
@@ -332,22 +335,22 @@
                   </Select>
                 </FormItem>
                 <FormItem label="Place of Deliver" prop="billlading_delivery_place">
-                  <Input type="textarea" :rows="2" placeholder="Place of Deliver" v-model="workPara.billlading_delivery_place"/>
+                  <Input type="textarea" :rows="2" placeholder="Place of Deliver" v-model="workPara.billlading_delivery_place" />
                 </FormItem>
               </Col>
               <Col offset="3" span="9">
                 <FormItem label="CSO" prop="billlading_cso">
-                  <Input placeholder="CSO" v-model="workPara.billlading_cso"/>
+                  <Input placeholder="CSO" v-model="workPara.billlading_cso" />
                 </FormItem>
                 <FormItem label="No of Original B/L" prop="billlading_original_num">
-                  <Input placeholder="No of Original B/L" v-model="workPara.billlading_original_num"/>
+                  <Input placeholder="No of Original B/L" v-model="workPara.billlading_original_num" />
                 </FormItem>
                 <FormItem label="No of Copies B/L" prop="billlading_copys_num">
-                  <Input placeholder="No of Copies B/L" v-model="workPara.billlading_copys_num"/>
+                  <Input placeholder="No of Copies B/L" v-model="workPara.billlading_copys_num" />
                 </FormItem>
               </Col>
             </Row>
-            <Divider/>
+            <Divider />
             <div style="width: 700px">
               <Row v-if="workPara.billlading_state === 'PBK'">
                 <Col span="24">
@@ -356,7 +359,7 @@
                   </h4>
                   <Table stripe size="small" ref="goodsTable" :columns="table.goodsTable.columns" :data="table.goodsTable.data">
                     <template slot-scope="{ row, index }" slot="billlading_goods_container_number">
-                      <Input v-model="row.billlading_goods_container_number" @on-blur="table.goodsTable.data[index] = row"/>
+                      <Input v-model="row.billlading_goods_container_number" @on-blur="table.goodsTable.data[index] = row" />
                     </template>
                     <template slot-scope="{ row, index }" slot="billlading_goods_container_type">
                       <Select :transfer="true" v-model="row.billlading_goods_container_type" @on-change="table.goodsTable.data[index] = row">
@@ -369,13 +372,13 @@
                       </Select>
                     </template>
                     <template slot-scope="{ row, index }" slot="billlading_goods_type">
-                      <Input v-model="row.billlading_goods_type" @on-blur="table.goodsTable.data[index] = row"/>
+                      <Input v-model="row.billlading_goods_type" @on-blur="table.goodsTable.data[index] = row" />
                     </template>
                     <template slot-scope="{ row, index }" slot="billlading_goods_description">
-                      <Input v-model="row.billlading_goods_description" @on-blur="table.goodsTable.data[index] = row"/>
+                      <Input v-model="row.billlading_goods_description" @on-blur="table.goodsTable.data[index] = row" />
                     </template>
                     <template slot-scope="{ row, index }" slot="billlading_goods_package_number">
-                      <Input v-model="row.billlading_goods_package_number" @on-blur="table.goodsTable.data[index] = row"/>
+                      <Input v-model="row.billlading_goods_package_number" @on-blur="table.goodsTable.data[index] = row" />
                     </template>
                     <template slot-scope="{ row, index }" slot="billlading_goods_package_unit">
                       <Select :transfer="true" v-model="row.billlading_goods_package_unit" @on-change="table.goodsTable.data[index] = row">
@@ -383,7 +386,7 @@
                       </Select>
                     </template>
                     <template slot-scope="{ row, index }" slot="billlading_goods_gross_volume">
-                      <Input v-model="row.billlading_goods_gross_volume" @on-blur="table.goodsTable.data[index] = row"/>
+                      <Input v-model="row.billlading_goods_gross_volume" @on-blur="table.goodsTable.data[index] = row" />
                     </template>
                     <template slot-scope="{ row, index }" slot="billlading_goods_gross_volume_unit">
                       <Select :transfer="true" v-model="row.billlading_goods_gross_volume_unit" @on-change="table.goodsTable.data[index] = row">
@@ -391,7 +394,7 @@
                       </Select>
                     </template>
                     <template slot-scope="{ row, index }" slot="billlading_goods_gross_weight">
-                      <Input v-model="row.billlading_goods_gross_weight" @on-blur="table.goodsTable.data[index] = row"/>
+                      <Input v-model="row.billlading_goods_gross_weight" @on-blur="table.goodsTable.data[index] = row" />
                     </template>
                     <template slot-scope="{ row, index }" slot="billlading_goods_gross_unit">
                       <Select :transfer="true" v-model="row.billlading_goods_gross_unit" @on-change="table.goodsTable.data[index] = row">
@@ -399,7 +402,7 @@
                       </Select>
                     </template>
                     <template slot-scope="{ row, index }" slot="billlading_goods_net_weight">
-                      <Input v-model="row.billlading_goods_net_weight" @on-blur="table.goodsTable.data[index] = row"/>
+                      <Input v-model="row.billlading_goods_net_weight" @on-blur="table.goodsTable.data[index] = row" />
                     </template>
                     <template slot-scope="{ row, index }" slot="billlading_goods_net_unit">
                       <Select :transfer="true" v-model="row.billlading_goods_net_unit" @on-change="table.goodsTable.data[index] = row">
@@ -424,7 +427,7 @@
                   </h4>
                   <Table stripe size="small" ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data">
                     <template slot-scope="{ row, index }" slot="container_no">
-                      <Input v-model="row.container_no" @on-blur="table.containerTable.data[index] = row"/>
+                      <Input v-model="row.container_no" @on-blur="table.containerTable.data[index] = row" />
                     </template>
                     <template slot-scope="{ row, index }" slot="container_type">
                       <Select :transfer="true" v-model="row.container_type" @on-change="table.containerTable.data[index] = row">
@@ -437,19 +440,19 @@
                       </Select>
                     </template>
                     <template slot-scope="{ row, index }" slot="container_goods_type">
-                      <Input v-model="row.container_goods_type" @on-blur="table.containerTable.data[index] = row"/>
+                      <Input v-model="row.container_goods_type" @on-blur="table.containerTable.data[index] = row" />
                     </template>
                     <template slot-scope="{ row, index }" slot="container_goods_description">
-                      <Input v-model="row.container_goods_description" @on-blur="table.containerTable.data[index] = row"/>
+                      <Input v-model="row.container_goods_description" @on-blur="table.containerTable.data[index] = row" />
                     </template>
                     <template slot-scope="{ row, index }" slot="container_seal_no1">
-                      <Input v-model="row.container_seal_no1" @on-blur="table.containerTable.data[index] = row"/>
+                      <Input v-model="row.container_seal_no1" @on-blur="table.containerTable.data[index] = row" />
                     </template>
                     <template slot-scope="{ row, index }" slot="container_freight_indicator">
-                      <Input v-model="row.container_freight_indicator" @on-blur="table.containerTable.data[index] = row"/>
+                      <Input v-model="row.container_freight_indicator" @on-blur="table.containerTable.data[index] = row" />
                     </template>
                     <template slot-scope="{ row, index }" slot="container_package_no">
-                      <Input v-model="row.container_package_no" @on-blur="table.containerTable.data[index] = row"/>
+                      <Input v-model="row.container_package_no" @on-blur="table.containerTable.data[index] = row" />
                     </template>
                     <template slot-scope="{ row, index }" slot="container_package_unit">
                       <Select :transfer="true" v-model="row.container_package_unit" @on-change="table.containerTable.data[index] = row">
@@ -457,7 +460,7 @@
                       </Select>
                     </template>
                     <template slot-scope="{ row, index }" slot="container_volume">
-                      <Input v-model="row.container_volume" @on-blur="table.containerTable.data[index] = row"/>
+                      <Input v-model="row.container_volume" @on-blur="table.containerTable.data[index] = row" />
                     </template>
                     <template slot-scope="{ row, index }" slot="container_volume_unit">
                       <Select :transfer="true" v-model="row.container_volume_unit" @on-change="table.containerTable.data[index] = row">
@@ -465,7 +468,7 @@
                       </Select>
                     </template>
                     <template slot-scope="{ row, index }" slot="container_weight">
-                      <Input v-model="row.container_weight" @on-blur="table.containerTable.data[index] = row"/>
+                      <Input v-model="row.container_weight" @on-blur="table.containerTable.data[index] = row" />
                     </template>
                     <template slot-scope="{ row, index }" slot="container_weight_unit">
                       <Select :transfer="true" v-model="row.container_weight_unit" @on-change="table.containerTable.data[index] = row">
@@ -473,10 +476,10 @@
                       </Select>
                     </template>
                     <template slot-scope="{ row, index }" slot="container_minmum_temperature">
-                      <Input v-model="row.container_minmum_temperature" @on-blur="table.containerTable.data[index] = row"/>
+                      <Input v-model="row.container_minmum_temperature" @on-blur="table.containerTable.data[index] = row" />
                     </template>
                     <template slot-scope="{ row, index }" slot="container_maxmum_temperature">
-                      <Input v-model="row.container_maxmum_temperature" @on-blur="table.containerTable.data[index] = row"/>
+                      <Input v-model="row.container_maxmum_temperature" @on-blur="table.containerTable.data[index] = row" />
                     </template>
                     <template slot-scope="{ row, index }" slot="container_refer_plug">
                       <Select :transfer="true" v-model="row.container_refer_plug" @on-change="table.containerTable.data[index] = row">
@@ -487,20 +490,20 @@
                 </Col>
               </Row>
             </div>
-            <Divider/>
+            <Divider />
             <Row>
               <Col span="9">
                 <h4 class="text-middle m-b-10">
                   <b>Stuffing & Equipment</b>
                 </h4>
                 <FormItem label="Place" prop="billlading_stuffing_place">
-                  <Input placeholder="Place" v-model="workPara.billlading_stuffing_place"/>
+                  <Input placeholder="Place" v-model="workPara.billlading_stuffing_place" />
                 </FormItem>
                 <FormItem label="Expected date" prop="billlading_stuffing_date">
                   <DatePicker type="date" placement="top" v-model="workPara.billlading_stuffing_date"></DatePicker>
                 </FormItem>
                 <FormItem label="Special requirement" prop="billlading_stuffing_requirement">
-                  <Input type="textarea" :rows="2" placeholder="Special requirement" v-model="workPara.billlading_stuffing_requirement"/>
+                  <Input type="textarea" :rows="2" placeholder="Special requirement" v-model="workPara.billlading_stuffing_requirement" />
                 </FormItem>
               </Col>
               <Col offset="3" span="9">
@@ -508,7 +511,7 @@
                   <b>Payment</b>
                 </h4>
                 <FormItem label="Forwarder" prop="billlading_forwarder_name">
-                  <Input placeholder="Forwarder" v-model="workPara.billlading_forwarder_name"/>
+                  <Input placeholder="Forwarder" v-model="workPara.billlading_forwarder_name" />
                 </FormItem>
                 <FormItem label="Pay type" prop="billlading_stuffing_place">
                   <Select>
@@ -525,7 +528,7 @@
                 </FormItem>
               </Col>
             </Row>
-            <Divider/>
+            <Divider />
             <Row v-if="userInfo.user_service_name === 'ALL'">
               <Col span="9">
                 <h4 class="text-middle m-b-10">
@@ -537,7 +540,7 @@
                   </Select>
                 </FormItem>
                 <FormItem label="BL. No" prop="billlading_no">
-                  <Input placeholder="BL. No" v-model="workPara.billlading_no"/>
+                  <Input placeholder="BL. No" v-model="workPara.billlading_no" />
                 </FormItem>
               </Col>
               <Col offset="3" span="9">
@@ -545,22 +548,22 @@
                   <b>Fee</b>
                 </h4>
                 <FormItem label="FREIGHT" prop="billlading_invoice_freight_f">
-                  <Input placeholder="FREIGHT" v-model="workPara.billlading_invoice_freight_f"/>
+                  <Input placeholder="FREIGHT" v-model="workPara.billlading_invoice_freight_f" />
                 </FormItem>
                 <FormItem label="B/LANDING" prop="billlading_feu_standard_f">
-                  <Input placeholder="B/LANDING" v-model="workPara.billlading_invoice_blanding_f"/>
+                  <Input placeholder="B/LANDING" v-model="workPara.billlading_invoice_blanding_f" />
                 </FormItem>
                 <FormItem label="TASAC" prop="billlading_invoice_tasac_f">
-                  <Input placeholder="TASAC" v-model="workPara.billlading_invoice_tasac_f"/>
+                  <Input placeholder="TASAC" v-model="workPara.billlading_invoice_tasac_f" />
                 </FormItem>
                 <FormItem label="AMMENDMENT FEE" prop="billlading_invoice_ammendment_f">
-                  <Input placeholder="AMMENDMENT FEE" v-model="workPara.billlading_invoice_ammendment_f"/>
+                  <Input placeholder="AMMENDMENT FEE" v-model="workPara.billlading_invoice_ammendment_f" />
                 </FormItem>
                 <FormItem label="ISP" prop="billlading_invoice_isp_f">
-                  <Input placeholder="ISP" v-model="workPara.billlading_invoice_isp_f"/>
+                  <Input placeholder="ISP" v-model="workPara.billlading_invoice_isp_f" />
                 </FormItem>
                 <FormItem label="SURCHAGE" prop="billlading_invoice_surchage_f">
-                  <Input placeholder="SURCHAGE" v-model="workPara.billlading_invoice_surchage_f"/>
+                  <Input placeholder="SURCHAGE" v-model="workPara.billlading_invoice_surchage_f" />
                 </FormItem>
               </Col>
             </Row>
@@ -585,28 +588,28 @@
           </Select>
         </FormItem>
         <FormItem label="Billlading No." prop="billlading_no">
-          <Input placeholder="Billlading No." v-model="workPara.billlading_no"/>
+          <Input placeholder="Billlading No." v-model="workPara.billlading_no" />
         </FormItem>
         <FormItem label="CSO" prop="billlading_cso">
-          <Input placeholder="CSO" v-model="workPara.billlading_cso"/>
+          <Input placeholder="CSO" v-model="workPara.billlading_cso" />
         </FormItem>
         <FormItem label="FREIGHT" prop="billlading_invoice_freight">
-          <Input placeholder="FREIGHT" v-model="workPara.billlading_invoice_freight"/>
+          <Input placeholder="FREIGHT" v-model="workPara.billlading_invoice_freight" />
         </FormItem>
         <FormItem label="B/LANDING" prop="billlading_invoice_blanding">
-          <Input placeholder="B/LANDING" v-model="workPara.billlading_invoice_blanding"/>
+          <Input placeholder="B/LANDING" v-model="workPara.billlading_invoice_blanding" />
         </FormItem>
         <FormItem label="TASAC" prop="billlading_invoice_tasac">
-          <Input placeholder="TASAC" v-model="workPara.billlading_invoice_tasac"/>
+          <Input placeholder="TASAC" v-model="workPara.billlading_invoice_tasac" />
         </FormItem>
         <FormItem label="AMMENDMENT FEE" prop="billlading_invoice_ammendment">
-          <Input placeholder="AMMENDMENT FEE" v-model="workPara.billlading_invoice_ammendment"/>
+          <Input placeholder="AMMENDMENT FEE" v-model="workPara.billlading_invoice_ammendment" />
         </FormItem>
         <FormItem label="ISP" prop="billlading_invoice_isp">
-          <Input placeholder="ISP" v-model="workPara.billlading_invoice_isp"/>
+          <Input placeholder="ISP" v-model="workPara.billlading_invoice_isp" />
         </FormItem>
         <FormItem label="SURCHAGE" prop="billlading_invoice_surchage">
-          <Input placeholder="SURCHAGE" v-model="workPara.billlading_invoice_surchage"/>
+          <Input placeholder="SURCHAGE" v-model="workPara.billlading_invoice_surchage" />
         </FormItem>
       </Form>
       <div slot="footer">
@@ -630,7 +633,7 @@
     <Modal v-model="modal.rejectLoadingModal" title="Reject Loading">
       <Form :model="workPara" :label-width="120" :rules="formRule.ruleRejectLoadingModal" ref="formRejectLoading">
         <FormItem label="Reject Reason" prop="reject_reason">
-          <Input type="textarea" :rows="2" placeholder="Reject Reason" v-model="workPara.reject_reason"/>
+          <Input type="textarea" :rows="2" placeholder="Reject Reason" v-model="workPara.reject_reason" />
         </FormItem>
       </Form>
       <div slot="footer">
@@ -641,7 +644,7 @@
     <Modal v-model="modal.feedbackDeclareNumberModal" title="Revert Declare Number">
       <Form :model="workPara" :label-width="120" :rules="formRule.ruleRevertDeclareNumberModal" ref="formRevertDeclareNumber">
         <FormItem label="Declare Number" prop="billlading_declare_number">
-          <Input :rows="2" placeholder="Declare Number" v-model="workPara.billlading_declare_number"/>
+          <Input :rows="2" placeholder="Declare Number" v-model="workPara.billlading_declare_number" />
         </FormItem>
       </Form>
       <div slot="footer">
@@ -651,7 +654,7 @@
     </Modal>
     <Modal v-model="modal.loadingPermissionModal" title="Loading Permission">
       <div v-for="f in files" v-bind:key="f.name" class="upload-list">
-        <Icon type="ios-document" size="60"/>
+        <Icon type="ios-document" size="60" />
       </div>
       <Upload
         ref="upload"
@@ -678,11 +681,11 @@
     <Modal v-model="modal.feedbackBLDraftModal" title="Billlading Draft">
       <Form :model="workPara" :label-width="100">
         <FormItem label="Remark" prop="uploadfile_remark">
-          <Input type="textarea" :rows="4" placeholder="Remark" v-model="workPara.uploadfile_remark"/>
+          <Input type="textarea" :rows="4" placeholder="Remark" v-model="workPara.uploadfile_remark" />
         </FormItem>
         <FormItem label="Files">
           <div v-for="f in files" v-bind:key="f.name" class="upload-list">
-            <Icon type="ios-document" size="60"/>
+            <Icon type="ios-document" size="60" />
           </div>
           <Upload
             ref="blupload"
@@ -714,22 +717,22 @@
           <b>Invoice</b>
         </h4>
         <FormItem label="FREIGHT" prop="billlading_invoice_freight">
-          <Input placeholder="FREIGHT" v-model="workPara.billlading_invoice_freight"/>
+          <Input placeholder="FREIGHT" v-model="workPara.billlading_invoice_freight" />
         </FormItem>
         <FormItem label="B/LANDING" prop="billlading_invoice_blanding">
-          <Input placeholder="B/LANDING" v-model="workPara.billlading_invoice_blanding"/>
+          <Input placeholder="B/LANDING" v-model="workPara.billlading_invoice_blanding" />
         </FormItem>
         <FormItem label="TASAC" prop="billlading_invoice_tasac">
-          <Input placeholder="TASAC" v-model="workPara.billlading_invoice_tasac"/>
+          <Input placeholder="TASAC" v-model="workPara.billlading_invoice_tasac" />
         </FormItem>
         <FormItem label="AMMENDMENT FEE" prop="billlading_invoice_ammendment">
-          <Input placeholder="AMMENDMENT FEE" v-model="workPara.billlading_invoice_ammendment"/>
+          <Input placeholder="AMMENDMENT FEE" v-model="workPara.billlading_invoice_ammendment" />
         </FormItem>
         <FormItem label="ISP" prop="billlading_invoice_isp">
-          <Input placeholder="ISP" v-model="workPara.billlading_invoice_isp"/>
+          <Input placeholder="ISP" v-model="workPara.billlading_invoice_isp" />
         </FormItem>
         <FormItem label="SURCHAGE" prop="billlading_invoice_surchage">
-          <Input placeholder="SURCHAGE" v-model="workPara.billlading_invoice_surchage"/>
+          <Input placeholder="SURCHAGE" v-model="workPara.billlading_invoice_surchage" />
         </FormItem>
       </Form>
       <div slot="footer">
@@ -1723,7 +1726,27 @@ export default {
       delete actrow._rowKey
       this.oldPara = JSON.parse(JSON.stringify(actrow))
       this.workPara = JSON.parse(JSON.stringify(actrow))
-      this.table.goodsTable.data = JSON.parse(JSON.stringify(actrow.billlading_goods))
+      if (actrow.billlading_goods.length > 0) {
+        this.table.goodsTable.data = JSON.parse(JSON.stringify(actrow.billlading_goods))
+      } else {
+        this.table.goodsTable.data = []
+        this.table.goodsTable.data.push({
+          billlading_goods_container_number: null,
+          billlading_goods_container_type: '',
+          billlading_goods_container_size: '',
+          billlading_goods_type: '',
+          billlading_goods_description: '',
+          billlading_goods_package_number: null,
+          billlading_goods_package_unit: 'BAG',
+          billlading_goods_gross_volume: null,
+          billlading_goods_gross_volume_unit: 'M3',
+          billlading_goods_gross_weight: null,
+          billlading_goods_gross_unit: 'KG',
+          billlading_goods_net_weight: null,
+          billlading_goods_net_unit: 'KG'
+        })
+      }
+
       this.table.containerTable.data = JSON.parse(JSON.stringify(actrow.billlading_containers))
       this.VoyageINFO = JSON.parse(JSON.stringify(actrow.VoyageINFO))
       this.action = 'modify'
