@@ -38,9 +38,14 @@
                   <Option v-for="item in table.bookingTable.search_data.customer.options" :value="item.id" :key="item.id">{{item.text}}</Option>
                 </Select>
               </div>
-              <div class="form-group m-r-10">
+              <div class="form-group m-r-2">
                 <button type="button" class="btn btn-info" @click="getBookingData(1)">
                   <i class="fa fa-search"></i>
+                </button>
+              </div>
+              <div class="form-group m-r-2">
+                <button type="button" class="btn btn-info" @click="downReport">
+                  <i class="fa fa-download"></i>
                 </button>
               </div>
             </div>
@@ -105,6 +110,14 @@
         </FormItem>
         <FormItem label="Sum" prop="sum_fee">
           <Input placeholder="Sum" v-model="workPara.sum_fee" :disabled="true" />
+        </FormItem>
+        <FormItem label="Receipt Type" prop="billlading_cash_bank_flag">
+          <Select v-model="workPara.billlading_cash_bank_flag">
+            <Option v-for="item in pagePara.CASH_BANK_INFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="Bank Detail" prop="billlading_bank_detail" v-if="workPara.billlading_cash_bank_flag === 'B'">
+          <Input placeholder="Bank Detail" v-model="workPara.billlading_bank_detail" />
         </FormItem>
         <FormItem label="Receipt Money" prop="billlading_received">
           <Input placeholder="Receipt Money" v-model="workPara.billlading_received" />
@@ -273,6 +286,7 @@ export default {
       formRule: {
         ruleInvoiceModal: {
           billlading_receipt_type: [{ required: true, trigger: 'change', message: 'Choose Receipt Type' }],
+          billlading_cash_bank_flag: [{ required: true, trigger: 'change', message: 'Choose CASH/BANK' }],
           billlading_invoice_money: [{ required: true, trigger: 'change', message: 'Enter Invoice money' }]
         }
       },
@@ -370,6 +384,47 @@ export default {
     },
     downloadReceipt: function(row) {
       printJS(row.files[0].url)
+    },
+    downReport: async function() {
+      try {
+        let searchPara = {
+          start_date: this.table.bookingTable.search_data.date[0],
+          end_date: this.table.bookingTable.search_data.date[1],
+          offset: this.table.bookingTable.offset,
+          limit: this.table.bookingTable.limit
+        }
+
+        if (this.table.bookingTable.search_data.billlading_state) {
+          searchPara.billlading_state = this.table.bookingTable.search_data.billlading_state
+        }
+
+        if (this.table.bookingTable.search_data.customer.value) {
+          searchPara.customer = this.table.bookingTable.search_data.customer.value
+        }
+
+        if (this.table.bookingTable.search_data.search_text) {
+          searchPara.search_text = this.table.bookingTable.search_data.search_text
+        }
+        let response = await this.$http.request({
+          url: apiUrl + 'downdReceiptReport',
+          method: 'post',
+          data: searchPara,
+          responseType: 'blob'
+        })
+        let blob = response.data
+        let reader = new FileReader()
+        reader.readAsDataURL(blob)
+        reader.onload = e => {
+          let a = document.createElement('a')
+          a.download = 'receipt report.xlsx'
+          a.href = e.target.result
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+        }
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
     }
   }
 }
