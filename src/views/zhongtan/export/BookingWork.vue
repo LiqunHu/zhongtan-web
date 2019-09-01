@@ -426,6 +426,11 @@
                     <b>Container Description</b>
                   </h4>
                   <Table stripe size="small" ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data">
+                    <template slot-scope="{ row, index }" slot="action">
+                      <a href="#" class="btn btn-danger btn-icon btn-sm" @click="deleteContainer(row, index)">
+                        <i class="fa fa-times"></i>
+                      </a>
+                    </template>
                     <template slot-scope="{ row, index }" slot="container_no">
                       <Input v-model="row.container_no" @on-blur="table.containerTable.data[index] = row" />
                     </template>
@@ -1290,6 +1295,12 @@ export default {
         containerTable: {
           columns: [
             {
+              title: 'Action',
+              slot: 'action',
+              width: 50,
+              align: 'center'
+            },
+            {
               title: 'Container No.',
               slot: 'container_no',
               width: 100
@@ -1988,6 +1999,15 @@ export default {
         title: 'Exceeding file size limit',
         desc: 'File  ' + file.name + ' is too large, no more than 4M.'
       })
+    },
+    deleteContainer: async function(row, index){
+      try {
+          await this.$http.post(apiUrl + 'deleteContainer', { container_id: row.container_id })
+          this.table.containerTable.data.splice(index, 1)
+          this.$Message.success('delete container success')
+        } catch (error) {
+          this.$commonact.fault(error)
+        }
     }
   }
 }
