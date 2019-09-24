@@ -92,6 +92,11 @@
               <i class="fa fa-download"></i>
             </a>
           </Tooltip>
+          <Tooltip content="Released" v-if="row.import_billlading_released_flag === '0'">
+            <a href="#" class="btn btn-primary btn-icon btn-sm" @click="releasedBL(row)">
+              <i class="fa fa-dot-circle"></i>
+            </a>
+          </Tooltip>
         </template>
         <template slot-scope="{ row, index }" slot="customerINFO">
           <Poptip trigger="hover" placement="bottom" :transfer="true" width="300">
@@ -291,7 +296,7 @@
 </template>
 <script>
 import PageOptions from '../../../config/PageOptions.vue'
-import _ from "lodash"
+import _ from 'lodash'
 const moment = require('moment')
 const common = require('@/lib/common')
 import expandRow from '../../../components/import/import-expand.vue'
@@ -326,6 +331,17 @@ export default {
               title: 'Action',
               slot: 'action',
               width: 130
+            },
+            {
+              title: 'Do No.',
+              key: 'import_billlading_id',
+              width: 120
+            },
+            {
+              title: 'Released',
+              key: 'import_billlading_released_flag',
+              render: common.selectRender(this, 'TFINFO'),
+              width: 100
             },
             {
               title: 'Customer',
@@ -732,6 +748,15 @@ export default {
       this.workPara.net_weight = row.import_billlading_total_gross_weight_kg
       this.workPara.total_cmb = row.import_billlading_total_volume_cbm
       this.workPara.receiving_delivery = row.container[0].import_billlading_container_traffic_mode
+      let paks = '',
+        desc = ''
+      if (row.goods.length > 0) {
+        for (let g of row.goods) {
+          paks += g.import_billlading_goods_package_number + ' ' + g.import_billlading_goods_package_unit + ' \r '
+          desc += g.import_billlading_goods_description + ' \r '
+        }
+      }
+      this.workPara.commodity = paks + desc
 
       this.modal.downLoadBLModal = true
     },
@@ -754,7 +779,7 @@ export default {
         reader.readAsDataURL(blob)
         reader.onload = e => {
           let a = document.createElement('a')
-          a.download = this.workPara.consignee_name + ' ' + this.workPara.import_billlading_no + '.docx'
+          a.download = this.workPara.consignee_name + ' ' + this.workPara.bl_no + '.docx'
           a.href = e.target.result
           document.body.appendChild(a)
           a.click()
@@ -763,6 +788,17 @@ export default {
       } catch (error) {
         this.$commonact.fault(error)
       }
+    },
+    releasedBL: async function(row) {
+      this.$commonact.confirm('Released?', async () => {
+        try {
+          await this.$http.post(apiUrl + 'released', { import_billlading_id: row.import_billlading_id })
+          this.$Message.success('Successful operation')
+          this.getImportData()
+        } catch (error) {
+          this.$commonact.fault(error)
+        }
+      })
     }
   }
 }
