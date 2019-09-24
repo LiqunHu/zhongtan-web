@@ -748,15 +748,13 @@ export default {
       this.workPara.net_weight = row.import_billlading_total_gross_weight_kg
       this.workPara.total_cmb = row.import_billlading_total_volume_cbm
       this.workPara.receiving_delivery = row.container[0].import_billlading_container_traffic_mode
-      let paks = '',
-        desc = ''
+      this.workPara.commodity = ''
       if (row.goods.length > 0) {
         for (let g of row.goods) {
-          paks += g.import_billlading_goods_package_number + ' ' + g.import_billlading_goods_package_unit + ' \r '
-          desc += g.import_billlading_goods_description + ' \r '
+          this.workPara.commodity += g.import_billlading_goods_package_number + ' ' + g.import_billlading_goods_package_unit + '\r'
+          this.workPara.commodity += g.import_billlading_goods_description + '\r'
         }
       }
-      this.workPara.commodity = paks + desc
 
       this.modal.downLoadBLModal = true
     },
