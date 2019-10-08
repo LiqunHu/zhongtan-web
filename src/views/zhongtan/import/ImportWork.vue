@@ -160,7 +160,19 @@
         <Row>
           <Col>
             <FormItem label="Deliver to" prop="deliver_to">
-              <Input type="textarea" :rows="2" placeholder="Deliver to" v-model="workPara.deliver_to" />
+              <Select
+                v-model="workPara.import_billlading_customer_id"
+                filterable
+                clearable
+                remote
+                :remote-method="searchDeliveryCustomer"
+                :loading="deliveryCustomer.loading"
+                placeholder="customer"
+                @on-change="customerChange"
+              >
+                <Option v-for="item in deliveryCustomer.options" :value="item.id" :key="item.id">{{item.text}}</Option>
+              </Select>
+              <!-- <Input type="textarea" :rows="2" placeholder="Deliver to" v-model="workPara.deliver_to" /> -->
             </FormItem>
           </Col>
         </Row>
@@ -185,7 +197,7 @@
           </Col>
           <Col offset="3" span="9">
             <FormItem label="Delivery Order No" prop="delivery_order_no">
-              <Input placeholder="Delivery Order No" v-model="workPara.delivery_order_no" />
+              <Input placeholder="Delivery Order No" v-model="workPara.delivery_order_no" disabled />
             </FormItem>
             <FormItem label="B/L NO." prop="bl_no">
               <Input placeholder="B/L NO." v-model="workPara.bl_no" />
@@ -289,7 +301,7 @@
       </Form>
       <div slot="footer">
         <Button type="text" size="large" @click="modal.downLoadBLModal=false">Cancel</Button>
-        <Button type="primary" size="large" @click="downLoadBL">Submit</Button>
+        <Button type="primary" size="large" @click="downloadBL">Submit</Button>
       </div>
     </Modal>
   </div>
@@ -463,6 +475,10 @@ export default {
       formRule: {
         ruleImportModal: {}
       },
+      deliveryCustomer: {
+        options: [],
+        loading: false
+      },
       pagePara: {},
       oldPara: {},
       workPara: {},
@@ -502,6 +518,18 @@ export default {
         this.table.importTable.search_data.customer.loading = false
       } else {
         this.table.importTable.search_data.customer.options = []
+      }
+    },
+    searchDeliveryCustomer: async function(query) {
+      if (query !== '') {
+        this.deliveryCustomer.loading = true
+        let response = await this.$http.post(apiUrl + 'searchCustomer', {
+          search_text: query
+        })
+        this.deliveryCustomer.options = JSON.parse(JSON.stringify(response.data.info.customerINFO))
+        this.deliveryCustomer.loading = false
+      } else {
+        this.deliveryCustomer.options = []
       }
     },
     getImportData: async function(index) {
@@ -695,10 +723,37 @@ export default {
         this.$commonact.fault(error)
       }
     },
+    customerChange: function(sel) {
+      if (sel) {
+        for(let op of this.deliveryCustomer.options) {
+          if(op.id === sel) {
+            this.workPara.customerINFO = JSON.parse(JSON.stringify(op))
+            break
+          }
+        }
+      }
+    },
     actDownLoadBLModal: function(row) {
+      let _self = this
       this.workPara = {}
+
       this.workPara.import_billlading_id = row.import_billlading_id
-      this.workPara.deliver_to = ''
+      _self.workPara.import_billlading_customer_id = row.import_billlading_customer_id
+      this.$nextTick(function() {
+        if (row.import_billlading_customer_id) {
+          this.deliveryCustomer.loading = true
+          this.deliveryCustomer.options = [
+            {
+              id: row.import_billlading_customer_id,
+              text: row.customerINFO.name
+            }
+          ]
+          this.workPara.customerINFO = row.customerINFO
+          this.deliveryCustomer.loading = false
+        } else {
+          this.deliveryCustomer.options = []
+        }
+      })
       this.workPara.bl_date = moment().format('YYYY-MM-DD')
       this.workPara.valid_to = ''
       let cary = row.import_billlading_consignee.split('<br/>')
@@ -709,7 +764,7 @@ export default {
               .join(' ')
               .replace(/\r\n/g, '')
           : ''
-      this.workPara.delivery_order_no = ''
+      this.workPara.delivery_order_no = row.import_billlading_id
       this.workPara.bl_no = row.import_billlading_no
       this.workPara.vessel = row.import_billlading_vessel_name
       this.workPara.voyage = row.import_billlading_voyage
@@ -758,13 +813,14 @@ export default {
 
       this.modal.downLoadBLModal = true
     },
-    downLoadBL: async function() {
+    downloadBL: async function() {
       try {
         this.workPara.bl_date = moment(this.workPara.bl_date).format('YYYY-MM-DD')
         this.workPara.valid_to = moment(this.workPara.valid_to).format('YYYY-MM-DD')
         this.workPara.etd = moment(this.workPara.etd).format('YYYY-MM-DD')
         this.workPara.eta = moment(this.workPara.eta).format('YYYY-MM-DD')
         this.workPara.containers = this.table.containerTable.data
+        this.workPara.deliver_to = this.workPara.customerINFO.name + ', ' + this.workPara.customerINFO.address
         let response = await this.$http.request({
           url: apiUrl + 'downloadBL',
           method: 'post',
@@ -783,6 +839,7 @@ export default {
           a.click()
           document.body.removeChild(a)
         }
+        this.getImportData()
       } catch (error) {
         this.$commonact.fault(error)
       }
