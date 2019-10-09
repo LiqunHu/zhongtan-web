@@ -821,6 +821,7 @@ export default {
         this.workPara.eta = moment(this.workPara.eta).format('YYYY-MM-DD')
         this.workPara.containers = this.table.containerTable.data
         this.workPara.deliver_to = this.workPara.customerINFO.name + ', ' + this.workPara.customerINFO.address
+        this.workPara.deliver_name = this.workPara.customerINFO.name
         let response = await this.$http.request({
           url: apiUrl + 'downloadBL',
           method: 'post',
