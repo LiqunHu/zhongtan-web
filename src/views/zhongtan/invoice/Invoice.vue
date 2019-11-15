@@ -39,11 +39,10 @@
                 <Col>
                   <div @click="getVoyageDetail(item.invoice_vessel_id)">
                     <Card>
-                      <p slot="title">{{item.invoice_vessel_name}}({{item.invoice_vessel_call_sign}}) - {{item.invoice_vessel_voyage}}</p>
-                      <p>MRN: {{item.invoice_vessel_mrn}}</p>
-                      <p>Departure Date: {{item.invoice_vessel_departure_date}}</p>
-                      <p>Arrival Date: {{item.invoice_vessel_arrival_date}}</p>
-                      <p>TPA UID: {{item.invoice_vessel_tpa_uid}}</p>
+                      <p slot="title">{{item.invoice_vessel_name}}({{item.invoice_vessel_code}}) - {{item.invoice_vessel_voyage}}</p>
+                      <p>ETA: {{item.invoice_vessel_eta}}</p>
+                      <p>ATA: {{item.invoice_vessel_ata}}</p>
+                      <p>ATD: {{item.invoice_vessel_atd}}</p>
                     </Card>
                   </div>
                 </Col>
