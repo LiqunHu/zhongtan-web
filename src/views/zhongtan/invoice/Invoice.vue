@@ -492,7 +492,7 @@ export default {
         this.workPara.upload_files = this.files.fileList
         await this.$http.post(apiUrl + 'uploadImport', this.workPara)
         this.$Message.success('submit success')
-        this.getImportData()
+        this.getVoyageData()
         this.modal.importModal = false
       } catch (error) {
         this.$commonact.fault(error)
