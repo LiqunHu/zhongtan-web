@@ -312,7 +312,7 @@ import _ from 'lodash'
 const moment = require('moment')
 const common = require('@/lib/common')
 import expandRow from '../../../components/import/import-expand.vue'
-const apiUrl = '/api/zhongtan/import/ImportWork/'
+const apiUrl = '/api/zhongtan/invoice/Invoice/'
 
 export default {
   name: 'ImportWorkControl',
