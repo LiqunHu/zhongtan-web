@@ -110,7 +110,7 @@ export default {
             {
               title: '#M B/L No',
               key: 'invoice_masterbi_bl',
-              width: 100
+              width: 150
             },
             {
               title: 'Cargo Classification',
@@ -125,14 +125,12 @@ export default {
             {
               title: 'Place of Destination',
               key: 'invoice_masterbi_destination',
-              render: common.tooltipRender(),
-              width: 100
+              width: 130
             },
             {
               title: 'Place of Delivery',
               key: 'invoice_masterbi_delivery',
-              render: common.tooltipRender(),
-              width: 100
+              width: 130
             },
             {
               title: 'Oil Type',
@@ -142,8 +140,7 @@ export default {
             {
               title: 'Port of Loading',
               key: 'invoice_masterbi_loading',
-              render: common.tooltipRender(),
-              width: 100
+              width: 130
             },
             {
               title: 'Number of Containers',
@@ -153,8 +150,8 @@ export default {
             {
               title: 'Description of Goods',
               key: 'invoice_masterbi_goods_description',
-              render: common.tooltipRender(),
-              width: 100
+              tooltip: true,
+              width: 200
             },
             {
               title: 'Number of Package',
@@ -219,22 +216,25 @@ export default {
             {
               title: 'Forwarder Code',
               key: 'invoice_masterbi_forwarder_code',
-              width: 100
+              tooltip: true,
+              width: 150
             },
             {
               title: 'Forwarder Name',
               key: 'invoice_masterbi_forwarder_name',
-              width: 100
+              tooltip: true,
+              width: 200
             },
             {
               title: 'Forwarder Tel',
               key: 'invoice_masterbi_forwarder_tel',
-              width: 100
+              width: 150
             },
             {
               title: 'Exporter Name',
               key: 'invoice_masterbi_exporter_name',
-              width: 100
+              tooltip: true,
+              width: 200
             },
             {
               title: 'Exporter Tel',
@@ -244,8 +244,8 @@ export default {
             {
               title: 'Exporter Address',
               key: 'invoice_masterbi_exporter_address',
-              render: common.tooltipRender(),
-              width: 100
+              tooltip: true,
+              width: 200
             },
             {
               title: 'Exporter TIN',
@@ -255,7 +255,8 @@ export default {
             {
               title: 'Consignee Name',
               key: 'invoice_masterbi_consignee_name',
-              width: 100
+              tooltip: true,
+              width: 200
             },
             {
               title: 'Consignee Tel',
@@ -265,8 +266,8 @@ export default {
             {
               title: 'Consignee Address',
               key: 'invoice_masterbi_consignee_address',
-              render: common.tooltipRender(),
-              width: 100
+              tooltip: true,
+              width: 200
             },
             {
               title: 'Consignee TIN',
@@ -276,7 +277,8 @@ export default {
             {
               title: 'Notify Name',
               key: 'invoice_masterbi_notify_name',
-              width: 100
+              tooltip: true,
+              width: 200
             },
             {
               title: 'Notify Tel',
@@ -286,8 +288,8 @@ export default {
             {
               title: 'Notify Address',
               key: 'invoice_masterbi_notify_address',
-              render: common.tooltipRender(),
-              width: 100
+              tooltip: true,
+              width: 200
             },
             {
               title: 'Notify TIN',
@@ -297,7 +299,8 @@ export default {
             {
               title: 'Shipping Mark',
               key: 'invoice_masterbi_shipping_mark',
-              width: 100
+              tooltip: true,
+              width: 200
             },
             {
               title: 'Net Weight',
@@ -328,7 +331,7 @@ export default {
             {
               title: '#M B/L No',
               key: 'invoice_containers_bl',
-              width: 100
+              width: 150
             },
             {
               title: 'Type Of Container',
@@ -338,7 +341,7 @@ export default {
             {
               title: 'Container No',
               key: 'invoice_containers_no',
-              width: 100
+              width: 150
             },
             {
               title: 'Container Size',
@@ -510,6 +513,8 @@ export default {
         let response = await this.$http.post(apiUrl + 'searchVoyage', searchPara)
         let data = response.data.info
         this.vessel.data = JSON.parse(JSON.stringify(data))
+        this.table.masterbiTable.data = []
+        this.table.containersTable.data = []
       } catch (error) {
         this.$commonact.fault(error)
       }
