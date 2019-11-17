@@ -53,7 +53,15 @@
         <Col span="17" offset="1">
           <Tabs :animated="false">
             <TabPane label="MasterBl">
-              <Table stripe size="small" ref="masterbiTable" :columns="table.masterbiTable.columns" :data="table.masterbiTable.data" :height="table.masterbiTable.height"></Table>
+              <Table stripe size="small" ref="masterbiTable" :columns="table.masterbiTable.columns" :data="table.masterbiTable.data" :height="table.masterbiTable.height">
+                <template slot-scope="{ row, index }" slot="action">
+                  <Tooltip content="Download B/L">
+                    <a href="#" class="btn btn-green btn-icon btn-sm" @click="actDownLoadDoModal(row)">
+                      <i class="fa fa-download"></i>
+                    </a>
+                  </Tooltip>
+                </template>
+              </Table>
             </TabPane>
             <TabPane label="Containers">
               <Table stripe size="small" ref="containersTable" :columns="table.containersTable.columns" :data="table.containersTable.data" :height="table.containersTable.height"></Table>
@@ -92,6 +100,28 @@
         <Button type="primary" size="large" @click="importData">Submit</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.downLoadDoModal" title="Download Do" width="600">
+      <Form :model="workPara" :label-width="120">
+        <Row>
+          <Col>
+            <FormItem label="Delivery to" prop="invoice_masterbi_delivery_to">
+              <Input placeholder="Delivery to" v-model="workPara.invoice_masterbi_delivery_to" />
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <FormItem label="VALID TO" prop="invoice_masterbi_valid_to">
+              <DatePicker type="date" placeholder="VALID TO" v-model="workPara.invoice_masterbi_valid_to"></DatePicker>
+            </FormItem>
+          </Col>
+        </Row>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.downLoadDoModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="downloadDo">Submit</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -103,7 +133,7 @@ const apiUrl = '/api/zhongtan/invoice/Invoice/'
 export default {
   data: function() {
     return {
-      modal: { importModal: false },
+      modal: { importModal: false, downLoadDoModal: false },
       table: {
         masterbiTable: {
           columns: [
@@ -111,6 +141,11 @@ export default {
               title: '#M B/L No',
               key: 'invoice_masterbi_bl',
               width: 150
+            },
+            {
+              title: 'Action',
+              slot: 'action',
+              width: 130
             },
             {
               title: 'Cargo Classification',
@@ -527,6 +562,34 @@ export default {
         let data = response.data.info
         this.table.masterbiTable.data = JSON.parse(JSON.stringify(data.MasterBl))
         this.table.containersTable.data = JSON.parse(JSON.stringify(data.Containers))
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
+    actDownLoadDoModal: function(row) {
+      this.workPara = JSON.parse(JSON.stringify(row))
+      this.modal.downLoadDoModal = true
+    },
+    downloadDo: async function() {
+      try {
+        let response = await this.$http.request({
+          url: apiUrl + 'downloadDo',
+          method: 'post',
+          data: this.workPara,
+          responseType: 'blob'
+        })
+        this.modal.downLoadDoModal = false
+        let blob = response.data
+        let reader = new FileReader()
+        reader.readAsDataURL(blob)
+        reader.onload = e => {
+          let a = document.createElement('a')
+          a.download = this.workPara.invoice_masterbi_consignee_name + ' ' + this.workPara.invoice_masterbi_bl + '.docx'
+          a.href = e.target.result
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+        }
       } catch (error) {
         this.$commonact.fault(error)
       }
