@@ -37,7 +37,7 @@
             <Scroll :height="vessel.height">
               <Row v-for="item in vessel.data" v-bind:key="item.invoice_vessel_id">
                 <Col>
-                  <div @click="getVoyageDetail(item.invoice_vessel_id)">
+                  <div @click="checkVoyage(item.invoice_vessel_id)">
                     <Card>
                       <p slot="title">{{item.invoice_vessel_name}}({{item.invoice_vessel_code}}) - {{item.invoice_vessel_voyage}}</p>
                       <p>ETA: {{item.invoice_vessel_eta}}</p>
@@ -55,9 +55,14 @@
             <TabPane label="MasterBl">
               <Table stripe size="small" ref="masterbiTable" :columns="table.masterbiTable.columns" :data="table.masterbiTable.data" :height="table.masterbiTable.height">
                 <template slot-scope="{ row, index }" slot="action">
-                  <Tooltip content="Download B/L">
+                  <Tooltip content="Download B/L" v-if="row.invoice_vessel_release_state === '0'">
                     <a href="#" class="btn btn-green btn-icon btn-sm" @click="actDownLoadDoModal(row)">
                       <i class="fa fa-download"></i>
+                    </a>
+                  </Tooltip>
+                  <Tooltip content="Download B/L" v-if="row.invoice_vessel_release_state === '0'">
+                    <a href="#" class="btn btn-primary btn-icon btn-sm" @click="doRealse(row)">
+                      <i class="fa fa-dot-circle"></i>
                     </a>
                   </Tooltip>
                 </template>
@@ -146,6 +151,17 @@ export default {
               title: 'Action',
               slot: 'action',
               width: 130
+            },
+            {
+              title: 'Released Date',
+              key: 'invoice_vessel_release_date',
+              width: 150,
+              render: (h, params) => {
+                return h(
+                  'div',
+                  params.row.invoice_vessel_release_date ? moment(params.row.invoice_vessel_release_date).format('DD/MM/YYYY hh:mm') : ''
+                )
+              }
             },
             {
               title: 'Cargo Classification',
@@ -453,6 +469,7 @@ export default {
           height: common.getTableHeight() - 50
         }
       },
+      pagePara: {},
       workPara: {},
       headers: common.uploadHeaders(),
       action: '',
@@ -469,6 +486,7 @@ export default {
             moment().format('YYYY-MM-DD')
           ]
         },
+        current: '',
         height: common.getTableHeight()
       }
     }
@@ -477,9 +495,18 @@ export default {
     PageOptions.pageEmpty = false
   },
   mounted: async function() {
+    await this.getPara()
     await this.getVoyageData()
   },
   methods: {
+    getPara: async function() {
+      try {
+        let response = await this.$http.post(apiUrl + 'init', {})
+        this.pagePara = JSON.parse(JSON.stringify(response.data.info))
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
     loadImportModal: async function() {
       this.workPara = {}
       this.action = 'add'
@@ -554,10 +581,16 @@ export default {
         this.$commonact.fault(error)
       }
     },
-    getVoyageDetail: async function(invoice_vessel_id) {
+    checkVoyage: async function(invoice_vessel_id) {
+      if (this.vessel.current != invoice_vessel_id) {
+        this.vessel.current = invoice_vessel_id
+        this.getVoyageDetail()
+      }
+    },
+    getVoyageDetail: async function() {
       try {
         let response = await this.$http.post(apiUrl + 'getVoyageDetail', {
-          invoice_vessel_id: invoice_vessel_id
+          invoice_vessel_id: this.vessel.current
         })
         let data = response.data.info
         this.table.masterbiTable.data = JSON.parse(JSON.stringify(data.MasterBl))
@@ -593,6 +626,17 @@ export default {
       } catch (error) {
         this.$commonact.fault(error)
       }
+    },
+    doRealse: async function(row) {
+      this.$commonact.confirm('release confirmed?', async () => {
+        try {
+          await this.$http.post(apiUrl + 'doRelease', { invoice_masterbi_id: row.invoice_masterbi_id })
+          this.$Message.success('release success')
+          this.getVoyageDetail()
+        } catch (error) {
+          this.$commonact.fault(error)
+        }
+      })
     }
   }
 }
