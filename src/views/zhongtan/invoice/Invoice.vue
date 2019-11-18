@@ -40,9 +40,18 @@
                   <div @click="checkVoyage(item.invoice_vessel_id)">
                     <Card>
                       <p slot="title">{{item.invoice_vessel_name}}({{item.invoice_vessel_code}}) - {{item.invoice_vessel_voyage}}</p>
-                      <p>ETA: {{item.invoice_vessel_eta}}</p>
-                      <p>ATA: {{item.invoice_vessel_ata}}</p>
-                      <p>ATD: {{item.invoice_vessel_atd}}</p>
+                      <Row>
+                        <Col span="12"><p>ETA: {{item.invoice_vessel_eta}}</p></Col>
+                        <Col span="12">release: {{item.invoice_release}}</Col>
+                      </Row>
+                      <Row>
+                        <Col span="12"><p>ATA: {{item.invoice_vessel_ata}}</p></Col>
+                        <Col span="12"></Col>
+                      </Row>
+                      <Row>
+                        <Col span="12"><p>ATD: {{item.invoice_vessel_atd}}</p></Col>
+                        <Col span="12"></Col>
+                      </Row>
                     </Card>
                   </div>
                 </Col>
@@ -55,7 +64,7 @@
             <TabPane label="MasterBl">
               <Table stripe size="small" ref="masterbiTable" :columns="table.masterbiTable.columns" :data="table.masterbiTable.data" :height="table.masterbiTable.height">
                 <template slot-scope="{ row, index }" slot="action">
-                  <Tooltip content="Download B/L" v-if="row.invoice_vessel_release_state === '0'">
+                  <Tooltip content="Download B/L">
                     <a href="#" class="btn btn-green btn-icon btn-sm" @click="actDownLoadDoModal(row)">
                       <i class="fa fa-download"></i>
                     </a>
@@ -110,14 +119,14 @@
         <Row>
           <Col>
             <FormItem label="Delivery to" prop="invoice_masterbi_delivery_to">
-              <Input placeholder="Delivery to" v-model="workPara.invoice_masterbi_delivery_to" />
+              <Input placeholder="Delivery to" v-model="workPara.invoice_masterbi_delivery_to" :disabled="workPara.invoice_vessel_release_state === '1'"/>
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col>
             <FormItem label="VALID TO" prop="invoice_masterbi_valid_to">
-              <DatePicker type="date" placeholder="VALID TO" v-model="workPara.invoice_masterbi_valid_to"></DatePicker>
+              <DatePicker type="date" placeholder="VALID TO" v-model="workPara.invoice_masterbi_valid_to" :disabled="workPara.invoice_vessel_release_state === '1'"></DatePicker>
             </FormItem>
           </Col>
         </Row>
