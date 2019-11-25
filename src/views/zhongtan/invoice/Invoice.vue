@@ -41,15 +41,21 @@
                     <Card>
                       <p slot="title">{{item.invoice_vessel_name}}({{item.invoice_vessel_code}}) - {{item.invoice_vessel_voyage}}</p>
                       <Row>
-                        <Col span="12"><p>ETA: {{item.invoice_vessel_eta}}</p></Col>
+                        <Col span="12">
+                          <p>ETA: {{item.invoice_vessel_eta}}</p>
+                        </Col>
                         <Col span="12">release: {{item.invoice_release}}</Col>
                       </Row>
                       <Row>
-                        <Col span="12"><p>ATA: {{item.invoice_vessel_ata}}</p></Col>
+                        <Col span="12">
+                          <p>ATA: {{item.invoice_vessel_ata}}</p>
+                        </Col>
                         <Col span="12"></Col>
                       </Row>
                       <Row>
-                        <Col span="12"><p>ATD: {{item.invoice_vessel_atd}}</p></Col>
+                        <Col span="12">
+                          <p>ATD: {{item.invoice_vessel_atd}}</p>
+                        </Col>
                         <Col span="12"></Col>
                       </Row>
                     </Card>
@@ -64,16 +70,35 @@
             <TabPane label="MasterBl">
               <Table stripe size="small" ref="masterbiTable" :columns="table.masterbiTable.columns" :data="table.masterbiTable.data" :height="table.masterbiTable.height">
                 <template slot-scope="{ row, index }" slot="action">
-                  <Tooltip content="Download B/L">
+                  <Tooltip content="Generate Do">
                     <a href="#" class="btn btn-green btn-icon btn-sm" @click="actDownLoadDoModal(row)">
                       <i class="fa fa-download"></i>
                     </a>
                   </Tooltip>
-                  <Tooltip content="Download B/L" v-if="row.invoice_vessel_release_state === '0'">
+                  <Tooltip content="Do Realse" v-if="row.invoice_vessel_release_state === '0'">
                     <a href="#" class="btn btn-primary btn-icon btn-sm" @click="doRealse(row)">
                       <i class="fa fa-dot-circle"></i>
                     </a>
                   </Tooltip>
+                  <Tooltip content="Deposit">
+                    <a href="#" class="btn btn-success btn-icon btn-sm" @click="actDepositModal(row)">
+                      <i class="fa fa-money-bill-alt"></i>
+                    </a>
+                  </Tooltip>
+                </template>
+                <template slot-scope="{ row, index }" slot="files">
+                  <Poptip trigger="hover" placement="bottom" :transfer="true" width="555">
+                    <Button type="text" style="text-decoration:underline">Files</Button>
+                    <template slot="content">
+                      <Table stripe size="small" :columns="table.filesTable.columns" :data="row.files">
+                        <template slot-scope="{ row, index }" slot="url">
+                          <a :href="row.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
+                            <i class="fa fa-download"></i>
+                          </a>
+                        </template>
+                      </Table>
+                    </template>
+                  </Poptip>
                 </template>
               </Table>
             </TabPane>
@@ -119,7 +144,7 @@
         <Row>
           <Col>
             <FormItem label="Delivery to" prop="invoice_masterbi_delivery_to">
-              <Input placeholder="Delivery to" v-model="workPara.invoice_masterbi_delivery_to" :disabled="workPara.invoice_vessel_release_state === '1'"/>
+              <Input placeholder="Delivery to" v-model="workPara.invoice_masterbi_delivery_to" :disabled="workPara.invoice_vessel_release_state === '1'" />
             </FormItem>
           </Col>
         </Row>
@@ -136,18 +161,64 @@
         <Button type="primary" size="large" @click="downloadDo">Submit</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.depositModal" title="Deposit" width="600">
+      <Form :model="workPara" :label-width="120">
+        <FormItem label="M/S." prop="invoice_masterbi_customer">
+          <AutoComplete v-model="workPara.invoice_masterbi_customer" :data="autocomplete.customer" @on-search="getCustomerData" placeholder="M/S."></AutoComplete>
+        </FormItem>
+        <FormItem label="Carrier" prop="invoice_masterbi_carrier">
+          <Select v-model="workPara.invoice_masterbi_carrier">
+            <Option v-for="item in pagePara.RECEIPT_TYPE_INFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+          </Select>
+        </FormItem>
+        <Divider />
+        <RadioGroup v-model="deposit.depositType" vertical @on-change="chooseDepositType" style="width:100%">
+          <Radio label="Container Deposit">
+            <span>Container Deposit</span>
+          </Radio>
+          <FormItem label="Deposit Amount" prop="invoice_masterbi_deposit">
+            <Input placeholder="Deposit Amount" v-model="workPara.invoice_masterbi_deposit" :disabled="!deposit.disableFlag" />
+          </FormItem>
+          <Divider />
+          <Radio label="Invoice Fee">
+            <span>Invoice Fee</span>
+          </Radio>
+        </RadioGroup>
+        <div style="padding-left: 50px;">
+          <CheckboxGroup v-model="deposit.fees">
+            <Checkbox label="CONTAINER TRANSFER" :disabled="deposit.disableFlag"></Checkbox>
+            <br />
+            <Checkbox label="LIFT ON LIFT OFF" :disabled="deposit.disableFlag"></Checkbox>
+            <br />
+            <Checkbox label="LCL FEE" :disabled="deposit.disableFlag"></Checkbox>
+            <br />
+            <Checkbox label="AMENDMENT FEE" :disabled="deposit.disableFlag"></Checkbox>
+            <br />
+            <Checkbox label="TASAC FEE" :disabled="deposit.disableFlag"></Checkbox>
+            <br />
+            <Checkbox label="BILL PRINGTING FEE" :disabled="deposit.disableFlag"></Checkbox>
+          </CheckboxGroup>
+        </div>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.depositModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="depositDo">Submit</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
 import PageOptions from '../../../config/PageOptions.vue'
+import printJS from 'print-js'
 const moment = require('moment')
+const _ = require('lodash')
 const common = require('@/lib/common')
 const apiUrl = '/api/zhongtan/invoice/Invoice/'
 
 export default {
   data: function() {
     return {
-      modal: { importModal: false, downLoadDoModal: false },
+      modal: { importModal: false, downLoadDoModal: false, depositModal: false },
       table: {
         masterbiTable: {
           columns: [
@@ -171,6 +242,11 @@ export default {
                   params.row.invoice_vessel_release_date ? moment(params.row.invoice_vessel_release_date).format('DD/MM/YYYY hh:mm') : ''
                 )
               }
+            },
+            {
+              title: 'Files',
+              slot: 'files',
+              width: 100
             },
             {
               title: 'Cargo Classification',
@@ -476,6 +552,37 @@ export default {
           ],
           data: [],
           height: common.getTableHeight() - 50
+        },
+        filesTable: {
+          columns: [
+            {
+              title: 'Create Date',
+              key: 'date',
+              width: 120
+            },
+            {
+              title: 'Type',
+              key: 'filetype',
+              width: 150
+            },
+            {
+              title: 'Name',
+              key: 'name',
+              render: common.tooltipRender(),
+              width: 100
+            },
+            {
+              title: 'Download',
+              slot: 'url',
+              width: 100
+            },
+            {
+              title: 'Remark',
+              key: 'remark',
+              render: common.tooltipRender(),
+              width: 100
+            }
+          ]
         }
       },
       pagePara: {},
@@ -497,6 +604,14 @@ export default {
         },
         current: '',
         height: common.getTableHeight()
+      },
+      deposit: {
+        depositType: 'Container Deposit',
+        fees: [],
+        disableFlag: true
+      },
+      autocomplete: {
+        customer: []
       }
     }
   },
@@ -646,6 +761,37 @@ export default {
           this.$commonact.fault(error)
         }
       })
+    },
+    actDepositModal: function(row) {
+      this.workPara = JSON.parse(JSON.stringify(row))
+      this.modal.depositModal = true
+    },
+    chooseDepositType: function() {
+      if (this.deposit.depositType === 'Invoice Fee') {
+        this.deposit.disableFlag = false
+      } else {
+        this.deposit.disableFlag = true
+        this.deposit.fees = []
+      }
+    },
+    getCustomerData: async function() {
+      try {
+        let response = await this.$http.post(apiUrl + 'searchCustomer', { search_text: this.workPara.invoice_masterbi_customer })
+        this.autocomplete.msdata = JSON.parse(JSON.stringify(response.data.info))
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
+    depositDo: async function() {
+      try {
+        let response = await this.$http.post(apiUrl + 'depositDo', _.extend(this.workPara, this.deposit))
+        printJS(response.data.info.url)
+        this.$Message.success('submit success')
+        // this.getBookingData()
+        this.modal.depositModal = false
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
     }
   }
 }
