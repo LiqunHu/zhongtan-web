@@ -187,16 +187,17 @@
         <div style="padding-left: 50px;">
           <CheckboxGroup v-model="deposit.fees">
             <Checkbox label="CONTAINER TRANSFER" :disabled="deposit.disableFlag"></Checkbox>
-            <br />
+            <Input placeholder="CONTAINER TRANSFER" v-model="workPara.invoice_masterbi_transfer" :disabled="!(deposit.disableFlag === false && deposit.fees.indexOf('CONTAINER TRANSFER') >= 0)" />
             <Checkbox label="LIFT ON LIFT OFF" :disabled="deposit.disableFlag"></Checkbox>
-            <br />
-            <Checkbox label="LCL FEE" :disabled="deposit.disableFlag"></Checkbox>
-            <br />
-            <Checkbox label="AMENDMENT FEE" :disabled="deposit.disableFlag"></Checkbox>
-            <br />
-            <Checkbox label="TASAC FEE" :disabled="deposit.disableFlag"></Checkbox>
-            <br />
-            <Checkbox label="BILL PRINGTING FEE" :disabled="deposit.disableFlag"></Checkbox>
+            <Input placeholder="LIFT ON LIFT OFF" v-model="workPara.invoice_masterbi_lolf" :disabled="!(deposit.disableFlag === false && deposit.fees.indexOf('LIFT ON LIFT OFF') >= 0)" />
+            <Checkbox label="LCL" :disabled="deposit.disableFlag"></Checkbox>
+            <Input placeholder="LCL" v-model="workPara.invoice_masterbi_lcl" :disabled="!(deposit.disableFlag === false && deposit.fees.indexOf('LCL') >= 0)" />
+            <Checkbox label="AMENDMENT" :disabled="deposit.disableFlag"></Checkbox>
+            <Input placeholder="AMENDMENT" v-model="workPara.invoice_masterbi_amendment" :disabled="!(deposit.disableFlag === false && deposit.fees.indexOf('AMENDMENT') >= 0)" />
+            <Checkbox label="TASAC" :disabled="deposit.disableFlag"></Checkbox>
+            <Input placeholder="TASAC" v-model="workPara.invoice_masterbi_tasac" :disabled="!(deposit.disableFlag === false && deposit.fees.indexOf('TASAC') >= 0)" />
+            <Checkbox label="BILL PRINGTING" :disabled="deposit.disableFlag"></Checkbox>
+            <Input placeholder="BILL PRINGTING" v-model="workPara.invoice_masterbi_printing" :disabled="!(deposit.disableFlag === false && deposit.fees.indexOf('BILL PRINGTING') >= 0)" />
           </CheckboxGroup>
         </div>
       </Form>
@@ -786,9 +787,9 @@ export default {
       try {
         let response = await this.$http.post(apiUrl + 'depositDo', _.extend(this.workPara, this.deposit))
         printJS(response.data.info.url)
-        this.$Message.success('submit success')
-        // this.getBookingData()
+        this.$Message.success('deposit success')
         this.modal.depositModal = false
+        this.getVoyageDetail()
       } catch (error) {
         this.$commonact.fault(error)
       }
