@@ -163,8 +163,11 @@
     </Modal>
     <Modal v-model="modal.depositModal" title="Deposit" width="600">
       <Form :model="workPara" :label-width="120">
-        <FormItem label="M/S." prop="invoice_masterbi_customer">
-          <AutoComplete v-model="workPara.invoice_masterbi_customer" :data="autocomplete.customer" @on-search="getCustomerData" placeholder="M/S."></AutoComplete>
+        <FormItem label="Customer" prop="invoice_masterbi_customer_id">
+          <Select v-model="workPara.invoice_masterbi_customer_id" filterable remote :remote-method="searchCustomer" :loading="deposit.customer.loading" placeholder="Customer">
+            <Option v-for="item in deposit.customer.options" :value="item.id" :key="item.id">{{item.text}}</Option>
+          </Select>
+          <!-- <AutoComplete v-model="workPara.invoice_masterbi_customer" :data="autocomplete.customer" @on-search="getCustomerData" placeholder="M/S."></AutoComplete> -->
         </FormItem>
         <FormItem label="Carrier" prop="invoice_masterbi_carrier">
           <Select v-model="workPara.invoice_masterbi_carrier">
@@ -609,10 +612,11 @@ export default {
       deposit: {
         depositType: 'Container Deposit',
         fees: [],
-        disableFlag: true
-      },
-      autocomplete: {
-        customer: []
+        disableFlag: true,
+        customer: {
+          options: [],
+          loading: false
+        }
       }
     }
   },
@@ -764,8 +768,14 @@ export default {
       })
     },
     actDepositModal: function(row) {
-      this.workPara = JSON.parse(JSON.stringify(row))
-      this.modal.depositModal = true
+      this.deposit.customer.loading = true
+      this.deposit.customer.options = JSON.parse(JSON.stringify(row.customerINFO))
+      this.deposit.customer.loading = false
+      this.deposit.depositType = 'Container Deposit'
+      this.$nextTick(function() {
+        this.workPara = JSON.parse(JSON.stringify(row))
+        this.modal.depositModal = true
+      })
     },
     chooseDepositType: function() {
       if (this.deposit.depositType === 'Invoice Fee') {
@@ -775,12 +785,24 @@ export default {
         this.deposit.fees = []
       }
     },
-    getCustomerData: async function() {
-      try {
-        let response = await this.$http.post(apiUrl + 'searchCustomer', { search_text: this.workPara.invoice_masterbi_customer })
-        this.autocomplete.msdata = JSON.parse(JSON.stringify(response.data.info))
-      } catch (error) {
-        this.$commonact.fault(error)
+    // getCustomerData: async function() {
+    //   try {
+    //     let response = await this.$http.post(apiUrl + 'searchCustomer', { search_text: this.workPara.invoice_masterbi_customer })
+    //     this.autocomplete.msdata = JSON.parse(JSON.stringify(response.data.info))
+    //   } catch (error) {
+    //     this.$commonact.fault(error)
+    //   }
+    // },
+    searchCustomer: async function(query) {
+      if (query !== '') {
+        this.deposit.customer.loading = true
+        let response = await this.$http.post(apiUrl + 'searchCustomer', {
+          search_text: query
+        })
+        this.deposit.customer.options = JSON.parse(JSON.stringify(response.data.info.customerINFO))
+        this.deposit.customer.loading = false
+      } else {
+        this.deposit.customer.options = []
       }
     },
     depositDo: async function() {
