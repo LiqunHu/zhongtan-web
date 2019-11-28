@@ -69,17 +69,14 @@
           <Tabs :animated="false">
             <TabPane label="MasterBl">
               <Table stripe size="small" ref="masterbiTable" :columns="table.masterbiTable.columns" :data="table.masterbiTable.data" :height="table.masterbiTable.height">
-                <template slot-scope="{ row, index }" slot="action">
+                <template slot-scope="{ row, index }" slot="Do">
                   <Tooltip content="Generate Do">
                     <a href="#" class="btn btn-green btn-icon btn-sm" @click="actDownLoadDoModal(row)">
                       <i class="fa fa-download"></i>
                     </a>
                   </Tooltip>
-                  <Tooltip content="Do Realse" v-if="row.invoice_vessel_release_state === '0'">
-                    <a href="#" class="btn btn-primary btn-icon btn-sm" @click="doRealse(row)">
-                      <i class="fa fa-dot-circle"></i>
-                    </a>
-                  </Tooltip>
+                </template>
+                <template slot-scope="{ row, index }" slot="Invoice">
                   <Tooltip content="Deposit">
                     <a href="#" class="btn btn-success btn-icon btn-sm" @click="actDepositModal(row)">
                       <i class="fa fa-money-bill-alt"></i>
@@ -232,9 +229,14 @@ export default {
               width: 150
             },
             {
-              title: 'Action',
-              slot: 'action',
-              width: 130
+              title: 'Do',
+              slot: 'Do',
+              width: 60
+            },
+            {
+              title: 'Invoice',
+              slot: 'Invoice',
+              width: 80
             },
             {
               title: 'Released Date',
@@ -734,24 +736,11 @@ export default {
     },
     downloadDo: async function() {
       try {
-        let response = await this.$http.request({
-          url: apiUrl + 'downloadDo',
-          method: 'post',
-          data: this.workPara,
-          responseType: 'blob'
-        })
+        let response = await this.$http.post(apiUrl + 'downloadDo', this.workPara)
+        printJS(response.data.info.url)
+        this.$Message.success('do success')
         this.modal.downLoadDoModal = false
-        let blob = response.data
-        let reader = new FileReader()
-        reader.readAsDataURL(blob)
-        reader.onload = e => {
-          let a = document.createElement('a')
-          a.download = this.workPara.invoice_masterbi_consignee_name + ' ' + this.workPara.invoice_masterbi_bl + '.docx'
-          a.href = e.target.result
-          document.body.appendChild(a)
-          a.click()
-          document.body.removeChild(a)
-        }
+        this.getVoyageDetail()
       } catch (error) {
         this.$commonact.fault(error)
       }
