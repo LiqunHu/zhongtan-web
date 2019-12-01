@@ -41,22 +41,22 @@
                     <Card>
                       <p slot="title">{{item.invoice_vessel_name}}({{item.invoice_vessel_code}}) - {{item.invoice_vessel_voyage}}</p>
                       <Row>
-                        <Col span="12">
+                        <Col span="11">
                           <p>ETA: {{item.invoice_vessel_eta}}</p>
                         </Col>
-                        <Col span="12">release: {{item.invoice_release}}</Col>
+                        <Col span="13">Do release: {{item.invoice_do_release_rcount}}/{{item.invoice_acount}}</Col>
                       </Row>
                       <Row>
-                        <Col span="12">
+                        <Col span="11">
                           <p>ATA: {{item.invoice_vessel_ata}}</p>
                         </Col>
-                        <Col span="12"></Col>
+                        <Col span="13">In release: {{item.invoice_invoice_release_rcount}}/{{item.invoice_acount}}</Col>
                       </Row>
                       <Row>
-                        <Col span="12">
+                        <Col span="11">
                           <p>ATD: {{item.invoice_vessel_atd}}</p>
                         </Col>
-                        <Col span="12"></Col>
+                        <Col span="13"></Col>
                       </Row>
                     </Card>
                   </div>
@@ -70,14 +70,24 @@
             <TabPane label="MasterBl">
               <Table stripe size="small" ref="masterbiTable" :columns="table.masterbiTable.columns" :data="table.masterbiTable.data" :height="table.masterbiTable.height">
                 <template slot-scope="{ row, index }" slot="Do">
-                  <Tooltip content="Generate Do">
+                  <Tooltip content="Generate Do" v-if="!row.invoice_masterbi_do_release_date">
                     <a href="#" class="btn btn-green btn-icon btn-sm" @click="actDownLoadDoModal(row)">
-                      <i class="fa fa-download"></i>
+                      <i class="fa fa-object-ungroup"></i>
+                    </a>
+                  </Tooltip>
+                  <Tooltip :content="row.invoice_masterbi_do_release_date_fmt" v-if="row.invoice_masterbi_do_release_date">
+                    <a href="#" class="btn btn-success btn-icon btn-sm" @click="actDownLoadDoModal(row)">
+                      <i class="fa fa-object-ungroup"></i>
                     </a>
                   </Tooltip>
                 </template>
                 <template slot-scope="{ row, index }" slot="Invoice">
-                  <Tooltip content="Deposit">
+                  <Tooltip content="Deposit" v-if="!row.invoice_masterbi_invoice_release_date">
+                    <a href="#" class="btn btn-green btn-icon btn-sm" @click="actDepositModal(row)">
+                      <i class="fa fa-money-bill-alt"></i>
+                    </a>
+                  </Tooltip>
+                  <Tooltip :content="row.invoice_masterbi_invoice_release_date_fmt" v-if="row.invoice_masterbi_invoice_release_date">
                     <a href="#" class="btn btn-success btn-icon btn-sm" @click="actDepositModal(row)">
                       <i class="fa fa-money-bill-alt"></i>
                     </a>
@@ -88,10 +98,17 @@
                     <Button type="text" style="text-decoration:underline">Files</Button>
                     <template slot="content">
                       <Table stripe size="small" :columns="table.filesTable.columns" :data="row.files">
-                        <template slot-scope="{ row, index }" slot="url">
-                          <a :href="row.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
-                            <i class="fa fa-download"></i>
-                          </a>
+                        <template slot-scope="{ row, index }" slot="act">
+                          <Tooltip content="Download">
+                            <a :href="row.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
+                              <i class="fa fa-download"></i>
+                            </a>
+                          </Tooltip>
+                          <Tooltip content="Release" v-if="!row.release_date">
+                            <a href="#" class="btn btn-primary btn-icon btn-sm" @click="doRealse(row, index)">
+                              <i class="fa fa-share-square"></i>
+                            </a>
+                          </Tooltip>
                         </template>
                       </Table>
                     </template>
@@ -237,17 +254,6 @@ export default {
               title: 'Invoice',
               slot: 'Invoice',
               width: 80
-            },
-            {
-              title: 'Released Date',
-              key: 'invoice_vessel_release_date',
-              width: 150,
-              render: (h, params) => {
-                return h(
-                  'div',
-                  params.row.invoice_vessel_release_date ? moment(params.row.invoice_vessel_release_date).format('DD/MM/YYYY hh:mm') : ''
-                )
-              }
             },
             {
               title: 'Files',
@@ -569,24 +575,20 @@ export default {
             {
               title: 'Type',
               key: 'filetype',
-              width: 150
+              width: 80
             },
             {
-              title: 'Name',
-              key: 'name',
-              render: common.tooltipRender(),
+              title: 'Action',
+              slot: 'act',
               width: 100
             },
             {
-              title: 'Download',
-              slot: 'url',
-              width: 100
-            },
-            {
-              title: 'Remark',
-              key: 'remark',
-              render: common.tooltipRender(),
-              width: 100
+              title: 'Released Date',
+              key: 'release_date',
+              width: 150,
+              render: (h, params) => {
+                return h('div', params.row.release_date ? moment(params.row.release_date).format('DD/MM/YYYY hh:mm') : '')
+              }
             }
           ]
         }
@@ -745,16 +747,42 @@ export default {
         this.$commonact.fault(error)
       }
     },
-    doRealse: async function(row) {
-      this.$commonact.confirm('release confirmed?', async () => {
-        try {
-          await this.$http.post(apiUrl + 'doRelease', { invoice_masterbi_id: row.invoice_masterbi_id })
-          this.$Message.success('release success')
-          this.getVoyageDetail()
-        } catch (error) {
-          this.$commonact.fault(error)
+    doRealse: async function(row, index) {
+      try {
+        await this.$http.post(apiUrl + 'doRelease', { file_id: row.file_id })
+        row.release_date = new Date()
+        this.$Message.success('release success')
+        for (let i = 0; i < this.table.masterbiTable.data.length; i++) {
+          if (this.table.masterbiTable.data[i].invoice_masterbi_id === row.invoice_masterbi_id) {
+            if (row.filetype === 'DO') {
+              if (!this.table.masterbiTable.data[i].invoice_masterbi_do_release_date) {
+                this.table.masterbiTable.data[i].invoice_masterbi_do_release_date = row.release_date
+                for (let j = 0; j < this.vessel.data.length; j++) {
+                  if (this.vessel.data[j].invoice_vessel_id === this.table.masterbiTable.data[i].invoice_vessel_id) {
+                    this.vessel.data[j].invoice_do_release_rcount += 1
+                    break
+                  }
+                }
+                break
+              }
+            } else if (row.filetype === 'Fee' || row.filetype === 'Deposit') {
+              if (!this.table.masterbiTable.data[i].invoice_masterbi_invoice_release_date) {
+                this.table.masterbiTable.data[i].invoice_masterbi_invoice_release_date = row.release_date
+                for (let j = 0; j < this.vessel.data.length; j++) {
+                  if (this.vessel.data[j].invoice_vessel_id === this.table.masterbiTable.data[i].invoice_vessel_id) {
+                    this.vessel.data[j].invoice_invoice_release_rcount += 1
+                    break
+                  }
+                }
+                break
+              }
+            }
+          }
         }
-      })
+        // this.getVoyageDetail()
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
     },
     actDepositModal: function(row) {
       this.deposit.customer.loading = true
