@@ -56,7 +56,7 @@
                         <Col span="11">
                           <p>ATD: {{item.invoice_vessel_atd}}</p>
                         </Col>
-                        <Col span="13"></Col>
+                        <Col span="13">Re release: {{item.invoice_receipt_release_rcount}}/{{item.invoice_acount}}</Col>
                       </Row>
                     </Card>
                   </div>
@@ -89,6 +89,18 @@
                   </Tooltip>
                   <Tooltip :content="row.invoice_masterbi_invoice_release_date_fmt" v-if="row.invoice_masterbi_invoice_release_date">
                     <a href="#" class="btn btn-success btn-icon btn-sm" @click="actDepositModal(row)">
+                      <i class="fa fa-money-bill-alt"></i>
+                    </a>
+                  </Tooltip>
+                </template>
+                <template slot-scope="{ row, index }" slot="Receipt">
+                  <Tooltip content="Receipt" v-if="!row.invoice_masterbi_receipt_release_date">
+                    <a href="#" class="btn btn-green btn-icon btn-sm" @click="actReceiptModal(row)">
+                      <i class="fa fa-money-bill-alt"></i>
+                    </a>
+                  </Tooltip>
+                  <Tooltip :content="row.invoice_masterbi_receipt_release_date_fmt" v-if="row.invoice_masterbi_receipt_release_date">
+                    <a href="#" class="btn btn-success btn-icon btn-sm" @click="actReceiptModal(row)">
                       <i class="fa fa-money-bill-alt"></i>
                     </a>
                   </Tooltip>
@@ -158,14 +170,14 @@
         <Row>
           <Col>
             <FormItem label="Delivery to" prop="invoice_masterbi_delivery_to">
-              <Input placeholder="Delivery to" v-model="workPara.invoice_masterbi_delivery_to" :disabled="workPara.invoice_vessel_release_state === '1'" />
+              <Input placeholder="Delivery to" v-model="workPara.invoice_masterbi_delivery_to" :disabled="!!workPara.invoice_masterbi_do_release_date" />
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col>
             <FormItem label="VALID TO" prop="invoice_masterbi_valid_to">
-              <DatePicker type="date" placeholder="VALID TO" v-model="workPara.invoice_masterbi_valid_to" :disabled="workPara.invoice_vessel_release_state === '1'"></DatePicker>
+              <DatePicker type="date" placeholder="VALID TO" v-model="workPara.invoice_masterbi_valid_to" :disabled="!!workPara.invoice_masterbi_do_release_date"></DatePicker>
             </FormItem>
           </Col>
         </Row>
@@ -223,6 +235,28 @@
         <Button type="primary" size="large" @click="depositDo">Submit</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.receiptModal" title="Download Receipt" width="600">
+      <Form :model="workPara" :label-width="120">
+        <Row>
+          <Col>
+            <FormItem label="Received From" prop="invoice_masterbi_received_from">
+              <Input placeholder="Received From" v-model="workPara.invoice_masterbi_received_from" :disabled="!!workPara.invoice_masterbi_receipt_release_date" />
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <FormItem label="Received" prop="invoice_masterbi_receipt_received">
+              <Input placeholder="Received" v-model="workPara.invoice_masterbi_receipt_received" :disabled="!!workPara.invoice_masterbi_receipt_release_date" />
+            </FormItem>
+          </Col>
+        </Row>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.receiptModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="downloadReceipt">Submit</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -236,7 +270,7 @@ const apiUrl = '/api/zhongtan/invoice/Invoice/'
 export default {
   data: function() {
     return {
-      modal: { importModal: false, downLoadDoModal: false, depositModal: false },
+      modal: { importModal: false, downLoadDoModal: false, depositModal: false, receiptModal: false },
       table: {
         masterbiTable: {
           columns: [
@@ -254,6 +288,11 @@ export default {
               title: 'Invoice',
               slot: 'Invoice',
               width: 80
+            },
+            {
+              title: 'Receipt',
+              slot: 'Receipt',
+              width: 90
             },
             {
               title: 'Files',
@@ -747,6 +786,21 @@ export default {
         this.$commonact.fault(error)
       }
     },
+    actReceiptModal: function(row) {
+      this.workPara = JSON.parse(JSON.stringify(row))
+      this.modal.receiptModal = true
+    },
+    downloadReceipt: async function() {
+      try {
+        let response = await this.$http.post(apiUrl + 'downloadReceipt', this.workPara)
+        printJS(response.data.info.url)
+        this.$Message.success('do success')
+        this.modal.receiptModal = false
+        this.getVoyageDetail()
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
     doRealse: async function(row, index) {
       try {
         await this.$http.post(apiUrl + 'doRelease', { file_id: row.file_id })
@@ -771,6 +825,17 @@ export default {
                 for (let j = 0; j < this.vessel.data.length; j++) {
                   if (this.vessel.data[j].invoice_vessel_id === this.table.masterbiTable.data[i].invoice_vessel_id) {
                     this.vessel.data[j].invoice_invoice_release_rcount += 1
+                    break
+                  }
+                }
+                break
+              }
+            } else if (row.filetype === 'Receipt') {
+              if (!this.table.masterbiTable.data[i].invoice_masterbi_receipt_release_date) {
+                this.table.masterbiTable.data[i].invoice_masterbi_receipt_release_date = row.release_date
+                for (let j = 0; j < this.vessel.data.length; j++) {
+                  if (this.vessel.data[j].invoice_vessel_id === this.table.masterbiTable.data[i].invoice_vessel_id) {
+                    this.vessel.data[j].invoice_receipt_release_rcount += 1
                     break
                   }
                 }
