@@ -25,9 +25,6 @@
                 <i class="fa fa-search"></i>
               </button>
             </div>
-            <div class="form-group m-r-3">
-              <button type="button" class="btn btn-info" @click="loadImportModal">Load</button>
-            </div>
           </div>
         </div>
       </template>
@@ -69,30 +66,6 @@
           <Tabs :animated="false" @on-click="changeTab">
             <TabPane label="MasterBl">
               <Table stripe size="small" ref="masterbiTable" :columns="table.masterbiTable.columns" :data="table.masterbiTable.data" :height="table.masterbiTable.height">
-                <template slot-scope="{ row, index }" slot="Do">
-                  <Tooltip content="Generate Do" v-if="!row.invoice_masterbi_do_release_date">
-                    <a href="#" class="btn btn-green btn-icon btn-sm" @click="actDownLoadDoModal(row)">
-                      <i class="fa fa-object-ungroup"></i>
-                    </a>
-                  </Tooltip>
-                  <Tooltip :content="row.invoice_masterbi_do_release_date_fmt" v-if="row.invoice_masterbi_do_release_date">
-                    <a href="#" class="btn btn-success btn-icon btn-sm" @click="actDownLoadDoModal(row)">
-                      <i class="fa fa-object-ungroup"></i>
-                    </a>
-                  </Tooltip>
-                </template>
-                <template slot-scope="{ row, index }" slot="Invoice">
-                  <Tooltip content="Deposit" v-if="!row.invoice_masterbi_invoice_release_date">
-                    <a href="#" class="btn btn-green btn-icon btn-sm" @click="actDepositModal(row)">
-                      <i class="fa fa-money-bill-alt"></i>
-                    </a>
-                  </Tooltip>
-                  <Tooltip :content="row.invoice_masterbi_invoice_release_date_fmt" v-if="row.invoice_masterbi_invoice_release_date">
-                    <a href="#" class="btn btn-success btn-icon btn-sm" @click="actDepositModal(row)">
-                      <i class="fa fa-money-bill-alt"></i>
-                    </a>
-                  </Tooltip>
-                </template>
                 <template slot-scope="{ row, index }" slot="Receipt">
                   <Tooltip content="Receipt" v-if="!row.invoice_masterbi_receipt_release_date">
                     <a href="#" class="btn btn-green btn-icon btn-sm" @click="actReceiptModal(row)">
@@ -116,7 +89,7 @@
                               <i class="fa fa-download"></i>
                             </a>
                           </Tooltip>
-                          <Tooltip content="Release" v-if="!row.release_date">
+                          <Tooltip content="Release" v-if="!row.release_date && row.filetype === 'Receipt'">
                             <a href="#" class="btn btn-primary btn-icon btn-sm" @click="doRealse(row, index)">
                               <i class="fa fa-share-square"></i>
                             </a>
@@ -137,106 +110,6 @@
         </Col>
       </Row>
     </panel>
-    <Modal v-model="modal.importModal" title="Import">
-      <Form :model="workPara" :label-width="120">
-        <FormItem label="Files">
-          <div v-for="f in files.fileList" v-bind:key="f.name" class="upload-list">
-            <Icon type="ios-document" size="60" />
-          </div>
-          <Upload
-            ref="upload"
-            :headers="headers"
-            :show-upload-list="false"
-            :on-success="handleSuccess"
-            :format="['xlsx']"
-            :max-size="4096"
-            :on-format-error="handleFormatError"
-            :on-exceeded-size="handleMaxSize"
-            type="drag"
-            action="/api/zhongtan/invoice/Invoice/upload"
-            style="display: inline-block;width:58px;"
-          >
-            <div style="width: 58px;height:58px;line-height: 58px;">
-              <Icon type="md-add" size="20"></Icon>
-            </div>
-          </Upload>
-        </FormItem>
-      </Form>
-      <div slot="footer">
-        <Button type="text" size="large" @click="modal.importModal=false">Cancel</Button>
-        <Button type="primary" size="large" @click="importData">Submit</Button>
-      </div>
-    </Modal>
-    <Modal v-model="modal.downLoadDoModal" title="Download Do" width="600">
-      <Form :model="workPara" :label-width="120">
-        <Row>
-          <Col>
-            <FormItem label="Delivery to" prop="invoice_masterbi_delivery_to">
-              <Input placeholder="Delivery to" v-model="workPara.invoice_masterbi_delivery_to" :disabled="!!workPara.invoice_masterbi_do_release_date" />
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <FormItem label="VALID TO" prop="invoice_masterbi_valid_to">
-              <DatePicker type="date" placeholder="VALID TO" v-model="workPara.invoice_masterbi_valid_to" :disabled="!!workPara.invoice_masterbi_do_release_date"></DatePicker>
-            </FormItem>
-          </Col>
-        </Row>
-      </Form>
-      <div slot="footer">
-        <Button type="text" size="large" @click="modal.downLoadDoModal=false">Cancel</Button>
-        <Button type="primary" size="large" @click="downloadDo">Submit</Button>
-      </div>
-    </Modal>
-    <Modal v-model="modal.depositModal" title="Deposit" width="600">
-      <Form :model="workPara" :label-width="120">
-        <FormItem label="Customer" prop="invoice_masterbi_customer_id">
-          <Select v-model="workPara.invoice_masterbi_customer_id" filterable remote :remote-method="searchCustomer" :loading="deposit.customer.loading" placeholder="Customer">
-            <Option v-for="item in deposit.customer.options" :value="item.id" :key="item.id">{{item.text}}</Option>
-          </Select>
-          <!-- <AutoComplete v-model="workPara.invoice_masterbi_customer" :data="autocomplete.customer" @on-search="getCustomerData" placeholder="M/S."></AutoComplete> -->
-        </FormItem>
-        <FormItem label="Carrier" prop="invoice_masterbi_carrier">
-          <Select v-model="workPara.invoice_masterbi_carrier">
-            <Option v-for="item in pagePara.RECEIPT_TYPE_INFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-          </Select>
-        </FormItem>
-        <Divider />
-        <RadioGroup v-model="deposit.depositType" vertical @on-change="chooseDepositType" style="width:100%">
-          <Radio label="Container Deposit">
-            <span>Container Deposit</span>
-          </Radio>
-          <FormItem label="Deposit Amount" prop="invoice_masterbi_deposit">
-            <Input placeholder="Deposit Amount" v-model="workPara.invoice_masterbi_deposit" :disabled="!deposit.disableFlag" />
-          </FormItem>
-          <Divider />
-          <Radio label="Invoice Fee">
-            <span>Invoice Fee</span>
-          </Radio>
-        </RadioGroup>
-        <div style="padding-left: 50px;">
-          <CheckboxGroup v-model="deposit.fees">
-            <Checkbox label="CONTAINER TRANSFER" :disabled="deposit.disableFlag"></Checkbox>
-            <Input placeholder="CONTAINER TRANSFER" v-model="workPara.invoice_masterbi_transfer" :disabled="!(deposit.disableFlag === false && deposit.fees.indexOf('CONTAINER TRANSFER') >= 0)" />
-            <Checkbox label="LIFT ON LIFT OFF" :disabled="deposit.disableFlag"></Checkbox>
-            <Input placeholder="LIFT ON LIFT OFF" v-model="workPara.invoice_masterbi_lolf" :disabled="!(deposit.disableFlag === false && deposit.fees.indexOf('LIFT ON LIFT OFF') >= 0)" />
-            <Checkbox label="LCL" :disabled="deposit.disableFlag"></Checkbox>
-            <Input placeholder="LCL" v-model="workPara.invoice_masterbi_lcl" :disabled="!(deposit.disableFlag === false && deposit.fees.indexOf('LCL') >= 0)" />
-            <Checkbox label="AMENDMENT" :disabled="deposit.disableFlag"></Checkbox>
-            <Input placeholder="AMENDMENT" v-model="workPara.invoice_masterbi_amendment" :disabled="!(deposit.disableFlag === false && deposit.fees.indexOf('AMENDMENT') >= 0)" />
-            <Checkbox label="TASAC" :disabled="deposit.disableFlag"></Checkbox>
-            <Input placeholder="TASAC" v-model="workPara.invoice_masterbi_tasac" :disabled="!(deposit.disableFlag === false && deposit.fees.indexOf('TASAC') >= 0)" />
-            <Checkbox label="BILL PRINGTING" :disabled="deposit.disableFlag"></Checkbox>
-            <Input placeholder="BILL PRINGTING" v-model="workPara.invoice_masterbi_printing" :disabled="!(deposit.disableFlag === false && deposit.fees.indexOf('BILL PRINGTING') >= 0)" />
-          </CheckboxGroup>
-        </div>
-      </Form>
-      <div slot="footer">
-        <Button type="text" size="large" @click="modal.depositModal=false">Cancel</Button>
-        <Button type="primary" size="large" @click="depositDo">Submit</Button>
-      </div>
-    </Modal>
     <Modal v-model="modal.receiptModal" title="Download Receipt" width="600">
       <Form :model="workPara" :label-width="120">
         <Row>
@@ -281,14 +154,13 @@
 import PageOptions from '../../../config/PageOptions.vue'
 import printJS from 'print-js'
 const moment = require('moment')
-const _ = require('lodash')
 const common = require('@/lib/common')
-const apiUrl = '/api/zhongtan/invoice/Invoice/'
+const apiUrl = '/api/zhongtan/invoice/InvoiceReceipt/'
 
 export default {
   data: function() {
     return {
-      modal: { importModal: false, downLoadDoModal: false, depositModal: false, receiptModal: false },
+      modal: { receiptModal: false },
       table: {
         masterbiTable: {
           columns: [
@@ -296,16 +168,6 @@ export default {
               title: '#M B/L No',
               key: 'invoice_masterbi_bl',
               width: 150
-            },
-            {
-              title: 'Do',
-              slot: 'Do',
-              width: 60
-            },
-            {
-              title: 'Invoice',
-              slot: 'Invoice',
-              width: 80
             },
             {
               title: 'Receipt',
@@ -704,61 +566,6 @@ export default {
         this.$commonact.fault(error)
       }
     },
-    loadImportModal: async function() {
-      this.workPara = {}
-      this.action = 'add'
-      this.modal.importModal = true
-    },
-    handleSuccess(res, file, fileList) {
-      file.url = res.info.url
-      file.name = res.info.name
-      this.files.fileList = JSON.parse(JSON.stringify(this.$refs.upload.fileList))
-    },
-    handleImportbefore(file) {
-      this.$Spin.show()
-    },
-    handleImportSuccess(res, file, fileList) {
-      this.$Spin.hide()
-      this.$Notice.success({
-        title: 'Success',
-        desc: 'File Import Success'
-      })
-      this.getPara()
-      this.getImportData()
-    },
-    handleImportError(error, file, fileList) {
-      this.$Spin.hide()
-      this.$Notice.error({
-        title: 'Error',
-        desc: 'File Import Failed'
-      })
-    },
-    handleFormatError(file) {
-      this.$Notice.warning({
-        title: 'The file format is incorrect',
-        desc: 'File format of ' + file.name + ' is incorrect, please select pdf.'
-      })
-    },
-    handleMaxSize(file) {
-      this.$Notice.warning({
-        title: 'Exceeding file size limit',
-        desc: 'File  ' + file.name + ' is too large, no more than 4M.'
-      })
-    },
-    importData: async function() {
-      try {
-        if (this.files.fileList.length < 1) {
-          return this.$Message.error('Please upload xml file')
-        }
-        this.workPara.upload_files = this.files.fileList
-        await this.$http.post(apiUrl + 'uploadImport', this.workPara)
-        this.$Message.success('submit success')
-        this.getVoyageData()
-        this.modal.importModal = false
-      } catch (error) {
-        this.$commonact.fault(error)
-      }
-    },
     searchData: function(e) {
       this.vessel.search_data.date = JSON.parse(JSON.stringify(e))
     },
@@ -828,21 +635,6 @@ export default {
       this.table.containersTable.total = data.total
       this.table.containersTable.data = JSON.parse(JSON.stringify(data.rows))
     },
-    actDownLoadDoModal: function(row) {
-      this.workPara = JSON.parse(JSON.stringify(row))
-      this.modal.downLoadDoModal = true
-    },
-    downloadDo: async function() {
-      try {
-        let response = await this.$http.post(apiUrl + 'downloadDo', this.workPara)
-        printJS(response.data.info.url)
-        this.$Message.success('do success')
-        this.modal.downLoadDoModal = false
-        this.getMasterbiData()
-      } catch (error) {
-        this.$commonact.fault(error)
-      }
-    },
     actReceiptModal: function(row) {
       this.workPara = JSON.parse(JSON.stringify(row))
       this.modal.receiptModal = true
@@ -868,53 +660,12 @@ export default {
         this.$commonact.fault(error)
       }
     },
-    actDepositModal: function(row) {
-      this.deposit.customer.loading = true
-      this.deposit.customer.options = JSON.parse(JSON.stringify(row.customerINFO))
-      this.deposit.customer.loading = false
-      this.deposit.depositType = 'Container Deposit'
-      this.$nextTick(function() {
-        this.workPara = JSON.parse(JSON.stringify(row))
-        this.modal.depositModal = true
-      })
-    },
     chooseDepositType: function() {
       if (this.deposit.depositType === 'Invoice Fee') {
         this.deposit.disableFlag = false
       } else {
         this.deposit.disableFlag = true
         this.deposit.fees = []
-      }
-    },
-    // getCustomerData: async function() {
-    //   try {
-    //     let response = await this.$http.post(apiUrl + 'searchCustomer', { search_text: this.workPara.invoice_masterbi_customer })
-    //     this.autocomplete.msdata = JSON.parse(JSON.stringify(response.data.info))
-    //   } catch (error) {
-    //     this.$commonact.fault(error)
-    //   }
-    // },
-    searchCustomer: async function(query) {
-      if (query !== '') {
-        this.deposit.customer.loading = true
-        let response = await this.$http.post(apiUrl + 'searchCustomer', {
-          search_text: query
-        })
-        this.deposit.customer.options = JSON.parse(JSON.stringify(response.data.info.customerINFO))
-        this.deposit.customer.loading = false
-      } else {
-        this.deposit.customer.options = []
-      }
-    },
-    depositDo: async function() {
-      try {
-        let response = await this.$http.post(apiUrl + 'depositDo', _.extend(this.workPara, this.deposit))
-        printJS(response.data.info.url)
-        this.$Message.success('deposit success')
-        this.modal.depositModal = false
-        this.getMasterbiData()
-      } catch (error) {
-        this.$commonact.fault(error)
       }
     }
   }
