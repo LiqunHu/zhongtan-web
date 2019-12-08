@@ -66,7 +66,7 @@
           </div>
         </Col>
         <Col span="17" offset="1">
-          <Tabs :animated="false">
+          <Tabs :animated="false" @on-click="changeTab">
             <TabPane label="MasterBl">
               <Table stripe size="small" ref="masterbiTable" :columns="table.masterbiTable.columns" :data="table.masterbiTable.data" :height="table.masterbiTable.height">
                 <template slot-scope="{ row, index }" slot="Do">
@@ -127,9 +127,11 @@
                   </Poptip>
                 </template>
               </Table>
+              <Page class="m-t-10" :total="table.masterbiTable.total" :page-size="table.masterbiTable.limit" @on-change="getMasterbiData" />
             </TabPane>
             <TabPane label="Containers">
               <Table stripe size="small" ref="containersTable" :columns="table.containersTable.columns" :data="table.containersTable.data" :height="table.containersTable.height"></Table>
+              <Page class="m-t-10" :total="table.containersTable.total" :page-size="table.containersTable.limit" @on-change="getContainersData" />
             </TabPane>
           </Tabs>
         </Col>
@@ -511,7 +513,10 @@ export default {
             }
           ],
           data: [],
-          height: common.getTableHeight() - 50
+          height: common.getTableHeight() - 80,
+          limit: 10,
+          offset: 0,
+          total: 0
         },
         containersTable: {
           columns: [
@@ -602,7 +607,10 @@ export default {
             }
           ],
           data: [],
-          height: common.getTableHeight() - 50
+          height: common.getTableHeight() - 80,
+          limit: 10,
+          offset: 0,
+          total: 0
         },
         filesTable: {
           columns: [
@@ -660,7 +668,8 @@ export default {
           options: [],
           loading: false
         }
-      }
+      },
+      currentTab: 0
     }
   },
   created() {
@@ -756,20 +765,53 @@ export default {
     checkVoyage: async function(invoice_vessel_id) {
       if (this.vessel.current != invoice_vessel_id) {
         this.vessel.current = invoice_vessel_id
-        this.getVoyageDetail()
+        if(this.currentTab === 0) {
+          this.getMasterbiData(1)
+        } else {
+          this.getContainersData(1)
+        }
+        
       }
     },
-    getVoyageDetail: async function() {
-      try {
-        let response = await this.$http.post(apiUrl + 'getVoyageDetail', {
-          invoice_vessel_id: this.vessel.current
-        })
-        let data = response.data.info
-        this.table.masterbiTable.data = JSON.parse(JSON.stringify(data.MasterBl))
-        this.table.containersTable.data = JSON.parse(JSON.stringify(data.Containers))
-      } catch (error) {
-        this.$commonact.fault(error)
+    changeTab: function(name) {
+      if(this.currentTab != name) {
+        this.currentTab = name
+        if(name === 0) {
+          this.getMasterbiData(1)
+        }else{
+          this.getContainersData(1)
+        }
       }
+    },
+    getMasterbiData: async function(index) {
+      if (index) {
+        this.table.masterbiTable.offset = (index - 1) * this.table.masterbiTable.limit
+      }
+      let searchPara = {
+        invoice_vessel_id: this.vessel.current,
+        offset: this.table.masterbiTable.offset,
+        limit: this.table.masterbiTable.limit
+      }
+
+      let response = await this.$http.post(apiUrl + 'getMasterbiData', searchPara)
+      let data = response.data.info
+      this.table.masterbiTable.total = data.total
+      this.table.masterbiTable.data = JSON.parse(JSON.stringify(data.rows))
+    },
+    getContainersData: async function(index) {
+      if (index) {
+        this.table.containersTable.offset = (index - 1) * this.table.containersTable.limit
+      }
+      let searchPara = {
+        invoice_vessel_id: this.vessel.current,
+        offset: this.table.containersTable.offset,
+        limit: this.table.containersTable.limit
+      }
+
+      let response = await this.$http.post(apiUrl + 'getContainersData', searchPara)
+      let data = response.data.info
+      this.table.containersTable.total = data.total
+      this.table.containersTable.data = JSON.parse(JSON.stringify(data.rows))
     },
     actDownLoadDoModal: function(row) {
       this.workPara = JSON.parse(JSON.stringify(row))
@@ -781,7 +823,7 @@ export default {
         printJS(response.data.info.url)
         this.$Message.success('do success')
         this.modal.downLoadDoModal = false
-        this.getVoyageDetail()
+        this.getMasterbiData()
       } catch (error) {
         this.$commonact.fault(error)
       }
@@ -796,7 +838,7 @@ export default {
         printJS(response.data.info.url)
         this.$Message.success('do success')
         this.modal.receiptModal = false
-        this.getVoyageDetail()
+        this.getMasterbiData()
       } catch (error) {
         this.$commonact.fault(error)
       }
@@ -804,47 +846,9 @@ export default {
     doRealse: async function(row, index) {
       try {
         await this.$http.post(apiUrl + 'doRelease', { file_id: row.file_id })
-        row.release_date = new Date()
+        this.getVoyageData()
+        this.getMasterbiData()
         this.$Message.success('release success')
-        for (let i = 0; i < this.table.masterbiTable.data.length; i++) {
-          if (this.table.masterbiTable.data[i].invoice_masterbi_id === row.invoice_masterbi_id) {
-            if (row.filetype === 'DO') {
-              if (!this.table.masterbiTable.data[i].invoice_masterbi_do_release_date) {
-                this.table.masterbiTable.data[i].invoice_masterbi_do_release_date = row.release_date
-                for (let j = 0; j < this.vessel.data.length; j++) {
-                  if (this.vessel.data[j].invoice_vessel_id === this.table.masterbiTable.data[i].invoice_vessel_id) {
-                    this.vessel.data[j].invoice_do_release_rcount += 1
-                    break
-                  }
-                }
-                break
-              }
-            } else if (row.filetype === 'Fee' || row.filetype === 'Deposit') {
-              if (!this.table.masterbiTable.data[i].invoice_masterbi_invoice_release_date) {
-                this.table.masterbiTable.data[i].invoice_masterbi_invoice_release_date = row.release_date
-                for (let j = 0; j < this.vessel.data.length; j++) {
-                  if (this.vessel.data[j].invoice_vessel_id === this.table.masterbiTable.data[i].invoice_vessel_id) {
-                    this.vessel.data[j].invoice_invoice_release_rcount += 1
-                    break
-                  }
-                }
-                break
-              }
-            } else if (row.filetype === 'Receipt') {
-              if (!this.table.masterbiTable.data[i].invoice_masterbi_receipt_release_date) {
-                this.table.masterbiTable.data[i].invoice_masterbi_receipt_release_date = row.release_date
-                for (let j = 0; j < this.vessel.data.length; j++) {
-                  if (this.vessel.data[j].invoice_vessel_id === this.table.masterbiTable.data[i].invoice_vessel_id) {
-                    this.vessel.data[j].invoice_receipt_release_rcount += 1
-                    break
-                  }
-                }
-                break
-              }
-            }
-          }
-        }
-        // this.getVoyageDetail()
       } catch (error) {
         this.$commonact.fault(error)
       }
@@ -893,7 +897,7 @@ export default {
         printJS(response.data.info.url)
         this.$Message.success('deposit success')
         this.modal.depositModal = false
-        this.getVoyageDetail()
+        this.getMasterbiData()
       } catch (error) {
         this.$commonact.fault(error)
       }
