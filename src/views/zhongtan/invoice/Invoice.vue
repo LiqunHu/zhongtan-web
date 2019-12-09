@@ -69,18 +69,6 @@
           <Tabs :animated="false" @on-click="changeTab">
             <TabPane label="MasterBl">
               <Table stripe size="small" ref="masterbiTable" :columns="table.masterbiTable.columns" :data="table.masterbiTable.data" :height="table.masterbiTable.height">
-                <template slot-scope="{ row, index }" slot="Do">
-                  <Tooltip content="Generate Do" v-if="!row.invoice_masterbi_do_release_date">
-                    <a href="#" class="btn btn-green btn-icon btn-sm" @click="actDownLoadDoModal(row)">
-                      <i class="fa fa-object-ungroup"></i>
-                    </a>
-                  </Tooltip>
-                  <Tooltip :content="row.invoice_masterbi_do_release_date_fmt" v-if="row.invoice_masterbi_do_release_date">
-                    <a href="#" class="btn btn-success btn-icon btn-sm" @click="actDownLoadDoModal(row)">
-                      <i class="fa fa-object-ungroup"></i>
-                    </a>
-                  </Tooltip>
-                </template>
                 <template slot-scope="{ row, index }" slot="Invoice">
                   <Tooltip content="Deposit" v-if="!row.invoice_masterbi_invoice_release_date">
                     <a href="#" class="btn btn-green btn-icon btn-sm" @click="actDepositModal(row)">
@@ -88,20 +76,23 @@
                     </a>
                   </Tooltip>
                   <Tooltip :content="row.invoice_masterbi_invoice_release_date_fmt" v-if="row.invoice_masterbi_invoice_release_date">
-                    <a href="#" class="btn btn-success btn-icon btn-sm" @click="actDepositModal(row)">
+                    <a href="#" class="btn btn-pink btn-icon btn-sm" @click="actDepositModal(row)">
                       <i class="fa fa-money-bill-alt"></i>
                     </a>
                   </Tooltip>
                 </template>
-                <template slot-scope="{ row, index }" slot="Receipt">
-                  <Tooltip content="Receipt" v-if="!row.invoice_masterbi_receipt_release_date">
-                    <a href="#" class="btn btn-green btn-icon btn-sm" @click="actReceiptModal(row)">
-                      <i class="fa fa-money-bill-alt"></i>
+                <template slot-scope="{ row, index }" slot="Do">
+                  <Tooltip content="Generate Do" v-if="!row.invoice_masterbi_do_release_date">
+                    <a href="#" class="btn btn-green btn-icon btn-sm disabled" @click="actDownLoadDoModal(row)" v-if="!row.invoice_masterbi_receipt_release_date">
+                      <i class="fa fa-object-ungroup"></i>
+                    </a>
+                    <a href="#" class="btn btn-green btn-icon btn-sm" @click="actDownLoadDoModal(row)" v-else>
+                      <i class="fa fa-object-ungroup"></i>
                     </a>
                   </Tooltip>
-                  <Tooltip :content="row.invoice_masterbi_receipt_release_date_fmt" v-if="row.invoice_masterbi_receipt_release_date">
-                    <a href="#" class="btn btn-success btn-icon btn-sm" @click="actReceiptModal(row)">
-                      <i class="fa fa-money-bill-alt"></i>
+                  <Tooltip :content="row.invoice_masterbi_do_release_date_fmt" v-if="row.invoice_masterbi_do_release_date">
+                    <a href="#" class="btn btn-pink btn-icon btn-sm" @click="actDownLoadDoModal(row)">
+                      <i class="fa fa-object-ungroup"></i>
                     </a>
                   </Tooltip>
                 </template>
@@ -116,7 +107,7 @@
                               <i class="fa fa-download"></i>
                             </a>
                           </Tooltip>
-                          <Tooltip content="Release" v-if="!row.release_date">
+                          <Tooltip content="Release" v-if="!row.release_date && (row.filetype === 'Deposit' || row.filetype === 'Fee' || row.filetype === 'DO')">
                             <a href="#" class="btn btn-primary btn-icon btn-sm" @click="doRealse(row, index)">
                               <i class="fa fa-share-square"></i>
                             </a>
@@ -237,44 +228,6 @@
         <Button type="primary" size="large" @click="depositDo">Submit</Button>
       </div>
     </Modal>
-    <Modal v-model="modal.receiptModal" title="Download Receipt" width="600">
-      <Form :model="workPara" :label-width="120">
-        <Row>
-          <Col>
-            <FormItem label="Received From" prop="invoice_masterbi_received_from">
-              <Input placeholder="Received From" v-model="workPara.invoice_masterbi_received_from" :disabled="!!workPara.invoice_masterbi_receipt_release_date" />
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <FormItem label="Amount" prop="invoice_masterbi_receipt_amount">
-              <Input placeholder="Amount" v-model="workPara.invoice_masterbi_receipt_amount" :disabled="!!workPara.invoice_masterbi_receipt_release_date" />
-            </FormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <FormItem label="Cash/Cheque" prop="invoice_masterbi_check_cash">
-              <Select v-model="workPara.invoice_masterbi_check_cash" :disabled="!!workPara.invoice_masterbi_receipt_release_date">
-                <Option v-for="item in pagePara.CASH_BANK_INFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
-              </Select>
-            </FormItem>
-          </Col>
-        </Row>
-        <Row v-show="workPara.invoice_masterbi_check_cash === 'CHEQUE'">
-          <Col>
-            <FormItem label="Check No" prop="invoice_masterbi_check_no">
-              <Input placeholder="Check No" v-model="workPara.invoice_masterbi_check_no" :disabled="!!workPara.invoice_masterbi_receipt_release_date" />
-            </FormItem>
-          </Col>
-        </Row>
-      </Form>
-      <div slot="footer">
-        <Button type="text" size="large" @click="modal.receiptModal=false">Cancel</Button>
-        <Button type="primary" size="large" @click="downloadReceipt">Submit</Button>
-      </div>
-    </Modal>
   </div>
 </template>
 <script>
@@ -288,7 +241,7 @@ const apiUrl = '/api/zhongtan/invoice/Invoice/'
 export default {
   data: function() {
     return {
-      modal: { importModal: false, downLoadDoModal: false, depositModal: false, receiptModal: false },
+      modal: { importModal: false, downLoadDoModal: false, depositModal: false },
       table: {
         masterbiTable: {
           columns: [
@@ -298,19 +251,14 @@ export default {
               width: 150
             },
             {
-              title: 'Do',
-              slot: 'Do',
-              width: 60
-            },
-            {
               title: 'Invoice',
               slot: 'Invoice',
               width: 80
             },
             {
-              title: 'Receipt',
-              slot: 'Receipt',
-              width: 90
+              title: 'Do',
+              slot: 'Do',
+              width: 60
             },
             {
               title: 'Files',
@@ -838,21 +786,6 @@ export default {
         printJS(response.data.info.url)
         this.$Message.success('do success')
         this.modal.downLoadDoModal = false
-        this.getMasterbiData()
-      } catch (error) {
-        this.$commonact.fault(error)
-      }
-    },
-    actReceiptModal: function(row) {
-      this.workPara = JSON.parse(JSON.stringify(row))
-      this.modal.receiptModal = true
-    },
-    downloadReceipt: async function() {
-      try {
-        let response = await this.$http.post(apiUrl + 'downloadReceipt', this.workPara)
-        printJS(response.data.info.url)
-        this.$Message.success('do success')
-        this.modal.receiptModal = false
         this.getMasterbiData()
       } catch (error) {
         this.$commonact.fault(error)

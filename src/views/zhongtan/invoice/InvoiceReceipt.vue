@@ -73,7 +73,7 @@
                     </a>
                   </Tooltip>
                   <Tooltip :content="row.invoice_masterbi_receipt_release_date_fmt" v-if="row.invoice_masterbi_receipt_release_date">
-                    <a href="#" class="btn btn-success btn-icon btn-sm" @click="actReceiptModal(row)">
+                    <a href="#" class="btn btn-pink btn-icon btn-sm" @click="actReceiptModal(row)">
                       <i class="fa fa-money-bill-alt"></i>
                     </a>
                   </Tooltip>
