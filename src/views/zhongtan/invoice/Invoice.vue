@@ -20,6 +20,12 @@
             <div class="form-group m-r-2">
               <DatePicker type="daterange" :value="vessel.search_data.date" placeholder="Vessel Date" style="width: 200px" @on-change="searchData"></DatePicker>
             </div>
+            <div class="form-group m-r-2">
+              <input type="text" class="form-control" v-model="vessel.search_data.vesselName" placeholder="Vessel Name" style="width: 200px" />
+            </div>
+            <div class="form-group m-r-2">
+              <input type="text" class="form-control" v-model="vessel.search_data.bl" placeholder="B/L No" style="width: 200px" />
+            </div>
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="getVoyageData">
                 <i class="fa fa-search"></i>
@@ -619,7 +625,9 @@ export default {
               .subtract(30, 'days')
               .format('YYYY-MM-DD'),
             moment().format('YYYY-MM-DD')
-          ]
+          ],
+          vesselName: '',
+          bl: ''
         },
         current: '',
         height: common.getTableHeight()
@@ -714,13 +722,18 @@ export default {
       try {
         let searchPara = {
           start_date: this.vessel.search_data.date[0],
-          end_date: this.vessel.search_data.date[1]
+          end_date: this.vessel.search_data.date[1],
+          vesselName: this.vessel.search_data.vesselName,
+          bl: this.vessel.search_data.bl,
+          limit: 10,
+          offset: 0
         }
 
         let response = await this.$http.post(apiUrl + 'searchVoyage', searchPara)
         let data = response.data.info
-        this.vessel.data = JSON.parse(JSON.stringify(data))
-        this.table.masterbiTable.data = []
+        this.vessel.data = JSON.parse(JSON.stringify(data.vessels))
+        this.table.masterbiTable.data = JSON.parse(JSON.stringify(data.masterbl.rows))
+        this.table.masterbiTable.total = data.masterbl.total
         this.table.containersTable.data = []
       } catch (error) {
         this.$commonact.fault(error)
