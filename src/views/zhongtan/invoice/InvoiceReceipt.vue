@@ -112,17 +112,35 @@
     </panel>
     <Modal v-model="modal.receiptModal" title="Download Receipt" width="600">
       <Form :model="workPara" :label-width="120">
+        <Row v-if="workPara.invoice_masterbi_deposit_date && workPara.invoice_masterbi_fee_date">
+          <Col>
+            <FormItem label="Receipt Type">
+              <RadioGroup v-model="checkType" @on-change="changeType">
+                <Radio label="deposit" :disabled="!!workPara.invoice_masterbi_receipt_release_date"></Radio>
+                <Radio label="fee" :disabled="!!workPara.invoice_masterbi_receipt_release_date"></Radio>
+              </RadioGroup>
+            </FormItem>
+          </Col>
+        </Row>
         <Row>
           <Col>
             <FormItem label="Received From" prop="invoice_masterbi_received_from">
-              <Input placeholder="Received From" v-model="workPara.invoice_masterbi_received_from" :disabled="!!workPara.invoice_masterbi_receipt_release_date" />
+              <Input
+                placeholder="Received From"
+                v-model="workPara.invoice_masterbi_received_from"
+                :disabled="workPara.invoice_masterbi_receipt_release_date|| workPara.invoice_masterbi_deposit_date || workPara.invoice_masterbi_fee_date"
+              />
             </FormItem>
           </Col>
         </Row>
         <Row>
           <Col>
             <FormItem label="Amount" prop="invoice_masterbi_receipt_amount">
-              <Input placeholder="Amount" v-model="workPara.invoice_masterbi_receipt_amount" :disabled="!!workPara.invoice_masterbi_receipt_release_date" />
+              <Input
+                placeholder="Amount"
+                v-model="workPara.invoice_masterbi_receipt_amount"
+                :disabled="workPara.invoice_masterbi_receipt_release_date|| workPara.invoice_masterbi_deposit_date || workPara.invoice_masterbi_fee_date"
+              />
             </FormItem>
           </Col>
         </Row>
@@ -156,6 +174,22 @@ import printJS from 'print-js'
 const moment = require('moment')
 const common = require('@/lib/common')
 const apiUrl = '/api/zhongtan/invoice/InvoiceReceipt/'
+
+function formatCurrency(num) {
+  num = num.toString().replace(/[^\d.-]/g, '') //转成字符串并去掉其中除数字, . 和 - 之外的其它字符。
+  if (isNaN(num)) num = '0' //是否非数字值
+  let sign = num == (num = Math.abs(num))
+  num = Math.floor(num * 100 + 0.50000000001) //下舍入
+  let cents = num % 100 //求余 余数 = 被除数 - 除数 * 商
+  cents = cents < 10 ? '0' + cents : cents //小于2位数就补齐
+  num = Math.floor(num / 100).toString()
+  for (let i = 0; i < Math.floor((num.length - (1 + i)) / 3); i++) {
+    //每隔三位小数分始开隔
+    //4 ==> 三位小数加一个分隔符，
+    num = num.substring(0, num.length - (4 * i + 3)) + ',' + num.substring(num.length - (4 * i + 3))
+  }
+  return (sign ? '' : '-') + num + '.' + cents
+}
 
 export default {
   data: function() {
@@ -547,7 +581,8 @@ export default {
           loading: false
         }
       },
-      currentTab: 0
+      currentTab: 0,
+      checkType: ''
     }
   },
   created() {
@@ -637,6 +672,36 @@ export default {
     },
     actReceiptModal: function(row) {
       this.workPara = JSON.parse(JSON.stringify(row))
+      if (!row.invoice_masterbi_receipt_release_date) {
+        this.workPara.invoice_masterbi_received_from = row.user_name
+        if (row.invoice_masterbi_deposit_date || row.invoice_masterbi_fee_date) {
+          this.checkType = 'deposit'
+          if (row.invoice_masterbi_deposit_date) {
+            this.workPara.invoice_masterbi_receipt_amount = row.invoice_masterbi_deposit
+          } else {
+            this.workPara.invoice_masterbi_receipt_amount = 0
+            if (row.invoice_masterbi_transfer) {
+              this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_transfer)
+            }
+            if (row.invoice_masterbi_lolf) {
+              this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_lolf)
+            }
+            if (row.invoice_masterbi_lcl) {
+              this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_lcl)
+            }
+            if (row.invoice_masterbi_amendment) {
+              this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_amendment)
+            }
+            if (row.invoice_masterbi_tasac) {
+              this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_tasac)
+            }
+            if (row.invoice_masterbi_printing) {
+              this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_printing)
+            }
+            this.workPara.invoice_masterbi_receipt_amount = formatCurrency(this.workPara.invoice_masterbi_receipt_amount)
+          }
+        }
+      }
       this.modal.receiptModal = true
     },
     downloadReceipt: async function() {
@@ -666,6 +731,32 @@ export default {
       } else {
         this.deposit.disableFlag = true
         this.deposit.fees = []
+      }
+    },
+    changeType: function() {
+      if (this.checkType === 'deposit') {
+        this.workPara.invoice_masterbi_receipt_amount = this.workPara.invoice_masterbi_deposit
+      } else {
+        this.workPara.invoice_masterbi_receipt_amount = 0
+        if (this.workPara.invoice_masterbi_transfer) {
+          this.workPara.invoice_masterbi_receipt_amount += parseFloat(this.workPara.invoice_masterbi_transfer)
+        }
+        if (this.workPara.invoice_masterbi_lolf) {
+          this.workPara.invoice_masterbi_receipt_amount += parseFloat(this.workPara.invoice_masterbi_lolf)
+        }
+        if (this.workPara.invoice_masterbi_lcl) {
+          this.workPara.invoice_masterbi_receipt_amount += parseFloat(this.workPara.invoice_masterbi_lcl)
+        }
+        if (this.workPara.invoice_masterbi_amendment) {
+          this.workPara.invoice_masterbi_receipt_amount += parseFloat(this.workPara.invoice_masterbi_amendment)
+        }
+        if (this.workPara.invoice_masterbi_tasac) {
+          this.workPara.invoice_masterbi_receipt_amount += parseFloat(this.workPara.invoice_masterbi_tasac)
+        }
+        if (this.workPara.invoice_masterbi_printing) {
+          this.workPara.invoice_masterbi_receipt_amount += parseFloat(this.workPara.invoice_masterbi_printing)
+        }
+        this.workPara.invoice_masterbi_receipt_amount = formatCurrency(this.workPara.invoice_masterbi_receipt_amount)
       }
     }
   }
