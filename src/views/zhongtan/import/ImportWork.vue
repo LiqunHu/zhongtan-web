@@ -118,7 +118,7 @@
           <Page class="m-t-10" :total="table.importTable.total" :page-size="table.importTable.limit" @on-change="getImportData" />
         </Col>
         <Col span="4">
-          <div class="total">Total: {{table.importTable.total}}</div>
+          <div class="total">Total:  {{table.importTable.total}}</div>
         </Col>
       </Row>
     </panel>
@@ -312,7 +312,7 @@ import _ from 'lodash'
 const moment = require('moment')
 const common = require('@/lib/common')
 import expandRow from '../../../components/import/import-expand.vue'
-const apiUrl = '/api/zhongtan/invoice/Invoice/'
+const apiUrl = '/api/zhongtan/import/ImportWork/'
 
 export default {
   name: 'ImportWorkControl',

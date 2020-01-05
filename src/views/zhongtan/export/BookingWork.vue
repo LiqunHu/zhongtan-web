@@ -184,6 +184,10 @@
               <br />
               SURCHAGE: {{row.fees.billlading_invoice_surchage}}
               <br />
+              OCEAN FREIGHT: {{row.fees.billlading_invoice_of}}
+              <br />
+              OTHERS: {{row.fees.billlading_invoice_others}}
+              <br />
             </template>
           </Poptip>
         </template>
@@ -570,6 +574,12 @@
                 <FormItem label="SURCHAGE" prop="billlading_invoice_surchage_f">
                   <Input placeholder="SURCHAGE" v-model="workPara.billlading_invoice_surchage_f" />
                 </FormItem>
+                <FormItem label="OCEAN FREIGHT" prop="billlading_invoice_of_f">
+                  <Input placeholder="OCEAN FREIGHT" v-model="workPara.billlading_invoice_of_f" />
+                </FormItem>
+                <FormItem label="OTHERS" prop="billlading_invoice_others_f">
+                  <Input placeholder="OTHERS" v-model="workPara.billlading_invoice_others_f" />
+                </FormItem>
               </Col>
             </Row>
           </Form>
@@ -615,6 +625,12 @@
         </FormItem>
         <FormItem label="SURCHAGE" prop="billlading_invoice_surchage">
           <Input placeholder="SURCHAGE" v-model="workPara.billlading_invoice_surchage" />
+        </FormItem>
+        <FormItem label="OCEAN FREIGHT" prop="billlading_invoice_of">
+          <Input placeholder="OCEAN FREIGHT" v-model="workPara.billlading_invoice_of" />
+        </FormItem>
+        <FormItem label="OTHERS" prop="billlading_invoice_others">
+          <Input placeholder="OTHERS" v-model="workPara.billlading_invoice_others" />
         </FormItem>
       </Form>
       <div slot="footer">
@@ -738,6 +754,12 @@
         </FormItem>
         <FormItem label="SURCHAGE" prop="billlading_invoice_surchage">
           <Input placeholder="SURCHAGE" v-model="workPara.billlading_invoice_surchage" />
+        </FormItem>
+        <FormItem label="OCEAN FREIGHT" prop="billlading_invoice_of">
+          <Input placeholder="OCEAN FREIGHT" v-model="workPara.billlading_invoice_of" />
+        </FormItem>
+        <FormItem label="OTHERS" prop="billlading_invoice_others">
+          <Input placeholder="OTHERS" v-model="workPara.billlading_invoice_others" />
         </FormItem>
       </Form>
       <div slot="footer">
@@ -1589,7 +1611,9 @@ export default {
           billlading_invoice_tasac: [{ required: true, trigger: 'change', message: 'Enter TASAC' }],
           billlading_invoice_ammendment: [{ required: true, trigger: 'change', message: 'Enter AMMENDMENT FEE' }],
           billlading_invoice_isp: [{ required: true, trigger: 'change', message: 'Enter ISP' }],
-          billlading_invoice_surchage: [{ required: true, trigger: 'change', message: 'Enter SURCHAGE' }]
+          billlading_invoice_surchage: [{ required: true, trigger: 'change', message: 'Enter SURCHAGE' }],
+          billlading_invoice_of: [{ required: true, trigger: 'change', message: 'Ocean Freight' }],
+          billlading_invoice_others: [{ required: true, trigger: 'change', message: 'Others' }]
         }
       },
       pagePara: {},

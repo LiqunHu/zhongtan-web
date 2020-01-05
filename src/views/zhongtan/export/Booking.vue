@@ -128,6 +128,10 @@
               <br />
               SURCHAGE: {{row.fees.billlading_invoice_surchage}}
               <br />
+              OCEAN FREIGHT: {{row.fees.billlading_invoice_of}}
+              <br />
+              OTHERS: {{row.fees.billlading_invoice_others}}
+              <br />
             </template>
           </Poptip>
         </template>
