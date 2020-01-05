@@ -711,6 +711,12 @@ export default {
             if (row.invoice_masterbi_printing) {
               this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_printing)
             }
+            if (row.invoice_masterbi_of) {
+              this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_of)
+            }
+            if (row.invoice_masterbi_others) {
+              this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_others)
+            }
             this.workPara.invoice_masterbi_receipt_amount = formatCurrency(this.workPara.invoice_masterbi_receipt_amount)
           }
         }
@@ -768,6 +774,12 @@ export default {
         }
         if (this.workPara.invoice_masterbi_printing) {
           this.workPara.invoice_masterbi_receipt_amount += parseFloat(this.workPara.invoice_masterbi_printing)
+        }
+        if (this.workPara.invoice_masterbi_of) {
+          this.workPara.invoice_masterbi_receipt_amount += parseFloat(this.workPara.invoice_masterbi_of)
+        }
+        if (this.workPara.invoice_masterbi_others) {
+          this.workPara.invoice_masterbi_receipt_amount += parseFloat(this.workPara.invoice_masterbi_others)
         }
         this.workPara.invoice_masterbi_receipt_amount = formatCurrency(this.workPara.invoice_masterbi_receipt_amount)
       }

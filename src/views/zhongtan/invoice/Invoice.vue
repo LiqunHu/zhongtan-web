@@ -226,6 +226,10 @@
             <Input placeholder="TASAC" v-model="workPara.invoice_masterbi_tasac" :disabled="!(deposit.disableFlag === false && deposit.fees.indexOf('TASAC') >= 0)" />
             <Checkbox label="BILL PRINGTING" :disabled="deposit.disableFlag"></Checkbox>
             <Input placeholder="BILL PRINGTING" v-model="workPara.invoice_masterbi_printing" :disabled="!(deposit.disableFlag === false && deposit.fees.indexOf('BILL PRINGTING') >= 0)" />
+            <Checkbox label="OCEAN FREIGHT" :disabled="deposit.disableFlag"></Checkbox>
+            <Input placeholder="OCEAN FREIGHT" v-model="workPara.invoice_masterbi_of" :disabled="!(deposit.disableFlag === false && deposit.fees.indexOf('OCEAN FREIGHT') >= 0)" />
+            <Checkbox label="OTHERS" :disabled="deposit.disableFlag"></Checkbox>
+            <Input placeholder="OTHERS" v-model="workPara.invoice_masterbi_others" :disabled="!(deposit.disableFlag === false && deposit.fees.indexOf('OTHERS') >= 0)" />
           </CheckboxGroup>
         </div>
       </Form>
