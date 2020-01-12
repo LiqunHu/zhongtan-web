@@ -21,6 +21,11 @@
               <DatePicker type="daterange" :value="vessel.search_data.date" placeholder="Vessel Date" style="width: 200px" @on-change="searchData"></DatePicker>
             </div>
             <div class="form-group m-r-2">
+              <Select v-model="vessel.search_data.collect" style="width:180px" @on-change="getMasterbiData">
+                <Option v-for="item in pagePara.COLLECT_FLAG" :value="item.id" :key="item.id">{{ item.text }}</Option>
+              </Select>
+            </div>
+            <div class="form-group m-r-2">
               <input type="text" class="form-control" v-model="vessel.search_data.vesselName" placeholder="Vessel Name" style="width: 200px" />
             </div>
             <div class="form-group m-r-2">
@@ -640,7 +645,8 @@ export default {
             moment().format('YYYY-MM-DD')
           ],
           vesselName: '',
-          bl: ''
+          bl: '',
+          collect: ''
         },
         current: '',
         height: common.getTableHeight()
@@ -773,19 +779,22 @@ export default {
       }
     },
     getMasterbiData: async function(index) {
-      if (index) {
-        this.table.masterbiTable.offset = (index - 1) * this.table.masterbiTable.limit
-      }
-      let searchPara = {
-        invoice_vessel_id: this.vessel.current,
-        offset: this.table.masterbiTable.offset,
-        limit: this.table.masterbiTable.limit
-      }
+      if (this.vessel.current) {
+        if (index) {
+          this.table.masterbiTable.offset = (index - 1) * this.table.masterbiTable.limit
+        }
+        let searchPara = {
+          invoice_vessel_id: this.vessel.current,
+          collect: this.vessel.search_data.collect,
+          offset: this.table.masterbiTable.offset,
+          limit: this.table.masterbiTable.limit
+        }
 
-      let response = await this.$http.post(apiUrl + 'getMasterbiData', searchPara)
-      let data = response.data.info
-      this.table.masterbiTable.total = data.total
-      this.table.masterbiTable.data = JSON.parse(JSON.stringify(data.rows))
+        let response = await this.$http.post(apiUrl + 'getMasterbiData', searchPara)
+        let data = response.data.info
+        this.table.masterbiTable.total = data.total
+        this.table.masterbiTable.data = JSON.parse(JSON.stringify(data.rows))
+      }
     },
     getContainersData: async function(index) {
       if (index) {
