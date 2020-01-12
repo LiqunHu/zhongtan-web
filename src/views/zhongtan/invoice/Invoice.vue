@@ -841,6 +841,7 @@ export default {
       this.deposit.customer.options = JSON.parse(JSON.stringify(row.customerINFO))
       this.deposit.customer.loading = false
       this.deposit.depositType = 'Container Deposit'
+      this.deposit.fees = []
       this.$nextTick(function() {
         this.workPara = JSON.parse(JSON.stringify(row))
         this.modal.depositModal = true
@@ -849,6 +850,15 @@ export default {
     chooseDepositType: function() {
       if (this.deposit.depositType === 'Invoice Fee') {
         this.deposit.disableFlag = false
+        this.deposit.fees = []
+        this.workPara.invoice_masterbi_transfer = '0.0'
+        this.workPara.invoice_masterbi_lolf = '0.0'
+        this.workPara.invoice_masterbi_lcl = '0.0'
+        this.workPara.invoice_masterbi_amendment = '0.0'
+        this.workPara.invoice_masterbi_tasac = '0.0'
+        this.workPara.invoice_masterbi_printing = '0.0'
+        this.workPara.invoice_masterbi_of = '0.0'
+        this.workPara.invoice_masterbi_others = '0.0'
       } else {
         this.deposit.disableFlag = true
         this.deposit.fees = []
