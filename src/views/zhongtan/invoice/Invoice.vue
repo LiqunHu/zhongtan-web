@@ -21,7 +21,7 @@
               <DatePicker type="daterange" :value="vessel.search_data.date" placeholder="Vessel Date" style="width: 200px" @on-change="searchData"></DatePicker>
             </div>
             <div class="form-group m-r-2">
-              <Select v-model="vessel.search_data.collect" style="width:180px" @on-change="getMasterbiData">
+              <Select clearable v-model="vessel.search_data.collect" style="width:180px" @on-change="getMasterbiData">
                 <Option v-for="item in pagePara.COLLECT_FLAG" :value="item.id" :key="item.id">{{ item.text }}</Option>
               </Select>
             </div>
