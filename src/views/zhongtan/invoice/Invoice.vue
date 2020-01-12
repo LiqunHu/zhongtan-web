@@ -102,6 +102,10 @@
                     </a>
                   </Tooltip>
                 </template>
+                <template slot-scope="{ row, index }" slot="Collect">
+                  <a href="#" class="btn btn-info btn-xs" @click="actChangeCollectFlag(row, 'P')" v-if="row.invoice_masterbi_collect_flag !== 'P'">Unprepaid</a>
+                  <a href="#" class="btn btn-indigo btn-xs" @click="actChangeCollectFlag(row, 'UP')" v-if="row.invoice_masterbi_collect_flag === 'P'">Prepaid</a>
+                </template>
                 <template slot-scope="{ row, index }" slot="files">
                   <Poptip trigger="hover" placement="bottom" :transfer="true" width="555">
                     <Button type="text" style="text-decoration:underline">Files</Button>
@@ -269,6 +273,11 @@ export default {
               title: 'Do',
               slot: 'Do',
               width: 60
+            },
+            {
+              title: 'Collect',
+              slot: 'Collect',
+              width: 120
             },
             {
               title: 'Files',
@@ -862,6 +871,14 @@ export default {
         printJS(response.data.info.url)
         this.$Message.success('deposit success')
         this.modal.depositModal = false
+        this.getMasterbiData()
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
+    actChangeCollectFlag: async function(row, cflag) {
+      try {
+        await this.$http.post(apiUrl + 'changeCollect', { invoice_masterbi_id: row.invoice_masterbi_id, act: cflag })
         this.getMasterbiData()
       } catch (error) {
         this.$commonact.fault(error)
