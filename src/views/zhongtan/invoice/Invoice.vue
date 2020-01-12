@@ -108,8 +108,8 @@
                   </Tooltip>
                 </template>
                 <template slot-scope="{ row, index }" slot="Collect">
-                  <a href="#" class="btn btn-info btn-xs" @click="actChangeCollectFlag(row, 'P')" v-if="row.invoice_masterbi_collect_flag !== 'P'">Unprepaid</a>
-                  <a href="#" class="btn btn-indigo btn-xs" @click="actChangeCollectFlag(row, 'UP')" v-if="row.invoice_masterbi_collect_flag === 'P'">Prepaid</a>
+                  <a href="#" class="btn btn-info btn-xs" @click="actChangeCollectFlag(row, 'P')" v-if="row.invoice_masterbi_collect_flag == 'C'">Collect</a>
+                  <a href="#" class="btn btn-indigo btn-xs" @click="actChangeCollectFlag(row, 'C')" v-if="row.invoice_masterbi_collect_flag !== 'C'">Prepaid</a>
                 </template>
                 <template slot-scope="{ row, index }" slot="files">
                   <Poptip trigger="hover" placement="bottom" :transfer="true" width="555">
@@ -851,14 +851,14 @@ export default {
       if (this.deposit.depositType === 'Invoice Fee') {
         this.deposit.disableFlag = false
         this.deposit.fees = []
-        this.workPara.invoice_masterbi_transfer = '0.0'
-        this.workPara.invoice_masterbi_lolf = '0.0'
-        this.workPara.invoice_masterbi_lcl = '0.0'
-        this.workPara.invoice_masterbi_amendment = '0.0'
-        this.workPara.invoice_masterbi_tasac = '0.0'
-        this.workPara.invoice_masterbi_printing = '0.0'
-        this.workPara.invoice_masterbi_of = '0.0'
-        this.workPara.invoice_masterbi_others = '0.0'
+        this.workPara.invoice_masterbi_transfer = ''
+        this.workPara.invoice_masterbi_lolf = ''
+        this.workPara.invoice_masterbi_lcl = ''
+        this.workPara.invoice_masterbi_amendment = ''
+        this.workPara.invoice_masterbi_tasac = ''
+        this.workPara.invoice_masterbi_printing = ''
+        this.workPara.invoice_masterbi_of = ''
+        this.workPara.invoice_masterbi_others = ''
       } else {
         this.deposit.disableFlag = true
         this.deposit.fees = []
