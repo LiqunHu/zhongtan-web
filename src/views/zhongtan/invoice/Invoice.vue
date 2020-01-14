@@ -39,6 +39,9 @@
             <div class="form-group m-r-3">
               <button type="button" class="btn btn-info" @click="loadImportModal">Load</button>
             </div>
+            <div class="form-group m-r-3">
+              <button type="button" class="btn btn-info" @click="saveData">Save</button>
+            </div>
           </div>
         </div>
       </template>
@@ -131,6 +134,123 @@
                       </Table>
                     </template>
                   </Poptip>
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_cargo_type">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_cargo_type" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_bl_type">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_bl_type" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_destination">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_destination" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_delivery">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_delivery" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_loading">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_loading" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_container_no">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_container_no" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_goods_description">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_goods_description" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_package_no">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_package_no" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_package_unit">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_package_unit" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_gross_weight">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_gross_weight" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_gross_weight_unit">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_gross_weight_unit" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_gross_volume">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_gross_volume" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_gross_volume_unit">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_gross_volume_unit" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_invoice_value">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_invoice_value" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_invoice_currency">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_invoice_currency" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_freight_charge">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_freight_charge" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_freight_currency">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_freight_currency" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_imdg">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_imdg" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_packing_type">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_packing_type" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_forwarder_code">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_forwarder_code" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_forwarder_name">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_forwarder_name" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_forwarder_tel">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_forwarder_tel" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_exporter_name">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_exporter_name" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_exporter_tel">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_exporter_tel" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_exporter_address">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_exporter_address" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_exporter_tin">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_exporter_tin" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_consignee_name">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_consignee_name" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_consignee_tel">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_consignee_tel" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_consignee_address">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_consignee_address" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_consignee_tin">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_consignee_tin" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_notify_name">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_notify_name" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_notify_tel">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_notify_tel" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_notify_address">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_notify_address" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_notify_tin">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_notify_tin" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_shipping_mark">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_shipping_mark" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_net_weight">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_net_weight" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_net_weight_unit">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_net_weight_unit" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_line_code">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_line_code" size="small" />
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_terminal_code">
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_terminal_code" size="small" />
                 </template>
               </Table>
               <Page class="m-t-10" :total="table.masterbiTable.total" :page-size="table.masterbiTable.limit" @on-change="getMasterbiData" />
@@ -291,216 +411,203 @@ export default {
             },
             {
               title: 'Cargo Classification',
-              key: 'invoice_masterbi_cargo_type',
+              slot: 'invoice_masterbi_cargo_type',
               width: 100
             },
             {
               title: '*B/L Type',
-              key: 'invoice_masterbi_bl_type',
+              slot: 'invoice_masterbi_bl_type',
               width: 100
             },
             {
               title: 'Place of Destination',
-              key: 'invoice_masterbi_destination',
+              slot: 'invoice_masterbi_destination',
               width: 130
             },
             {
               title: 'Place of Delivery',
-              key: 'invoice_masterbi_delivery',
+              slot: 'invoice_masterbi_delivery',
               width: 130
             },
             {
-              title: 'Oil Type',
-              key: 'invoice_masterbi_oil_type',
-              width: 100
-            },
-            {
               title: 'Port of Loading',
-              key: 'invoice_masterbi_loading',
+              slot: 'invoice_masterbi_loading',
               width: 130
             },
             {
               title: 'Number of Containers',
-              key: 'invoice_masterbi_container_no',
+              slot: 'invoice_masterbi_container_no',
               width: 100
             },
             {
               title: 'Description of Goods',
-              key: 'invoice_masterbi_goods_description',
-              tooltip: true,
+              slot: 'invoice_masterbi_goods_description',
               width: 200
             },
             {
               title: 'Number of Package',
-              key: 'invoice_masterbi_package_no',
+              slot: 'invoice_masterbi_package_no',
               width: 100
             },
             {
               title: 'Package Unit',
-              key: 'invoice_masterbi_package_unit',
+              slot: 'invoice_masterbi_package_unit',
               width: 100
             },
             {
               title: 'Gross Weight',
-              key: 'invoice_masterbi_gross_weight',
+              slot: 'invoice_masterbi_gross_weight',
               width: 100
             },
             {
               title: 'Gross Weight Unit',
-              key: 'invoice_masterbi_gross_weight_unit',
+              slot: 'invoice_masterbi_gross_weight_unit',
               width: 100
             },
             {
               title: 'Gross Volume',
-              key: 'invoice_masterbi_gross_volume',
+              slot: 'invoice_masterbi_gross_volume',
               width: 100
             },
             {
               title: 'Gross Volume Unit',
-              key: 'invoice_masterbi_gross_volume_unit',
+              slot: 'invoice_masterbi_gross_volume_unit',
               width: 100
             },
             {
               title: 'Invoice Value',
-              key: 'invoice_masterbi_invoice_value',
+              slot: 'invoice_masterbi_invoice_value',
               width: 100
             },
             {
               title: 'Invoice Currency',
-              key: 'invoice_masterbi_invoice_currency',
+              slot: 'invoice_masterbi_invoice_currency',
               width: 100
             },
             {
               title: 'Freight Charge',
-              key: 'invoice_masterbi_freight_charge',
+              slot: 'invoice_masterbi_freight_charge',
               width: 100
             },
             {
               title: 'Freight Currency',
-              key: 'invoice_masterbi_freight_currency',
+              slot: 'invoice_masterbi_freight_currency',
               width: 100
             },
             {
               title: 'IMDG Code',
-              key: 'invoice_masterbi_imdg',
+              slot: 'invoice_masterbi_imdg',
               width: 100
             },
             {
               title: 'Packing Type',
-              key: 'invoice_masterbi_packing_type',
+              slot: 'invoice_masterbi_packing_type',
               width: 100
             },
             {
               title: 'Forwarder Code',
-              key: 'invoice_masterbi_forwarder_code',
-              tooltip: true,
+              slot: 'invoice_masterbi_forwarder_code',
               width: 150
             },
             {
               title: 'Forwarder Name',
-              key: 'invoice_masterbi_forwarder_name',
-              tooltip: true,
+              slot: 'invoice_masterbi_forwarder_name',
               width: 200
             },
             {
               title: 'Forwarder Tel',
-              key: 'invoice_masterbi_forwarder_tel',
+              slot: 'invoice_masterbi_forwarder_tel',
               width: 150
             },
             {
               title: 'Exporter Name',
-              key: 'invoice_masterbi_exporter_name',
-              tooltip: true,
+              slot: 'invoice_masterbi_exporter_name',
               width: 200
             },
             {
               title: 'Exporter Tel',
-              key: 'invoice_masterbi_exporter_tel',
+              slot: 'invoice_masterbi_exporter_tel',
               width: 100
             },
             {
               title: 'Exporter Address',
-              key: 'invoice_masterbi_exporter_address',
-              tooltip: true,
+              slot: 'invoice_masterbi_exporter_address',
               width: 200
             },
             {
               title: 'Exporter TIN',
-              key: 'invoice_masterbi_exporter_tin',
+              slot: 'invoice_masterbi_exporter_tin',
               width: 100
             },
             {
               title: 'Consignee Name',
-              key: 'invoice_masterbi_consignee_name',
+              slot: 'invoice_masterbi_consignee_name',
               tooltip: true,
               width: 200
             },
             {
               title: 'Consignee Tel',
-              key: 'invoice_masterbi_consignee_tel',
+              slot: 'invoice_masterbi_consignee_tel',
               width: 100
             },
             {
               title: 'Consignee Address',
-              key: 'invoice_masterbi_consignee_address',
-              tooltip: true,
+              slot: 'invoice_masterbi_consignee_address',
               width: 200
             },
             {
               title: 'Consignee TIN',
-              key: 'invoice_masterbi_consignee_tin',
+              slot: 'invoice_masterbi_consignee_tin',
               width: 100
             },
             {
               title: 'Notify Name',
-              key: 'invoice_masterbi_notify_name',
-              tooltip: true,
+              slot: 'invoice_masterbi_notify_name',
               width: 200
             },
             {
               title: 'Notify Tel',
-              key: 'invoice_masterbi_notify_tel',
+              slot: 'invoice_masterbi_notify_tel',
               width: 100
             },
             {
               title: 'Notify Address',
-              key: 'invoice_masterbi_notify_address',
-              tooltip: true,
+              slot: 'invoice_masterbi_notify_address',
               width: 200
             },
             {
               title: 'Notify TIN',
-              key: 'invoice_masterbi_notify_tin',
+              slot: 'invoice_masterbi_notify_tin',
               width: 100
             },
             {
               title: 'Shipping Mark',
-              key: 'invoice_masterbi_shipping_mark',
-              tooltip: true,
+              slot: 'invoice_masterbi_shipping_mark',
               width: 200
             },
             {
               title: 'Net Weight',
-              key: 'invoice_masterbi_net_weight',
+              slot: 'invoice_masterbi_net_weight',
               width: 100
             },
             {
               title: 'Net Weight Unit',
-              key: 'invoice_masterbi_net_weight_unit',
+              slot: 'invoice_masterbi_net_weight_unit',
               width: 100
             },
             {
               title: 'LineAgent Code',
-              key: 'invoice_masterbi_line_code',
+              slot: 'invoice_masterbi_line_code',
               width: 100
             },
             {
               title: 'TerminalCode',
-              key: 'invoice_masterbi_terminal_code',
+              slot: 'invoice_masterbi_terminal_code',
               width: 100
             }
           ],
           data: [],
+          unchanged: [],
           height: common.getTableHeight() - 80,
           limit: 10,
           offset: 0,
@@ -794,6 +901,7 @@ export default {
         let data = response.data.info
         this.table.masterbiTable.total = data.total
         this.table.masterbiTable.data = JSON.parse(JSON.stringify(data.rows))
+        this.table.masterbiTable.unchanged = JSON.parse(JSON.stringify(data.rows))
       }
     },
     getContainersData: async function(index) {
@@ -901,6 +1009,25 @@ export default {
         this.getMasterbiData()
       } catch (error) {
         this.$commonact.fault(error)
+      }
+    },
+    saveData: async function() {
+      if (this.table.masterbiTable.data.length > 0) {
+        let changeData = []
+        for (let i = 0; i < this.table.masterbiTable.data.length; i++) {
+          if (JSON.stringify(this.table.masterbiTable.data[i]) !== JSON.stringify(this.table.masterbiTable.unchanged[i])) {
+            changeData.push(this.table.masterbiTable.data[i])
+          }
+        }
+        if (changeData.length > 0) {
+          try {
+            await this.$http.post(apiUrl + 'changebl', { changedbl: changeData })
+            this.getMasterbiData()
+            this.$Message.success('save success')
+          } catch (error) {
+            this.$commonact.fault(error)
+          }
+        }
       }
     }
   }
