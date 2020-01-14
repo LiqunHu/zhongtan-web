@@ -108,8 +108,8 @@
                   </Tooltip>
                 </template>
                 <template slot-scope="{ row, index }" slot="Collect">
-                  <a href="#" class="btn btn-info btn-xs" @click="actChangeCollectFlag(row, 'P')" v-if="row.invoice_masterbi_collect_flag == 'C'">Collect</a>
-                  <a href="#" class="btn btn-indigo btn-xs" @click="actChangeCollectFlag(row, 'C')" v-if="row.invoice_masterbi_collect_flag !== 'C'">Prepaid</a>
+                  <a href="#" class="btn btn-info btn-xs" @click="actChangeCollectFlag(row, 'PREPAID')" v-if="row.invoice_masterbi_freight == 'COLLECT'">Collect</a>
+                  <a href="#" class="btn btn-indigo btn-xs" @click="actChangeCollectFlag(row, 'COLLECT')" v-if="row.invoice_masterbi_freight !== 'COLLECT'">Prepaid</a>
                 </template>
                 <template slot-scope="{ row, index }" slot="files">
                   <Poptip trigger="hover" placement="bottom" :transfer="true" width="555">
