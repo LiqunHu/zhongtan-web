@@ -31,6 +31,9 @@
                 <i class="fa fa-search"></i>
               </button>
             </div>
+            <div class="form-group m-r-3">
+              <button type="button" class="btn btn-info" @click="actCollectModal">Collect</button>
+            </div>
           </div>
         </div>
       </template>
@@ -172,6 +175,30 @@
         <Button type="primary" size="large" @click="downloadReceipt">Submit</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.collectModal" title="Download Receipt Collect" width="600">
+      <Form :model="workPara" :label-width="120">
+        <Row>
+          <Col>
+            <FormItem label="Ship Co." prop="carrier">
+              <Select v-model="workPara.carrier">
+                <Option v-for="item in pagePara.RECEIPT_TYPE_INFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+              </Select>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <FormItem label="Data" prop="collect_date">
+              <DatePicker type="daterange" v-model="workPara.collect_date" placeholder="Date" style="width: 200px"></DatePicker>
+            </FormItem>
+          </Col>
+        </Row>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.collectModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="downloadCollect">Submit</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -200,7 +227,7 @@ function formatCurrency(num) {
 export default {
   data: function() {
     return {
-      modal: { receiptModal: false },
+      modal: { receiptModal: false, collectModal: false },
       table: {
         masterbiTable: {
           columns: [
@@ -782,6 +809,33 @@ export default {
           this.workPara.invoice_masterbi_receipt_amount += parseFloat(this.workPara.invoice_masterbi_others)
         }
         this.workPara.invoice_masterbi_receipt_amount = formatCurrency(this.workPara.invoice_masterbi_receipt_amount)
+      }
+    },
+    actCollectModal: function() {
+      this.workPara = {}
+      this.modal.collectModal = true
+    },
+    downloadCollect: async function() {
+      try {
+        let response = await this.$http.request({
+          url: apiUrl + 'downloadCollect',
+          method: 'post',
+          data: this.workPara,
+          responseType: 'blob'
+        })
+        let blob = response.data
+        let reader = new FileReader()
+        reader.readAsDataURL(blob)
+        reader.onload = e => {
+          let a = document.createElement('a')
+          a.download = this.workPara.carrier + '- receipt from.xlsx'
+          a.href = e.target.result
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+        }
+      } catch (error) {
+        this.$commonact.fault(error)
       }
     }
   }
