@@ -54,6 +54,9 @@
                   <div @click="checkVoyage(item.invoice_vessel_id)">
                     <Card>
                       <p slot="title">{{item.invoice_vessel_name}}({{item.invoice_vessel_code}}) - {{item.invoice_vessel_voyage}}</p>
+                      <a href="#" slot="extra" @click.prevent="actdeleteVoyageModal(item)">
+                        <Icon type="ios-close" />
+                      </a>
                       <Row>
                         <Col span="11">
                           <p>ETA: {{item.invoice_vessel_eta}}</p>
@@ -367,6 +370,21 @@
         <Button type="primary" size="large" @click="depositDo">Submit</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.deleteVoyageModal" title="Delete Voyage" width="600">
+      <Form :model="workPara" :label-width="120">
+        <Row>
+          <Col>
+            <FormItem label="Voyage No." prop="voyage_no">
+              <Input placeholder="Voyage No." v-model="workPara.voyage_no" />
+            </FormItem>
+          </Col>
+        </Row>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.deleteVoyageModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="deleteVoyage">Submit</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -380,7 +398,7 @@ const apiUrl = '/api/zhongtan/invoice/Invoice/'
 export default {
   data: function() {
     return {
-      modal: { importModal: false, downLoadDoModal: false, depositModal: false },
+      modal: { importModal: false, downLoadDoModal: false, depositModal: false, deleteVoyageModal: false },
       table: {
         masterbiTable: {
           columns: [
@@ -1028,6 +1046,26 @@ export default {
             this.$commonact.fault(error)
           }
         }
+      }
+    },
+    actdeleteVoyageModal: function(item) {
+      this.workPara = JSON.parse(JSON.stringify(item))
+      this.modal.deleteVoyageModal = true
+    },
+    deleteVoyage: function() {
+      try {
+        let _self = this
+        _self.$commonact.confirm(`Delete the file?`, async () => {
+          if (_self.workPara.voyage_no !== _self.workPara.invoice_vessel_voyage) {
+            return _self.$Message.error('Please enter right Voyage No.')
+          }
+          await _self.$http.post(apiUrl + 'deleteVoyage', { invoice_vessel_id: _self.workPara.invoice_vessel_id })
+          _self.getVoyageData()
+          _self.getMasterbiData()
+          _self.modal.deleteVoyageModal = false
+        })
+      } catch (error) {
+        this.$commonact.fault(error)
       }
     }
   }
