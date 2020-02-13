@@ -1012,6 +1012,13 @@ export default {
     },
     depositDo: async function() {
       try {
+        if (!this.workPara.invoice_masterbi_customer_id) {
+          return this.$Message.error('Please choose customer')
+        }
+
+        if (!this.workPara.invoice_masterbi_carrier) {
+          return this.$Message.error('Please choose carrier')
+        }
         let response = await this.$http.post(apiUrl + 'depositDo', _.extend(this.workPara, this.deposit))
         printJS(response.data.info.url)
         this.$Message.success('deposit success')
