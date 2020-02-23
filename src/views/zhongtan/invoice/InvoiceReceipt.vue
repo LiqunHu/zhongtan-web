@@ -127,6 +127,7 @@
               <RadioGroup v-model="checkType" @on-change="changeType">
                 <Radio label="deposit" :disabled="!!workPara.invoice_masterbi_receipt_release_date"></Radio>
                 <Radio label="fee" :disabled="!!workPara.invoice_masterbi_receipt_release_date"></Radio>
+                <Radio label="freight" :disabled="!!workPara.invoice_masterbi_receipt_release_date"></Radio>
               </RadioGroup>
             </FormItem>
           </Col>
@@ -139,6 +140,15 @@
                 v-model="workPara.invoice_masterbi_received_from"
                 :disabled="workPara.invoice_masterbi_receipt_release_date|| workPara.invoice_masterbi_deposit_date || workPara.invoice_masterbi_fee_date"
               />
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <FormItem label="Currency" prop="invoice_masterbi_receipt_currency">
+              <Select v-model="workPara.invoice_masterbi_receipt_currency" :disabled="!!workPara.invoice_masterbi_receipt_release_date">
+                <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
+              </Select>
             </FormItem>
           </Col>
         </Row>
@@ -714,10 +724,12 @@ export default {
       this.workPara = JSON.parse(JSON.stringify(row))
       if (!row.invoice_masterbi_receipt_release_date) {
         this.workPara.invoice_masterbi_received_from = row.user_name
-        if (row.invoice_masterbi_deposit_date || row.invoice_masterbi_fee_date) {
+        if (row.invoice_masterbi_deposit_date || row.invoice_masterbi_fee_date || row.invoice_masterbi_do_date) {
           this.checkType = 'deposit'
           if (row.invoice_masterbi_deposit_date) {
             this.workPara.invoice_masterbi_receipt_amount = row.invoice_masterbi_deposit
+          } else if(row.invoice_masterbi_do_date) {
+            this.workPara.invoice_masterbi_receipt_amount = row.invoice_masterbi_of
           } else {
             this.workPara.invoice_masterbi_receipt_amount = 0
             if (row.invoice_masterbi_transfer) {
@@ -737,9 +749,6 @@ export default {
             }
             if (row.invoice_masterbi_printing) {
               this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_printing)
-            }
-            if (row.invoice_masterbi_of) {
-              this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_of)
             }
             if (row.invoice_masterbi_others) {
               this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_others)
@@ -771,17 +780,11 @@ export default {
         this.$commonact.fault(error)
       }
     },
-    chooseDepositType: function() {
-      if (this.deposit.depositType === 'Invoice Fee') {
-        this.deposit.disableFlag = false
-      } else {
-        this.deposit.disableFlag = true
-        this.deposit.fees = []
-      }
-    },
     changeType: function() {
       if (this.checkType === 'deposit') {
         this.workPara.invoice_masterbi_receipt_amount = this.workPara.invoice_masterbi_deposit
+      } else if (this.checkType === 'freight') {
+        this.workPara.invoice_masterbi_receipt_amount = this.workPara.invoice_masterbi_of
       } else {
         this.workPara.invoice_masterbi_receipt_amount = 0
         if (this.workPara.invoice_masterbi_transfer) {
@@ -801,9 +804,6 @@ export default {
         }
         if (this.workPara.invoice_masterbi_printing) {
           this.workPara.invoice_masterbi_receipt_amount += parseFloat(this.workPara.invoice_masterbi_printing)
-        }
-        if (this.workPara.invoice_masterbi_of) {
-          this.workPara.invoice_masterbi_receipt_amount += parseFloat(this.workPara.invoice_masterbi_of)
         }
         if (this.workPara.invoice_masterbi_others) {
           this.workPara.invoice_masterbi_receipt_amount += parseFloat(this.workPara.invoice_masterbi_others)

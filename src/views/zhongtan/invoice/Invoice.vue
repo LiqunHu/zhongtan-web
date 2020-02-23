@@ -128,7 +128,7 @@
                               <i class="fa fa-download"></i>
                             </a>
                           </Tooltip>
-                          <Tooltip content="Release" v-if="!row.release_date && (row.filetype === 'Deposit' || row.filetype === 'Fee' || row.filetype === 'DO')">
+                          <Tooltip content="Release" v-if="!row.release_date && (row.filetype === 'Deposit' || row.filetype === 'Fee' || row.filetype === 'DO' || row.filetype === 'Freight')">
                             <a href="#" class="btn btn-primary btn-icon btn-sm" @click="doRealse(row, index)">
                               <i class="fa fa-share-square"></i>
                             </a>
@@ -337,7 +337,14 @@
             <span>Container Deposit</span>
           </Radio>
           <FormItem label="Deposit Amount" prop="invoice_masterbi_deposit">
-            <Input placeholder="Deposit Amount" v-model="workPara.invoice_masterbi_deposit" :disabled="!deposit.disableFlag" />
+            <Input placeholder="Deposit Amount" v-model="workPara.invoice_masterbi_deposit" :disabled="deposit.depositType != 'Container Deposit'" />
+          </FormItem>
+          <Divider />
+          <Radio label="Ocean Freight">
+            <span>Ocean Freight Fee</span>
+          </Radio>
+          <FormItem label="Ocean Freight" prop="invoice_masterbi_of">
+            <Input placeholder="Ocean Freight Fee" v-model="workPara.invoice_masterbi_of" :disabled="deposit.depositType != 'Ocean Freight'" />
           </FormItem>
           <Divider />
           <Radio label="Invoice Fee">
@@ -346,22 +353,32 @@
         </RadioGroup>
         <div style="padding-left: 50px;">
           <CheckboxGroup v-model="deposit.fees">
-            <Checkbox label="CONTAINER TRANSFER" :disabled="deposit.disableFlag"></Checkbox>
-            <Input placeholder="CONTAINER TRANSFER" v-model="workPara.invoice_masterbi_transfer" :disabled="!(deposit.disableFlag === false && deposit.fees.indexOf('CONTAINER TRANSFER') >= 0)" />
-            <Checkbox label="LIFT ON LIFT OFF" :disabled="deposit.disableFlag"></Checkbox>
-            <Input placeholder="LIFT ON LIFT OFF" v-model="workPara.invoice_masterbi_lolf" :disabled="!(deposit.disableFlag === false && deposit.fees.indexOf('LIFT ON LIFT OFF') >= 0)" />
-            <Checkbox label="LCL" :disabled="deposit.disableFlag"></Checkbox>
-            <Input placeholder="LCL" v-model="workPara.invoice_masterbi_lcl" :disabled="!(deposit.disableFlag === false && deposit.fees.indexOf('LCL') >= 0)" />
-            <Checkbox label="AMENDMENT" :disabled="deposit.disableFlag"></Checkbox>
-            <Input placeholder="AMENDMENT" v-model="workPara.invoice_masterbi_amendment" :disabled="!(deposit.disableFlag === false && deposit.fees.indexOf('AMENDMENT') >= 0)" />
-            <Checkbox label="TASAC" :disabled="deposit.disableFlag"></Checkbox>
-            <Input placeholder="TASAC" v-model="workPara.invoice_masterbi_tasac" :disabled="!(deposit.disableFlag === false && deposit.fees.indexOf('TASAC') >= 0)" />
-            <Checkbox label="BILL PRINGTING" :disabled="deposit.disableFlag"></Checkbox>
-            <Input placeholder="BILL PRINGTING" v-model="workPara.invoice_masterbi_printing" :disabled="!(deposit.disableFlag === false && deposit.fees.indexOf('BILL PRINGTING') >= 0)" />
-            <Checkbox label="OCEAN FREIGHT" :disabled="deposit.disableFlag"></Checkbox>
-            <Input placeholder="OCEAN FREIGHT" v-model="workPara.invoice_masterbi_of" :disabled="!(deposit.disableFlag === false && deposit.fees.indexOf('OCEAN FREIGHT') >= 0)" />
-            <Checkbox label="OTHERS" :disabled="deposit.disableFlag"></Checkbox>
-            <Input placeholder="OTHERS" v-model="workPara.invoice_masterbi_others" :disabled="!(deposit.disableFlag === false && deposit.fees.indexOf('OTHERS') >= 0)" />
+            <Checkbox label="CONTAINER TRANSFER" :disabled="deposit.depositType != 'Invoice Fee'"></Checkbox>
+            <Input
+              placeholder="CONTAINER TRANSFER"
+              v-model="workPara.invoice_masterbi_transfer"
+              :disabled="!((deposit.depositType != 'Invoice Fee') === false && deposit.fees.indexOf('CONTAINER TRANSFER') >= 0)"
+            />
+            <Checkbox label="LIFT ON LIFT OFF" :disabled="deposit.depositType != 'Invoice Fee'"></Checkbox>
+            <Input
+              placeholder="LIFT ON LIFT OFF"
+              v-model="workPara.invoice_masterbi_lolf"
+              :disabled="!((deposit.depositType != 'Invoice Fee') === false && deposit.fees.indexOf('LIFT ON LIFT OFF') >= 0)"
+            />
+            <Checkbox label="LCL" :disabled="deposit.depositType != 'Invoice Fee'"></Checkbox>
+            <Input placeholder="LCL" v-model="workPara.invoice_masterbi_lcl" :disabled="!((deposit.depositType != 'Invoice Fee') === false && deposit.fees.indexOf('LCL') >= 0)" />
+            <Checkbox label="AMENDMENT" :disabled="deposit.depositType != 'Invoice Fee'"></Checkbox>
+            <Input placeholder="AMENDMENT" v-model="workPara.invoice_masterbi_amendment" :disabled="!((deposit.depositType != 'Invoice Fee') === false && deposit.fees.indexOf('AMENDMENT') >= 0)" />
+            <Checkbox label="TASAC" :disabled="deposit.depositType != 'Invoice Fee'"></Checkbox>
+            <Input placeholder="TASAC" v-model="workPara.invoice_masterbi_tasac" :disabled="!((deposit.depositType != 'Invoice Fee') === false && deposit.fees.indexOf('TASAC') >= 0)" />
+            <Checkbox label="BILL PRINGTING" :disabled="deposit.depositType != 'Invoice Fee'"></Checkbox>
+            <Input
+              placeholder="BILL PRINGTING"
+              v-model="workPara.invoice_masterbi_printing"
+              :disabled="!((deposit.depositType != 'Invoice Fee') === false && deposit.fees.indexOf('BILL PRINGTING') >= 0)"
+            />
+            <Checkbox label="OTHERS" :disabled="deposit.depositType != 'Invoice Fee'"></Checkbox>
+            <Input placeholder="OTHERS" v-model="workPara.invoice_masterbi_others" :disabled="!((deposit.depositType != 'Invoice Fee') === false && deposit.fees.indexOf('OTHERS') >= 0)" />
           </CheckboxGroup>
         </div>
       </Form>
@@ -779,7 +796,6 @@ export default {
       deposit: {
         depositType: 'Container Deposit',
         fees: [],
-        disableFlag: true,
         customer: {
           options: [],
           loading: false
@@ -974,20 +990,29 @@ export default {
       })
     },
     chooseDepositType: function() {
+      this.deposit.fees = []
       if (this.deposit.depositType === 'Invoice Fee') {
-        this.deposit.disableFlag = false
-        this.deposit.fees = []
-        this.workPara.invoice_masterbi_transfer = ''
-        this.workPara.invoice_masterbi_lolf = ''
-        this.workPara.invoice_masterbi_lcl = ''
-        this.workPara.invoice_masterbi_amendment = ''
-        this.workPara.invoice_masterbi_tasac = ''
-        this.workPara.invoice_masterbi_printing = ''
-        this.workPara.invoice_masterbi_of = ''
-        this.workPara.invoice_masterbi_others = ''
-      } else {
-        this.deposit.disableFlag = true
-        this.deposit.fees = []
+        if (this.workPara.invoice_masterbi_transfer) {
+          this.deposit.fees.push('CONTAINER TRANSFER')
+        }
+        if (this.workPara.invoice_masterbi_lolf) {
+          this.deposit.fees.push('LIFT ON LIFT OFF')
+        }
+        if (this.workPara.invoice_masterbi_lcl) {
+          this.deposit.fees.push('LCL')
+        }
+        if (this.workPara.invoice_masterbi_amendment) {
+          this.deposit.fees.push('AMENDMENT')
+        }
+        if (this.workPara.invoice_masterbi_tasac) {
+          this.deposit.fees.push('TASAC')
+        }
+        if (this.workPara.invoice_masterbi_printing) {
+          this.deposit.fees.push('BILL PRINGTING')
+        }
+        if (this.workPara.invoice_masterbi_others) {
+          this.deposit.fees.push('OTHERS')
+        }
       }
     },
     // getCustomerData: async function() {
