@@ -121,13 +121,13 @@
     </panel>
     <Modal v-model="modal.receiptModal" title="Download Receipt" width="600">
       <Form :model="workPara" :label-width="120">
-        <Row v-if="workPara.invoice_masterbi_deposit_date && workPara.invoice_masterbi_fee_date">
+        <Row>
           <Col>
             <FormItem label="Receipt Type">
               <RadioGroup v-model="checkType" @on-change="changeType">
-                <Radio label="deposit" :disabled="!!workPara.invoice_masterbi_receipt_release_date"></Radio>
-                <Radio label="fee" :disabled="!!workPara.invoice_masterbi_receipt_release_date"></Radio>
-                <Radio label="freight" :disabled="!!workPara.invoice_masterbi_receipt_release_date"></Radio>
+                <Radio v-if="!!workPara.invoice_masterbi_deposit_date" label="deposit" :disabled="!!workPara.invoice_masterbi_receipt_release_date"></Radio>
+                <Radio v-if="!!workPara.invoice_masterbi_fee_date" label="fee" :disabled="!!workPara.invoice_masterbi_receipt_release_date"></Radio>
+                <Radio v-if="!!workPara.invoice_masterbi_of_date" label="freight" :disabled="!!workPara.invoice_masterbi_receipt_release_date"></Radio>
               </RadioGroup>
             </FormItem>
           </Col>
@@ -724,13 +724,12 @@ export default {
       this.workPara = JSON.parse(JSON.stringify(row))
       if (!row.invoice_masterbi_receipt_release_date) {
         this.workPara.invoice_masterbi_received_from = row.user_name
-        if (row.invoice_masterbi_deposit_date || row.invoice_masterbi_fee_date || row.invoice_masterbi_do_date) {
-          this.checkType = 'deposit'
+        if (row.invoice_masterbi_deposit_date || row.invoice_masterbi_fee_date || row.invoice_masterbi_of_date) {
           if (row.invoice_masterbi_deposit_date) {
+            this.checkType = 'deposit'
             this.workPara.invoice_masterbi_receipt_amount = row.invoice_masterbi_deposit
-          } else if(row.invoice_masterbi_do_date) {
-            this.workPara.invoice_masterbi_receipt_amount = row.invoice_masterbi_of
-          } else {
+          } else if (row.invoice_masterbi_fee_date) {
+            this.checkType = 'fee'
             this.workPara.invoice_masterbi_receipt_amount = 0
             if (row.invoice_masterbi_transfer) {
               this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_transfer)
@@ -754,6 +753,9 @@ export default {
               this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_others)
             }
             this.workPara.invoice_masterbi_receipt_amount = formatCurrency(this.workPara.invoice_masterbi_receipt_amount)
+          } else if (row.invoice_masterbi_of_date) {
+            this.checkType = 'freight'
+            this.workPara.invoice_masterbi_receipt_amount = row.invoice_masterbi_of
           }
         }
       }
@@ -761,6 +763,7 @@ export default {
     },
     downloadReceipt: async function() {
       try {
+        this.workPara.checkType = this.checkType
         let response = await this.$http.post(apiUrl + 'downloadReceipt', this.workPara)
         printJS(response.data.info.url)
         this.$Message.success('do success')
