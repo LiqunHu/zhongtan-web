@@ -760,12 +760,17 @@ export default {
               width: 100
             },
             {
-              title: 'Released Date',
+              title: 'Release Date',
               key: 'release_date',
               width: 150,
               render: (h, params) => {
                 return h('div', params.row.release_date ? moment(params.row.release_date).format('DD/MM/YYYY hh:mm') : '')
               }
+            },
+            {
+              title: 'Release User',
+              key: 'release_user',
+              width: 150
             }
           ]
         }
