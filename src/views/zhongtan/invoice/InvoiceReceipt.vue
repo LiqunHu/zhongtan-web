@@ -723,11 +723,17 @@ export default {
     actReceiptModal: function(row) {
       this.workPara = JSON.parse(JSON.stringify(row))
       if (!row.invoice_masterbi_receipt_release_date) {
+        if (!row.invoice_masterbi_receipt_currency) {
+          this.workPara.invoice_masterbi_receipt_currency = 'USD'
+        }
+        if (!row.invoice_masterbi_check_cash) {
+          this.workPara.invoice_masterbi_check_cash = 'CASH'
+        }
         this.workPara.invoice_masterbi_received_from = row.user_name
         if (row.invoice_masterbi_deposit_date || row.invoice_masterbi_fee_date || row.invoice_masterbi_of_date) {
           if (row.invoice_masterbi_deposit_date) {
             this.checkType = 'deposit'
-            this.workPara.invoice_masterbi_receipt_amount = row.invoice_masterbi_deposit
+            this.workPara.invoice_masterbi_receipt_amount = formatCurrency(parseFloat(row.invoice_masterbi_deposit))
           } else if (row.invoice_masterbi_fee_date) {
             this.checkType = 'fee'
             this.workPara.invoice_masterbi_receipt_amount = 0
@@ -755,7 +761,7 @@ export default {
             this.workPara.invoice_masterbi_receipt_amount = formatCurrency(this.workPara.invoice_masterbi_receipt_amount)
           } else if (row.invoice_masterbi_of_date) {
             this.checkType = 'freight'
-            this.workPara.invoice_masterbi_receipt_amount = row.invoice_masterbi_of
+            this.workPara.invoice_masterbi_receipt_amount = formatCurrency(parseFloat(row.invoice_masterbi_of))
           }
         }
       }
@@ -785,9 +791,9 @@ export default {
     },
     changeType: function() {
       if (this.checkType === 'deposit') {
-        this.workPara.invoice_masterbi_receipt_amount = this.workPara.invoice_masterbi_deposit
+        this.workPara.invoice_masterbi_receipt_amount = formatCurrency(parseFloat(this.workPara.invoice_masterbi_deposit))
       } else if (this.checkType === 'freight') {
-        this.workPara.invoice_masterbi_receipt_amount = this.workPara.invoice_masterbi_of
+        this.workPara.invoice_masterbi_receipt_amount = formatCurrency(parseFloat(this.workPara.invoice_masterbi_of))
       } else {
         this.workPara.invoice_masterbi_receipt_amount = 0
         if (this.workPara.invoice_masterbi_transfer) {

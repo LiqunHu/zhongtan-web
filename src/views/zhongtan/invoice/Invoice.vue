@@ -321,7 +321,7 @@
     <Modal v-model="modal.depositModal" title="Deposit" width="600">
       <Form :model="workPara" :label-width="120">
         <FormItem label="Customer" prop="invoice_masterbi_customer_id">
-          <Select v-model="workPara.invoice_masterbi_customer_id" filterable remote :remote-method="searchCustomer" :loading="deposit.customer.loading" placeholder="Customer">
+          <Select ref="customer" v-model="workPara.invoice_masterbi_customer_id" filterable remote :remote-method="searchCustomer" :loading="deposit.customer.loading" placeholder="Customer">
             <Option v-for="item in deposit.customer.options" :value="item.id" :key="item.id">{{item.text}}</Option>
           </Select>
           <!-- <AutoComplete v-model="workPara.invoice_masterbi_customer" :data="autocomplete.customer" @on-search="getCustomerData" placeholder="M/S."></AutoComplete> -->
@@ -979,15 +979,17 @@ export default {
       }
     },
     actDepositModal: function(row) {
+      this.$refs.customer.reset()
       this.deposit.customer.loading = true
       this.deposit.customer.options = JSON.parse(JSON.stringify(row.customerINFO))
       this.deposit.customer.loading = false
       this.deposit.depositType = 'Container Deposit'
       this.deposit.fees = []
+      
       this.$nextTick(function() {
         this.workPara = JSON.parse(JSON.stringify(row))
-        this.modal.depositModal = true
       })
+      this.modal.depositModal = true
     },
     chooseDepositType: function() {
       this.deposit.fees = []
