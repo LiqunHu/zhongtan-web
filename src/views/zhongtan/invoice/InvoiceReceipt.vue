@@ -775,6 +775,9 @@ export default {
     downloadReceipt: async function() {
       try {
         this.workPara.checkType = this.checkType
+        if (!this.workPara.checkType) {
+          return this.$Message.error('Please choose receipt type')
+        }
         let response = await this.$http.post(apiUrl + 'downloadReceipt', this.workPara)
         printJS(response.data.info.url)
         this.$Message.success('do success')
