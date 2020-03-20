@@ -337,14 +337,22 @@
             <span>Container Deposit</span>
           </Radio>
           <FormItem label="Deposit Amount" prop="invoice_masterbi_deposit">
-            <Input placeholder="Deposit Amount" v-model="workPara.invoice_masterbi_deposit" :disabled="deposit.depositType != 'Container Deposit'" />
+            <Input placeholder="Deposit Amount" v-model="workPara.invoice_masterbi_deposit" :disabled="deposit.depositType != 'Container Deposit'"> 
+              <Select slot="append" v-model="workPara.invoice_container_deposit_currency" :disabled="deposit.depositType != 'Container Deposit'" style="width: 120px">
+                <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
+              </Select>
+            </Input>
           </FormItem>
           <Divider />
           <Radio label="Ocean Freight">
             <span>Ocean Freight Fee</span>
           </Radio>
           <FormItem label="Ocean Freight" prop="invoice_masterbi_of">
-            <Input placeholder="Ocean Freight Fee" v-model="workPara.invoice_masterbi_of" :disabled="deposit.depositType != 'Ocean Freight'" />
+            <Input placeholder="Ocean Freight Fee" v-model="workPara.invoice_masterbi_of" :disabled="deposit.depositType != 'Ocean Freight'">
+              <Select slot="append" v-model="workPara.invoice_ocean_freight_fee_currency" :disabled="deposit.depositType != 'Ocean Freight'" style="width: 120px">
+                <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
+              </Select>
+            </Input>
           </FormItem>
           <Divider />
           <Radio label="Invoice Fee">
@@ -352,6 +360,12 @@
           </Radio>
         </RadioGroup>
         <div style="padding-left: 50px;">
+          <div class="form-group">
+            <label for="invoice_fee_currency">Currency</label>
+            <Select if="invoice_fee_currency" v-model="workPara.invoice_fee_currency" :disabled="deposit.depositType != 'Invoice Fee'">
+              <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
+            </Select>
+          </div>
           <CheckboxGroup v-model="deposit.fees">
             <Checkbox label="CONTAINER TRANSFER" :disabled="deposit.depositType != 'Invoice Fee'"></Checkbox>
             <Input

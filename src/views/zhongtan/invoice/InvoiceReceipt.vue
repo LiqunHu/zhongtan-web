@@ -146,7 +146,7 @@
         <Row>
           <Col>
             <FormItem label="Currency" prop="invoice_masterbi_receipt_currency">
-              <Select v-model="workPara.invoice_masterbi_receipt_currency" :disabled="!!workPara.invoice_masterbi_receipt_release_date">
+              <Select v-model="workPara.invoice_masterbi_receipt_currency" :disabled="workPara.invoice_masterbi_receipt_release_date|| workPara.invoice_masterbi_deposit_date || workPara.invoice_masterbi_fee_date">
                 <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
               </Select>
             </FormItem>
@@ -796,10 +796,13 @@ export default {
     },
     changeType: function() {
       if (this.checkType === 'deposit') {
+        this.workPara.invoice_masterbi_receipt_currency = this.workPara.invoice_container_deposit_currency
         this.workPara.invoice_masterbi_receipt_amount = formatCurrency(parseFloat(this.workPara.invoice_masterbi_deposit))
       } else if (this.checkType === 'freight') {
+        this.workPara.invoice_masterbi_receipt_currency = this.workPara.invoice_ocean_freight_fee_currency
         this.workPara.invoice_masterbi_receipt_amount = formatCurrency(parseFloat(this.workPara.invoice_masterbi_of))
       } else {
+        this.workPara.invoice_masterbi_receipt_currency = this.workPara.invoice_fee_currency
         this.workPara.invoice_masterbi_receipt_amount = 0
         if (this.workPara.invoice_masterbi_transfer) {
           this.workPara.invoice_masterbi_receipt_amount += parseFloat(this.workPara.invoice_masterbi_transfer)
