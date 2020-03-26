@@ -123,6 +123,7 @@
                     <template slot="content">
                       <Table stripe size="small" :columns="table.filesTable.columns" :data="row.files">
                         <template slot-scope="{ row, index }" slot="act">
+                          <template v-if="row.state === 'AP'">
                           <Tooltip content="Download">
                             <a :href="row.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
                               <i class="fa fa-download"></i>
@@ -133,6 +134,7 @@
                               <i class="fa fa-share-square"></i>
                             </a>
                           </Tooltip>
+                          </template>
                         </template>
                       </Table>
                     </template>
@@ -767,6 +769,12 @@ export default {
               title: 'Type',
               key: 'filetype',
               width: 80
+            },
+            {
+              title: 'State',
+              key: 'state',
+              render: common.selectRender(this, 'UPLOAD_STATE'),
+              width: 150
             },
             {
               title: 'Action',
