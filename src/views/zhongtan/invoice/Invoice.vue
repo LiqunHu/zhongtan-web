@@ -340,10 +340,13 @@
           </Radio>
           <FormItem label="Deposit Amount" prop="invoice_masterbi_deposit">
             <Input placeholder="Deposit Amount" v-model="workPara.invoice_masterbi_deposit" :disabled="deposit.depositType != 'Container Deposit'"> 
-              <Select slot="append" v-model="workPara.invoice_container_deposit_currency" :disabled="deposit.depositType != 'Container Deposit'" style="width: 120px">
+              <Select slot="append" v-model="workPara.invoice_container_deposit_currency" :disabled="deposit.depositType != 'Container Deposit'" style="width: 120px" maxlength=10 show-word-limit>
                 <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
               </Select>
             </Input>
+          </FormItem>
+          <FormItem label="Comment" prop="invoice_masterbi_deposit_comment">
+            <Input v-model="workPara.invoice_masterbi_deposit_comment"  type="textarea" :maxlength="200" :autosize="true" placeholder="Deposit Amount Comment" :disabled="deposit.depositType != 'Container Deposit'"/>
           </FormItem>
           <Divider />
           <Radio label="Ocean Freight">
@@ -356,18 +359,15 @@
               </Select>
             </Input>
           </FormItem>
+          <FormItem label="Comment" prop="invoice_masterbi_of_comment">
+            <Input v-model="workPara.invoice_masterbi_of_comment"  type="textarea" :maxlength="200" :autosize="true" placeholder="Ocean Freight Fee Comment" :disabled="deposit.depositType != 'Ocean Freight'"/>
+          </FormItem>
           <Divider />
           <Radio label="Invoice Fee">
             <span>Invoice Fee</span>
           </Radio>
         </RadioGroup>
         <div style="padding-left: 50px;">
-          <div class="form-group">
-            <label for="invoice_fee_currency">Currency</label>
-            <Select if="invoice_fee_currency" v-model="workPara.invoice_fee_currency" :disabled="deposit.depositType != 'Invoice Fee'">
-              <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
-            </Select>
-          </div>
           <CheckboxGroup v-model="deposit.fees">
             <Checkbox label="CONTAINER TRANSFER" :disabled="deposit.depositType != 'Invoice Fee'"></Checkbox>
             <Input
@@ -396,6 +396,16 @@
             <Checkbox label="OTHERS" :disabled="deposit.depositType != 'Invoice Fee'"></Checkbox>
             <Input placeholder="OTHERS" v-model="workPara.invoice_masterbi_others" :disabled="!((deposit.depositType != 'Invoice Fee') === false && deposit.fees.indexOf('OTHERS') >= 0)" />
           </CheckboxGroup>
+          <div class="form-group">
+            <label for="invoice_fee_currency">Currency</label>
+            <Select if="invoice_fee_currency" v-model="workPara.invoice_fee_currency" :disabled="deposit.depositType != 'Invoice Fee'">
+              <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
+            </Select>
+          </div>
+          <div class="form-group">
+            <label for="invoice_fee_comment">Comment</label>
+            <Input v-model="workPara.invoice_fee_comment"  type="textarea" :maxlength="200" :autosize="true" placeholder="Invoice Fee Comment" :disabled="deposit.depositType != 'Invoice Fee'"/>
+          </div>
         </div>
       </Form>
       <div slot="footer">
@@ -1129,3 +1139,8 @@ export default {
   }
 }
 </script>
+<style scoped>
+/* textarea {
+  resize: none;
+} */
+</style>
