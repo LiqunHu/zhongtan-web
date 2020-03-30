@@ -111,6 +111,12 @@ export default {
               title: 'OTHERS',
               key: 'others',
               width: 150
+            },
+            {
+              title: 'COMMENT',
+              key: 'comment',
+              width: 300,
+              render: common.tooltipRender()
             }
           ],
           data: [],

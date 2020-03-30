@@ -65,11 +65,8 @@
         <FormItem label="Address" prop="user_address">
           <Input placeholder="Address" v-model="workPara.user_address"/>
         </FormItem>
-        <FormItem label="Address 1" prop="user_address1">
-          <Input placeholder="Address 1" v-model="workPara.user_address1"/>
-        </FormItem>
-        <FormItem label="Address 2" prop="user_address2">
-          <Input placeholder="Address 2" v-model="workPara.user_address2"/>
+        <FormItem label="TIN" prop="user_tin">
+          <Input placeholder="TIN" v-model="workPara.user_tin"/>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -116,17 +113,11 @@ export default {
             {
               title: 'Address',
               key: 'user_address',
-              render: common.tooltipRender(),
+              render: common.tooltipRender()
             },
             {
-              title: 'Address 1',
-              key: 'user_address1',
-              render: common.tooltipRender(),
-            },
-            {
-              title: 'Address 2',
-              key: 'user_address2',
-              render: common.tooltipRender(),
+              title: 'TIN',
+              key: 'user_tin',
             },
             {
               title: 'Action',

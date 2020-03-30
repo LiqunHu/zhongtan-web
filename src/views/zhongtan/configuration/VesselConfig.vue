@@ -59,6 +59,9 @@
         <FormItem label="Vessel Code" prop="vessel_code">
           <Input placeholder="Vessel Code" v-model="workPara.vessel_code"/>
         </FormItem>
+        <FormItem label="Vessel Call Sign" prop="vessel_call_sign">
+          <Input placeholder="Vessel Call Sign" v-model="workPara.vessel_call_sign"/>
+        </FormItem>
         <FormItem label="State" prop="state">
           <Select v-model="workPara.state" v-show="action === 'modify'">
             <Option v-for="item in pagePara.STATUSINFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
@@ -106,6 +109,10 @@ export default {
             {
               title: 'Vessel Code',
               key: 'vessel_code'
+            },
+            {
+              title: 'Vessel Call Sign',
+              key: 'vessel_call_sign'
             },
             {
               title: 'State',
