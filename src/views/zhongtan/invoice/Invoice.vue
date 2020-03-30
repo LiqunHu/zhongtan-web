@@ -123,17 +123,29 @@
                     <template slot="content">
                       <Table stripe size="small" :columns="table.filesTable.columns" :data="row.files">
                         <template slot-scope="{ row, index }" slot="act">
-                          <template v-if="row.state === 'AP'">
-                          <Tooltip content="Download">
-                            <a :href="row.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
-                              <i class="fa fa-download"></i>
-                            </a>
-                          </Tooltip>
-                          <Tooltip content="Release" v-if="!row.release_date && (row.filetype === 'Deposit' || row.filetype === 'Fee' || row.filetype === 'DO' || row.filetype === 'Freight')">
-                            <a href="#" class="btn btn-primary btn-icon btn-sm" @click="doRealse(row, index)">
-                              <i class="fa fa-share-square"></i>
-                            </a>
-                          </Tooltip>
+                          <template v-if="row.filetype === 'DO'">
+                            <Tooltip content="Download">
+                              <a :href="row.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
+                                <i class="fa fa-download"></i>
+                              </a>
+                            </Tooltip>
+                            <Tooltip content="Release" v-if="!row.release_date">
+                              <a href="#" class="btn btn-primary btn-icon btn-sm" @click="doRealse(row, index)">
+                                <i class="fa fa-share-square"></i>
+                              </a>
+                            </Tooltip>
+                          </template>
+                          <template v-else-if="row.state === 'AP'">
+                            <Tooltip content="Download">
+                              <a :href="row.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
+                                <i class="fa fa-download"></i>
+                              </a>
+                            </Tooltip>
+                            <Tooltip content="Release" v-if="!row.release_date && (row.filetype === 'Deposit' || row.filetype === 'Fee' || row.filetype === 'DO' || row.filetype === 'Freight')">
+                              <a href="#" class="btn btn-primary btn-icon btn-sm" @click="doRealse(row, index)">
+                                <i class="fa fa-share-square"></i>
+                              </a>
+                            </Tooltip>
                           </template>
                         </template>
                       </Table>
@@ -339,7 +351,7 @@
             <span>Container Deposit</span>
           </Radio>
           <FormItem label="Deposit Amount" prop="invoice_masterbi_deposit">
-            <Input placeholder="Deposit Amount" v-model="workPara.invoice_masterbi_deposit" :disabled="deposit.depositType != 'Container Deposit'"> 
+            <Input placeholder="Deposit Amount" v-model="workPara.invoice_masterbi_deposit" :disabled="deposit.depositType != 'Container Deposit'">
               <Select slot="append" v-model="workPara.invoice_container_deposit_currency" :disabled="deposit.depositType != 'Container Deposit'" style="width: 120px">
                 <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
               </Select>
@@ -1009,7 +1021,7 @@ export default {
       this.deposit.customer.loading = false
       this.deposit.depositType = 'Container Deposit'
       this.deposit.fees = []
-      
+
       this.$nextTick(function() {
         this.workPara = JSON.parse(JSON.stringify(row))
       })

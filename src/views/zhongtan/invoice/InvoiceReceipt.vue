@@ -76,16 +76,25 @@
             <TabPane label="MasterBl">
               <Table stripe size="small" ref="masterbiTable" :columns="table.masterbiTable.columns" :data="table.masterbiTable.data" :height="table.masterbiTable.height">
                 <template slot-scope="{ row, index }" slot="Receipt">
-                  <Tooltip content="Receipt" v-if="!row.invoice_masterbi_receipt_release_date">
-                    <a href="#" class="btn btn-green btn-icon btn-sm" @click="actReceiptModal(row)">
-                      <i class="fa fa-money-bill-alt"></i>
-                    </a>
-                  </Tooltip>
-                  <Tooltip :content="row.invoice_masterbi_receipt_release_date_fmt" v-if="row.invoice_masterbi_receipt_release_date">
-                    <a href="#" class="btn btn-pink btn-icon btn-sm" @click="actReceiptModal(row)">
-                      <i class="fa fa-money-bill-alt"></i>
-                    </a>
-                  </Tooltip>
+                  <template v-if="!row.invoice_masterbi_invoice_release_date">
+                    <Tooltip content="Receipt">
+                      <a href="#" class="btn btn-green btn-icon btn-sm disabled">
+                        <i class="fa fa-money-bill-alt"></i>
+                      </a>
+                    </Tooltip>
+                  </template>
+                  <template v-else>
+                    <Tooltip content="Receipt" v-if="!row.invoice_masterbi_receipt_release_date">
+                      <a href="#" class="btn btn-green btn-icon btn-sm" @click="actReceiptModal(row)">
+                        <i class="fa fa-money-bill-alt"></i>
+                      </a>
+                    </Tooltip>
+                    <Tooltip :content="row.invoice_masterbi_receipt_release_date_fmt" v-if="row.invoice_masterbi_receipt_release_date">
+                      <a href="#" class="btn btn-pink btn-icon btn-sm" @click="actReceiptModal(row)">
+                        <i class="fa fa-money-bill-alt"></i>
+                      </a>
+                    </Tooltip>
+                  </template>
                 </template>
                 <template slot-scope="{ row, index }" slot="files">
                   <Poptip trigger="hover" placement="bottom" :transfer="true" width="555">
@@ -146,7 +155,10 @@
         <Row>
           <Col>
             <FormItem label="Currency" prop="invoice_masterbi_receipt_currency">
-              <Select v-model="workPara.invoice_masterbi_receipt_currency" :disabled="workPara.invoice_masterbi_receipt_release_date|| workPara.invoice_masterbi_deposit_date || workPara.invoice_masterbi_fee_date">
+              <Select
+                v-model="workPara.invoice_masterbi_receipt_currency"
+                :disabled="workPara.invoice_masterbi_receipt_release_date|| workPara.invoice_masterbi_deposit_date || workPara.invoice_masterbi_fee_date"
+              >
                 <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
               </Select>
             </FormItem>
