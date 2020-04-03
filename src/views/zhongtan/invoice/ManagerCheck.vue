@@ -39,10 +39,70 @@
           <a href="#" class="btn btn-danger btn-icon btn-sm" @click="decline(row)">
             <i class="fa fa-times"></i>
           </a>
+          <a href="#" class="btn btn-success btn-icon btn-sm" @click.prevent="actInvoiceDetailModal(row)">
+            <i class="fa fa-paperclip"></i>
+          </a>
         </template>
       </Table>
       <Page class="m-t-10" :total="table.checkTable.total" :page-size="table.checkTable.limit" @on-change="getTableData" />
     </panel>
+    <Modal v-model="modal.invoiceDetail" title="Manager Check" width="600">
+      <Form :model="workPara" :label-width="120">
+        <Row>
+          <Col span="6">
+            <span>Vessel Name</span>
+          </Col>
+          <Col span="6">
+            <label> {{ workPara.invoice_vessel_name }}</label>
+          </Col>
+          <Col span="6">
+            <span>Vessel Voyage</span>
+          </Col>
+          <Col span="6">
+            <label> {{ workPara.invoice_vessel_voyage }}</label>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="6">
+            <span>#M B/L No</span>
+          </Col>
+          <Col span="6">
+            <label> {{ workPara.invoice_masterbi_bl }}</label>
+          </Col>
+          <Col span="6">
+            <span>Cargo Classification</span>
+          </Col>
+          <Col span="6">
+            <label> {{ workPara.invoice_masterbi_cargo_type }}</label>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="6">
+            <span>Port of Loading</span>
+          </Col>
+          <Col span="6">
+            <label> {{ workPara.invoice_masterbi_loading }}</label>
+          </Col>
+          <Col span="6">
+            <span>Place of Destination</span>
+          </Col>
+          <Col span="6">
+            <label> {{ workPara.invoice_masterbi_destination }}</label>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="6">
+            <span>Container Size</span>
+          </Col>
+          <Col span="18">
+            <label style='white-space:pre;'> {{ workPara.container_size_type }}</label>
+          </Col>
+        </Row>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.invoiceDetail=false">Cancel</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -134,7 +194,9 @@ export default {
           moment().format('YYYY-MM-DD')
         ],
         bl: ''
-      }
+      },
+      modal: { invoiceDetail: false},
+      workPara: {}
     }
   },
   created() {
@@ -185,6 +247,15 @@ export default {
       try {
         await this.$http.post(apiUrl + 'decline', { uploadfile_id: row.uploadfile_id })
         this.getTableData()
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
+    actInvoiceDetailModal: async function(row) {
+      try {
+        let response = await this.$http.post(apiUrl + 'getInvoiceDetail', { invoice_masterbi_id: row.invoice_masterbi_id })
+        this.workPara = response.data.info
+        this.modal.invoiceDetail = true
       } catch (error) {
         this.$commonact.fault(error)
       }

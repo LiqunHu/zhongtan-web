@@ -75,6 +75,11 @@
                         </Col>
                         <Col span="13">Re release: {{item.invoice_receipt_release_rcount}}/{{item.invoice_acount}}</Col>
                       </Row>
+                      <Row v-if="item.invoice_vessel_call_sign">
+                        <Col span="11">
+                          <p>Call Sign: {{item.invoice_vessel_call_sign}}</p>
+                        </Col>
+                      </Row>
                     </Card>
                   </div>
                 </Col>
@@ -131,6 +136,16 @@
                             </Tooltip>
                             <Tooltip content="Release" v-if="!row.release_date">
                               <a href="#" class="btn btn-primary btn-icon btn-sm" @click="doRealse(row, index)">
+                                <i class="fa fa-share-square"></i>
+                              </a>
+                            </Tooltip>
+                            <Tooltip content="Send EDI" placement="right" v-if="row.release_date && !row.edi_state">
+                              <a href="#" class="btn btn-success btn-icon btn-sm" @click="doCreateEdi(row, index)">
+                                <i class="fa fa-share-square"></i>
+                              </a>
+                            </Tooltip>
+                            <Tooltip content="Cancel EDI" placement="right" v-if="row.edi_state == '9'">
+                              <a href="#" class="btn btn-danger btn-icon btn-sm" @click="doCancelEdi(row, index)">
                                 <i class="fa fa-share-square"></i>
                               </a>
                             </Tooltip>
@@ -333,92 +348,149 @@
       </div>
     </Modal>
     <Modal v-model="modal.depositModal" title="Deposit" width="600">
-      <Form :model="workPara" :label-width="120">
-        <FormItem label="Customer" prop="invoice_masterbi_customer_id">
+      <Form :model="workPara" :label-width="130">
+        <FormItem label="Customer" prop="invoice_masterbi_customer_id" style="margin-bottom: 0px;">
           <Select ref="customer" v-model="workPara.invoice_masterbi_customer_id" filterable remote :remote-method="searchCustomer" :loading="deposit.customer.loading" placeholder="Customer">
             <Option v-for="item in deposit.customer.options" :value="item.id" :key="item.id">{{item.text}}</Option>
           </Select>
           <!-- <AutoComplete v-model="workPara.invoice_masterbi_customer" :data="autocomplete.customer" @on-search="getCustomerData" placeholder="M/S."></AutoComplete> -->
         </FormItem>
-        <FormItem label="Carrier" prop="invoice_masterbi_carrier">
+        <FormItem label="Carrier" prop="invoice_masterbi_carrier" style="margin-bottom: 0px;">
           <Select v-model="workPara.invoice_masterbi_carrier">
             <Option v-for="item in pagePara.RECEIPT_TYPE_INFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
           </Select>
         </FormItem>
         <Divider />
-        <RadioGroup v-model="deposit.depositType" vertical @on-change="chooseDepositType" style="width:100%">
-          <Radio label="Container Deposit">
-            <span>Container Deposit</span>
-          </Radio>
-          <FormItem label="Deposit Amount" prop="invoice_masterbi_deposit">
-            <Input placeholder="Deposit Amount" v-model="workPara.invoice_masterbi_deposit" :disabled="deposit.depositType != 'Container Deposit'"> 
-              <Select slot="append" v-model="workPara.invoice_container_deposit_currency" :disabled="deposit.depositType != 'Container Deposit'" style="width: 120px" maxlength=10 show-word-limit>
-                <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
-              </Select>
-            </Input>
-          </FormItem>
-          <FormItem label="Comment" prop="invoice_masterbi_deposit_comment">
-            <Input v-model="workPara.invoice_masterbi_deposit_comment"  type="textarea" :maxlength="200" :autosize="true" placeholder="Deposit Amount Comment" :disabled="deposit.depositType != 'Container Deposit'"/>
-          </FormItem>
-          <Divider />
-          <Radio label="Ocean Freight">
-            <span>Ocean Freight Fee</span>
-          </Radio>
-          <FormItem label="Ocean Freight" prop="invoice_masterbi_of">
-            <Input placeholder="Ocean Freight Fee" v-model="workPara.invoice_masterbi_of" :disabled="deposit.depositType != 'Ocean Freight'">
-              <Select slot="append" v-model="workPara.invoice_ocean_freight_fee_currency" :disabled="deposit.depositType != 'Ocean Freight'" style="width: 120px">
-                <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
-              </Select>
-            </Input>
-          </FormItem>
-          <FormItem label="Comment" prop="invoice_masterbi_of_comment">
-            <Input v-model="workPara.invoice_masterbi_of_comment"  type="textarea" :maxlength="200" :autosize="true" placeholder="Ocean Freight Fee Comment" :disabled="deposit.depositType != 'Ocean Freight'"/>
-          </FormItem>
-          <Divider />
-          <Radio label="Invoice Fee">
-            <span>Invoice Fee</span>
-          </Radio>
-        </RadioGroup>
-        <div style="padding-left: 50px;">
-          <CheckboxGroup v-model="deposit.fees">
-            <Checkbox label="CONTAINER TRANSFER" :disabled="deposit.depositType != 'Invoice Fee'"></Checkbox>
-            <Input
-              placeholder="CONTAINER TRANSFER"
-              v-model="workPara.invoice_masterbi_transfer"
-              :disabled="!((deposit.depositType != 'Invoice Fee') === false && deposit.fees.indexOf('CONTAINER TRANSFER') >= 0)"
-            />
-            <Checkbox label="LIFT ON LIFT OFF" :disabled="deposit.depositType != 'Invoice Fee'"></Checkbox>
-            <Input
-              placeholder="LIFT ON LIFT OFF"
-              v-model="workPara.invoice_masterbi_lolf"
-              :disabled="!((deposit.depositType != 'Invoice Fee') === false && deposit.fees.indexOf('LIFT ON LIFT OFF') >= 0)"
-            />
-            <Checkbox label="LCL" :disabled="deposit.depositType != 'Invoice Fee'"></Checkbox>
-            <Input placeholder="LCL" v-model="workPara.invoice_masterbi_lcl" :disabled="!((deposit.depositType != 'Invoice Fee') === false && deposit.fees.indexOf('LCL') >= 0)" />
-            <Checkbox label="AMENDMENT" :disabled="deposit.depositType != 'Invoice Fee'"></Checkbox>
-            <Input placeholder="AMENDMENT" v-model="workPara.invoice_masterbi_amendment" :disabled="!((deposit.depositType != 'Invoice Fee') === false && deposit.fees.indexOf('AMENDMENT') >= 0)" />
-            <Checkbox label="TASAC" :disabled="deposit.depositType != 'Invoice Fee'"></Checkbox>
-            <Input placeholder="TASAC" v-model="workPara.invoice_masterbi_tasac" :disabled="!((deposit.depositType != 'Invoice Fee') === false && deposit.fees.indexOf('TASAC') >= 0)" />
-            <Checkbox label="BILL PRINGTING" :disabled="deposit.depositType != 'Invoice Fee'"></Checkbox>
-            <Input
-              placeholder="BILL PRINGTING"
-              v-model="workPara.invoice_masterbi_printing"
-              :disabled="!((deposit.depositType != 'Invoice Fee') === false && deposit.fees.indexOf('BILL PRINGTING') >= 0)"
-            />
-            <Checkbox label="OTHERS" :disabled="deposit.depositType != 'Invoice Fee'"></Checkbox>
-            <Input placeholder="OTHERS" v-model="workPara.invoice_masterbi_others" :disabled="!((deposit.depositType != 'Invoice Fee') === false && deposit.fees.indexOf('OTHERS') >= 0)" />
-          </CheckboxGroup>
-          <div class="form-group">
-            <label for="invoice_fee_currency">Currency</label>
-            <Select if="invoice_fee_currency" v-model="workPara.invoice_fee_currency" :disabled="deposit.depositType != 'Invoice Fee'">
-              <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
-            </Select>
-          </div>
-          <div class="form-group">
-            <label for="invoice_fee_comment">Comment</label>
-            <Input v-model="workPara.invoice_fee_comment"  type="textarea" :maxlength="200" :autosize="true" placeholder="Invoice Fee Comment" :disabled="deposit.depositType != 'Invoice Fee'"/>
-          </div>
-        </div>
+        <Row>
+          <Col span="12">
+            <FormItem label="Vessel Name" style="margin-bottom: 0px;">
+              <span> {{ workPara.invoice_vessel_name }}</span>
+            </FormItem>
+          </Col>
+          <Col span="12">
+            <FormItem label="Vessel Voyage" style="margin-bottom: 0px;">
+              <span> {{ workPara.invoice_vessel_voyage }}</span>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="12">
+            <FormItem label="#M B/L No" style="margin-bottom: 0px;">
+              <span> {{ workPara.invoice_masterbi_bl }}</span>
+            </FormItem>
+          </Col>
+          <Col span="12">
+            <FormItem label="Cargo Classification" style="margin-bottom: 0px;">
+              <span> {{ workPara.invoice_masterbi_cargo_type }}</span>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="12">
+            <FormItem label="Port of Loading" style="margin-bottom: 0px;">
+              <span> {{ workPara.invoice_masterbi_loading }}</span>
+            </FormItem>
+          </Col>
+          <Col span="12">
+            <FormItem label="Place of Destination" style="margin-bottom: 0px;">
+              <span> {{ workPara.invoice_masterbi_destination }}</span>
+            </FormItem>
+          </Col>
+        </Row>
+        <FormItem label="Container Size" style="margin-bottom: 0px;">
+          <span style='white-space:pre;'> {{ workPara.container_size_type }}</span>
+        </FormItem>
+        <Tabs active-key="Container Deposit" @on-click="currentFeeTabChanged">
+          <Tab-pane :label="containerDepositFeeLabel" name = "Container Deposit" key="Container Deposit">
+            <FormItem label="Deposit Amount" prop="invoice_masterbi_deposit" style="margin-bottom: 0px;">
+              <Input placeholder="Deposit Amount" v-model="workPara.invoice_masterbi_deposit"> 
+                <Select slot="append" v-model="workPara.invoice_container_deposit_currency" style="width: 80px" maxlength=10 show-word-limit>
+                  <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                </Select>
+              </Input>
+            </FormItem>
+            <FormItem label="Comment" prop="invoice_masterbi_deposit_comment" style="margin-bottom: 0px;">
+              <Input v-model="workPara.invoice_masterbi_deposit_comment"  type="textarea" :maxlength="200" :autosize="{ minRows: 2, maxRows: 6 }" placeholder="Deposit Amount Comment"/>
+            </FormItem>
+            <!-- <FormItem label="Deposit File">
+              <Upload
+                multiple
+                type="drag"
+                action="/api/zhongtan/invoice/Invoice/uploadDeposit">
+                <div style="padding: 20px 0">
+                  <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+                  <p>click or drag file to here</p>
+                </div>
+              </Upload>
+            </FormItem> -->
+          </Tab-pane>
+          <Tab-pane :label="oceanFreightFeeLabel" name = "Ocean Freight" key="Ocean Freight" >
+            <FormItem label="Ocean Freight" prop="invoice_masterbi_of" style="margin-bottom: 0px;">
+              <Input placeholder="Ocean Freight Fee" v-model="workPara.invoice_masterbi_of">
+                <Select slot="append" v-model="workPara.invoice_ocean_freight_fee_currency" style="width: 80px">
+                  <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                </Select>
+              </Input>
+            </FormItem>
+            <FormItem label="Comment" prop="invoice_masterbi_of_comment" style="margin-bottom: 0px;">
+              <Input v-model="workPara.invoice_masterbi_of_comment"  type="textarea" :maxlength="200" :autosize="{ minRows: 2, maxRows: 6 }" placeholder="Ocean Freight Fee Comment"/>
+            </FormItem>
+          </Tab-pane>
+          <Tab-pane :label="invoiceFeeLabel" name = "Invoice Fee" key="Invoice Fee">
+            <FormItem label="Container Transfer" prop="invoice_masterbi_transfer" style="margin-bottom: 0px;">
+              <Input placeholder="Container Transfer" v-model="workPara.invoice_masterbi_transfer">
+                <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px">
+                  <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                </Select>
+              </Input>
+            </FormItem>
+            <FormItem label="Lift On Lift Off" prop="invoice_masterbi_lcl" style="margin-bottom: 0px;">
+              <Input placeholder="Lift On Lift Off" v-model="workPara.invoice_masterbi_lolf">
+                <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px">
+                  <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                </Select>
+              </Input>
+            </FormItem>
+            <FormItem label="LCL" prop="invoice_masterbi_lcl" style="margin-bottom: 0px;">
+              <Input placeholder="LCL" v-model="workPara.invoice_masterbi_lcl">
+                <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px">
+                  <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                </Select>
+              </Input>
+            </FormItem>
+            <FormItem label="Amendment" prop="invoice_masterbi_amendment" style="margin-bottom: 0px;">
+              <Input placeholder="Amendment" v-model="workPara.invoice_masterbi_amendment">
+                <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px">
+                  <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                </Select>
+              </Input>
+            </FormItem>
+            <FormItem label="Tasac" prop="invoice_masterbi_tasac" style="margin-bottom: 0px;">
+              <Input placeholder="Tasac" v-model="workPara.invoice_masterbi_tasac">
+                <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px">
+                  <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                </Select>
+              </Input>
+            </FormItem>
+            <FormItem label="Bill Pringting" prop="invoice_masterbi_printing" style="margin-bottom: 0px;">
+              <Input placeholder="Bill Pringting" v-model="workPara.invoice_masterbi_printing">
+                <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px">
+                  <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                </Select>
+              </Input>
+            </FormItem>
+            <FormItem label="Others" prop="invoice_masterbi_others" style="margin-bottom: 0px;">
+              <Input placeholder="Others" v-model="workPara.invoice_masterbi_others">
+                <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px">
+                  <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                </Select>
+              </Input>
+            </FormItem>
+            <FormItem label="Comment" prop="invoice_fee_comment" style="margin-bottom: 0px;">
+              <Input v-model="workPara.invoice_fee_comment"  type="textarea" :maxlength="200" :autosize="{ minRows: 2, maxRows: 6 }" placeholder="Invoice Fee Comment"/>
+            </FormItem>
+          </Tab-pane>
+        </Tabs>
       </Form>
       <div slot="footer">
         <Button type="text" size="large" @click="modal.depositModal=false">Cancel</Button>
@@ -801,7 +873,7 @@ export default {
             {
               title: 'Action',
               slot: 'act',
-              width: 100
+              width: 150
             },
             {
               title: 'Release Date',
@@ -847,7 +919,10 @@ export default {
           loading: false
         }
       },
-      currentTab: 0
+      currentTab: 0,
+      containerDepositFeeLabel: '',
+      oceanFreightFeeLabel: '',
+      invoiceFeeLabel: ''
     }
   },
   created() {
@@ -1031,46 +1106,41 @@ export default {
       this.deposit.customer.loading = false
       this.deposit.depositType = 'Container Deposit'
       this.deposit.fees = []
-
       this.$nextTick(function() {
         this.workPara = JSON.parse(JSON.stringify(row))
+        if(this.workPara.invoice_masterbi_deposit_state) {
+          this.containerDepositFeeLabel = h => {
+                return h("div", [
+                  h("i", {class: 'fa fa-check'}),
+                  h("span", "Container Deposit Fee")
+                ])
+              }
+        } else {
+          this.containerDepositFeeLabel = 'Container Deposit Fee'
+        }
+        if(this.workPara.invoice_ocean_freight_fee_state) {
+          this.oceanFreightFeeLabel = h => {
+            return h("div", [
+              h("i", {class: 'fa fa-check'}),
+              h("span", "Ocean Freight Fee")
+            ])
+          }
+        } else {
+          this.oceanFreightFeeLabel = 'Ocean Freight Fee'
+        }
+        if(this.workPara.invoice_fee_state) {
+          this.invoiceFeeLabel = h => {
+            return h("div", [
+              h("i", {class: 'fa fa-check'}),
+              h("span", "Invoice Fee")
+            ])
+          }
+        } else {
+          this.invoiceFeeLabel = 'Invoice Fee'
+        }
       })
       this.modal.depositModal = true
     },
-    chooseDepositType: function() {
-      this.deposit.fees = []
-      if (this.deposit.depositType === 'Invoice Fee') {
-        if (this.workPara.invoice_masterbi_transfer) {
-          this.deposit.fees.push('CONTAINER TRANSFER')
-        }
-        if (this.workPara.invoice_masterbi_lolf) {
-          this.deposit.fees.push('LIFT ON LIFT OFF')
-        }
-        if (this.workPara.invoice_masterbi_lcl) {
-          this.deposit.fees.push('LCL')
-        }
-        if (this.workPara.invoice_masterbi_amendment) {
-          this.deposit.fees.push('AMENDMENT')
-        }
-        if (this.workPara.invoice_masterbi_tasac) {
-          this.deposit.fees.push('TASAC')
-        }
-        if (this.workPara.invoice_masterbi_printing) {
-          this.deposit.fees.push('BILL PRINGTING')
-        }
-        if (this.workPara.invoice_masterbi_others) {
-          this.deposit.fees.push('OTHERS')
-        }
-      }
-    },
-    // getCustomerData: async function() {
-    //   try {
-    //     let response = await this.$http.post(apiUrl + 'searchCustomer', { search_text: this.workPara.invoice_masterbi_customer })
-    //     this.autocomplete.msdata = JSON.parse(JSON.stringify(response.data.info))
-    //   } catch (error) {
-    //     this.$commonact.fault(error)
-    //   }
-    // },
     searchCustomer: async function(query) {
       if (query !== '') {
         this.deposit.customer.loading = true
@@ -1083,6 +1153,9 @@ export default {
         this.deposit.customer.options = []
       }
     },
+    currentFeeTabChanged: function(name) {
+      this.deposit.depositType = name
+    },
     depositDo: async function() {
       try {
         if (!this.workPara.invoice_masterbi_customer_id) {
@@ -1092,8 +1165,9 @@ export default {
         if (!this.workPara.invoice_masterbi_carrier) {
           return this.$Message.error('Please choose carrier')
         }
-        let response = await this.$http.post(apiUrl + 'depositDo', _.extend(this.workPara, this.deposit))
-        printJS(response.data.info.url)
+        
+        await this.$http.post(apiUrl + 'depositDo', _.extend(this.workPara, this.deposit))
+        // printJS(response.data.info.url)
         this.$Message.success('deposit success')
         this.modal.depositModal = false
         this.getMasterbiData()
@@ -1147,12 +1221,27 @@ export default {
       } catch (error) {
         this.$commonact.fault(error)
       }
-    }
+    },
+    doCreateEdi: async function(row, index) {
+      try {
+        await this.$http.post(apiUrl + 'doCreateEdi', { invoice_masterbi_id: row.invoice_masterbi_id })
+        this.getVoyageData()
+        this.getMasterbiData()
+        this.$Message.success('Send Edi Success')
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
+    doCancelEdi: async function(row, index) {
+      try {
+        await this.$http.post(apiUrl + 'doCancelEdi', { invoice_masterbi_id: row.invoice_masterbi_id })
+        this.getVoyageData()
+        this.getMasterbiData()
+        this.$Message.success('Cancel Edi Success')
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
   }
 }
 </script>
-<style scoped>
-/* textarea {
-  resize: none;
-} */
-</style>
