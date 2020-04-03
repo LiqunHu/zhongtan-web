@@ -119,8 +119,8 @@
                   </Tooltip>
                 </template>
                 <template slot-scope="{ row, index }" slot="Collect">
-                  <a href="#" class="btn btn-info btn-xs" @click="actChangeCollectFlag(row, 'PREPAID')" v-if="row.invoice_masterbi_freight == 'COLLECT'">Collect</a>
-                  <a href="#" class="btn btn-indigo btn-xs" @click="actChangeCollectFlag(row, 'COLLECT')" v-if="row.invoice_masterbi_freight !== 'COLLECT'">Prepaid</a>
+                  <a href="#" class="btn btn-info btn-xs" @click="showChangeCollectModal(row, 'PREPAID')" v-if="row.invoice_masterbi_freight == 'COLLECT'">Collect</a>
+                  <a href="#" class="btn btn-indigo btn-xs" @click="showChangeCollectModal(row, 'COLLECT')" v-if="row.invoice_masterbi_freight !== 'COLLECT'">Prepaid</a>
                 </template>
                 <template slot-scope="{ row, index }" slot="files">
                   <Poptip trigger="hover" placement="bottom" :transfer="true" width="555">
@@ -503,6 +503,15 @@
           <Col>
             <FormItem label="Voyage No." prop="voyage_no">
               <Input placeholder="Voyage No." v-model="workPara.voyage_no" />
+              <Input v-show="false"></Input>   
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <FormItem label="Password" prop="deleteVoyagePassword">
+              <Input type="password" v-show="false"></Input>   
+              <Input type="password" placeholder="Password" v-model="workPara.delete_voyage_password" autocomplete="off"></Input>
             </FormItem>
           </Col>
         </Row>
@@ -510,6 +519,22 @@
       <div slot="footer">
         <Button type="text" size="large" @click="modal.deleteVoyageModal=false">Cancel</Button>
         <Button type="primary" size="large" @click="deleteVoyage">Submit</Button>
+      </div>
+    </Modal>
+    <Modal v-model="modal.colletChangeModal" title="Collet Change" width="600">
+      <Form :model="workPara" :label-width="120">
+        <Row>
+          <Col>
+            <FormItem label="Password" prop="colletChangePassword">
+              <Input type="password" v-show="false"></Input>             
+              <Input type="password" placeholder="Password" v-model="workPara.collet_change_password" autocomplete="off"></Input>
+            </FormItem>
+          </Col>
+        </Row>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.colletChangeModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="actChangeCollectFlag">Submit</Button>
       </div>
     </Modal>
   </div>
@@ -525,7 +550,7 @@ const apiUrl = '/api/zhongtan/invoice/Invoice/'
 export default {
   data: function() {
     return {
-      modal: { importModal: false, downLoadDoModal: false, depositModal: false, deleteVoyageModal: false },
+      modal: { importModal: false, downLoadDoModal: false, depositModal: false, deleteVoyageModal: false, colletChangeModal: false },
       table: {
         masterbiTable: {
           columns: [
@@ -922,7 +947,7 @@ export default {
       currentTab: 0,
       containerDepositFeeLabel: '',
       oceanFreightFeeLabel: '',
-      invoiceFeeLabel: ''
+      invoiceFeeLabel: '',
     }
   },
   created() {
@@ -1175,10 +1200,19 @@ export default {
         this.$commonact.fault(error)
       }
     },
-    actChangeCollectFlag: async function(row, cflag) {
+    showChangeCollectModal: async function(row, cflag) {
+      this.workPara = JSON.parse(JSON.stringify(row))
+      this.workPara.collect_flag = cflag
+      this.modal.colletChangeModal = true
+    },
+    actChangeCollectFlag: async function() {
       try {
-        await this.$http.post(apiUrl + 'changeCollect', { invoice_masterbi_id: row.invoice_masterbi_id, act: cflag })
+        if(!this.workPara.collet_change_password) {
+          return this.$Message.error('Please enter right password')
+        }
+        await this.$http.post(apiUrl + 'changeCollect', { invoice_masterbi_id: this.workPara.invoice_masterbi_id, act: this.workPara.collect_flag, collet_change_password: common.md52(this.workPara.collet_change_password) })
         this.getMasterbiData()
+        this.modal.colletChangeModal = false
       } catch (error) {
         this.$commonact.fault(error)
       }
@@ -1209,14 +1243,21 @@ export default {
     deleteVoyage: function() {
       try {
         let _self = this
+        if (_self.workPara.voyage_no !== _self.workPara.invoice_vessel_voyage) {
+          return _self.$Message.error('Please enter right Voyage No.')
+        }
+        if(!_self.workPara.delete_voyage_password) {
+          return _self.$Message.error('Please enter right password')
+        }
         _self.$commonact.confirm(`Delete the file?`, async () => {
-          if (_self.workPara.voyage_no !== _self.workPara.invoice_vessel_voyage) {
-            return _self.$Message.error('Please enter right Voyage No.')
+          try {
+            await _self.$http.post(apiUrl + 'deleteVoyage', { invoice_vessel_id: _self.workPara.invoice_vessel_id, delete_voyage_password : common.md52(_self.workPara.delete_voyage_password)})
+            _self.getVoyageData()
+            _self.getMasterbiData()
+            _self.modal.deleteVoyageModal = false
+          } catch (error) {
+            this.$commonact.fault(error)
           }
-          await _self.$http.post(apiUrl + 'deleteVoyage', { invoice_vessel_id: _self.workPara.invoice_vessel_id })
-          _self.getVoyageData()
-          _self.getMasterbiData()
-          _self.modal.deleteVoyageModal = false
         })
       } catch (error) {
         this.$commonact.fault(error)
