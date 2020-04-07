@@ -570,7 +570,7 @@ export default {
               width: 60
             },
             {
-              title: 'Collect',
+              title: 'Freight Terms',
               slot: 'Collect',
               width: 120
             },

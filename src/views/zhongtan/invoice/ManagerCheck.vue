@@ -21,6 +21,11 @@
               <DatePicker type="daterange" :value="search_data.date" placeholder="Vessel Date" style="width: 200px" @on-change="searchData"></DatePicker>
             </div>
             <div class="form-group m-r-2">
+              <Select clearable v-model="search_data.upload_state" style="width:180px" @on-change="getTableData">
+                <Option v-for="item in pagePara.UPLOAD_STATE" :value="item.id" :key="item.id">{{ item.text }}</Option>
+              </Select>
+            </div>
+            <div class="form-group m-r-2">
               <input type="text" class="form-control" v-model="search_data.bl" placeholder="B/L No" style="width: 200px" />
             </div>
             <div class="form-group m-r-10">
@@ -33,10 +38,10 @@
       </template>
       <Table stripe size="small" ref="checkTable" :columns="table.checkTable.columns" :data="table.checkTable.data" :height="table.checkTable.height">
         <template slot-scope="{ row, index }" slot="action">
-          <a href="#" class="btn btn-primary btn-icon btn-sm" @click="approve(row)">
+          <a v-if = "row.upload_state == 'PM'" href="#" class="btn btn-primary btn-icon btn-sm" @click="approve(row)">
             <i class="fa fa-check"></i>
           </a>
-          <a href="#" class="btn btn-danger btn-icon btn-sm" @click="decline(row)">
+          <a v-if = "row.upload_state == 'PM'" href="#" class="btn btn-danger btn-icon btn-sm" @click="decline(row)">
             <i class="fa fa-times"></i>
           </a>
           <a href="#" class="btn btn-success btn-icon btn-sm" @click.prevent="actInvoiceDetailModal(row)">
@@ -133,23 +138,39 @@ export default {
               width: 150
             },
             {
+              title: 'State',
+              key: 'upload_state',
+              render: common.selectRender(this, 'UPLOAD_STATE'),
+              width: 150
+            },
+            {
               title: 'Apply Name',
               key: 'user_name',
               width: 150
             },
             {
-              title: 'Deposit',
+              title: 'DEPOSIT',
               key: 'deposit',
               width: 150
             },
             {
-              title: 'Ocean Freight',
+              title: 'OCEAN FREIGHT',
               key: 'of',
+              width: 150
+            },
+            {
+              title: 'CONTAINER TRANSFER',
+              key: 'transfer',
               width: 150
             },
             {
               title: 'LIFT ON LIFT OFF',
               key: 'lolf',
+              width: 150
+            },
+            {
+              title: 'LCL',
+              key: 'lcl',
               width: 150
             },
             {
@@ -186,6 +207,7 @@ export default {
           total: 0
         }
       },
+      pagePara: {},
       search_data: {
         date: [
           moment()
@@ -193,6 +215,7 @@ export default {
             .format('YYYY-MM-DD'),
           moment().format('YYYY-MM-DD')
         ],
+        upload_state: 'PM',
         bl: ''
       },
       modal: { invoiceDetail: false},
@@ -204,12 +227,21 @@ export default {
   },
   mounted: async function() {
     try {
+      this.getPara()
       this.getTableData(1)
     } catch (error) {
       this.$commonact.fault(error)
     }
   },
   methods: {
+    getPara: async function() {
+      try {
+        let response = await this.$http.post(apiUrl + 'init', {})
+        this.pagePara = JSON.parse(JSON.stringify(response.data.info))
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
     searchData: function(e) {
       this.search_data.date = JSON.parse(JSON.stringify(e))
     },
@@ -222,6 +254,7 @@ export default {
         let searchPara = {
           start_date: this.search_data.date[0],
           end_date: this.search_data.date[1],
+          upload_state: this.search_data.upload_state,
           bl: this.search_data.bl,
           offset: this.table.checkTable.offset,
           limit: this.table.checkTable.limit
