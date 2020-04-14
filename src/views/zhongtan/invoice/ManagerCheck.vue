@@ -3,17 +3,17 @@
     <!-- begin breadcrumb -->
     <ol class="breadcrumb pull-right">
       <li class="breadcrumb-item active">
-        <a href="javascript:;">Manager Check</a>
+        <a href="javascript:;">Manager Verification</a>
       </li>
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
     <h1 class="page-header">
-      Manager Check
-      <small>Manager Check...</small>
+      Manager Verification
+      <small>Manager Verification...</small>
     </h1>
     <!-- end page-header -->
-    <panel title="Panel title here">
+    <panel title="Manager Verification">
       <template slot="beforeBody">
         <div class="panel-toolbar">
           <div class="form-inline">
@@ -46,6 +46,9 @@
           </a>
           <a href="#" class="btn btn-success btn-icon btn-sm" @click.prevent="actInvoiceDetailModal(row)">
             <i class="fa fa-paperclip"></i>
+          </a>
+          <a href="#" class="btn btn-default btn-icon btn-sm" @click.prevent="actVerificationTimelineModal(row)">
+            <Icon type="md-options" />
           </a>
         </template>
       </Table>
@@ -108,6 +111,18 @@
         <Button type="text" size="large" @click="modal.invoiceDetail=false">Cancel</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.verificationTimeline" :title="verificationTitle">
+      <Timeline>
+        <TimelineItem v-for="(item, index) in timelinePara" v-bind:key="item.verification_log_id">
+            <p class="timeline-time">{{item.created_at}}</p>
+            <p class="timeline-content">{{item.user_name}}</p>
+            <p class="timeline-content">{{item.uploadfile_state_pre}} => {{item.uploadfile_state}}</p>
+        </TimelineItem>
+      </Timeline>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.verificationTimeline=false">Cancel</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -128,9 +143,15 @@ export default {
               width: 150
             },
             {
+              title: 'Customer',
+              key: 'invoice_customer_name',
+              width: 200,
+              render: common.tooltipCellLengthRender(20)
+            },
+            {
               title: 'Action',
               slot: 'action',
-              width: 130
+              width: 150
             },
             {
               title: 'Receipt Type',
@@ -161,6 +182,16 @@ export default {
             {
               title: 'CONTAINER TRANSFER',
               key: 'transfer',
+              width: 150
+            },
+            {
+              title: 'B/L amendment',
+              key: 'blAmendment',
+              width: 150
+            },
+            {
+              title: 'COD Charge',
+              key: 'codCharge',
               width: 150
             },
             {
@@ -197,7 +228,7 @@ export default {
               title: 'COMMENT',
               key: 'comment',
               width: 300,
-              render: common.tooltipRender()
+              render: common.tooltipCellLengthRender(20)
             }
           ],
           data: [],
@@ -210,16 +241,16 @@ export default {
       pagePara: {},
       search_data: {
         date: [
-          moment()
-            .subtract(30, 'days')
-            .format('YYYY-MM-DD'),
+          moment().subtract(30, 'days').format('YYYY-MM-DD'),
           moment().format('YYYY-MM-DD')
         ],
         upload_state: 'PM',
         bl: ''
       },
-      modal: { invoiceDetail: false},
-      workPara: {}
+      modal: { invoiceDetail: false, verificationTimeline: false},
+      workPara: {},
+      verificationTitle: '',
+      timelinePara: []
     }
   },
   created() {
@@ -292,7 +323,30 @@ export default {
       } catch (error) {
         this.$commonact.fault(error)
       }
+    },
+    actVerificationTimelineModal: async function(row) {
+      try {
+        let response = await this.$http.post(apiUrl + 'getTimeline', { uploadfile_id: row.uploadfile_id})
+        this.timelinePara = response.data.info
+        if(this.timelinePara && this.timelinePara.length > 0) {
+          this.verificationTitle = row.invoice_masterbi_bl + ' : ' + row.receipt_type
+          this.modal.verificationTimeline = true
+        }else {
+          this.$Message.warning('no verification records')
+        }
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
     }
   }
 }
 </script>
+<style>
+.timeline-time{
+  font-size: 14px;
+  font-weight: bold;
+}
+.timeline-content{
+  padding-left: 5px;
+}
+</style>

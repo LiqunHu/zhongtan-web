@@ -316,6 +316,34 @@ exports.tooltipBrRender = () => {
   }
 }
 
+exports.tooltipCellLengthRender = len => {
+  return (h, params) => {
+    return h(
+      'Poptip',
+      {
+        props: {
+          trigger: 'hover',
+          placement: 'bottom',
+          transfer: true,
+          content: params.row[params.column.key]
+        }
+      },
+      [
+        h(
+          'Button',
+          {
+            style: 'text-decoration:underline',
+            props: {
+              type: 'text'
+            }
+          },
+          tooltipFormat(params.row[params.column.key], len)
+        )
+      ]
+    )
+  }
+}
+
 exports.getTableHeight = function() {
   let height = window.innerHeight
   height = height * 0.65

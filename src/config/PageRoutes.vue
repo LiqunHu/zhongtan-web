@@ -32,7 +32,13 @@ const routes = [
   { path: '/admin/zhongtan/invoice/ManagerCheck', component: resolve => require(['@/views/zhongtan/invoice/ManagerCheck'], resolve) },
   { path: '/admin/zhongtan/invoice/BusinessCheck', component: resolve => require(['@/views/zhongtan/invoice/BusinessCheck'], resolve) },
   { path: '/admin/zhongtan/web/SailSchedule', component: resolve => require(['@/views/zhongtan/web/SailSchedule'], resolve) },
-  { path: '/admin/zhongtan/web/WebConfig', component: resolve => require(['@/views/zhongtan/web/WebConfig'], resolve) }
+  { path: '/admin/zhongtan/web/WebConfig', component: resolve => require(['@/views/zhongtan/web/WebConfig'], resolve) },
+  { path: '/admin/zhongtan/fee/InvoiceDefaultFee', component: resolve => require(['@/views/zhongtan/fee/InvoiceDefaultFee'], 
+  resolve) },
+  { path: '/admin/zhongtan/fee/CustomerFixedDeposit', component: resolve => require(['@/views/zhongtan/fee/CustomerFixedDeposit'], 
+  resolve) },
+  { path: '/admin/zhongtan/fee/CustomerFixedReceipt', component: resolve => require(['@/views/zhongtan/fee/CustomerFixedReceipt'], 
+  resolve) }
 ]
 
 export default routes

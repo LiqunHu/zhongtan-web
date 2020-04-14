@@ -3,17 +3,17 @@
     <!-- begin breadcrumb -->
     <ol class="breadcrumb pull-right">
       <li class="breadcrumb-item active">
-        <a href="javascript:;">Business Check</a>
+        <a href="javascript:;">Business Verification</a>
       </li>
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
     <h1 class="page-header">
-      Business Check
-      <small>Business Check...</small>
+      Business Verification
+      <small>Business Verification...</small>
     </h1>
     <!-- end page-header -->
-    <panel title="Panel title here">
+    <panel title="Business Verification">
       <template slot="beforeBody">
         <div class="panel-toolbar">
           <div class="form-inline">
@@ -38,14 +38,17 @@
       </template>
       <Table stripe size="small" ref="checkTable" :columns="table.checkTable.columns" :data="table.checkTable.data" :height="table.checkTable.height">
         <template slot-scope="{ row, index }" slot="action">
-          <a v-if = "row.upload_state == 'PB'" href="#" class="btn btn-primary btn-icon btn-sm" @click="approve(row)">
+          <a v-if = "row.upload_state == 'PB' && ((row.receipt_type !== 'Guarantee Letter' && row.receipt_type !== 'Fixed Invoice') || row.deposit_work_state === 'N')" href="#" class="btn btn-primary btn-icon btn-sm" @click="approve(row)">
             <i class="fa fa-check"></i>
           </a>
-          <a v-if = "row.upload_state == 'PB'" href="#" class="btn btn-danger btn-icon btn-sm" @click="decline(row)">
+          <a v-if = "row.upload_state == 'PB' && ((row.receipt_type !== 'Guarantee Letter' && row.receipt_type !== 'Fixed Invoice') || row.deposit_work_state === 'N')" href="#" class="btn btn-danger btn-icon btn-sm" @click="decline(row)">
             <i class="fa fa-times"></i>
           </a>
-          <a href="#" class="btn btn-success btn-icon btn-sm" @click.prevent="actInvoiceDetailModal(row)">
-            <i class="fa fa-paperclip"></i>
+          <a v-if = "row.receipt_type !== 'Guarantee Letter' && row.receipt_type !== 'Fixed Invoice'" href="#" class="btn btn-success btn-icon btn-sm" @click.prevent="actInvoiceDetailModal(row)">
+            <Icon type="md-link" />
+          </a>
+          <a href="#" class="btn btn-default btn-icon btn-sm" @click.prevent="actVerificationTimelineModal(row)">
+            <Icon type="md-options" />
           </a>
         </template>
       </Table>
@@ -108,6 +111,18 @@
         <Button type="text" size="large" @click="modal.invoiceDetail=false">Cancel</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.verificationTimeline" :title="verificationTitle">
+      <Timeline>
+        <TimelineItem v-for="(item, index) in timelinePara" v-bind:key="item.verification_log_id">
+            <p class="timeline-time">{{item.created_at}}</p>
+            <p class="timeline-content">{{item.user_name}}</p>
+            <p class="timeline-content">{{item.uploadfile_state_pre}} => {{item.uploadfile_state}}</p>
+        </TimelineItem>
+      </Timeline>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.verificationTimeline=false">Cancel</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -125,12 +140,18 @@ export default {
             {
               title: '#M B/L No',
               key: 'invoice_masterbi_bl',
-              width: 150
+              width: 150,
+            },
+            {
+              title: 'Customer',
+              key: 'invoice_customer_name',
+              width: 200,
+              render: common.tooltipCellLengthRender(20)
             },
             {
               title: 'Action',
               slot: 'action',
-              width: 130
+              width: 150
             },
             {
               title: 'Receipt Type',
@@ -156,6 +177,16 @@ export default {
             {
               title: 'OCEAN FREIGHT',
               key: 'of',
+              width: 150
+            },
+            {
+              title: 'B/L amendment',
+              key: 'blAmendment',
+              width: 150
+            },
+            {
+              title: 'COD Charge',
+              key: 'codCharge',
               width: 150
             },
             {
@@ -197,8 +228,13 @@ export default {
               title: 'COMMENT',
               key: 'comment',
               width: 300,
-              render: common.tooltipRender()
-            }
+              render: common.tooltipCellLengthRender(20)
+            },
+            {
+              title: 'FIXED',
+              key: 'fixed_deposit_amount',
+              width: 150
+            },
           ],
           data: [],
           height: common.getTableHeight() - 80,
@@ -218,8 +254,10 @@ export default {
         upload_state: 'PB',
         bl: '',
       },
-      modal: { invoiceDetail: false},
-      workPara: {}
+      modal: { invoiceDetail: false, verificationTimeline: false},
+      workPara: {},
+      verificationTitle: '',
+      timelinePara: []
     }
   },
   created() {
@@ -292,7 +330,30 @@ export default {
       } catch (error) {
         this.$commonact.fault(error)
       }
+    },
+    actVerificationTimelineModal: async function(row) {
+      try {
+        let response = await this.$http.post(apiUrl + 'getTimeline', { uploadfile_id: row.uploadfile_id})
+        this.timelinePara = response.data.info
+        if(this.timelinePara && this.timelinePara.length > 0) {
+          this.verificationTitle = row.invoice_masterbi_bl + ' : ' + row.receipt_type
+          this.modal.verificationTimeline = true
+        }else {
+          this.$Message.warning('no verification records')
+        }
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
     }
   }
 }
 </script>
+<style>
+.timeline-time{
+  font-size: 14px;
+  font-weight: bold;
+}
+.timeline-content{
+  padding-left: 5px;
+}
+</style>

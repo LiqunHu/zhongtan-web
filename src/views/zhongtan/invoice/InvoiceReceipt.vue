@@ -13,7 +13,7 @@
       <small>Financial Receipt...</small>
     </h1>
     <!-- end page-header -->
-    <panel title="Panel title here">
+    <panel title="Financial Receipt">
       <template slot="beforeBody">
         <div class="panel-toolbar">
           <div class="form-inline">
@@ -369,8 +369,8 @@ export default {
               width: 100
             },
             {
-              title: 'Freight Charge',
-              key: 'invoice_masterbi_freight_charge',
+              title: 'Freight Terms',
+              key: 'invoice_masterbi_freight',
               width: 100
             },
             {
