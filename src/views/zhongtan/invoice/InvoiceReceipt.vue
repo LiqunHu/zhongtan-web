@@ -3,14 +3,14 @@
     <!-- begin breadcrumb -->
     <ol class="breadcrumb pull-right">
       <li class="breadcrumb-item active">
-        <a href="javascript:;">Home</a>
+        <a href="javascript:;">Financial Receipt</a>
       </li>
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
     <h1 class="page-header">
-      Home
-      <small>header small text goes here...</small>
+      Financial Receipt
+      <small>Financial Receipt...</small>
     </h1>
     <!-- end page-header -->
     <panel title="Panel title here">
@@ -112,6 +112,11 @@
                               <i class="fa fa-share-square"></i>
                             </a>
                           </Tooltip>
+                          <Tooltip content="Undo" v-if="row.release_date && row.filetype === 'Receipt'">
+                            <a href="#" class="btn btn-danger btn-icon btn-sm" @click="undoReceiptReleaseModal(row, index)">
+                              <i class="fa fa-undo"></i>
+                            </a>
+                          </Tooltip>
                         </template>
                       </Table>
                     </template>
@@ -147,7 +152,7 @@
               <Input
                 placeholder="Received From"
                 v-model="workPara.invoice_masterbi_received_from"
-                :disabled="workPara.invoice_masterbi_receipt_release_date|| workPara.invoice_masterbi_deposit_date || workPara.invoice_masterbi_fee_date"
+                :disabled="!!workPara.invoice_masterbi_receipt_release_date || !!workPara.invoice_masterbi_deposit_date || !!workPara.invoice_masterbi_fee_date"
               />
             </FormItem>
           </Col>
@@ -157,7 +162,7 @@
             <FormItem label="Currency" prop="invoice_masterbi_receipt_currency">
               <Select
                 v-model="workPara.invoice_masterbi_receipt_currency"
-                :disabled="workPara.invoice_masterbi_receipt_release_date|| workPara.invoice_masterbi_deposit_date || workPara.invoice_masterbi_fee_date"
+                :disabled="!!workPara.invoice_masterbi_receipt_release_date || !!workPara.invoice_masterbi_deposit_date || !!workPara.invoice_masterbi_fee_date"
               >
                 <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
               </Select>
@@ -170,7 +175,7 @@
               <Input
                 placeholder="Amount"
                 v-model="workPara.invoice_masterbi_receipt_amount"
-                :disabled="workPara.invoice_masterbi_receipt_release_date|| workPara.invoice_masterbi_deposit_date || workPara.invoice_masterbi_fee_date"
+                :disabled="!!workPara.invoice_masterbi_receipt_release_date || !!workPara.invoice_masterbi_deposit_date || !!workPara.invoice_masterbi_fee_date"
               />
             </FormItem>
           </Col>
@@ -221,6 +226,20 @@
         <Button type="primary" size="large" @click="downloadCollect">Submit</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.undoReleaseCheckModal" title="Undo Receipt Release" width="600" :closable="false" :mask-closable="false">
+      <Form :model="workPara" :label-width="120">
+        <FormItem v-show="false">
+          <Input type="password" style='width:0;opacity:0;'></Input>       
+        </FormItem>
+        <FormItem label="Password" prop="checkPassword">
+          <Input type="password" placeholder="Password" v-model="workPara.undo_release_password"></Input>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.undoReleaseCheckModal = false;">Cancel</Button>
+        <Button type="primary" size="large" @click="doUndoReceiptRelease">Submit</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -249,7 +268,7 @@ function formatCurrency(num) {
 export default {
   data: function() {
     return {
-      modal: { receiptModal: false, collectModal: false },
+      modal: { receiptModal: false, collectModal: false, undoReleaseCheckModal: false },
       table: {
         masterbiTable: {
           columns: [
@@ -751,6 +770,12 @@ export default {
           } else if (row.invoice_masterbi_fee_date) {
             this.checkType = 'fee'
             this.workPara.invoice_masterbi_receipt_amount = 0
+            if (row.invoice_masterbi_bl_amendment) {
+              this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_bl_amendment)
+            }
+            if (row.invoice_masterbi_cod_charge) {
+              this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_cod_charge)
+            }
             if (row.invoice_masterbi_transfer) {
               this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_transfer)
             }
@@ -816,6 +841,12 @@ export default {
       } else {
         this.workPara.invoice_masterbi_receipt_currency = this.workPara.invoice_fee_currency
         this.workPara.invoice_masterbi_receipt_amount = 0
+        if (this.workPara.invoice_masterbi_bl_amendment) {
+          this.workPara.invoice_masterbi_receipt_amount += parseFloat(this.workPara.invoice_masterbi_bl_amendment)
+        }
+        if (this.workPara.invoice_masterbi_cod_charge) {
+          this.workPara.invoice_masterbi_receipt_amount += parseFloat(this.workPara.invoice_masterbi_cod_charge)
+        }
         if (this.workPara.invoice_masterbi_transfer) {
           this.workPara.invoice_masterbi_receipt_amount += parseFloat(this.workPara.invoice_masterbi_transfer)
         }
@@ -863,6 +894,31 @@ export default {
           a.click()
           document.body.removeChild(a)
         }
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
+    undoReceiptReleaseModal(row) {
+      this.workPara = JSON.parse(JSON.stringify(row))
+      this.modal.undoReleaseCheckModal = true
+    },
+    doUndoReceiptRelease: async function() {
+      try {
+        let _self = this
+        if(!_self.workPara.undo_release_password) {
+          return _self.$Message.error('Please enter right password')
+        }
+        _self.$commonact.confirm(`undo this release?`, async () => {
+          try {
+            await _self.$http.post(apiUrl + 'doUndoRelease', { file_id: _self.workPara.file_id, undo_release_password: common.md52( _self.workPara.undo_release_password) })
+            _self.getVoyageData()
+            _self.getMasterbiData()
+            _self.$Message.success('undo release success')
+            _self.modal.undoReleaseCheckModal = false
+          } catch (error) {
+            _self.$commonact.fault(error)
+          }
+        })
       } catch (error) {
         this.$commonact.fault(error)
       }
