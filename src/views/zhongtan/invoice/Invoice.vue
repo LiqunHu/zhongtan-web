@@ -495,7 +495,7 @@
       </Form>
       <div slot="footer">
         <Button type="text" size="large" @click="modal.depositModal=false">Cancel</Button>
-        <Button type="primary" size="large" @click="depositDo">Submit</Button>
+        <Button type="primary" size="large" @click="depositDo" v-if="!workPara.invoice_masterbi_invoice_release_date">Submit</Button>
       </div>
     </Modal>
     <Modal v-model="modal.deleteVoyageModal" title="Delete Voyage" width="600">
