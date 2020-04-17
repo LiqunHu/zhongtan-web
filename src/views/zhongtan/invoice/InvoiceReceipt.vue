@@ -76,14 +76,14 @@
             <TabPane label="MasterBl">
               <Table stripe size="small" ref="masterbiTable" :columns="table.masterbiTable.columns" :data="table.masterbiTable.data" :height="table.masterbiTable.height">
                 <template slot-scope="{ row, index }" slot="Receipt">
-                  <template v-if="!row.invoice_masterbi_invoice_release_date">
+                  <!-- <template v-if="!row.invoice_masterbi_invoice_release_date">
                     <Tooltip content="Receipt">
                       <a href="#" class="btn btn-green btn-icon btn-sm disabled">
                         <i class="fa fa-money-bill-alt"></i>
                       </a>
                     </Tooltip>
                   </template>
-                  <template v-else>
+                  <template v-else> -->
                     <Tooltip content="Receipt" v-if="!row.invoice_masterbi_receipt_release_date">
                       <a href="#" class="btn btn-green btn-icon btn-sm" @click="actReceiptModal(row)">
                         <i class="fa fa-money-bill-alt"></i>
@@ -95,7 +95,7 @@
                       </a>
                     </Tooltip>
                   </template>
-                </template>
+                <!-- </template> -->
                 <template slot-scope="{ row, index }" slot="files">
                   <Poptip trigger="hover" placement="bottom" :transfer="true" width="555">
                     <Button type="text" style="text-decoration:underline">Files</Button>
