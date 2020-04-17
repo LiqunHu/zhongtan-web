@@ -112,8 +112,18 @@
                               <i class="fa fa-share-square"></i>
                             </a>
                           </Tooltip>
-                          <Tooltip content="Undo" v-if="row.release_date && row.filetype === 'Receipt'">
-                            <a href="#" class="btn btn-danger btn-icon btn-sm" @click="undoReceiptReleaseModal(row, index)">
+                          <Tooltip content="Undo" v-if="row.filetype === 'DO' && row.release_date">
+                            <a href="#" class="btn btn-danger btn-icon btn-sm" @click="undoReleaseModal(row, index)">
+                              <i class="fa fa-undo"></i>
+                            </a>
+                          </Tooltip>
+                          <Tooltip content="Undo" v-else-if="row.filetype === 'Receipt' && row.release_date && !row.do_release_date">
+                            <a href="#" class="btn btn-danger btn-icon btn-sm" @click="undoReleaseModal(row, index)">
+                              <i class="fa fa-undo"></i>
+                            </a>
+                          </Tooltip>
+                          <Tooltip content="Undo" v-else-if="(row.filetype === 'Deposit' || row.filetype === 'Fee' || row.filetype === 'Freight') && row.release_date && !row.receipt_release_date && !row.do_release_date">
+                            <a href="#" class="btn btn-danger btn-icon btn-sm" @click="undoReleaseModal(row, index)">
                               <i class="fa fa-undo"></i>
                             </a>
                           </Tooltip>
@@ -237,7 +247,7 @@
       </Form>
       <div slot="footer">
         <Button type="text" size="large" @click="modal.undoReleaseCheckModal = false;">Cancel</Button>
-        <Button type="primary" size="large" @click="doUndoReceiptRelease">Submit</Button>
+        <Button type="primary" size="large" @click="doUndoRelease">Submit</Button>
       </div>
     </Modal>
   </div>
@@ -898,11 +908,11 @@ export default {
         this.$commonact.fault(error)
       }
     },
-    undoReceiptReleaseModal(row) {
+    undoReleaseModal(row) {
       this.workPara = JSON.parse(JSON.stringify(row))
       this.modal.undoReleaseCheckModal = true
     },
-    doUndoReceiptRelease: async function() {
+    doUndoRelease: async function() {
       try {
         let _self = this
         if(!_self.workPara.undo_release_password) {
