@@ -76,33 +76,29 @@
             <TabPane label="MasterBl">
               <Table stripe size="small" ref="masterbiTable" :columns="table.masterbiTable.columns" :data="table.masterbiTable.data" :height="table.masterbiTable.height">
                 <template slot-scope="{ row, index }" slot="Receipt">
-                  <!-- <template v-if="!row.invoice_masterbi_invoice_release_date">
-                    <Tooltip content="Receipt">
-                      <a href="#" class="btn btn-green btn-icon btn-sm disabled">
-                        <i class="fa fa-money-bill-alt"></i>
-                      </a>
-                    </Tooltip>
-                  </template>
-                  <template v-else> -->
-                    <Tooltip content="Receipt" v-if="!row.invoice_masterbi_receipt_release_date">
-                      <a href="#" class="btn btn-green btn-icon btn-sm" @click="actReceiptModal(row)">
-                        <i class="fa fa-money-bill-alt"></i>
-                      </a>
-                    </Tooltip>
-                    <Tooltip :content="row.invoice_masterbi_receipt_release_date_fmt" v-if="row.invoice_masterbi_receipt_release_date">
-                      <a href="#" class="btn btn-pink btn-icon btn-sm" @click="actReceiptModal(row)">
-                        <i class="fa fa-money-bill-alt"></i>
-                      </a>
-                    </Tooltip>
-                  </template>
-                <!-- </template> -->
+                  <Tooltip :content="row.invoice_masterbi_receipt_release_date_fmt" v-if="row.invoice_masterbi_deposit_receipt_date && row.invoice_masterbi_invoice_receipt_date">
+                    <a href="#" class="btn btn-pink btn-icon btn-sm">
+                      <i class="fa fa-money-bill-alt"></i>
+                    </a>
+                  </Tooltip>
+                  <Tooltip content="Receipt" v-else-if="(row.invoice_masterbi_deposit_release_date && !row.invoice_masterbi_deposit_receipt_date) || (row.invoice_masterbi_fee_release_date && !row.invoice_masterbi_invoice_receipt_date)">
+                    <a href="#" class="btn btn-green btn-icon btn-sm" @click="actReceiptModal(row)">
+                      <i class="fa fa-money-bill-alt"></i>
+                    </a>
+                  </Tooltip>
+                  <Tooltip content="Receipt" v-else>
+                    <a href="#" class="btn btn-green btn-icon btn-sm disabled">
+                      <i class="fa fa-money-bill-alt"></i>
+                    </a>
+                  </Tooltip>
+                </template>
                 <template slot-scope="{ row, index }" slot="files">
                   <Poptip trigger="hover" placement="bottom" :transfer="true" width="555">
                     <Button type="text" style="text-decoration:underline">Files</Button>
                     <template slot="content">
                       <Table stripe size="small" :columns="table.filesTable.columns" :data="row.files">
                         <template slot-scope="{ row, index }" slot="act">
-                          <Tooltip content="Download">
+                          <Tooltip content="Download" v-if="row.release_date">
                             <a :href="row.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
                               <i class="fa fa-download"></i>
                             </a>
@@ -118,11 +114,6 @@
                             </a>
                           </Tooltip>
                           <Tooltip content="Undo" v-else-if="row.filetype === 'Receipt' && row.release_date && !row.do_release_date">
-                            <a href="#" class="btn btn-danger btn-icon btn-sm" @click="undoReleaseModal(row, index)">
-                              <i class="fa fa-undo"></i>
-                            </a>
-                          </Tooltip>
-                          <Tooltip content="Undo" v-else-if="(row.filetype === 'Deposit' || row.filetype === 'Fee' || row.filetype === 'Freight') && row.release_date && !row.receipt_release_date && !row.do_release_date">
                             <a href="#" class="btn btn-danger btn-icon btn-sm" @click="undoReleaseModal(row, index)">
                               <i class="fa fa-undo"></i>
                             </a>
@@ -149,9 +140,8 @@
           <Col>
             <FormItem label="Receipt Type">
               <RadioGroup v-model="checkType" @on-change="changeType">
-                <Radio v-if="!!workPara.invoice_masterbi_deposit_date" label="deposit" :disabled="!!workPara.invoice_masterbi_receipt_release_date"></Radio>
-                <Radio v-if="!!workPara.invoice_masterbi_fee_date" label="fee" :disabled="!!workPara.invoice_masterbi_receipt_release_date"></Radio>
-                <Radio v-if="!!workPara.invoice_masterbi_of_date" label="freight" :disabled="!!workPara.invoice_masterbi_receipt_release_date"></Radio>
+                <Radio v-if="workPara.invoice_masterbi_deposit_release_date && !workPara.invoice_masterbi_deposit_receipt_date" label="deposit"></Radio>
+                <Radio v-if="workPara.invoice_masterbi_fee_release_date && !workPara.invoice_masterbi_invoice_receipt_date" label="fee"></Radio>
               </RadioGroup>
             </FormItem>
           </Col>
@@ -303,6 +293,11 @@ export default {
               width: 100
             },
             {
+              title: 'Freight Terms',
+              key: 'invoice_masterbi_freight',
+              width: 100
+            },
+            {
               title: '*B/L Type',
               key: 'invoice_masterbi_bl_type',
               width: 100
@@ -379,8 +374,8 @@ export default {
               width: 100
             },
             {
-              title: 'Freight Terms',
-              key: 'invoice_masterbi_freight',
+              title: 'Freight Charge',
+              key: 'invoice_masterbi_freight_charge',
               width: 100
             },
             {
@@ -621,6 +616,11 @@ export default {
               width: 80
             },
             {
+              title: 'Receipt Type',
+              key: 'receipt_type',
+              width: 80
+            },
+            {
               title: 'Action',
               slot: 'act',
               width: 100
@@ -764,56 +764,54 @@ export default {
       this.table.containersTable.data = JSON.parse(JSON.stringify(data.rows))
     },
     actReceiptModal: function(row) {
-      this.workPara = JSON.parse(JSON.stringify(row))
-      if (!row.invoice_masterbi_receipt_release_date) {
+      this.$nextTick(function() {
+        this.workPara = JSON.parse(JSON.stringify(row))
         if (!row.invoice_masterbi_receipt_currency) {
-          this.workPara.invoice_masterbi_receipt_currency = 'USD'
+            this.workPara.invoice_masterbi_receipt_currency = 'USD'
         }
         if (!row.invoice_masterbi_check_cash) {
           this.workPara.invoice_masterbi_check_cash = 'CASH'
         }
         this.workPara.invoice_masterbi_received_from = row.user_name
-        if (row.invoice_masterbi_deposit_date || row.invoice_masterbi_fee_date || row.invoice_masterbi_of_date) {
-          if (row.invoice_masterbi_deposit_date) {
-            this.checkType = 'deposit'
-            this.workPara.invoice_masterbi_receipt_amount = formatCurrency(parseFloat(row.invoice_masterbi_deposit))
-          } else if (row.invoice_masterbi_fee_date) {
-            this.checkType = 'fee'
-            this.workPara.invoice_masterbi_receipt_amount = 0
-            if (row.invoice_masterbi_bl_amendment) {
-              this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_bl_amendment)
-            }
-            if (row.invoice_masterbi_cod_charge) {
-              this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_cod_charge)
-            }
-            if (row.invoice_masterbi_transfer) {
-              this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_transfer)
-            }
-            if (row.invoice_masterbi_lolf) {
-              this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_lolf)
-            }
-            if (row.invoice_masterbi_lcl) {
-              this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_lcl)
-            }
-            if (row.invoice_masterbi_amendment) {
-              this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_amendment)
-            }
-            if (row.invoice_masterbi_tasac) {
-              this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_tasac)
-            }
-            if (row.invoice_masterbi_printing) {
-              this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_printing)
-            }
-            if (row.invoice_masterbi_others) {
-              this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_others)
-            }
-            this.workPara.invoice_masterbi_receipt_amount = formatCurrency(this.workPara.invoice_masterbi_receipt_amount)
-          } else if (row.invoice_masterbi_of_date) {
-            this.checkType = 'freight'
-            this.workPara.invoice_masterbi_receipt_amount = formatCurrency(parseFloat(row.invoice_masterbi_of))
+        if(row.invoice_masterbi_deposit_release_date && !row.invoice_masterbi_deposit_receipt_date) {
+          this.checkType = 'deposit'
+          this.workPara.invoice_masterbi_receipt_amount = formatCurrency(parseFloat(row.invoice_masterbi_deposit))
+        } else if(row.invoice_masterbi_fee_release_date && !row.invoice_masterbi_invoice_receipt_date) {
+          this.checkType = 'fee'
+          this.workPara.invoice_masterbi_receipt_amount = 0
+          if (row.invoice_masterbi_of) {
+            this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_of)
           }
+          if (row.invoice_masterbi_bl_amendment) {
+            this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_bl_amendment)
+          }
+          if (row.invoice_masterbi_cod_charge) {
+            this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_cod_charge)
+          }
+          if (row.invoice_masterbi_transfer) {
+            this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_transfer)
+          }
+          if (row.invoice_masterbi_lolf) {
+            this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_lolf)
+          }
+          if (row.invoice_masterbi_lcl) {
+            this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_lcl)
+          }
+          if (row.invoice_masterbi_amendment) {
+            this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_amendment)
+          }
+          if (row.invoice_masterbi_tasac) {
+            this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_tasac)
+          }
+          if (row.invoice_masterbi_printing) {
+            this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_printing)
+          }
+          if (row.invoice_masterbi_others) {
+            this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_others)
+          }
+          this.workPara.invoice_masterbi_receipt_amount = formatCurrency(this.workPara.invoice_masterbi_receipt_amount)
         }
-      }
+      })
       this.modal.receiptModal = true
     },
     downloadReceipt: async function() {

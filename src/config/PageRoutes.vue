@@ -38,7 +38,8 @@ const routes = [
   { path: '/admin/zhongtan/fee/CustomerFixedDeposit', component: resolve => require(['@/views/zhongtan/fee/CustomerFixedDeposit'], 
   resolve) },
   { path: '/admin/zhongtan/fee/CustomerFixedReceipt', component: resolve => require(['@/views/zhongtan/fee/CustomerFixedReceipt'], 
-  resolve) }
+  resolve) },
+  { path: '/admin/zhongtan/invoice/InvoiceSearch', component: resolve => require(['@/views/zhongtan/invoice/InvoiceSearch'], resolve) },
 ]
 
 export default routes

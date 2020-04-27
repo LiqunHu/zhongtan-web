@@ -81,7 +81,7 @@
             <span>Cargo Classification</span>
           </Col>
           <Col span="6">
-            <label> {{ workPara.invoice_masterbi_cargo_type }}</label>
+            <label> {{ workPara.invoice_masterbi_cargo_type }} / {{ workPara.invoice_masterbi_freight }}</label>
           </Col>
         </Row>
         <Row>

@@ -49,21 +49,21 @@
                 <span v-if="row.deposit_long_term === '1'">Long Term</span>
                 <span v-else>{{row.deposit_expire_date}}</span>
             </template>
-            <template slot-scope="{ row, index }" slot="files">
+            <template slot-scope="{ row, index }" slot="files" v-if="row.deposit_work_state !== 'I'">
                 <Poptip trigger="hover" placement="bottom" :transfer="true" width="555">
                     <Button type="text" style="text-decoration:underline">Files</Button>
                     <template slot="content">
                       <Table stripe size="small" :columns="table.filesTable.columns" :data="row.files">
                         <template slot-scope="{ row, index }" slot="act">
                           <template>
-                            <Tooltip content="Download">
+                            <Tooltip content="Download" v-if="row.filetype === 'Fixed Invoice' && row.state === 'AP' && row.release_date">
                               <a :href="row.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
                                 <i class="fa fa-download"></i>
                               </a>
                             </Tooltip>
-                            <Tooltip content="Release" v-if="row.filetype === 'Fixed Invoice' && row.state === 'AP' && !row.release_date">
-                              <a href="#" class="btn btn-primary btn-icon btn-sm" @click="realseFixedDepositAct(row, index)">
-                                <i class="fa fa-share-square"></i>
+                            <Tooltip content="Download" v-if="row.filetype === 'Guarantee Letter' && row.state === 'AP' && row.release_date">
+                              <a :href="row.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
+                                <i class="fa fa-download"></i>
                               </a>
                             </Tooltip>
                           </template>

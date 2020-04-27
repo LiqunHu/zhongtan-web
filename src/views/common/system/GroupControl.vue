@@ -19,6 +19,7 @@
           <button type="button" class="btn btn-info" @click="groupModal">增加组</button>
           <button type="button" class="btn btn-info" @click="permissionModal">增加权限组</button>
           <button type="button" class="btn btn-info" @click="editNode">编辑</button>
+          <button type="button" class="btn btn-danger" @click="doBasicData">数据处理</button>
         </div>
       </template>
       <Tree :data="tree.groupTree" ref="groupTree" :render="renderGroupTree"></Tree>
@@ -290,6 +291,16 @@ export default {
       } catch (error) {
         this.$commonact.fault(error)
       }
+    },
+    doBasicData: async function() {
+      this.$commonact.confirm(`确定升级完成，初期化原始数据?`, async () => {
+        try {
+          await this.$http.post(apiUrl + 'doBasicData', {})
+          this.$Message.success('数据初期化完成')
+        } catch (error) {
+          this.$commonact.fault(error)
+        }
+      })
     }
   }
 }

@@ -37,13 +37,17 @@
             </div>
         </template>
         <Table stripe size="small" ref="checkTable" :columns="table.checkTable.columns" :data="table.checkTable.data" :height="table.checkTable.height">
+            <template slot-scope="{ row, index }" slot="necessary">
+                <Tag color="success" v-if="row.is_necessary === '1'">YES</Tag>
+                <Tag color="warning" v-else>NO</Tag>
+            </template>
             <template slot-scope="{ row, index }" slot="action">
-            <a href="#" class="btn btn-primary btn-icon btn-sm" @click="updateDefaultFeeModal(row)">
-                <i class="fa fa-edit"></i>
-            </a>
-            <a href="#" class="btn btn-danger btn-icon btn-sm" @click="deleteDefaultFeeAct(row)">
-                <i class="fa fa-times"></i>
-            </a>
+                <a href="#" class="btn btn-primary btn-icon btn-sm" @click="updateDefaultFeeModal(row)">
+                    <i class="fa fa-edit"></i>
+                </a>
+                <a href="#" class="btn btn-danger btn-icon btn-sm" @click="deleteDefaultFeeAct(row)">
+                    <i class="fa fa-times"></i>
+                </a>
             </template>
         </Table>
         <Page class="m-t-10" :total="table.checkTable.total" :page-size="table.checkTable.limit" @on-change="getTableData" />
@@ -64,6 +68,9 @@
                 <Select v-model="feeForm.fee_name" filterable :disabled ="dialogStatus === 'update'">
                     <Option v-for="item in pagePara.TR_FEE_NAME" :value="item.id" :key="item.id" >{{ item.text }}</Option>
                 </Select>
+            </FormItem>
+            <FormItem label="Necessary">
+                <Checkbox v-model="feeForm.is_necessary">&nbsp;</Checkbox>
             </FormItem>
             <FormItem label="Fee Type" prop="fee_type">
                 <RadioGroup v-model="feeForm.fee_type">
@@ -110,6 +117,10 @@ export default {
                     key: 'fee_name',
                 },
                 {
+                    title: 'Necessary',
+                    slot: 'necessary',
+                },
+                {
                     title: 'Type',
                     key: 'fee_type',
                     render: common.selectRender(this, 'FEE_TYPE'),
@@ -150,6 +161,7 @@ export default {
             update: 'Edit Fee',
             create: 'Add Fee'
         },
+        oldForm: {},
         feeForm: {
             default_fee_id: '',
             fee_cargo_type: 'IM',
@@ -157,7 +169,8 @@ export default {
             fee_type: 'BL',
             fee_container_size: '',
             fee_amount: '',
-            fee_currency: 'USD'
+            fee_currency: 'USD',
+            is_necessary: false
         },
         feeRule: {
             fee_cargo_type: [
@@ -230,7 +243,8 @@ export default {
             fee_type: 'BL',
             fee_container_size: '',
             fee_amount: '',
-            fee_currency: 'USD'
+            fee_currency: 'USD',
+            is_necessary: false
         }
     },
     addDefaultFeeModal: async function() {
@@ -259,7 +273,10 @@ export default {
     },
     updateDefaultFeeModal: async function(row) {
         this.resetFeeForm()
+        this.oldForm = Object.assign({}, row)
         this.feeForm = Object.assign({}, row) // copy obj
+        this.oldForm.is_necessary = row.is_necessary === '1'
+        this.feeForm.is_necessary = row.is_necessary === '1'
         this.dialogStatus = 'update'
         this.modal.addOrUpdateFee = true
     },
@@ -267,7 +284,7 @@ export default {
         this.$refs['feeForm'].validate(async valid => {
             if (valid) {
                 try {
-                    await this.$http.post(apiUrl + 'update', this.feeForm)
+                    await this.$http.post(apiUrl + 'update', {'old': this.oldForm, 'new': this.feeForm})
                     this.getTableData()
                     this.$Message.success('Update Fee Success')
                     this.modal.addOrUpdateFee = false
