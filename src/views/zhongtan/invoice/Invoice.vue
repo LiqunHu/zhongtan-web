@@ -340,9 +340,12 @@
         <Row>
           <Col>
             <FormItem label="Delivery to" prop="invoice_masterbi_delivery_to">
-              <Input placeholder="Delivery to" v-model="workPara.invoice_masterbi_delivery_to" :disabled="!doDeliverEdit">
-                <i slot="append" class="fa fa-edit" style="cursor:pointer;" v-on:click="changeDoDeliverEdit"></i>
-              </Input>
+              <Select v-model="workPara.invoice_masterbi_delivery_to" filterable clearable allow-create placeholder="Delivery" style="width:400px"  @on-query-change="deliveryCreate">
+                <Option v-for="item in delivery.options" :value="item" :key="item">{{item}}</Option>
+              </Select>
+              <!-- <a href="#" @click.prevent="changeDoDeliverEdit" title="Edit">
+                <i class="fa fa-edit"></i>
+              </a> -->
             </FormItem>
           </Col>
         </Row>
@@ -362,8 +365,8 @@
     <Modal v-model="modal.depositModal" title="Deposit" width="600">
       <Form :model="workPara" :label-width="130">
         <FormItem label="Customer" prop="invoice_masterbi_customer_id" style="margin-bottom: 0px;">
-          <Select ref="customer" v-model="workPara.invoice_masterbi_customer_id" filterable clearable remote :remote-method="searchCustomer" :loading="deposit.customer.loading" placeholder="Customer">
-            <Option v-for="item in deposit.customer.options" :value="item.id" :key="item.id">{{item.text}}</Option>
+          <Select ref="customer" v-model="workPara.invoice_masterbi_customer_id" filterable clearable allow-create remote :remote-method="searchCustomer" :loading="deposit.customer.loading" placeholder="Customer">
+            <Option v-for="item in deposit.customer.options" :value="item.id" :key="item.id">{{item.text}}<i v-if="item.fixed" class="fa fa-lock" style="float: right;"></i></Option>
           </Select>
         </FormItem>
         <FormItem label="Carrier" prop="invoice_masterbi_carrier" style="margin-bottom: 0px;">
@@ -515,7 +518,7 @@
       </Form>
       <div slot="footer">
         <Button type="text" size="large" @click="modal.depositModal=false">Cancel</Button>
-        <Button type="primary" size="large" @click="depositDo" v-if="deposit.depositType=='Container Deposit'" :disabled = "workPara.invoice_masterbi_deposit_fixed == '1' && !!workPara.invoice_masterbi_deposit_release_date">Submit</Button>
+        <Button type="primary" size="large" @click="depositDo" v-if="deposit.depositType=='Container Deposit'" :disabled = "workPara.invoice_masterbi_deposit_fixed == '1' && !!workPara.invoice_masterbi_deposit_release_date && !depositEdit">Submit</Button>
         <Button type="primary" size="large" @click="depositDo" v-if="deposit.depositType=='Invoice Fee'">Submit</Button>
       </div>
     </Modal>
@@ -1039,6 +1042,9 @@ export default {
         invoice_vessel_ata: '',
         invoice_vessel_atd: '',
         invoice_vessel_call_sign: '',
+      },
+      delivery: {
+        options: []
       }
     }
   },
@@ -1197,7 +1203,23 @@ export default {
     },
     actDownLoadDoModal: function(row) {
       this.workPara = JSON.parse(JSON.stringify(row))
+      this.doDeliverEdit = false
+      this.delivery.options = JSON.parse(JSON.stringify(this.pagePara.DELIVER))
+      if(row.invoice_masterbi_delivery_to) {
+        const index = this.delivery.options.indexOf(row.invoice_masterbi_delivery_to)
+        if(index < 0) {
+          this.delivery.options.unshift(row.invoice_masterbi_delivery_to)
+        }
+      }
       this.modal.downLoadDoModal = true
+    },
+    deliveryCreate: function (val) {
+      if(val) {
+        const index = this.delivery.options.indexOf(val)
+        if(index < 0) {
+          this.delivery.options.unshift(val)
+        }
+      }
     },
     downloadDo: async function() {
       try {
@@ -1282,7 +1304,9 @@ export default {
         if (!this.workPara.invoice_masterbi_carrier) {
           return this.$Message.error('Please choose carrier')
         }
-        await this.$http.post(apiUrl + 'depositDo', _.extend(this.workPara, this.deposit))
+        let param = _.extend(this.workPara, this.deposit)
+        param.depositEdit = this.depositEdit
+        await this.$http.post(apiUrl + 'depositDo', param)
         // printJS(response.data.info.url)
         this.$Message.success('deposit success')
         this.modal.depositModal = false

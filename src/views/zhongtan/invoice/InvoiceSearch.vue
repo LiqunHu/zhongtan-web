@@ -130,9 +130,12 @@
         <Row>
           <Col>
             <FormItem label="Delivery to" prop="invoice_masterbi_delivery_to">
-              <Input placeholder="Delivery to" v-model="workPara.invoice_masterbi_delivery_to" :disabled="!doDeliverEdit">
-                <i slot="append" class="fa fa-edit" style="cursor:pointer;" v-on:click="changeDoDeliverEdit"></i>
-              </Input>
+              <Select v-model="workPara.invoice_masterbi_delivery_to" filterable clearable allow-create placeholder="Delivery" style="width:400px"  @on-query-change="deliveryCreate">
+                <Option v-for="item in delivery.options" :value="item" :key="item">{{item}}</Option>
+              </Select>
+              <!-- <a href="#" @click.prevent="changeDoDeliverEdit" title="Edit">
+                <i class="fa fa-edit"></i>
+              </a> -->
             </FormItem>
           </Col>
         </Row>
@@ -533,6 +536,9 @@ export default {
           invoice_vessel_call_sign: [
               { required: true, message: 'The vessel call sign cannot be empty', trigger: 'blur' }
           ]
+      },
+      delivery: {
+        options: []
       }
     }
   },
@@ -579,7 +585,23 @@ export default {
     },
     actDownLoadDoModal: function(row) {
       this.workPara = JSON.parse(JSON.stringify(row))
+      this.doDeliverEdit = false
+      this.delivery.options = JSON.parse(JSON.stringify(this.pagePara.DELIVER))
+      if(row.invoice_masterbi_delivery_to) {
+        const index = this.delivery.options.indexOf(row.invoice_masterbi_delivery_to)
+        if(index < 0) {
+          this.delivery.options.unshift(row.invoice_masterbi_delivery_to)
+        }
+      }
       this.modal.downLoadDoModal = true
+    },
+    deliveryCreate: function (val) {
+      if(val) {
+        const index = this.delivery.options.indexOf(val)
+        if(index < 0) {
+          this.delivery.options.unshift(val)
+        }
+      }
     },
     downloadDo: async function() {
       try {

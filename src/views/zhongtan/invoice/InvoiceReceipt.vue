@@ -811,8 +811,9 @@ export default {
           }
           this.workPara.invoice_masterbi_receipt_amount = formatCurrency(this.workPara.invoice_masterbi_receipt_amount)
         }
+        this.$forceUpdate()
+        this.modal.receiptModal = true
       })
-      this.modal.receiptModal = true
     },
     downloadReceipt: async function() {
       try {
