@@ -59,8 +59,8 @@
         <FormItem label="邮箱" prop="user_email">
           <Input placeholder="邮箱" v-model="workPara.user_email"/>
         </FormItem>
-        <FormItem label="手机" prop="user_phone">
-          <Input placeholder="手机" v-model="workPara.user_phone"/>
+        <FormItem label="电话" prop="user_phone">
+          <Input placeholder="电话" v-model="workPara.user_phone"/>
         </FormItem>
         <FormItem label="用户组" prop="user_groups">
           <Select multiple v-model="workPara.user_groups">

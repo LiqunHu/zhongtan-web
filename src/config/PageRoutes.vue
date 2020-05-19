@@ -40,6 +40,7 @@ const routes = [
   { path: '/admin/zhongtan/fee/CustomerFixedReceipt', component: resolve => require(['@/views/zhongtan/fee/CustomerFixedReceipt'], 
   resolve) },
   { path: '/admin/zhongtan/invoice/InvoiceSearch', component: resolve => require(['@/views/zhongtan/invoice/InvoiceSearch'], resolve) },
+  { path: '/admin/zhongtan/configuration/IcdConfig', component: resolve => require(['@/views/zhongtan/configuration/IcdConfig'], resolve) }
 ]
 
 export default routes

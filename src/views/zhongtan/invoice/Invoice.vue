@@ -40,7 +40,11 @@
               <button type="button" class="btn btn-info" @click="loadImportModal">Load</button>
             </div>
             <div class="form-group m-r-3">
-              <button type="button" class="btn btn-info" @click="saveData">Save</button>
+              <Button-group>
+                <i-button class="btn btn-warning" @click="changeTableEdit">EDIT</i-button>
+                <i-button class="btn btn-info" @click="saveData">Save</i-button>
+              </Button-group>
+              <!-- <button type="button" class="btn btn-info" @click="saveData">Save</button> -->
             </div>
           </div>
         </div>
@@ -178,115 +182,115 @@
                   </Poptip>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_cargo_type">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_cargo_type" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_cargo_type" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_bl_type">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_bl_type" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_bl_type" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_destination">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_destination" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_destination" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_delivery">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_delivery" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_delivery" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_loading">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_loading" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_loading" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_container_no">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_container_no" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_container_no" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_goods_description">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_goods_description" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_goods_description" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_package_no">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_package_no" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_package_no" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_package_unit">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_package_unit" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_package_unit" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_gross_weight">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_gross_weight" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_gross_weight" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_gross_weight_unit">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_gross_weight_unit" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_gross_weight_unit" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_gross_volume">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_gross_volume" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_gross_volume" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_gross_volume_unit">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_gross_volume_unit" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_gross_volume_unit" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_invoice_value">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_invoice_value" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_invoice_value" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_invoice_currency">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_invoice_currency" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_invoice_currency" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_freight_charge">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_freight_charge" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_freight_charge" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_freight_currency">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_freight_currency" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_freight_currency" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_imdg">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_imdg" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_imdg" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_packing_type">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_packing_type" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_packing_type" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_forwarder_code">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_forwarder_code" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_forwarder_code" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_forwarder_name">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_forwarder_name" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_forwarder_name" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_forwarder_tel">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_forwarder_tel" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_forwarder_tel" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_exporter_name">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_exporter_name" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_exporter_name" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_exporter_tel">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_exporter_tel" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_exporter_tel" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_exporter_address">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_exporter_address" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_exporter_address" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_exporter_tin">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_exporter_tin" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_exporter_tin" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_consignee_name">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_consignee_name" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_consignee_name" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_consignee_tel">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_consignee_tel" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_consignee_tel" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_consignee_address">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_consignee_address" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_consignee_address" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_consignee_tin">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_consignee_tin" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_consignee_tin" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_notify_name">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_notify_name" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_notify_name" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_notify_tel">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_notify_tel" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_notify_tel" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_notify_address">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_notify_address" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_notify_address" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_notify_tin">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_notify_tin" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_notify_tin" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_shipping_mark">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_shipping_mark" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_shipping_mark" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_net_weight">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_net_weight" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_net_weight" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_net_weight_unit">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_net_weight_unit" size="small" />
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_net_weight_unit" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_line_code">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_line_code" size="small" />
@@ -353,6 +357,28 @@
           <Col>
             <FormItem label="VALID TO" prop="invoice_masterbi_valid_to">
               <DatePicker type="date" placeholder="VALID TO" v-model="workPara.invoice_masterbi_valid_to" :disabled="!!workPara.invoice_masterbi_do_release_date"></DatePicker>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <FormItem label="FCL" prop="invoice_masterbi_do_fcl">
+              <RadioGroup v-model="workPara.invoice_masterbi_do_fcl">
+                <Radio value="FCL/FCL" label="FCL/FCL" style="margin-right: 50px;"></Radio>
+                <Radio value="FCL/LCL" label="FCL/LCL" style="margin-right: 50px;"></Radio>
+              </RadioGroup>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <FormItem label="ICD" prop="invoice_masterbi_do_icd">
+              <i-select v-model="workPara.invoice_masterbi_do_icd">
+                <i-option  v-for="item in pagePara.ICD" :value="item.icd_code" :key="item.icd_code" :label="item.icd_code">
+                    <span>{{item.icd_code}}</span>
+                    <span style="float:right;color:#ccc">{{item.icd_name}}</span>
+                </i-option>
+              </i-select>
             </FormItem>
           </Col>
         </Row>
@@ -1045,7 +1071,8 @@ export default {
       },
       delivery: {
         options: []
-      }
+      },
+      tableEdit: true
     }
   },
   created() {
@@ -1211,6 +1238,31 @@ export default {
           this.delivery.options.unshift(row.invoice_masterbi_delivery_to)
         }
       }
+      if(!this.workPara.invoice_masterbi_do_fcl) {
+        if(this.workPara.invoice_masterbi_lcl) {
+          this.workPara.invoice_masterbi_do_fcl = 'FCL/LCL'
+        } else {
+          this.workPara.invoice_masterbi_do_fcl = 'FCL/FCL'
+        }
+      }
+      
+      if(this.pagePara.DELIVER.ICD) {
+        let defaultICD = false
+        for(let i = 0; i < this.pagePara.DELIVER.ICD.length; i++) {
+          if(this.pagePara.DELIVER.ICD[i].icd_code === 'TICTS TERMINAL') {
+            defaultICD = true
+            break
+          }
+        }
+        if(!defaultICD) {
+          this.pagePara.DELIVER.ICD.push({'icd_name': 'TICTS TERMINAL', 'icd_code': 'TICTS TERMINAL'})
+        }
+      } else {
+        this.pagePara.DELIVER.ICD = [{'icd_name': 'TICTS TERMINAL', 'icd_code': 'TICTS TERMINAL'}]
+      }
+      if(!this.workPara.invoice_masterbi_do_icd) {
+        this.workPara.invoice_masterbi_do_icd = 'TICTS TERMINAL'
+      }
       this.modal.downLoadDoModal = true
     },
     deliveryCreate: function (val) {
@@ -1344,6 +1396,7 @@ export default {
           try {
             await this.$http.post(apiUrl + 'changebl', { changedbl: changeData })
             this.getMasterbiData()
+            this.tableEdit = true
             this.$Message.success('save success')
           } catch (error) {
             this.$commonact.fault(error)
@@ -1568,6 +1621,8 @@ export default {
           this.modal.deleteVoyageModal = true
         } else if(this.checkPasswordType === 'doVesselEdit') {
           this.modal.editVesselModal = true
+        } else if(this.checkPasswordType === 'doTableEdit') {
+          this.tableEdit = false
         }
       } catch (error) {
         this.$commonact.fault(error)
@@ -1600,7 +1655,20 @@ export default {
             this.$Message.error('Validate Fail!')
           }
       })
-    }
+    },
+    changeTableEdit: function() {
+      if(this.tableEdit) {
+        try {
+          this.modal.checkPasswordModal = true
+          this.checkPassword = ''
+          this.checkPasswordType = 'doTableEdit'
+        } catch (error) {
+          this.$commonact.fault(error)
+        }
+      } else {
+        this.tableEdit = true
+      }
+    },
   }
 }
 </script>
