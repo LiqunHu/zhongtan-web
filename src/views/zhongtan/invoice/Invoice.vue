@@ -356,7 +356,10 @@
         <Row>
           <Col>
             <FormItem label="VALID TO" prop="invoice_masterbi_valid_to">
-              <DatePicker type="date" placeholder="VALID TO" v-model="workPara.invoice_masterbi_valid_to" :disabled="!!workPara.invoice_masterbi_do_release_date"></DatePicker>
+              <DatePicker type="date" placeholder="VALID TO" v-model="workPara.invoice_masterbi_valid_to" :disabled="doDeliverValidToEdit"></DatePicker>
+              <a href="#" @click.prevent="changeDoDeliverValidToEdit" title="Edit" v-if="workPara.invoice_masterbi_do_date">
+                <i class="fa fa-edit"></i>
+              </a>
             </FormItem>
           </Col>
         </Row>
@@ -374,9 +377,9 @@
           <Col>
             <FormItem label="ICD" prop="invoice_masterbi_do_icd">
               <i-select v-model="workPara.invoice_masterbi_do_icd">
-                <i-option  v-for="item in pagePara.ICD" :value="item.icd_code" :key="item.icd_code" :label="item.icd_code">
-                    <span>{{item.icd_code}}</span>
-                    <span style="float:right;color:#ccc">{{item.icd_name}}</span>
+                <i-option  v-for="item in pagePara.ICD" :value="item.icd_name" :key="item.icd_name" :label="item.icd_name">
+                    <span>{{item.icd_name}}</span>
+                    <span style="float:right;color:#ccc">{{item.icd_code}}</span>
                 </i-option>
               </i-select>
             </FormItem>
@@ -1036,6 +1039,7 @@ export default {
       checkPasswordType: '',
       depositEdit: false,
       doDeliverEdit: false,
+      doDeliverValidToEdit: false,
       formRules: {
           invoice_vessel_name: [
               { required: true, message: 'The vessel name cannot be empty', trigger: 'blur' }
@@ -1249,19 +1253,24 @@ export default {
       if(this.pagePara.DELIVER.ICD) {
         let defaultICD = false
         for(let i = 0; i < this.pagePara.DELIVER.ICD.length; i++) {
-          if(this.pagePara.DELIVER.ICD[i].icd_code === 'TICTS TERMINAL') {
+          if(this.pagePara.DELIVER.ICD[i].icd_name === 'TICTS TERMINAL') {
             defaultICD = true
             break
           }
         }
         if(!defaultICD) {
-          this.pagePara.DELIVER.ICD.push({'icd_name': 'TICTS TERMINAL', 'icd_code': 'TICTS TERMINAL'})
+          this.pagePara.DELIVER.ICD.push({'icd_name': 'TICTS TERMINAL', 'icd_code': 'WTTZDL002'})
         }
       } else {
-        this.pagePara.DELIVER.ICD = [{'icd_name': 'TICTS TERMINAL', 'icd_code': 'TICTS TERMINAL'}]
+        this.pagePara.DELIVER.ICD = [{'icd_name': 'TICTS TERMINAL', 'icd_code': 'WTTZDL002'}]
       }
       if(!this.workPara.invoice_masterbi_do_icd) {
         this.workPara.invoice_masterbi_do_icd = 'TICTS TERMINAL'
+      }
+      if(this.workPara.invoice_masterbi_do_date) {
+        this.doDeliverValidToEdit = true
+      } else {
+        this.doDeliverValidToEdit = false
       }
       this.modal.downLoadDoModal = true
     },
@@ -1582,6 +1591,17 @@ export default {
         }
       }
     },
+    changeDoDeliverValidToEdit: function() {
+      if(!this.doDeliverEdit) {
+        try {
+          this.modal.checkPasswordModal = true
+          this.checkPassword = ''
+          this.checkPasswordType = 'doDeliverValidToEdit'
+        } catch (error) {
+          this.$commonact.fault(error)
+        }
+      }
+    },
     deleteVesselAct: function(item) {
       try {
         this.workPara = JSON.parse(JSON.stringify(item))
@@ -1623,6 +1643,8 @@ export default {
           this.modal.editVesselModal = true
         } else if(this.checkPasswordType === 'doTableEdit') {
           this.tableEdit = false
+        } else if(this.checkPasswordType === 'doDeliverValidToEdit') {
+          this.doDeliverValidToEdit = false
         }
       } catch (error) {
         this.$commonact.fault(error)
