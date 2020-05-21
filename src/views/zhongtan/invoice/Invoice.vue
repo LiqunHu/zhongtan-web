@@ -1592,7 +1592,7 @@ export default {
       }
     },
     changeDoDeliverValidToEdit: function() {
-      if(!this.doDeliverEdit) {
+      if(!this.doDeliverValidToEdit) {
         try {
           this.modal.checkPasswordModal = true
           this.checkPassword = ''
