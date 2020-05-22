@@ -37,7 +37,10 @@
               </button>
             </div>
             <div class="form-group m-r-3">
-              <button type="button" class="btn btn-info" @click="loadImportModal">Load</button>
+              <button type="button" class="btn btn-info" @click="loadImportModal('Container')">Load</button>
+            </div>
+            <div class="form-group m-r-3">
+              <button type="button" class="btn btn-info" @click="loadImportModal('bulk')">Bulk Load</button>
             </div>
             <div class="form-group m-r-3">
               <Button-group>
@@ -1076,7 +1079,8 @@ export default {
       delivery: {
         options: []
       },
-      tableEdit: true
+      tableEdit: true,
+      importFileType: ''
     }
   },
   created() {
@@ -1095,11 +1099,12 @@ export default {
         this.$commonact.fault(error)
       }
     },
-    loadImportModal: async function() {
+    loadImportModal: async function(importFileType) {
       this.workPara = {}
       this.$refs.upload.fileList = []
       this.files.fileList = []
       this.action = 'add'
+      this.importFileType = importFileType
       this.modal.importModal = true
     },
     handleSuccess(res, file, fileList) {
@@ -1144,10 +1149,12 @@ export default {
           return this.$Message.error('Please upload xml file')
         }
         this.workPara.upload_files = this.files.fileList
+        this.workPara.importFileType = this.importFileType
         await this.$http.post(apiUrl + 'uploadImport', this.workPara)
         this.$Message.success('submit success')
         this.getVoyageData()
         this.modal.importModal = false
+        this.importFileType = ''
       } catch (error) {
         this.$refs.upload.fileList = []
         this.files.fileList = []
