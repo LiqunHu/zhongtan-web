@@ -61,6 +61,8 @@
                   <div @click="checkVoyage(item.invoice_vessel_id)">
                     <Card>
                       <p slot="title">
+                        <i class="fa fa-ship" v-if="item.invoice_vessel_type === 'Bulk'" title="BULK SHIP"></i>
+                        <i class="fa fa-cubes" v-else title="CONTAINER SHIP"></i>
                         {{item.invoice_vessel_name}}({{item.invoice_vessel_code}}) - {{item.invoice_vessel_voyage}}
                         <a href="#" @click.prevent="editVesselAct(item)" title="Edit">
                           <i class="fa fa-edit"></i>
@@ -347,7 +349,7 @@
         <Row>
           <Col>
             <FormItem label="Delivery to" prop="invoice_masterbi_delivery_to">
-              <Select v-model="workPara.invoice_masterbi_delivery_to" filterable clearable allow-create placeholder="Delivery" style="width:400px"  @on-query-change="deliveryCreate">
+              <Select v-model="workPara.invoice_masterbi_delivery_to" filterable clearable placeholder="Delivery" style="width:400px">
                 <Option v-for="item in delivery.options" :value="item" :key="item">{{item}}</Option>
               </Select>
               <!-- <a href="#" @click.prevent="changeDoDeliverEdit" title="Edit">
@@ -1281,14 +1283,6 @@ export default {
       }
       this.modal.downLoadDoModal = true
     },
-    deliveryCreate: function (val) {
-      if(val) {
-        const index = this.delivery.options.indexOf(val)
-        if(index < 0) {
-          this.delivery.options.unshift(val)
-        }
-      }
-    },
     downloadDo: async function() {
       try {
         let response = await this.$http.post(apiUrl + 'downloadDo', this.workPara)
@@ -1599,7 +1593,7 @@ export default {
       }
     },
     changeDoDeliverValidToEdit: function() {
-      if(!this.doDeliverValidToEdit) {
+      if(this.doDeliverValidToEdit) {
         try {
           this.modal.checkPasswordModal = true
           this.checkPassword = ''
