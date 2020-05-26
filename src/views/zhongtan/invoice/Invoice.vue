@@ -105,6 +105,11 @@
           <Tabs :animated="false" @on-click="changeTab">
             <TabPane label="MasterBl">
               <Table stripe size="small" ref="masterbiTable" :columns="table.masterbiTable.columns" :data="table.masterbiTable.data" :height="table.masterbiTable.height">
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_bl">
+                  <i class="fa fa-ship" v-if="row.invoice_masterbi_vessel_type === 'Bulk'"></i>
+                  <i class="fa fa-cubes" v-else></i>
+                  {{row.invoice_masterbi_bl}}
+                </template>
                 <template slot-scope="{ row, index }" slot="Invoice">
                   <Tooltip content="Deposit" v-if="!row.invoice_masterbi_invoice_release_date">
                     <a href="#" class="btn btn-green btn-icon btn-sm" @click="actDepositModal(row)">
@@ -368,7 +373,7 @@
             </FormItem>
           </Col>
         </Row>
-        <Row>
+        <Row v-if="workPara.invoice_masterbi_vessel_type !== 'Bulk'">
           <Col>
             <FormItem label="FCL" prop="invoice_masterbi_do_fcl">
               <RadioGroup v-model="workPara.invoice_masterbi_do_fcl">
@@ -445,12 +450,12 @@
             </FormItem>
           </Col>
         </Row>
-        <FormItem label="Container Size" style="margin-bottom: 0px;">
+        <FormItem label="Container Size" style="margin-bottom: 0px;" v-if="workPara.invoice_masterbi_vessel_type !== 'Bulk'">
           <span style='white-space:pre;'> {{ workPara.container_size_type }}</span>
         </FormItem>
         <Checkbox v-model = "depositEdit" style="position: absolute; top: 366px; right: 20px;" @on-change="changeDepositEdit">EDIT</Checkbox>
         <Tabs ref="depositTabs" active-key="Container Deposit" @on-click="currentFeeTabChanged">
-          <Tab-pane :label="containerDepositFeeLabel" name = "Container Deposit" key="Container Deposit">
+          <Tab-pane :label="containerDepositFeeLabel" name = "Container Deposit" key="Container Deposit" :disabled="workPara.invoice_masterbi_vessel_type === 'Bulk'">
             <FormItem label="Deposit Amount" prop="invoice_masterbi_deposit" style="margin-bottom: 0px;">
               <Input placeholder="Deposit Amount" v-model="workPara.invoice_masterbi_deposit" :disabled = "!!workPara.invoice_masterbi_deposit_disabled && !depositEdit"> 
                 <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_deposit_necessary" :disabled="workPara.invoice_masterbi_deposit_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_deposit')">Fixed</Checkbox>
@@ -643,8 +648,8 @@ export default {
           columns: [
             {
               title: '#M B/L No',
-              key: 'invoice_masterbi_bl',
-              width: 150
+              slot: 'invoice_masterbi_bl',
+              width: 180
             },
             {
               title: 'Invoice',
@@ -1313,8 +1318,13 @@ export default {
       this.$nextTick(function() {
         this.workPara = JSON.parse(JSON.stringify(row))
         this.depositEdit = false
-        this.deposit.depositType = 'Container Deposit'
-        this.$refs.depositTabs.activeKey = 'Container Deposit'
+        if(this.workPara.invoice_masterbi_vessel_type && this.workPara.invoice_masterbi_vessel_type === 'Bulk') {
+          this.deposit.depositType = 'Invoice Fee'
+          this.$refs.depositTabs.activeKey = 'Invoice Fee'
+        } else {
+          this.deposit.depositType = 'Container Deposit'
+          this.$refs.depositTabs.activeKey = 'Container Deposit'
+        }
         if(this.workPara.invoice_masterbi_deposit_state) {
           this.containerDepositFeeLabel = h => {
                 return h("div", [

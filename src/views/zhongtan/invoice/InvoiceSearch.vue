@@ -40,9 +40,14 @@
         </div>
       </template>
       <Table stripe size="small" ref="masterbiTable" :columns="table.masterbiTable.columns" :data="table.masterbiTable.data" :height="table.masterbiTable.height">
+        <template slot-scope="{ row, index }" slot="invoice_masterbi_bl">
+          <i class="fa fa-ship" v-if="row.invoice_masterbi_vessel_type === 'Bulk'"></i>
+          <i class="fa fa-cubes" v-else></i>
+          {{row.invoice_masterbi_bl}}
+        </template>
         <template slot-scope="{ row, index }" slot="Invoice">
           <a href="#" class="btn btn-green btn-icon btn-sm" v-if="row.invoice_masterbi_deposit_release_date || row.invoice_masterbi_fee_release_date">
-              GO
+            GO
           </a>
           <a href="#" class="btn btn-danger btn-icon btn-sm" v-else>
             NO
@@ -184,8 +189,8 @@ export default {
           columns: [
             {
               title: '#M B/L No',
-              key: 'invoice_masterbi_bl',
-              width: 150
+              slot: 'invoice_masterbi_bl',
+              width: 180
             },
             {
               title: 'Invoice',

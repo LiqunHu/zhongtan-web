@@ -45,7 +45,11 @@
                 <Col>
                   <div @click="checkVoyage(item.invoice_vessel_id)">
                     <Card>
-                      <p slot="title">{{item.invoice_vessel_name}}({{item.invoice_vessel_code}}) - {{item.invoice_vessel_voyage}}</p>
+                      <p slot="title">
+                        <i class="fa fa-ship" v-if="item.invoice_vessel_type === 'Bulk'" title="BULK SHIP"></i>
+                        <i class="fa fa-cubes" v-else title="CONTAINER SHIP"></i>
+                        {{item.invoice_vessel_name}}({{item.invoice_vessel_code}}) - {{item.invoice_vessel_voyage}}
+                      </p>
                       <Row>
                         <Col span="11">
                           <p>ETA: {{item.invoice_vessel_eta}}</p>
@@ -75,6 +79,11 @@
           <Tabs :animated="false" @on-click="changeTab">
             <TabPane label="MasterBl">
               <Table stripe size="small" ref="masterbiTable" :columns="table.masterbiTable.columns" :data="table.masterbiTable.data" :height="table.masterbiTable.height">
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_bl">
+                  <i class="fa fa-ship" v-if="row.invoice_masterbi_vessel_type === 'Bulk'"></i>
+                  <i class="fa fa-cubes" v-else></i>
+                  {{row.invoice_masterbi_bl}}
+                </template>
                 <template slot-scope="{ row, index }" slot="Receipt">
                   <Tooltip :content="row.invoice_masterbi_receipt_release_date_fmt" v-if="row.invoice_masterbi_deposit_receipt_date && row.invoice_masterbi_invoice_receipt_date">
                     <a href="#" class="btn btn-pink btn-icon btn-sm">
@@ -274,8 +283,8 @@ export default {
           columns: [
             {
               title: '#M B/L No',
-              key: 'invoice_masterbi_bl',
-              width: 150
+              slot: 'invoice_masterbi_bl',
+              width: 180
             },
             {
               title: 'Receipt',
