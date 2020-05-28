@@ -43,7 +43,8 @@ const routes = [
   { path: '/admin/zhongtan/configuration/IcdConfig', component: resolve => require(['@/views/zhongtan/configuration/IcdConfig'], resolve) },
   { path: '/admin/zhongtan/configuration/ContainerSizeConfig', component: resolve => require(['@/views/zhongtan/configuration/ContainerSizeConfig'], resolve) },
   { path: '/admin/zhongtan/configuration/ContainerTypeConfig', component: resolve => require(['@/views/zhongtan/configuration/ContainerTypeConfig'], resolve) },
-  { path: '/admin/zhongtan/configuration/DischargePortConfig', component: resolve => require(['@/views/zhongtan/configuration/DischargePortConfig'], resolve) }
+  { path: '/admin/zhongtan/configuration/DischargePortConfig', component: resolve => require(['@/views/zhongtan/configuration/DischargePortConfig'], resolve) },
+  { path: '/admin/zhongtan/equipment/OverdueCalculationConfig', component: resolve => require(['@/views/zhongtan/equipment/OverdueCalculationConfig'], resolve) }
 ]
 
 export default routes
