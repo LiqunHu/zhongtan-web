@@ -43,14 +43,6 @@
                             </i-option>
                         </i-select>
                     </div>
-                    <div class="form-group m-r-2">
-                        <i-select v-model="search_data.overdue_charge_container_type" clearable placeholder = "select container type" style="width:180px">
-                            <i-option  v-for="item in pagePara.CONTAINER_TYPE" :value="item.container_type_code" :key="item.container_type_code" :label="item.container_type_code">
-                                <span>{{item.container_type_code}}</span>
-                                <span style="float:right;color:#ccc">{{item.container_type_name}}</span>
-                            </i-option>
-                        </i-select>
-                    </div>
                     <div class="form-group m-r-10">
                         <button type="button" class="btn btn-info" @click="getTableData">
                             <i class="fa fa-search"></i>
@@ -62,9 +54,10 @@
                 </div>
             </div>
         </template>
-        <Table stripe size="small" ref="ruleTable" :columns="table.ruleTable.columns" :data="table.ruleTable.data" :height="table.ruleTable.height">
+        <Table stripe size="small" ref="ruleTable" :columns="table.ruleTable.columns" :data="table.ruleTable.data" :height="table.ruleTable.height" border>
             <template slot-scope="{ row, index }" slot="overdue_charge_container">
-               {{row.overdue_charge_container_size}}{{row.overdue_charge_container_type}}
+               {{row.overdue_charge_container_size}} [
+                <span v-for="item in pagePara.CONTAINER_SIZE" v-if="item.container_size_code === row.overdue_charge_container_size">{{item.container_size_name}}</span> ]
             </template>
             <template slot-scope="{ row, index }" slot="overdue_charge_day">
                {{row.overdue_charge_min_day}} - {{row.overdue_charge_max_day}} Day
@@ -91,7 +84,7 @@
                     </RadioGroup>
                 </FormItem>
                 <FormItem label="Discharge Port" prop="overdue_charge_discharge_port_multiple" v-if="modalStatus === 'create'">
-                    <i-select v-model="chargeRuleForm.overdue_charge_discharge_port" clearable multiple filterable placeholder = "select discharge port">
+                    <i-select v-model="chargeRuleForm.overdue_charge_discharge_port_multiple" clearable multiple filterable placeholder = "select discharge port">
                         <i-option  v-for="item in pagePara.DISCHARGE_PORT" :value="item.discharge_port_code" :key="item.discharge_port_code" :label="item.discharge_port_code">
                             <span>{{item.discharge_port_code}}</span>
                             <span style="float:right;color:#ccc">{{item.discharge_port_name}}</span>
@@ -111,27 +104,19 @@
                         <Radio v-for="item in carrierFileter" v-bind:key="item.id" :label="item.id" style="margin-right: 50px;">{{item.text}}</Radio>
                     </RadioGroup>
                 </FormItem>
-                <FormItem label="Container size" prop="overdue_charge_container_size">
-                    <i-select v-model="chargeRuleForm.overdue_charge_container_size" clearable filterable placeholder = "select container size">
+                <FormItem label="Container Size" prop="overdue_charge_container_size_multiple" v-if="modalStatus === 'create'">
+                    <i-select v-model="chargeRuleForm.overdue_charge_container_size_multiple" clearable multiple filterable placeholder = "select container size type">
                         <i-option  v-for="item in pagePara.CONTAINER_SIZE" :value="item.container_size_code" :key="item.container_size_code" :label="item.container_size_code">
                             <span>{{item.container_size_code}}</span>
                             <span style="float:right;color:#ccc">{{item.container_size_name}}</span>
                         </i-option>
                     </i-select>
                 </FormItem>
-                <FormItem label="Container Type" prop="overdue_charge_container_type_multiple" v-if="modalStatus === 'create'">
-                    <i-select v-model="chargeRuleForm.overdue_charge_container_type" clearable multiple filterable placeholder = "select container type">
-                        <i-option  v-for="item in pagePara.CONTAINER_TYPE" :value="item.container_type_code" :key="item.container_type_code" :label="item.container_type_code">
-                            <span>{{item.container_type_code}}</span>
-                            <span style="float:right;color:#ccc">{{item.container_type_name}}</span>
-                        </i-option>
-                    </i-select>
-                </FormItem>
-                <FormItem label="Container Type" prop="overdue_charge_container_type" v-if="modalStatus === 'update'">
-                    <i-select v-model="chargeRuleForm.overdue_charge_container_type" clearable filterable placeholder = "select container type">
-                        <i-option  v-for="item in pagePara.CONTAINER_TYPE" :value="item.container_type_code" :key="item.container_type_code" :label="item.container_type_code">
-                            <span>{{item.container_type_code}}</span>
-                            <span style="float:right;color:#ccc">{{item.container_type_name}}</span>
+                <FormItem label="Container Type" prop="overdue_charge_container_size" v-if="modalStatus === 'update'">
+                    <i-select v-model="chargeRuleForm.overdue_charge_container_size" clearable filterable placeholder = "select container size type">
+                        <i-option  v-for="item in pagePara.CONTAINER_SIZE" :value="item.container_size_code" :key="item.container_size_code" :label="item.container_size_code">
+                            <span>{{item.container_size_code}}</span>
+                            <span style="float:right;color:#ccc">{{item.container_size_name}}</span>
                         </i-option>
                     </i-select>
                 </FormItem>
@@ -139,14 +124,14 @@
                     <i-col span="14">
                         <FormItem label="Day" prop="overdue_charge_min_day">
                             <Input v-model="chargeRuleForm.overdue_charge_min_day" clearable placeholder="min day">
-                                <span slot="append" style="display:block; width: 40px">天</span>
+                                <span slot="append" style="display:block; width: 40px">Day</span>
                             </Input>
                         </FormItem>
                     </i-col>
                     <i-col span="2" style="text-align: center">-</i-col>
                     <i-col span="8">
                         <Input v-model="chargeRuleForm.overdue_charge_max_day" clearable  placeholder="max day">
-                            <span slot="append" style="display:block; width: 40px">天</span>
+                            <span slot="append" style="display:block; width: 40px">Day</span>
                         </Input>
                     </i-col>
                 </Row>
@@ -245,7 +230,6 @@ export default {
           overdue_charge_discharge_port: '',
           overdue_charge_carrier: '',
           overdue_charge_container_size: '',
-          overdue_charge_container_type: '',
           overdue_charge_min_day: '',
           overdue_charge_max_day: '',
           overdue_charge_amount: '',
@@ -267,13 +251,10 @@ export default {
                 { required: true, message: 'The carrier cannot be empty', trigger: 'change' }
             ],
             overdue_charge_container_size: [
-                {required: true, trigger: 'change', message: 'select container size'}
+                {required: true, trigger: 'change', message: 'select container size type'}
             ],
-            overdue_charge_container_type: [
-                {required: true, trigger: 'change', message: 'select container type'}
-            ],
-            overdue_charge_container_type_multiple: [
-                { type: 'array', min: 1, required: true, trigger: 'change', message: 'select container type'}
+            overdue_charge_container_size_multiple: [
+                { type: 'array', min: 1, required: true, trigger: 'change', message: 'select container size type'}
             ],
             overdue_charge_min_day: [
                 { required: true, message: 'The min day cannot be empty', trigger: 'blur' },
@@ -333,7 +314,6 @@ export default {
           overdue_charge_discharge_port: '',
           overdue_charge_carrier: 'COSCO',
           overdue_charge_container_size: '',
-          overdue_charge_container_type: '',
           overdue_charge_min_day: '',
           overdue_charge_max_day: '',
           overdue_charge_amount: '',

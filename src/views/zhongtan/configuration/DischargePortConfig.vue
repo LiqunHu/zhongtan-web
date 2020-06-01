@@ -31,7 +31,7 @@
           </div>
         </div>
       </template>
-      <Table stripe ref="dischargePortTable" :columns="table.dischargePortTable.rows" :data="table.dischargePortTable.data">
+      <Table stripe ref="dischargePortTable" :columns="table.dischargePortTable.rows" :data="table.dischargePortTable.data" border>
         <template slot-scope="{ row, index }" slot="action">
           <a href="#" class="btn btn-info btn-icon btn-sm" @click="modifyDischargePortModal(row)">
             <i class="fa fa-edit"></i>

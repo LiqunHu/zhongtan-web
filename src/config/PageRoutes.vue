@@ -41,10 +41,10 @@ const routes = [
   resolve) },
   { path: '/admin/zhongtan/invoice/InvoiceSearch', component: resolve => require(['@/views/zhongtan/invoice/InvoiceSearch'], resolve) },
   { path: '/admin/zhongtan/configuration/IcdConfig', component: resolve => require(['@/views/zhongtan/configuration/IcdConfig'], resolve) },
-  { path: '/admin/zhongtan/configuration/ContainerSizeConfig', component: resolve => require(['@/views/zhongtan/configuration/ContainerSizeConfig'], resolve) },
-  { path: '/admin/zhongtan/configuration/ContainerTypeConfig', component: resolve => require(['@/views/zhongtan/configuration/ContainerTypeConfig'], resolve) },
+  { path: '/admin/zhongtan/configuration/ContainerSizeTypeConfig', component: resolve => require(['@/views/zhongtan/configuration/ContainerSizeTypeConfig'], resolve) },
   { path: '/admin/zhongtan/configuration/DischargePortConfig', component: resolve => require(['@/views/zhongtan/configuration/DischargePortConfig'], resolve) },
-  { path: '/admin/zhongtan/equipment/OverdueCalculationConfig', component: resolve => require(['@/views/zhongtan/equipment/OverdueCalculationConfig'], resolve) }
+  { path: '/admin/zhongtan/equipment/OverdueCalculationConfig', component: resolve => require(['@/views/zhongtan/equipment/OverdueCalculationConfig'], resolve) },
+  { path: '/admin/zhongtan/equipment/ImportOverdueCalculation', component: resolve => require(['@/views/zhongtan/equipment/ImportOverdueCalculation'], resolve) }
 ]
 
 export default routes

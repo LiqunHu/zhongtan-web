@@ -608,10 +608,10 @@
         <FormItem label="Vessel Voyage" prop="invoice_vessel_voyage">
           <Input placeholder="Vessel Voyage" v-model="vesselForm.invoice_vessel_voyage" clearable></Input>
         </FormItem>
-        <FormItem label="Vessel Code" prop="invoice_vessel_code">
+        <FormItem label="Vessel Code" prop="invoice_vessel_code" v-if="vesselForm.invoice_vessel_type != 'Bulk'">
           <Input placeholder="Vessel Code" v-model="vesselForm.invoice_vessel_code" clearable></Input>
         </FormItem>
-        <FormItem label="Vessel Call Sign" prop="invoice_vessel_call_sign">
+        <FormItem label="Vessel Call Sign" prop="invoice_vessel_call_sign"  v-if="vesselForm.invoice_vessel_type != 'Bulk'">
           <Input placeholder="Vessel Call Sign" v-model="vesselForm.invoice_vessel_call_sign" clearable></Input>
         </FormItem>
         <FormItem label="Vessel ETA" prop="invoice_vessel_eta">

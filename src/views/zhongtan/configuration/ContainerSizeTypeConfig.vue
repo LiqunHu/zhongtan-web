@@ -9,7 +9,7 @@
     <!-- end breadcrumb -->
     <!-- begin page-header -->
     <h1 class="page-header">
-      Container Size Config
+      Container Size Type Config
       <small></small>
     </h1>
     <!-- end page-header -->
@@ -26,12 +26,12 @@
               </div>
             </div>
             <div class="form-group m-r-10">
-              <button type="button" class="btn btn-info" @click="addContainerSizeModal">Add Container Size</button>
+              <button type="button" class="btn btn-info" @click="addContainerSizeModal">Add Container Size Type</button>
             </div>
           </div>
         </div>
       </template>
-      <Table stripe ref="containerSizeTable" :columns="table.containerSizeTable.rows" :data="table.containerSizeTable.data">
+      <Table stripe ref="containerSizeTable" :columns="table.containerSizeTable.rows" :data="table.containerSizeTable.data" border>
         <template slot-scope="{ row, index }" slot="action">
           <a href="#" class="btn btn-info btn-icon btn-sm" @click="modifyContainerSizeModal(row)">
             <i class="fa fa-edit"></i>
