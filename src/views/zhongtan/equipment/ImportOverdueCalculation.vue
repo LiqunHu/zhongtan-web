@@ -178,60 +178,70 @@ export default {
             {
               title: 'LADEN RELEASE',
               align: 'center',
+              fixed: 'right',
               children: [
                 {
                   title: 'Return Date',
                   key: 'invoice_containers_laden_release_date',
                   width: 140,
-                  align: 'center'
+                  align: 'center',
+                  fixed: 'right',
                 },
                 {
                   title: 'Overdue Days',
                   key: 'invoice_containers_laden_release_overdue_days',
                   width: 140,
-                  align: 'right'
+                  align: 'right',
+                  fixed: 'right',
                 },
                 {
                   title: 'Demurrage',
                   key: 'invoice_containers_laden_release_overdue_amount',
                   width: 120,
-                  align: 'right'
+                  align: 'right',
+                  fixed: 'right',
                 },
                 {
                   title: 'Cal',
                   slot: 'laden_overdue_calculation',
+                  width: 60,
                   align: 'center',
-                  width: 60
+                  fixed: 'right',
                 }
               ]
             },
             {
               title: 'EMPTY RETURN',
               align: 'center',
+              fixed: 'right',
               children: [
                 {
                   title: 'Return Date',
                   key: 'invoice_containers_empty_return_date',
                   width: 140,
-                  align: 'center'
+                  align: 'center',
+                  fixed: 'right',
                 },
                 {
                   title: 'Overdue Days',
                   key: 'invoice_containers_empty_return_overdue_days',
                   width: 140,
-                  align: 'right'
+                  align: 'right',
+                  fixed: 'right',
                 },
                 {
                   title: 'Demurrage',
                   key: 'invoice_containers_empty_return_overdue_amount',
                   width: 120,
-                  align: 'right'
+                  align: 'right',
+                  fixed: 'right',
                 },
                 {
                   title: 'Cal',
                   slot: 'empty_overdue_calculation',
+                  width: 60,
                   align: 'center',
-                  width: 60
+                  fixed: 'right',
                 }
               ]
             }
