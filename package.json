@@ -35,7 +35,8 @@
     "vue-ins-progress-bar": "^1.0.0",
     "axios": "^0.18.0",
     "vue-router": "^3.0.1",
-    "vuex": "^3.0.1"
+    "vuex": "^3.0.1",
+    "view-design": "^4.0.0"
   },
   "devDependencies": {
     "pre-commit": "1.2.2",

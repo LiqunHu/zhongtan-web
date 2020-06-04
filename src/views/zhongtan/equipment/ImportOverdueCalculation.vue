@@ -32,47 +32,50 @@
               </button>
             </div>
             <div class="form-group m-r-10">
-              <button type="button" class="btn btn-primary" @click="getTableData" :disabled="ladenInvoiceDisabled">
-                <i class="fa fa-money-bill-alt"></i> Laden Invoice
-              </button>
-            </div>
-            <div class="form-group m-r-10">
-              <button type="button" class="btn btn-primary" @click="getTableData" :disabled="ladenReceiptDisabled">
-                <i class="fa fa-money-bill-alt"></i> Laden Receipt
-              </button>
-            </div>
-            <div class="form-group m-r-10">
-              <button type="button" class="btn btn-success" @click="getTableData" :disabled="emptyInvoiceDisabled">
-                <i class="fa fa-money-bill-alt"></i> Empty Invoice
-              </button>
-            </div>
-            <div class="form-group m-r-10">
-              <button type="button" class="btn btn-success" @click="getTableData" :disabled="emptyReceiptDisabled">
-                <i class="fa fa-money-bill-alt"></i> Empty Receipt
+              <button type="button" class="btn btn-success" @click="emptyInvoiceModal" :disabled="emptyInvoiceDisabled">
+                <i class="fa fa-money-bill-alt"></i> Invoice
               </button>
             </div>
           </div>
         </div>
       </template>
-      <Table stripe size="small" ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data" :height="table.containerTable.height" border @on-selection-change="containerSelectedChange">
+      <Table stripe size="small" ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data" :height="table.containerTable.height" border @on-selection-change="containerSelectedChange" :span-method="handleSpan">
+        <template slot-scope="{ row, index }" slot="files">
+          <Poptip trigger="hover" placement="bottom-start" :transfer="true" v-if="row.files && row.files.length > 0">
+            <span>Files</span>
+            <template slot="content">
+              <Table stripe size="small" :columns="table.filesTable.columns" :data="row.files">
+                <template slot-scope="{ row, index }" slot="act">
+                  <template v-if="row.state === 'AP'">
+                    <Tooltip content="Download" placement="top">
+                      <a :href="row.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
+                        <i class="fa fa-download"></i>
+                      </a>
+                    </Tooltip>
+                  </template>
+                </template>
+              </Table>
+            </template>
+          </Poptip>
+        </template>
         <template slot-scope="{ row, index }" slot="invoice_containers_size">
             {{row.invoice_containers_size}} [
             <span v-for="item in pagePara.CONTAINER_SIZE" v-if="item.container_size_code === row.invoice_containers_size">{{item.container_size_name}}</span> ]
-        </template>
-        <template slot-scope="{ row, index }" slot="laden_overdue_calculation">
-          <a href="#" class="btn btn-primary btn-icon btn-sm" @click="ladenOverdueCalculationModal(row)">
-            <i class="fa fa-calculator"></i>
-          </a>
         </template>
         <template slot-scope="{ row, index }" slot="empty_overdue_calculation">
           <a href="#" class="btn btn-primary btn-icon btn-sm" @click="emptyOverdueCalculationModal(row)">
             <i class="fa fa-calculator"></i>
           </a>
         </template>
+        <template slot-scope="{ row, index }" slot="actually_return_act">
+          <a v-if="row.invoice_containers_actually_return_date" href="#" class="btn btn-success btn-icon btn-sm" @click="ladenOverdueCalculationModal(row)">
+            <i class="fa fa-save "></i>
+          </a>
+        </template>
       </Table>
       <Page class="m-t-10" :total="table.containerTable.total" show-sizer :page-size="table.containerTable.limit" @on-change="getTableData" @on-page-size-change="resetTableSizer"/>
       <Modal v-model="modal.calculationModal" :title="textMap[modalStatus]" width="600">
-        <Form ref="overdueChargeForm" :model="overdueChargeForm" :rules="overdueChargeRules" :label-width="120" style="padding-right: 80px;">
+        <Form ref="overdueChargeForm" :model="overdueChargeForm" :label-width="150" style="padding-right: 80px;">
           <FormItem label="Discharge Date">
             <Input icon="ios-calendar-outline" v-model="overdueChargeForm.invoice_vessel_ata" disabled style="width: 176px;"></Input>
           </FormItem>
@@ -99,8 +102,21 @@
         </Form>
         <div slot="footer">
           <Button type="text" size="large" @click="modal.calculationModal = false">Cancel</Button>
-          <Button type="primary" size="large" v-if="modalStatus === 'laden'" @click="ladenSubmitAct" :disabled="ladenSubmitDisabled">Laden Submit</Button>
-          <Button type="primary" size="large" v-if="modalStatus === 'empty'" @click="emptySubmitAct" :disabled="emptySubmitDisabled">Empty Submit</Button>
+          <Button type="primary" size="large" v-if="modalStatus === 'laden'" @click="ladenSubmitAct" :disabled="ladenSubmitDisabled">Submit</Button>
+          <Button type="primary" size="large" v-if="modalStatus === 'empty'" @click="emptySubmitAct" :disabled="emptySubmitDisabled">Submit</Button>
+        </div>
+      </Modal>
+      <Modal v-model="modal.invoiceModal" title="INVOICE" width="600">
+        <Form ref="invoiceForm" :model="invoiceForm" :rules="invoiceRules" :label-width="150" style="padding-right: 80px;">
+          <FormItem label="MESSRS" prop="invoice_customer_id" style="margin-bottom: 0px;">
+            <Select ref="customer" v-model="invoiceForm.invoice_customer_id" filterable clearable remote :remote-method="searchCustomer" :loading="customer.loading" placeholder="Customer">
+              <Option v-for="item in customer.options" :value="item.id" :key="item.id">{{item.text}}</Option>
+            </Select>
+          </FormItem>
+        </Form>
+        <div slot="footer">
+          <Button type="text" size="large" @click="modal.invoiceModal = false">Cancel</Button>
+          <Button type="primary" size="large" @click="emptyInvoiceAct" >Submit</Button>
         </div>
       </Modal>
     </panel>
@@ -116,11 +132,11 @@ export default {
   name: 'ImportOverdueCalculation',
   data: function() {
     return {
-      modal: { calculationModal: false },
+      modal: { calculationModal: false, invoiceModal : false },
       modalStatus: 'laden',
       textMap: {
-        laden: 'Laden Overdue Calculation',
-        empty: 'Empty Overdue Calculation'
+        laden: 'Overdue Calculation',
+        empty: 'Overdue Calculation'
       },
       cargoTypeFileter: [
         { id: 'IM', text: 'IM' },
@@ -146,6 +162,12 @@ export default {
               align: 'center'
             },
             {
+              title: 'Files',
+              slot: 'files',
+              width: 80,
+              align: 'center'
+            },
+            {
               title: 'Container No',
               key: 'invoice_containers_no',
               width: 130,
@@ -160,7 +182,7 @@ export default {
             {
               title: 'IM/TR',
               key: 'invoice_masterbi_cargo_type',
-              width: 120,
+              width: 80,
               align: 'center'
             },
             {
@@ -176,72 +198,72 @@ export default {
               align: 'center'
             },
             {
-              title: 'LADEN RELEASE',
-              align: 'center',
-              fixed: 'right',
-              children: [
-                {
-                  title: 'Return Date',
-                  key: 'invoice_containers_laden_release_date',
-                  width: 140,
-                  align: 'center',
-                  fixed: 'right',
-                },
-                {
-                  title: 'Overdue Days',
-                  key: 'invoice_containers_laden_release_overdue_days',
-                  width: 140,
-                  align: 'right',
-                  fixed: 'right',
-                },
-                {
-                  title: 'Demurrage',
-                  key: 'invoice_containers_laden_release_overdue_amount',
-                  width: 120,
-                  align: 'right',
-                  fixed: 'right',
-                },
-                {
-                  title: 'Cal',
-                  slot: 'laden_overdue_calculation',
-                  width: 60,
-                  align: 'center',
-                  fixed: 'right',
-                }
-              ]
-            },
-            {
-              title: 'EMPTY RETURN',
+              title: 'OVERDUE CALCULATION',
               align: 'center',
               fixed: 'right',
               children: [
                 {
                   title: 'Return Date',
                   key: 'invoice_containers_empty_return_date',
-                  width: 140,
+                  width: 125,
                   align: 'center',
-                  fixed: 'right',
+                  fixed: 'right'
                 },
                 {
                   title: 'Overdue Days',
                   key: 'invoice_containers_empty_return_overdue_days',
-                  width: 140,
+                  width: 125,
                   align: 'right',
-                  fixed: 'right',
+                  fixed: 'right'
                 },
                 {
                   title: 'Demurrage',
                   key: 'invoice_containers_empty_return_overdue_amount',
-                  width: 120,
+                  width: 125,
                   align: 'right',
-                  fixed: 'right',
+                  fixed: 'right'
                 },
                 {
                   title: 'Cal',
                   slot: 'empty_overdue_calculation',
-                  width: 60,
+                  width: 80,
                   align: 'center',
-                  fixed: 'right',
+                  fixed: 'right'
+                }
+              ]
+            },
+            {
+              title: 'ACTUALLY',
+              align: 'center',
+              fixed: 'right',
+              children: [
+                {
+                  title: 'Return Date',
+                  key: 'invoice_containers_actually_return_date',
+                  width: 125,
+                  align: 'center',
+                  fixed: 'right'
+                },
+                {
+                  title: 'Overdue Days',
+                  key: 'invoice_containers_actually_return_overdue_days',
+                  width: 125,
+                  align: 'right',
+                  fixed: 'right'
+                },
+                {
+                  title: 'Demurrage',
+                  key: 'invoice_containers_actually_return_overdue_amount',
+                  width: 125,
+                  align: 'right',
+                  fixed: 'right'
+                },
+                {
+                  title: 'Save',
+                  slot: 'actually_return_act',
+                  width: 80,
+                  align: 'center',
+                  fixed: 'right'
                 }
               ]
             }
@@ -252,6 +274,46 @@ export default {
           limit: 10,
           offset: 0,
           total: 0
+        },
+        filesTable: {
+          columns: [
+            {
+              title: 'Create Date',
+              key: 'date',
+              width: 120
+            },
+            {
+              title: 'Type',
+              key: 'file_type',
+              width: 120
+            },
+            {
+              title: 'Demurrage',
+              key: 'demurrage',
+              width: 120
+            },
+            {
+              title: 'State',
+              key: 'state',
+              render: common.selectRender(this, 'UPLOAD_STATE'),
+              width: 160
+            },
+            {
+              title: 'Action',
+              slot: 'act',
+              width: 120
+            },
+            {
+              title: 'Release User',
+              key: 'release_user',
+              width: 120
+            },
+            {
+              title: 'Release Date',
+              key: 'release_date',
+              width: 160
+            },
+          ]
         }
       },
       search_data: {
@@ -261,52 +323,19 @@ export default {
       },
       overdueChargeFormOld: {},
       overdueChargeForm: {},
-      overdueChargeRules: {
-        overdue_charge_cargo_type: [{ required: true, message: 'The cargo type cannot be empty', trigger: 'change' }],
-        overdue_charge_discharge_port: [{ required: true, trigger: 'change', message: 'select discharge port' }],
-        overdue_charge_discharge_port_multiple: [{ type: 'array', min: 1, required: true, trigger: 'change', message: 'select discharge port' }],
-        overdue_charge_carrier: [{ required: true, message: 'The carrier cannot be empty', trigger: 'change' }],
-        overdue_charge_container_size: [{ required: true, trigger: 'change', message: 'select container size' }],
-        overdue_charge_container_type: [{ required: true, trigger: 'change', message: 'select container type' }],
-        overdue_charge_container_type_multiple: [{ type: 'array', min: 1, required: true, trigger: 'change', message: 'select container type' }],
-        overdue_charge_min_day: [
-          { required: true, message: 'The min day cannot be empty', trigger: 'blur' },
-          {
-            type: 'number',
-            message: 'The min day must be number',
-            trigger: 'blur',
-            transform(value) {
-              return Number(value)
-            }
-          }
-        ],
-        overdue_charge_max_day: [
-          {
-            type: 'number',
-            message: 'The min day must be number',
-            trigger: 'blur',
-            transform(value) {
-              return Number(value)
-            }
-          }
-        ],
-        overdue_charge_amount: [
-          {
-            type: 'number',
-            message: 'The amount must be number',
-            trigger: 'blur',
-            transform(value) {
-              return Number(value)
-            }
-          }
-        ]
-      },
       ladenSubmitDisabled: true,
       emptySubmitDisabled: true,
-      ladenInvoiceDisabled: true,
-      ladenReceiptDisabled: true,
       emptyInvoiceDisabled: true,
-      emptyReceiptDisabled: true
+      invoiceForm: {
+        invoice_customer_id: ''
+      },
+      invoiceRules: {
+        invoice_customer_id: [{ required: true, trigger: 'change', message: 'select messrs' }],
+      },
+      customer: {
+        loading: false,
+        options: []
+      }
     }
   },
   created() {
@@ -360,6 +389,30 @@ export default {
         this.table.containerTable.limit = pageSizer
         this.getTableData(1)
     },
+    handleSpan: function({row, column, rowIndex, columnIndex}) {
+      if(column.title === '#M B/L No' || column.title === 'Files') {
+        return this.getLayout(row, rowIndex, columnIndex)
+      }
+    },
+    getLayout: function(row, rowIndex, columnIndex) {
+      let rowspan = 0
+      let colspan = 1
+      let tableData = this.table.containerTable.data
+      for(let d of tableData) {
+        if(d.invoice_masterbi_id === row.invoice_masterbi_id) {
+          rowspan++
+        }
+      }
+      if(rowspan > 1) {
+        if(rowIndex > 0 && tableData[rowIndex - 1].invoice_masterbi_id === row.invoice_masterbi_id) {
+          return [0, 0]
+        } else {
+          return [rowspan, colspan]
+        }
+      } else {
+        return [1, 1]
+      }
+    },
     containerSelectedChange: async function(selection) {
       if(selection && selection.length > 0) {
         let bl = ''
@@ -368,31 +421,16 @@ export default {
             bl = s.invoice_containers_bl
           } else {
             if(bl !== s.invoice_containers_bl) {
-              this.ladenInvoiceDisabled = true
-              this.ladenReceiptDisabled = true
               this.emptyInvoiceDisabled = true
-              this.emptyReceiptDisabled = true
               return this.$Message.error('please select same #B/L No.')
             }
-          }
-          if(s.invoice_containers_laden_release_date) {
-            this.ladenInvoiceDisabled = false
-          }
-          if(s.invoice_containers_laden_release_invoice_release_date) {
-            this.ladenReceiptDisabled = false
           }
           if(s.invoice_containers_empty_return_date) {
             this.emptyInvoiceDisabled = false
           }
-          if(s.invoice_containers_empty_return_invoice_release_date) {
-            this.emptyReceiptDisabled = false
-          }
         }
       } else {
-        this.ladenInvoiceDisabled = true
-        this.ladenReceiptDisabled = true
         this.emptyInvoiceDisabled = true
-        this.emptyReceiptDisabled = true
       }
       this.$forceUpdate()
     },
@@ -472,6 +510,56 @@ export default {
       } catch (error) {
         this.$commonact.fault(error)
       }
+    },
+    searchCustomer: async function(query) {
+      if (query !== '') {
+        this.customer.loading = true
+        let response = await this.$http.post(apiUrl + 'searchCustomer', {
+          search_text: query
+        })
+        this.customer.options = JSON.parse(JSON.stringify(response.data.info.customerINFO))
+        this.customer.loading = false
+      } else {
+        this.customer.options = []
+      }
+    },
+    emptyInvoiceModal: async function() {
+      let selection = this.$refs.containerTable.getSelection()
+      let invoice_customer_id = ''
+      if(selection && selection.length > 0) {
+        for(let d of selection) {
+          if(d.customerINFO && d.customerINFO.length > 0) {
+            this.customer.loading = true
+            this.customer.options = JSON.parse(JSON.stringify(d.customerINFO))
+            this.customer.loading = false
+            invoice_customer_id = d.invoice_containers_customer_id
+            break
+          }
+        }
+      }
+      this.$nextTick(function() {
+        this.invoiceForm.invoice_customer_id = invoice_customer_id
+      })
+      this.modal.invoiceModal = true
+    },
+    emptyInvoiceAct: async function() {
+      this.$refs['invoiceForm'].validate(async valid => {
+        if (valid) {
+          let selection = this.$refs.containerTable.getSelection()
+          if(selection && selection.length > 0) {
+            try {
+              await this.$http.post(apiUrl + 'emptyInvoice', {selection: selection, invoicePara: this.invoiceForm})
+              this.getTableData()
+              this.$Message.success('Invoice Success')
+              this.modal.invoiceModal = false
+            } catch (error) {
+              this.$commonact.fault(error)
+            }
+          }
+        } else {
+            this.$Message.error('Validate Fail!')
+        }
+      })
     },
   }
 }

@@ -77,7 +77,7 @@
         </Table>
         <Page class="m-t-10" :total="table.ruleTable.total" :page-size="table.ruleTable.limit" @on-change="getTableData" />
         <Modal v-model="modal.chargeRuleModal" :title="textMap[modalStatus]" width="600">
-            <Form ref="chargeRuleForm" :model="chargeRuleForm" :rules="chargeRules" :label-width="120" style="padding-right: 80px;">
+            <Form ref="chargeRuleForm" :model="chargeRuleForm" :rules="chargeRules" :label-width="150" style="padding-right: 80px;">
                 <FormItem label="Cargo Type" prop="overdue_charge_cargo_type">
                     <RadioGroup v-model="chargeRuleForm.overdue_charge_cargo_type">
                         <Radio v-for="item in cargoTypeFileter" v-bind:key="item.id" :label="item.id" style="margin-right: 50px;">{{item.text}}</Radio>

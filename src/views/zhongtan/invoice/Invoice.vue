@@ -402,7 +402,7 @@
       </div>
     </Modal>
     <Modal v-model="modal.depositModal" title="Deposit" width="600">
-      <Form :model="workPara" :label-width="130">
+      <Form :model="workPara" :label-width="140">
         <FormItem label="Customer" prop="invoice_masterbi_customer_id" style="margin-bottom: 0px;">
           <Select ref="customer" v-model="workPara.invoice_masterbi_customer_id" filterable clearable allow-create remote :remote-method="searchCustomer" :loading="deposit.customer.loading" placeholder="Customer">
             <Option v-for="item in deposit.customer.options" :value="item.id" :key="item.id">{{item.text}}<i v-if="item.fixed" class="fa fa-lock" style="float: right;"></i></Option>
@@ -433,7 +433,7 @@
             </FormItem>
           </Col>
           <Col span="12">
-            <FormItem label="Cargo Classification" style="margin-bottom: 0px;">
+            <FormItem label="Cargo" style="margin-bottom: 0px;">
               <span> {{ workPara.invoice_masterbi_cargo_type }} / {{ workPara.invoice_masterbi_freight }}</span>
             </FormItem>
           </Col>
@@ -445,7 +445,7 @@
             </FormItem>
           </Col>
           <Col span="12">
-            <FormItem label="Place of Destination" style="margin-bottom: 0px;">
+            <FormItem label="Destination" style="margin-bottom: 0px;">
               <span> {{ workPara.invoice_masterbi_destination }}</span>
             </FormItem>
           </Col>

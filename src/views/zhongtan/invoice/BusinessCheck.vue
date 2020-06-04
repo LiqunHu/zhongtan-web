@@ -37,6 +37,56 @@
         </div>
       </template>
       <Table stripe size="small" ref="checkTable" :columns="table.checkTable.columns" :data="table.checkTable.data" :height="table.checkTable.height">
+        <template slot-scope="{ row, index }" slot="amount">
+          <span v-if="row.receipt_type === 'Fixed Invoice'">{{row.fixed_deposit_amount}}</span>
+          <span v-if="row.receipt_type === 'Overdue Invoice'">{{row.overdue_invoice_amount}}</span>
+          <span v-if="row.receipt_type === 'Deposit Amount'">{{row.deposit}}</span>
+          <Poptip v-if="row.receipt_type === 'Invoice Fee'" trigger="hover" placement="bottom-start" :transfer="true" width="300">
+            <span>{{row.feeTotal}}</span>
+            <template slot="content">
+              <Row v-if="row.of">
+                <i-col span="12">OCEAN FREIGHT</i-col>
+                <i-col span="6" offset="6">{{row.of}}</i-col>
+              </Row>
+              <Row v-if="row.blAmendment">
+                <i-col span="12">B/L amendment</i-col>
+                <i-col span="6" offset="6">{{row.blAmendment}}</i-col>
+              </Row>
+              <Row v-if="row.codCharge">
+                <i-col span="12">COD Charge</i-col>
+                <i-col span="6" offset="6">{{row.codCharge}}</i-col>
+              </Row>
+              <Row v-if="row.transfer">
+                <i-col span="12">CONTAINER TRANSFER</i-col>
+                <i-col span="6" offset="6">{{row.transfer}}</i-col>
+              </Row>
+              <Row v-if="row.lolf">
+                <i-col span="12">LIFT ON LIFT OFF</i-col>
+                <i-col span="6" offset="6">{{row.lolf}}</i-col>
+              </Row>
+              <Row v-if="row.lcl">
+                <i-col span="12">LCL</i-col>
+                <i-col span="6" offset="6">{{row.lcl}}</i-col>
+              </Row>
+              <Row v-if="row.amendment">
+                <i-col span="12">AMENDMENT</i-col>
+                <i-col span="6" offset="6">{{row.amendment}}</i-col>
+              </Row>
+              <Row v-if="row.tasac">
+                <i-col span="12">TASAC</i-col>
+                <i-col span="6" offset="6">{{row.tasac}}</i-col>
+              </Row>
+              <Row v-if="row.printing">
+                <i-col span="12">BILL PRINGTING</i-col>
+                <i-col span="6" offset="6">{{row.printing}}</i-col>
+              </Row>
+              <Row v-if="row.others">
+                <i-col span="12">OTHERS</i-col>
+                <i-col span="6" offset="6">{{row.others}}</i-col>
+              </Row>
+            </template>
+          </Poptip>
+        </template>
         <template slot-scope="{ row, index }" slot="action">
           <a v-if = "row.upload_state == 'PB' && ((row.receipt_type !== 'Guarantee Letter' && row.receipt_type !== 'Fixed Invoice') || row.deposit_work_state === 'N')" href="#" class="btn btn-primary btn-icon btn-sm" @click="approve(row)">
             <i class="fa fa-check"></i>
@@ -44,7 +94,10 @@
           <a v-if = "row.upload_state == 'PB' && ((row.receipt_type !== 'Guarantee Letter' && row.receipt_type !== 'Fixed Invoice') || row.deposit_work_state === 'N')" href="#" class="btn btn-danger btn-icon btn-sm" @click="decline(row)">
             <i class="fa fa-times"></i>
           </a>
-          <a v-if = "row.receipt_type !== 'Guarantee Letter' && row.receipt_type !== 'Fixed Invoice'" href="#" class="btn btn-success btn-icon btn-sm" @click.prevent="actInvoiceDetailModal(row)">
+          <a v-if = "row.receipt_type === 'Deposit Amount' || row.receipt_type === 'Invoice Fee' " href="#" class="btn btn-success btn-icon btn-sm" @click.prevent="actInvoiceDetailModal(row)">
+            <Icon type="md-link" />
+          </a>
+          <a v-if = "row.receipt_type === 'Overdue Invoice'" href="#" class="btn btn-success btn-icon btn-sm" @click.prevent="actOverdueInvoiceDetailModal(row)">
             <Icon type="md-link" />
           </a>
           <a href="#" class="btn btn-default btn-icon btn-sm" @click.prevent="actVerificationTimelineModal(row)">
@@ -106,6 +159,7 @@
             <label style='white-space:pre;'> {{ workPara.container_size_type }}</label>
           </Col>
         </Row>
+        <Table v-if="workPara.invoice_contaienrs" stripe size="small" :columns="table.overdueTable.columns" :data="workPara.invoice_contaienrs"></Table>
       </Form>
       <div slot="footer">
         <Button type="text" size="large" @click="modal.invoiceDetail=false">Cancel</Button>
@@ -140,13 +194,11 @@ export default {
             {
               title: '#M B/L No',
               key: 'invoice_masterbi_bl',
-              width: 150,
+              width: 150
             },
             {
               title: 'Customer',
               key: 'invoice_customer_name',
-              width: 200,
-              render: common.tooltipCellLengthRender(20)
             },
             {
               title: 'Action',
@@ -170,70 +222,14 @@ export default {
               width: 150
             },
             {
-              title: 'DEPOSIT',
-              key: 'deposit',
-              width: 150
-            },
-            {
-              title: 'OCEAN FREIGHT',
-              key: 'of',
-              width: 150
-            },
-            {
-              title: 'B/L amendment',
-              key: 'blAmendment',
-              width: 150
-            },
-            {
-              title: 'COD Charge',
-              key: 'codCharge',
-              width: 150
-            },
-            {
-              title: 'CONTAINER TRANSFER',
-              key: 'transfer',
-              width: 150
-            },
-            {
-              title: 'LIFT ON LIFT OFF',
-              key: 'lolf',
-              width: 150
-            },
-            {
-              title: 'LCL',
-              key: 'lcl',
-              width: 150
-            },
-            {
-              title: 'AMENDMENT',
-              key: 'amendment',
-              width: 150
-            },
-            {
-              title: 'TASAC',
-              key: 'tasac',
-              width: 150
-            },
-            {
-              title: 'BILL PRINGTING',
-              key: 'printing',
-              width: 150
-            },
-            {
-              title: 'OTHERS',
-              key: 'others',
+              title: 'Amount',
+              slot: 'amount',
               width: 150
             },
             {
               title: 'COMMENT',
               key: 'comment',
-              width: 300,
               render: common.tooltipCellLengthRender(20)
-            },
-            {
-              title: 'FIXED',
-              key: 'fixed_deposit_amount',
-              width: 150
             },
           ],
           data: [],
@@ -241,6 +237,32 @@ export default {
           limit: 10,
           offset: 0,
           total: 0
+        },
+        overdueTable: {
+          columns: [
+            {
+              title: 'Contaienr No',
+              key: 'invoice_containers_no',
+              width: 120
+            },
+            {
+              title: 'Size',
+              key: 'invoice_containers_size',
+            },
+            {
+              title: 'Return Date',
+              key: 'overdue_invoice_containers_return_date',
+            },
+            {
+              title: 'Days',
+              key: 'overdue_invoice_containers_overdue_days',
+            },
+            {
+              title: 'Amount',
+              key: 'overdue_invoice_containers_overdue_amount',
+            }
+          ],
+          data: []
         }
       },
       pagePara: {},
@@ -325,6 +347,15 @@ export default {
     actInvoiceDetailModal: async function(row) {
       try {
         let response = await this.$http.post(apiUrl + 'getInvoiceDetail', { invoice_masterbi_id: row.invoice_masterbi_id })
+        this.workPara = response.data.info
+        this.modal.invoiceDetail = true
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
+    actOverdueInvoiceDetailModal: async function(row) {
+      try {
+        let response = await this.$http.post(apiUrl + 'getOverdueInvoiceDetail', { invoice_masterbi_id: row.invoice_masterbi_id, uploadfile_id: row.uploadfile_id })
         this.workPara = response.data.info
         this.modal.invoiceDetail = true
       } catch (error) {
