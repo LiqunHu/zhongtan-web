@@ -26,7 +26,7 @@
               </div>
             </div>
             <div class="form-group m-r-10">
-              <button type="button" class="btn btn-info" @click="addDischargePortModal">Add Discharge Port</button>
+              <button type="button" class="btn btn-info" @click="addDischargePortModal">Add</button>
             </div>
           </div>
         </div>
@@ -44,12 +44,12 @@
       <Page class="m-t-10" :total="table.dischargePortTable.total" :page-size="table.dischargePortTable.limit" @on-change="getDischargePortData"/>
     </panel>
     <Modal v-model="modal.dischargePortModal" title="Discharge Port">
-      <Form :model="workPara" :label-width="150" :rules="formRule.ruleDischargePortModal" ref="formDischargePort">
-        <FormItem label="Discharge Port Code" prop="discharge_port_code">
-          <Input placeholder="Discharge Port Code" v-model="workPara.discharge_port_code"/>
-        </FormItem>
-        <FormItem label="Discharge Port Name" prop="discharge_port_name">
+      <Form :model="workPara" :label-width="120" :rules="formRule.ruleDischargePortModal" ref="formDischargePort">
+        <FormItem label="NAME" prop="discharge_port_name">
           <Input placeholder="Discharge Port Name" v-model="workPara.discharge_port_name"/>
+        </FormItem>
+        <FormItem label="CODE" prop="discharge_port_code">
+          <Input placeholder="Discharge Port Code" v-model="workPara.discharge_port_code"/>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -77,12 +77,12 @@ export default {
               align: 'center'
             },
             {
-              title: 'Discharge Port Code',
-              key: 'discharge_port_code'
-            },
-            {
               title: 'Discharge Port Name',
               key: 'discharge_port_name'
+            },
+            {
+              title: 'Discharge Port Code',
+              key: 'discharge_port_code'
             },
             {
               title: 'Action',
@@ -169,9 +169,9 @@ export default {
             } else if (this.action === 'modify') {
               await this.$http.post(apiUrl + 'modify', { old: this.oldPara, new: this.workPara })
               this.$Message.success('modify discharge port success')
+              this.modal.dischargePortModal = false
             }
             this.getDischargePortData()
-            this.modal.dischargePortModal = false
           } catch (error) {
             this.$commonact.fault(error)
           }

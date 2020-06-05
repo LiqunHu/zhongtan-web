@@ -9,11 +9,11 @@
     <!-- end breadcrumb -->
     <!-- begin page-header -->
     <h1 class="page-header">
-      Container Size Type Config
+      CTNR Type Config
       <small></small>
     </h1>
     <!-- end page-header -->
-    <panel title="Panel title here">
+    <panel title="CTNR Type Config">
       <template slot="beforeBody">
         <div class="panel-toolbar">
           <div class="form-inline">
@@ -26,7 +26,7 @@
               </div>
             </div>
             <div class="form-group m-r-10">
-              <button type="button" class="btn btn-info" @click="addContainerSizeModal">Add Container Size Type</button>
+              <button type="button" class="btn btn-info" @click="addContainerSizeModal">Add</button>
             </div>
           </div>
         </div>
@@ -45,11 +45,11 @@
     </panel>
     <Modal v-model="modal.containerSizeModal" title="Container Size">
       <Form :model="workPara" :label-width="150" :rules="formRule.ruleContainerSizeModal" ref="formContainerSize">
-        <FormItem label="Container Size Code" prop="container_size_code">
-          <Input placeholder="Container Size Code" v-model="workPara.container_size_code"/>
+        <FormItem label="CTNR TYPE" prop="container_size_name">
+          <Input placeholder="CTNR TYPE" v-model="workPara.container_size_name"/>
         </FormItem>
-        <FormItem label="Container Size Name" prop="container_size_name">
-          <Input placeholder="Container Size Name" v-model="workPara.container_size_name"/>
+        <FormItem label="CODE" prop="container_size_code">
+          <Input placeholder="CODE" v-model="workPara.container_size_code"/>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -77,12 +77,12 @@ export default {
               align: 'center'
             },
             {
-              title: 'Container Size Code',
-              key: 'container_size_code'
+              title: 'CTNR TYPE',
+              key: 'container_size_name'
             },
             {
-              title: 'Container Size Name',
-              key: 'container_size_name'
+              title: 'CODE',
+              key: 'container_size_code'
             },
             {
               title: 'Action',
@@ -165,13 +165,14 @@ export default {
           try {
             if (this.action === 'add') {
               await this.$http.post(apiUrl + 'add', this.workPara)
-              this.$Message.success('add container size success')
+              this.workPara = {}
+              this.$Message.success('add success')
             } else if (this.action === 'modify') {
               await this.$http.post(apiUrl + 'modify', { old: this.oldPara, new: this.workPara })
-              this.$Message.success('modify container size success')
+              this.$Message.success('modify success')
+              this.modal.containerSizeModal = false
             }
             this.getContainerSizeData()
-            this.modal.containerSizeModal = false
           } catch (error) {
             this.$commonact.fault(error)
           }

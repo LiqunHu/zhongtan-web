@@ -49,7 +49,7 @@
                         </button>
                     </div>
                     <div class="form-group m-r-10">
-                        <button type="button" class="btn btn-info" @click="addChageRuleModal">ADD CHARGE RULE</button>
+                        <button type="button" class="btn btn-info" @click="addChageRuleModal">ADD</button>
                     </div>
                 </div>
             </div>
@@ -178,6 +178,11 @@ export default {
       table: {
         ruleTable: {
           columns: [
+            {
+              type: 'index',
+              width: 60,
+              align: 'center'
+            },
             {
               title: 'Cargo type',
               key: 'overdue_charge_cargo_type',
@@ -342,7 +347,6 @@ export default {
                     await this.$http.post(apiUrl + 'add', this.chargeRuleForm)
                     this.getTableData()
                     this.$Message.success('Add Success')
-                    this.modal.chargeRuleModal = false
                 } catch (error) {
                     this.$commonact.fault(error)
                 }
