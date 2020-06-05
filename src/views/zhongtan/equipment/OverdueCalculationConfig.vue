@@ -54,7 +54,7 @@
                 </div>
             </div>
         </template>
-        <Table stripe size="small" ref="ruleTable" :columns="table.ruleTable.columns" :data="table.ruleTable.data" :height="table.ruleTable.height" border>
+        <Table stripe size="small" ref="ruleTable" :columns="table.ruleTable.columns" :data="table.ruleTable.data" :height="table.ruleTable.height" :border="table.ruleTable.data && table.ruleTable.data.length > 0">
             <template slot-scope="{ row, index }" slot="overdue_charge_container">
                {{row.overdue_charge_container_size}} [
                 <span v-for="item in pagePara.CONTAINER_SIZE" v-if="item.container_size_code === row.overdue_charge_container_size">{{item.container_size_name}}</span> ]

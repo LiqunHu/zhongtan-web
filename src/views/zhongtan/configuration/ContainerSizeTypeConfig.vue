@@ -31,7 +31,7 @@
           </div>
         </div>
       </template>
-      <Table stripe ref="containerSizeTable" :columns="table.containerSizeTable.rows" :data="table.containerSizeTable.data" border>
+      <Table stripe ref="containerSizeTable" :columns="table.containerSizeTable.rows" :data="table.containerSizeTable.data" :border="table.containerSizeTable.data && table.containerSizeTable.data.length > 0">
         <template slot-scope="{ row, index }" slot="action">
           <a href="#" class="btn btn-info btn-icon btn-sm" @click="modifyContainerSizeModal(row)">
             <i class="fa fa-edit"></i>
