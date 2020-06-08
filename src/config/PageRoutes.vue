@@ -47,6 +47,7 @@ const routes = [
   { path: '/admin/zhongtan/equipment/ImportOverdueCalculation', component: resolve => require(['@/views/zhongtan/equipment/ImportOverdueCalculation'], resolve) },
   { path: '/admin/zhongtan/equipment/ImportOverdueCalculationReceipt', component: resolve => require(['@/views/zhongtan/equipment/ImportOverdueCalculationReceipt'], resolve) },
   { path: '/admin/zhongtan/configuration/EdiDepotConfig', component: resolve => require(['@/views/zhongtan/configuration/EdiDepotConfig'], resolve) },
+   { path: '/admin/zhongtan/equipment/ImportOverdueCalculationSearch', component: resolve => require(['@/views/zhongtan/equipment/ImportOverdueCalculationSearch'], resolve) },
 ]
 
 export default routes
