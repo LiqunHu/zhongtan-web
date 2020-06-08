@@ -40,6 +40,30 @@
         </div>
       </template>
       <Table stripe size="small" ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data" :height="table.containerTable.height" :border="table.containerTable.data && table.containerTable.data.length > 0" @on-selection-change="containerSelectedChange" :span-method="handleSpan">
+        <template slot-scope="{ row, index }" slot="invoice_containers_empty_return_date">
+          <span style="color: red;" v-if="row.invoice_containers_empty_return_date && row.invoice_containers_actually_return_date && row.invoice_containers_empty_return_date !== row.invoice_containers_actually_return_date"> {{row.invoice_containers_empty_return_date}} </span>
+          <span v-else>{{row.invoice_containers_empty_return_date}}</span>
+        </template>
+        <template slot-scope="{ row, index }" slot="invoice_containers_empty_return_overdue_days">
+          <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_days && row.invoice_containers_actually_return_overdue_days && row.invoice_containers_empty_return_overdue_days !== row.invoice_containers_actually_return_overdue_days"> {{row.invoice_containers_empty_return_overdue_days}} </span>
+          <span v-else>{{row.invoice_containers_empty_return_overdue_days}}</span>
+        </template>
+        <template slot-scope="{ row, index }" slot="invoice_containers_empty_return_overdue_amount">
+          <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_amount && row.invoice_containers_actually_return_overdue_amount && row.invoice_containers_empty_return_overdue_amount !== row.invoice_containers_actually_return_overdue_amount"> {{row.invoice_containers_empty_return_overdue_amount}} </span>
+          <span v-else>{{row.invoice_containers_empty_return_overdue_amount}}</span>
+        </template>
+        <template slot-scope="{ row, index }" slot="invoice_containers_actually_return_date">
+          <span style="color: red;" v-if="row.invoice_containers_empty_return_date && row.invoice_containers_actually_return_date && row.invoice_containers_empty_return_date !== row.invoice_containers_actually_return_date"> {{row.invoice_containers_actually_return_date}} </span>
+          <span v-else>{{row.invoice_containers_actually_return_date}}</span>
+        </template>
+        <template slot-scope="{ row, index }" slot="invoice_containers_actually_return_overdue_days">
+          <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_days && row.invoice_containers_actually_return_overdue_days && row.invoice_containers_empty_return_overdue_days !== row.invoice_containers_actually_return_overdue_days"> {{row.invoice_containers_actually_return_overdue_days}} </span>
+          <span v-else>{{row.invoice_containers_actually_return_overdue_days}}</span>
+        </template>
+        <template slot-scope="{ row, index }" slot="invoice_containers_actually_return_overdue_amount">
+          <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_amount && row.invoice_containers_actually_return_overdue_amount && row.invoice_containers_empty_return_overdue_amount !== row.invoice_containers_actually_return_overdue_amount"> {{row.invoice_containers_actually_return_overdue_amount}} </span>
+          <span v-else>{{row.invoice_containers_actually_return_overdue_amount}}</span>
+        </template>
         <template slot-scope="{ row, index }" slot="files">
           <Poptip trigger="hover" placement="bottom-start" :transfer="true" v-if="row.files && row.files.length > 0">
             <span>Files</span>
@@ -68,8 +92,8 @@
           </a>
         </template>
         <template slot-scope="{ row, index }" slot="actually_return_act">
-          <a v-if="row.invoice_containers_actually_return_date" href="#" class="btn btn-success btn-icon btn-sm" @click="ladenOverdueCalculationModal(row)">
-            <i class="fa fa-save "></i>
+          <a v-if="row.invoice_containers_actually_return_date" href="#" class="btn btn-success btn-icon btn-sm" @click="actuallyOverdueCopyAct(row)">
+            <i class="fa fa-copy"></i>
           </a>
         </template>
       </Table>
@@ -95,8 +119,10 @@
             <Input v-if="modalStatus === 'laden'" v-model="overdueChargeForm.invoice_containers_laden_release_overdue_amount" disabled>
                 <span slot="append" style="display:block; width: 40px">USD</span>
             </Input>
-            <Input v-if="modalStatus === 'empty'" v-model="overdueChargeForm.invoice_containers_empty_return_overdue_amount" disabled>
-                <span slot="append" style="display:block; width: 40px">USD</span>
+            <Input v-if="modalStatus === 'empty'" v-model="overdueChargeForm.invoice_containers_empty_return_overdue_amount" :disabled ="returnOverdueDaysDisabled">
+              <a slot="append" href="#" @click.prevent="overdueDaysEditAct" title="Edit" style="display:block; width: 40px">
+                <i class="fa fa-edit"></i>
+              </a>
             </Input>
           </FormItem>
         </Form>
@@ -119,6 +145,20 @@
           <Button type="primary" size="large" @click="emptyInvoiceAct" >Submit</Button>
         </div>
       </Modal>
+      <Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :closable="false" :mask-closable="false">
+      <Form :label-width="120">
+        <FormItem v-show="false">
+          <Input type="password" style='width:0;opacity:0;'></Input>       
+        </FormItem>
+        <FormItem label="Password" prop="checkPassword">
+          <Input type="password" placeholder="Password" v-model="checkPassword"></Input>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.checkPasswordModal = false; depositEdit = false; doDeliverEdit = false;">Cancel</Button>
+        <Button type="primary" size="large" @click="actCheckPassword">Submit</Button>
+      </div>
+    </Modal>
     </panel>
   </div>
 </template>
@@ -132,7 +172,7 @@ export default {
   name: 'ImportOverdueCalculation',
   data: function() {
     return {
-      modal: { calculationModal: false, invoiceModal : false },
+      modal: { calculationModal: false, invoiceModal : false, checkPasswordModal: false },
       modalStatus: 'laden',
       textMap: {
         laden: 'Overdue Calculation',
@@ -204,21 +244,21 @@ export default {
               children: [
                 {
                   title: 'Return Date',
-                  key: 'invoice_containers_empty_return_date',
+                  slot: 'invoice_containers_empty_return_date',
                   width: 125,
                   align: 'center',
                   fixed: 'right'
                 },
                 {
                   title: 'Overdue Days',
-                  key: 'invoice_containers_empty_return_overdue_days',
+                  slot: 'invoice_containers_empty_return_overdue_days',
                   width: 125,
                   align: 'right',
                   fixed: 'right'
                 },
                 {
                   title: 'Demurrage',
-                  key: 'invoice_containers_empty_return_overdue_amount',
+                  slot: 'invoice_containers_empty_return_overdue_amount',
                   width: 125,
                   align: 'right',
                   fixed: 'right'
@@ -239,21 +279,21 @@ export default {
               children: [
                 {
                   title: 'Return Date',
-                  key: 'invoice_containers_actually_return_date',
+                  slot: 'invoice_containers_actually_return_date',
                   width: 125,
                   align: 'center',
                   fixed: 'right'
                 },
                 {
                   title: 'Overdue Days',
-                  key: 'invoice_containers_actually_return_overdue_days',
+                  slot: 'invoice_containers_actually_return_overdue_days',
                   width: 125,
                   align: 'right',
                   fixed: 'right'
                 },
                 {
                   title: 'Demurrage',
-                  key: 'invoice_containers_actually_return_overdue_amount',
+                  slot: 'invoice_containers_actually_return_overdue_amount',
                   width: 125,
                   align: 'right',
                   fixed: 'right'
@@ -335,7 +375,10 @@ export default {
       customer: {
         loading: false,
         options: []
-      }
+      },
+      checkPassword: '',
+      checkPasswordType: '',
+      returnOverdueDaysDisabled: true
     }
   },
   created() {
@@ -448,6 +491,7 @@ export default {
       this.overdueChargeFormOld = Object.assign({}, row)
       this.overdueChargeForm = Object.assign({}, row) // copy obj
       this.modalStatus = 'laden'
+      this.returnOverdueDaysDisabled = true
       this.modal.calculationModal = true
     },
     emptyOverdueCalculationModal: async function(row) {
@@ -458,6 +502,7 @@ export default {
       this.overdueChargeFormOld = Object.assign({}, row)
       this.overdueChargeForm = Object.assign({}, row) // copy obj
       this.modalStatus = 'empty'
+      this.returnOverdueDaysDisabled = true
       this.modal.calculationModal = true
     },
     returnDateChange: async function(date) {
@@ -561,6 +606,37 @@ export default {
         }
       })
     },
+    overdueDaysEditAct: function(item) {
+      try {
+        this.checkPassword = ''
+        this.modal.checkPasswordModal = true
+        this.checkPasswordType = 'returnOverdueDaysEdit'
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
+    actCheckPassword: async function() {
+      try {
+        if(!this.checkPassword) {
+          return this.$Message.error('Please enter right password')
+        }
+        await this.$http.post(apiUrl + 'checkPassword', { check_password: common.md52(this.checkPassword)})
+        this.modal.checkPasswordModal = false
+        if(this.checkPasswordType === 'returnOverdueDaysEdit') {
+          this.returnOverdueDaysDisabled = false
+        }
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
+    actuallyOverdueCopyAct: async function(row) {
+      try {
+        await this.$http.post(apiUrl + 'actuallyOverdueCopy', row)
+        this.getTableData()
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    }
   }
 }
 </script>
