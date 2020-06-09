@@ -61,7 +61,7 @@
         </template>
         <template slot-scope="{ row, index }" slot="files">
           <Poptip trigger="hover" placement="bottom-start" :transfer="true" v-if="row.files && row.files.length > 0">
-            <span>Files</span>
+            <span>Files [{{row.files.length}}]</span>
             <template slot="content">
               <Table stripe size="small" :columns="table.filesTable.columns" :data="row.files">
                 <template slot-scope="{ row, index }" slot="act">
