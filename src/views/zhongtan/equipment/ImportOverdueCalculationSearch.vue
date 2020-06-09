@@ -81,16 +81,6 @@
             {{row.invoice_containers_size}} [
             <span v-for="item in pagePara.CONTAINER_SIZE" v-if="item.container_size_code === row.invoice_containers_size">{{item.container_size_name}}</span> ]
         </template>
-        <template slot-scope="{ row, index }" slot="empty_overdue_calculation">
-          <a href="#" class="btn btn-primary btn-icon btn-sm" @click="emptyOverdueCalculationModal(row)">
-            <i class="fa fa-calculator"></i>
-          </a>
-        </template>
-        <template slot-scope="{ row, index }" slot="actually_return_act">
-          <a v-if="row.invoice_containers_actually_return_date" href="#" class="btn btn-success btn-icon btn-sm" @click="actuallyOverdueCopyAct(row)">
-            <i class="fa fa-copy"></i>
-          </a>
-        </template>
       </Table>
       <Page class="m-t-10" :total="table.containerTable.total" show-sizer :page-size="table.containerTable.limit" @on-change="getTableData" @on-page-size-change="resetTableSizer"/>
     </panel>
@@ -154,70 +144,48 @@ export default {
             {
               title: 'OVERDUE CALCULATION',
               align: 'center',
-              fixed: 'right',
               children: [
                 {
                   title: 'Return Date',
                   slot: 'invoice_containers_empty_return_date',
                   width: 125,
                   align: 'center',
-                  fixed: 'right'
                 },
                 {
                   title: 'Overdue Days',
                   slot: 'invoice_containers_empty_return_overdue_days',
                   width: 125,
                   align: 'right',
-                  fixed: 'right'
                 },
                 {
                   title: 'Demurrage',
                   slot: 'invoice_containers_empty_return_overdue_amount',
                   width: 125,
                   align: 'right',
-                  fixed: 'right'
-                },
-                {
-                  title: 'Cal',
-                  slot: 'empty_overdue_calculation',
-                  width: 80,
-                  align: 'center',
-                  fixed: 'right'
                 }
               ]
             },
             {
               title: 'ACTUALLY',
               align: 'center',
-              fixed: 'right',
               children: [
                 {
                   title: 'Return Date',
                   slot: 'invoice_containers_actually_return_date',
                   width: 125,
                   align: 'center',
-                  fixed: 'right'
                 },
                 {
                   title: 'Overdue Days',
                   slot: 'invoice_containers_actually_return_overdue_days',
                   width: 125,
                   align: 'right',
-                  fixed: 'right'
                 },
                 {
                   title: 'Demurrage',
                   slot: 'invoice_containers_actually_return_overdue_amount',
                   width: 125,
                   align: 'right',
-                  fixed: 'right'
-                },
-                {
-                  title: 'Save',
-                  slot: 'actually_return_act',
-                  width: 80,
-                  align: 'center',
-                  fixed: 'right'
                 }
               ]
             }
