@@ -127,7 +127,7 @@
                     <a href="#" class="btn btn-green btn-icon btn-sm" @click="actDownLoadDoModal(row)" v-if="row.invoice_masterbi_do_state">
                       <i class="fa fa-object-ungroup"></i>
                     </a>
-                    <a href="#" class="btn btn-green btn-icon btn-sm disabled" v-else>
+                    <a href="#" class="btn btn-info btn-icon btn-sm" @click="actDownLoadDoModalCheck(row)" v-else>
                       <i class="fa fa-object-ungroup"></i>
                     </a>
                   </Tooltip>
@@ -1288,6 +1288,12 @@ export default {
       }
       this.modal.downLoadDoModal = true
     },
+    actDownLoadDoModalCheck: function(row) {
+      this.workPara = JSON.parse(JSON.stringify(row))
+      this.checkPassword = ''
+      this.modal.checkPasswordModal = true
+      this.checkPasswordType = 'downLoadDoModalCheck'
+    },
     downloadDo: async function() {
       try {
         let response = await this.$http.post(apiUrl + 'downloadDo', this.workPara)
@@ -1656,6 +1662,8 @@ export default {
           this.tableEdit = false
         } else if(this.checkPasswordType === 'doDeliverValidToEdit') {
           this.doDeliverValidToEdit = false
+        } else if(this.checkPasswordType === 'downLoadDoModalCheck') {
+          this.actDownLoadDoModal(this.workPara)
         }
       } catch (error) {
         this.$commonact.fault(error)
