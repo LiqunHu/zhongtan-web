@@ -142,8 +142,8 @@
                   <a href="#" class="btn btn-indigo btn-xs" @click="showChangeCollectModal(row, 'COLLECT')" v-if="row.invoice_masterbi_freight !== 'COLLECT'">Prepaid</a>
                 </template>
                 <template slot-scope="{ row, index }" slot="files">
-                  <Poptip trigger="hover" placement="bottom" :transfer="true" width="555">
-                    <Button type="text" style="text-decoration:underline">Files</Button>
+                  <Poptip trigger="hover" placement="bottom" :transfer="true" width="555" v-if="row.files && row.files.length > 0">
+                    <Button type="text" style="text-decoration:underline">Files [{{row.files.length}}]</Button>
                     <template slot="content">
                       <Table stripe size="small" :columns="table.filesTable.columns" :data="row.files">
                         <template slot-scope="{ row, index }" slot="act">
