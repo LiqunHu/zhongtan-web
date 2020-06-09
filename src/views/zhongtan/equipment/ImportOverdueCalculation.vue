@@ -146,19 +146,19 @@
         </div>
       </Modal>
       <Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :closable="false" :mask-closable="false">
-      <Form :label-width="120">
-        <FormItem v-show="false">
-          <Input type="password" style='width:0;opacity:0;'></Input>       
-        </FormItem>
-        <FormItem label="Password" prop="checkPassword">
-          <Input type="password" placeholder="Password" v-model="checkPassword"></Input>
-        </FormItem>
-      </Form>
-      <div slot="footer">
-        <Button type="text" size="large" @click="modal.checkPasswordModal = false; depositEdit = false; doDeliverEdit = false;">Cancel</Button>
-        <Button type="primary" size="large" @click="actCheckPassword">Submit</Button>
-      </div>
-    </Modal>
+        <Form :label-width="120">
+          <FormItem v-show="false">
+            <Input type="password" style='width:0;opacity:0;'></Input>       
+          </FormItem>
+          <FormItem label="Password" prop="checkPassword">
+            <Input type="password" placeholder="Password" v-model="checkPassword"></Input>
+          </FormItem>
+        </Form>
+        <div slot="footer">
+          <Button type="text" size="large" @click="modal.checkPasswordModal = false; depositEdit = false; doDeliverEdit = false;">Cancel</Button>
+          <Button type="primary" size="large" @click="actCheckPassword">Submit</Button>
+        </div>
+      </Modal>
     </panel>
   </div>
 </template>

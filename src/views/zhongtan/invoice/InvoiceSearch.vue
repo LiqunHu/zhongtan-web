@@ -58,7 +58,7 @@
             <a href="#" class="btn btn-green btn-icon btn-sm" @click="actDownLoadDoModal(row)" v-if="row.invoice_masterbi_do_state">
               GO
             </a>
-            <a href="#" class="btn btn-danger btn-icon btn-sm" v-else>
+            <a href="#" class="btn btn-danger btn-icon btn-sm" v-else @click="actDownLoadDoModalCheck(row)">
               NO
             </a>
           </Tooltip>
@@ -148,6 +148,28 @@
           <Col>
             <FormItem label="VALID TO" prop="invoice_masterbi_valid_to">
               <DatePicker type="date" placeholder="VALID TO" v-model="workPara.invoice_masterbi_valid_to" :disabled="!!workPara.invoice_masterbi_do_release_date"></DatePicker>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row v-if="workPara.invoice_masterbi_vessel_type !== 'Bulk'">
+          <Col>
+            <FormItem label="FCL" prop="invoice_masterbi_do_fcl">
+              <RadioGroup v-model="workPara.invoice_masterbi_do_fcl">
+                <Radio value="FCL/FCL" label="FCL/FCL" style="margin-right: 50px;"></Radio>
+                <Radio value="FCL/LCL" label="FCL/LCL" style="margin-right: 50px;"></Radio>
+              </RadioGroup>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <FormItem label="ICD" prop="invoice_masterbi_do_icd">
+              <i-select v-model="workPara.invoice_masterbi_do_icd">
+                <i-option  v-for="item in pagePara.ICD" :value="item.icd_name" :key="item.icd_name" :label="item.icd_name">
+                    <span>{{item.icd_name}}</span>
+                    <span style="float:right;color:#ccc">{{item.icd_code}}</span>
+                </i-option>
+              </i-select>
             </FormItem>
           </Col>
         </Row>
@@ -598,7 +620,40 @@ export default {
           this.delivery.options.unshift(row.invoice_masterbi_delivery_to)
         }
       }
+
+      if(!this.workPara.invoice_masterbi_do_fcl) {
+        if(this.workPara.invoice_masterbi_lcl) {
+          this.workPara.invoice_masterbi_do_fcl = 'FCL/LCL'
+        } else {
+          this.workPara.invoice_masterbi_do_fcl = 'FCL/FCL'
+        }
+      }
+      
+      if(this.pagePara.DELIVER.ICD) {
+        let defaultICD = false
+        for(let i = 0; i < this.pagePara.DELIVER.ICD.length; i++) {
+          if(this.pagePara.DELIVER.ICD[i].icd_name === 'TICTS TERMINAL') {
+            defaultICD = true
+            break
+          }
+        }
+        if(!defaultICD) {
+          this.pagePara.DELIVER.ICD.push({'icd_name': 'TICTS TERMINAL', 'icd_code': 'WTTZDL002'})
+        }
+      } else {
+        this.pagePara.DELIVER.ICD = [{'icd_name': 'TICTS TERMINAL', 'icd_code': 'WTTZDL002'}]
+      }
+      if(!this.workPara.invoice_masterbi_do_icd) {
+        this.workPara.invoice_masterbi_do_icd = 'TICTS TERMINAL'
+      }
+      
       this.modal.downLoadDoModal = true
+    },
+    actDownLoadDoModalCheck: function(row) {
+      this.workPara = JSON.parse(JSON.stringify(row))
+      this.checkPassword = ''
+      this.modal.checkPasswordModal = true
+      this.checkPasswordType = 'downLoadDoModalCheck'
     },
     deliveryCreate: function (val) {
       if(val) {
@@ -639,7 +694,9 @@ export default {
         this.modal.checkPasswordModal = false
         if(this.checkPasswordType === 'doDeliverEdit') {
           this.doDeliverEdit = true
-        } 
+        } else if(this.checkPasswordType === 'downLoadDoModalCheck') {
+          this.actDownLoadDoModal(this.workPara)
+        }
       } catch (error) {
         this.$commonact.fault(error)
       }
