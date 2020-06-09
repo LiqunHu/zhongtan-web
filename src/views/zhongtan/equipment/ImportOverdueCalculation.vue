@@ -624,6 +624,8 @@ export default {
         this.modal.checkPasswordModal = false
         if(this.checkPasswordType === 'returnOverdueDaysEdit') {
           this.returnOverdueDaysDisabled = false
+          this.emptySubmitDisabled = false
+          this.ladenSubmitDisabled = false
         }
       } catch (error) {
         this.$commonact.fault(error)
