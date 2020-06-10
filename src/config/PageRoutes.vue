@@ -44,10 +44,14 @@ const routes = [
   { path: '/admin/zhongtan/configuration/ContainerSizeTypeConfig', component: resolve => require(['@/views/zhongtan/configuration/ContainerSizeTypeConfig'], resolve) },
   { path: '/admin/zhongtan/configuration/DischargePortConfig', component: resolve => require(['@/views/zhongtan/configuration/DischargePortConfig'], resolve) },
   { path: '/admin/zhongtan/equipment/OverdueCalculationConfig', component: resolve => require(['@/views/zhongtan/equipment/OverdueCalculationConfig'], resolve) },
+  { path: '/admin/zhongtan/configuration/EdiDepotConfig', component: resolve => require(['@/views/zhongtan/configuration/EdiDepotConfig'], resolve) },
   { path: '/admin/zhongtan/equipment/ImportOverdueCalculation', component: resolve => require(['@/views/zhongtan/equipment/ImportOverdueCalculation'], resolve) },
   { path: '/admin/zhongtan/equipment/ImportOverdueCalculationReceipt', component: resolve => require(['@/views/zhongtan/equipment/ImportOverdueCalculationReceipt'], resolve) },
-  { path: '/admin/zhongtan/configuration/EdiDepotConfig', component: resolve => require(['@/views/zhongtan/configuration/EdiDepotConfig'], resolve) },
-   { path: '/admin/zhongtan/equipment/ImportOverdueCalculationSearch', component: resolve => require(['@/views/zhongtan/equipment/ImportOverdueCalculationSearch'], resolve) },
+  { path: '/admin/zhongtan/equipment/ImportOverdueCalculationSearch', component: resolve => require(['@/views/zhongtan/equipment/ImportOverdueCalculationSearch'], resolve) },
+  { path: '/admin/zhongtan/equipment/ImportOverdueCalculationAdmin', component: resolve => require(['@/views/zhongtan/equipment/ImportOverdueCalculationAdmin'], resolve) },
+  { path: '/admin/zhongtan/equipment/ImportOverdueCalculationReceiptAdmin', component: resolve => require(['@/views/zhongtan/equipment/ImportOverdueCalculationReceiptAdmin'], resolve) },
+  { path: '/admin/zhongtan/equipment/ImportOverdueCalculationSearchAdmin', component: resolve => require(['@/views/zhongtan/equipment/ImportOverdueCalculationSearchAdmin'], resolve) },
+  { path: '/admin/zhongtan/equipment/EmptyStockManagement', component: resolve => require(['@/views/zhongtan/equipment/EmptyStockManagement'], resolve) },
 ]
 
 export default routes

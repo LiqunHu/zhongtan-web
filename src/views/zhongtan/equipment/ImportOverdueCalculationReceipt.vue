@@ -35,30 +35,6 @@
         </div>
       </template>
       <Table stripe size="small" ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data" :height="table.containerTable.height" :border="table.containerTable.data && table.containerTable.data.length > 0" :span-method="handleSpan">
-        <template slot-scope="{ row, index }" slot="invoice_containers_empty_return_date">
-          <span style="color: red;" v-if="row.invoice_containers_empty_return_date && row.invoice_containers_actually_return_date && row.invoice_containers_empty_return_date !== row.invoice_containers_actually_return_date"> {{row.invoice_containers_empty_return_date}} </span>
-          <span v-else>{{row.invoice_containers_empty_return_date}}</span>
-        </template>
-        <template slot-scope="{ row, index }" slot="invoice_containers_empty_return_overdue_days">
-          <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_days && row.invoice_containers_actually_return_overdue_days && row.invoice_containers_empty_return_overdue_days !== row.invoice_containers_actually_return_overdue_days"> {{row.invoice_containers_empty_return_overdue_days}} </span>
-          <span v-else>{{row.invoice_containers_empty_return_overdue_days}}</span>
-        </template>
-        <template slot-scope="{ row, index }" slot="invoice_containers_empty_return_overdue_amount">
-          <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_amount && row.invoice_containers_actually_return_overdue_amount && row.invoice_containers_empty_return_overdue_amount !== row.invoice_containers_actually_return_overdue_amount"> {{row.invoice_containers_empty_return_overdue_amount}} </span>
-          <span v-else>{{row.invoice_containers_empty_return_overdue_amount}}</span>
-        </template>
-        <template slot-scope="{ row, index }" slot="invoice_containers_actually_return_date">
-          <span style="color: red;" v-if="row.invoice_containers_empty_return_date && row.invoice_containers_actually_return_date && row.invoice_containers_empty_return_date !== row.invoice_containers_actually_return_date"> {{row.invoice_containers_actually_return_date}} </span>
-          <span v-else>{{row.invoice_containers_actually_return_date}}</span>
-        </template>
-        <template slot-scope="{ row, index }" slot="invoice_containers_actually_return_overdue_days">
-          <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_days && row.invoice_containers_actually_return_overdue_days && row.invoice_containers_empty_return_overdue_days !== row.invoice_containers_actually_return_overdue_days"> {{row.invoice_containers_actually_return_overdue_days}} </span>
-          <span v-else>{{row.invoice_containers_actually_return_overdue_days}}</span>
-        </template>
-        <template slot-scope="{ row, index }" slot="invoice_containers_actually_return_overdue_amount">
-          <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_amount && row.invoice_containers_actually_return_overdue_amount && row.invoice_containers_empty_return_overdue_amount !== row.invoice_containers_actually_return_overdue_amount"> {{row.invoice_containers_actually_return_overdue_amount}} </span>
-          <span v-else>{{row.invoice_containers_actually_return_overdue_amount}}</span>
-        </template>
         <template slot-scope="{ row, index }" slot="files">
           <Poptip trigger="hover" placement="bottom-start" :transfer="true" v-if="row.files && row.files.length > 0">
             <span>Files [{{row.files.length}}]</span>
@@ -192,63 +168,21 @@ export default {
             {
               title: 'OVERDUE CALCULATION',
               align: 'center',
-              fixed: 'right',
               children: [
                 {
                   title: 'Return Date',
-                  slot: 'invoice_containers_empty_return_date',
-                  width: 125,
+                  key: 'invoice_containers_empty_return_date',
                   align: 'center',
-                  fixed: 'right'
                 },
                 {
                   title: 'Overdue Days',
-                  slot: 'invoice_containers_empty_return_overdue_days',
-                  width: 125,
+                  key: 'invoice_containers_empty_return_overdue_days',
                   align: 'right',
-                  fixed: 'right'
                 },
                 {
                   title: 'Demurrage',
-                  slot: 'invoice_containers_empty_return_overdue_amount',
-                  width: 125,
+                  key: 'invoice_containers_empty_return_overdue_amount',
                   align: 'right',
-                  fixed: 'right'
-                }
-              ]
-            },
-            {
-              title: 'ACTUALLY',
-              align: 'center',
-              fixed: 'right',
-              children: [
-                {
-                  title: 'Return Date',
-                  slot: 'invoice_containers_actually_return_date',
-                  width: 125,
-                  align: 'center',
-                  fixed: 'right'
-                },
-                {
-                  title: 'Overdue Days',
-                  slot: 'invoice_containers_actually_return_overdue_days',
-                  width: 125,
-                  align: 'right',
-                  fixed: 'right'
-                },
-                {
-                  title: 'Demurrage',
-                  slot: 'invoice_containers_actually_return_overdue_amount',
-                  width: 125,
-                  align: 'right',
-                  fixed: 'right'
-                },
-                {
-                  title: 'Depot Name',
-                  key: 'invoice_containers_depot_name',
-                  width: 125,
-                  align: 'center',
-                  fixed: 'right'
                 }
               ]
             }

@@ -9,17 +9,14 @@
     <!-- end breadcrumb -->
     <!-- begin page-header -->
     <h1 class="page-header">
-      Import Overdue Calculation Search
+      Import Overdue Calculation Receipt
       <small></small>
     </h1>
     <!-- end page-header -->
-    <panel title="Import Overdue Calculation Search">
+    <panel title="Import Overdue Calculation Receipt">
       <template slot="beforeBody">
         <div class="panel-toolbar">
           <div class="form-inline">
-            <div class="form-group m-r-2">
-              <DatePicker type="daterange" :value="search_data.date" placeholder="Invoice Date" style="width: 200px" @on-change="searchDate"></DatePicker>
-            </div>
             <div class="form-group m-r-2">
               <input type="text" class="form-control" v-model="search_data.invoice_vessel_name" placeholder="Vessel Name" style="width: 200px" />
             </div>
@@ -38,13 +35,49 @@
         </div>
       </template>
       <Table stripe size="small" ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data" :height="table.containerTable.height" :border="table.containerTable.data && table.containerTable.data.length > 0" :span-method="handleSpan">
+        <template slot-scope="{ row, index }" slot="invoice_containers_empty_return_date">
+          <span style="color: red;" v-if="row.invoice_containers_empty_return_date && row.invoice_containers_actually_return_date && row.invoice_containers_empty_return_date !== row.invoice_containers_actually_return_date"> {{row.invoice_containers_empty_return_date}} </span>
+          <span v-else>{{row.invoice_containers_empty_return_date}}</span>
+        </template>
+        <template slot-scope="{ row, index }" slot="invoice_containers_empty_return_overdue_days">
+          <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_days && row.invoice_containers_actually_return_overdue_days && row.invoice_containers_empty_return_overdue_days !== row.invoice_containers_actually_return_overdue_days"> {{row.invoice_containers_empty_return_overdue_days}} </span>
+          <span v-else>{{row.invoice_containers_empty_return_overdue_days}}</span>
+        </template>
+        <template slot-scope="{ row, index }" slot="invoice_containers_empty_return_overdue_amount">
+          <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_amount && row.invoice_containers_actually_return_overdue_amount && row.invoice_containers_empty_return_overdue_amount !== row.invoice_containers_actually_return_overdue_amount"> {{row.invoice_containers_empty_return_overdue_amount}} </span>
+          <span v-else>{{row.invoice_containers_empty_return_overdue_amount}}</span>
+        </template>
+        <template slot-scope="{ row, index }" slot="invoice_containers_actually_return_date">
+          <span style="color: red;" v-if="row.invoice_containers_empty_return_date && row.invoice_containers_actually_return_date && row.invoice_containers_empty_return_date !== row.invoice_containers_actually_return_date"> {{row.invoice_containers_actually_return_date}} </span>
+          <span v-else>{{row.invoice_containers_actually_return_date}}</span>
+        </template>
+        <template slot-scope="{ row, index }" slot="invoice_containers_actually_return_overdue_days">
+          <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_days && row.invoice_containers_actually_return_overdue_days && row.invoice_containers_empty_return_overdue_days !== row.invoice_containers_actually_return_overdue_days"> {{row.invoice_containers_actually_return_overdue_days}} </span>
+          <span v-else>{{row.invoice_containers_actually_return_overdue_days}}</span>
+        </template>
+        <template slot-scope="{ row, index }" slot="invoice_containers_actually_return_overdue_amount">
+          <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_amount && row.invoice_containers_actually_return_overdue_amount && row.invoice_containers_empty_return_overdue_amount !== row.invoice_containers_actually_return_overdue_amount"> {{row.invoice_containers_actually_return_overdue_amount}} </span>
+          <span v-else>{{row.invoice_containers_actually_return_overdue_amount}}</span>
+        </template>
         <template slot-scope="{ row, index }" slot="files">
           <Poptip trigger="hover" placement="bottom-start" :transfer="true" v-if="row.files && row.files.length > 0">
             <span>Files [{{row.files.length}}]</span>
             <template slot="content">
               <Table stripe size="small" :columns="table.filesTable.columns" :data="row.files">
                 <template slot-scope="{ row, index }" slot="act">
-                  <template v-if="row.state === 'AP'">
+                  <template v-if="row.state === 'AP' && row.file_type === 'INVOICE'">
+                    <Tooltip content="Download" placement="top">
+                      <a :href="row.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
+                        <i class="fa fa-download"></i>
+                      </a>
+                    </Tooltip>
+                    <Tooltip content="RECEIPT" placement="top" v-if="!row.receipt_no">
+                      <a class="btn btn-pink btn-icon btn-sm" @click="receiptModelAct(row)">
+                        <i class="fa fa-money-bill-alt"></i>
+                      </a>
+                    </Tooltip>
+                  </template>
+                  <template v-if="row.file_type === 'RECEIPT'">
                     <Tooltip content="Download" placement="top">
                       <a :href="row.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
                         <i class="fa fa-download"></i>
@@ -63,18 +96,53 @@
       </Table>
       <Page class="m-t-10" :total="table.containerTable.total" show-sizer :page-size="table.containerTable.limit" @on-change="getTableData" @on-page-size-change="resetTableSizer"/>
     </panel>
+    <Modal v-model="modal.receiptModal" title="RECEIPT" width="600">
+      <Form ref="receiptForm" :model="receiptForm" :label-width="150" style="padding-right: 80px;">
+        <FormItem label="Received From" style="margin-bottom: 0px;">
+          <Input v-model="receiptForm.overdue_invoice_received_from" disabled/>
+        </FormItem>
+        <FormItem label="Amount" style="margin-bottom: 0px;">
+          <Input v-model="receiptForm.overdue_invoice_demurrage" disabled/>
+        </FormItem>
+        <FormItem label="Cash/Cheque" style="margin-bottom: 0px;">
+          <Select v-model="receiptForm.overdue_invoice_check_cash" >
+            <Option v-for="item in pagePara.CASH_BANK_INFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+          </Select>
+        </FormItem>
+        <Row v-if="receiptForm.overdue_invoice_check_cash === 'CHEQUE'">
+          <Col>
+            <FormItem label="Check No" prop="overdue_invoice_check_no" >
+              <Input placeholder="Check No" v-model="receiptForm.overdue_invoice_check_no"/>
+            </FormItem>
+          </Col>
+        </Row>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.receiptModal = false">Cancel</Button>
+        <Button type="primary" size="large" @click="receiptAct" >Submit</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
 import PageOptions from '../../../config/PageOptions.vue'
-const moment = require('moment')
 const common = require('@/lib/common')
-const apiUrl = '/api/zhongtan/equipment/ImportOverdueCalculationSearch/'
+import printJS from 'print-js'
+const apiUrl = '/api/zhongtan/equipment/ImportOverdueReceipt/'
 
 export default {
-  name: 'ImportOverdueCalculation',
+  name: 'ImportOverdueReceipt',
   data: function() {
     return {
+      modal: { receiptModal: false },
+      cargoTypeFileter: [
+        { id: 'IM', text: 'IM' },
+        { id: 'TR', text: 'TR' }
+      ],
+      carrierFileter: [
+        { id: 'COSCO', text: 'COSCO' },
+        { id: 'OOCL', text: 'OOCL' }
+      ],
       pagePara: {},
       table: {
         containerTable: {
@@ -106,7 +174,7 @@ export default {
             {
               title: 'IM/TR',
               key: 'invoice_masterbi_cargo_type',
-              width: 80,
+              width: 115,
               align: 'center'
             },
             {
@@ -124,21 +192,63 @@ export default {
             {
               title: 'OVERDUE CALCULATION',
               align: 'center',
+              fixed: 'right',
               children: [
                 {
                   title: 'Return Date',
-                  key: 'invoice_containers_empty_return_date',
+                  slot: 'invoice_containers_empty_return_date',
+                  width: 125,
                   align: 'center',
+                  fixed: 'right'
                 },
                 {
                   title: 'Overdue Days',
-                  key: 'invoice_containers_empty_return_overdue_days',
+                  slot: 'invoice_containers_empty_return_overdue_days',
+                  width: 125,
                   align: 'right',
+                  fixed: 'right'
                 },
                 {
                   title: 'Demurrage',
-                  key: 'invoice_containers_empty_return_overdue_amount',
+                  slot: 'invoice_containers_empty_return_overdue_amount',
+                  width: 125,
                   align: 'right',
+                  fixed: 'right'
+                }
+              ]
+            },
+            {
+              title: 'ACTUALLY',
+              align: 'center',
+              fixed: 'right',
+              children: [
+                {
+                  title: 'Return Date',
+                  slot: 'invoice_containers_actually_return_date',
+                  width: 125,
+                  align: 'center',
+                  fixed: 'right'
+                },
+                {
+                  title: 'Overdue Days',
+                  slot: 'invoice_containers_actually_return_overdue_days',
+                  width: 125,
+                  align: 'right',
+                  fixed: 'right'
+                },
+                {
+                  title: 'Demurrage',
+                  slot: 'invoice_containers_actually_return_overdue_amount',
+                  width: 125,
+                  align: 'right',
+                  fixed: 'right'
+                },
+                {
+                  title: 'Depot Name',
+                  key: 'invoice_containers_depot_name',
+                  width: 125,
+                  align: 'center',
+                  fixed: 'right'
                 }
               ]
             }
@@ -192,10 +302,19 @@ export default {
         }
       },
       search_data: {
-        date: [moment().format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
         invoice_vessel_name: '',
         invoice_containers_bl: '',
         invoice_containers_no: ''
+      },
+      receiptForm: {
+        file_id: '',
+        overdue_invoice_received_from: '',
+        overdue_invoice_demurrage: '',
+        overdue_invoice_check_cash: 'CASH',
+        overdue_invoice_check_no: ''
+      },
+      receiptRules: {
+        overdue_invoice_check_no: [{ required: true, trigger: 'blur', message: 'input check no' }],
       }
     }
   },
@@ -218,9 +337,6 @@ export default {
       } catch (error) {
         this.$commonact.fault(error)
       }
-    },
-    searchDate: function(e) {
-      this.search_data.date = JSON.parse(JSON.stringify(e))
     },
     getTableData: async function(index) {
       try {
@@ -275,6 +391,25 @@ export default {
         }
       } else {
         return [1, 1]
+      }
+    },
+    receiptModelAct: async function(row) {
+      this.receiptForm.file_id = row.file_id
+      this.receiptForm.overdue_invoice_received_from = row.received_from
+      this.receiptForm.overdue_invoice_demurrage = row.demurrage
+      this.receiptForm.overdue_invoice_check_cash = 'CASH'
+      this.receiptForm.overdue_invoice_check_no = ''
+      this.modal.receiptModal = true
+    },
+    receiptAct: async function() {
+      try {
+        let response = await this.$http.post(apiUrl + 'doReceipt', this.receiptForm)
+        printJS(response.data.info.url)
+        this.$Message.success('Receipt Success')
+        this.modal.receiptModal = false
+        this.getTableData()
+      } catch (error) {
+        this.$commonact.fault(error)
       }
     },
   }

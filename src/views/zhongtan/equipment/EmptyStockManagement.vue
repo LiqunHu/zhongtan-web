@@ -9,22 +9,19 @@
     <!-- end breadcrumb -->
     <!-- begin page-header -->
     <h1 class="page-header">
-      Import Overdue Calculation Search
+      Empty Stock Management
       <small></small>
     </h1>
     <!-- end page-header -->
-    <panel title="Import Overdue Calculation Search">
+    <panel title="Empty Stock Management">
       <template slot="beforeBody">
         <div class="panel-toolbar">
           <div class="form-inline">
             <div class="form-group m-r-2">
-              <DatePicker type="daterange" :value="search_data.date" placeholder="Invoice Date" style="width: 200px" @on-change="searchDate"></DatePicker>
+              ATA&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.ata_date" placeholder="ATA Date" style="width: 200px" @on-change="searchAtaDate"></DatePicker>
             </div>
             <div class="form-group m-r-2">
               <input type="text" class="form-control" v-model="search_data.invoice_vessel_name" placeholder="Vessel Name" style="width: 200px" />
-            </div>
-            <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.invoice_containers_bl" placeholder="#M B/L No" style="width: 200px" />
             </div>
             <div class="form-group m-r-2">
               <input type="text" class="form-control" v-model="search_data.invoice_containers_no" placeholder="Container No" style="width: 200px" />
@@ -37,24 +34,30 @@
           </div>
         </div>
       </template>
-      <Table stripe size="small" ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data" :height="table.containerTable.height" :border="table.containerTable.data && table.containerTable.data.length > 0" :span-method="handleSpan">
-        <template slot-scope="{ row, index }" slot="files">
-          <Poptip trigger="hover" placement="bottom-start" :transfer="true" v-if="row.files && row.files.length > 0">
-            <span>Files [{{row.files.length}}]</span>
-            <template slot="content">
-              <Table stripe size="small" :columns="table.filesTable.columns" :data="row.files">
-                <template slot-scope="{ row, index }" slot="act">
-                  <template v-if="row.state === 'AP'">
-                    <Tooltip content="Download" placement="top">
-                      <a :href="row.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
-                        <i class="fa fa-download"></i>
-                      </a>
-                    </Tooltip>
-                  </template>
-                </template>
-              </Table>
-            </template>
-          </Poptip>
+      <Table stripe size="small" ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data" :height="table.containerTable.height" :border="table.containerTable.data && table.containerTable.data.length > 0">
+        <template slot-scope="{ row, index }" slot="invoice_containers_empty_return_date">
+          <span style="color: red;" v-if="row.invoice_containers_empty_return_date && row.invoice_containers_actually_return_date && row.invoice_containers_empty_return_date !== row.invoice_containers_actually_return_date"> {{row.invoice_containers_empty_return_date}} </span>
+          <span v-else>{{row.invoice_containers_empty_return_date}}</span>
+        </template>
+        <template slot-scope="{ row, index }" slot="invoice_containers_empty_return_overdue_days">
+          <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_days && row.invoice_containers_actually_return_overdue_days && row.invoice_containers_empty_return_overdue_days !== row.invoice_containers_actually_return_overdue_days"> {{row.invoice_containers_empty_return_overdue_days}} </span>
+          <span v-else>{{row.invoice_containers_empty_return_overdue_days}}</span>
+        </template>
+        <template slot-scope="{ row, index }" slot="invoice_containers_empty_return_overdue_amount">
+          <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_amount && row.invoice_containers_actually_return_overdue_amount && row.invoice_containers_empty_return_overdue_amount !== row.invoice_containers_actually_return_overdue_amount"> {{row.invoice_containers_empty_return_overdue_amount}} </span>
+          <span v-else>{{row.invoice_containers_empty_return_overdue_amount}}</span>
+        </template>
+        <template slot-scope="{ row, index }" slot="invoice_containers_actually_return_date">
+          <span style="color: red;" v-if="row.invoice_containers_empty_return_date && row.invoice_containers_actually_return_date && row.invoice_containers_empty_return_date !== row.invoice_containers_actually_return_date"> {{row.invoice_containers_actually_return_date}} </span>
+          <span v-else>{{row.invoice_containers_actually_return_date}}</span>
+        </template>
+        <template slot-scope="{ row, index }" slot="invoice_containers_actually_return_overdue_days">
+          <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_days && row.invoice_containers_actually_return_overdue_days && row.invoice_containers_empty_return_overdue_days !== row.invoice_containers_actually_return_overdue_days"> {{row.invoice_containers_actually_return_overdue_days}} </span>
+          <span v-else>{{row.invoice_containers_actually_return_overdue_days}}</span>
+        </template>
+        <template slot-scope="{ row, index }" slot="invoice_containers_actually_return_overdue_amount">
+          <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_amount && row.invoice_containers_actually_return_overdue_amount && row.invoice_containers_empty_return_overdue_amount !== row.invoice_containers_actually_return_overdue_amount"> {{row.invoice_containers_actually_return_overdue_amount}} </span>
+          <span v-else>{{row.invoice_containers_actually_return_overdue_amount}}</span>
         </template>
         <template slot-scope="{ row, index }" slot="invoice_containers_size">
             {{row.invoice_containers_size}} [
@@ -69,7 +72,7 @@
 import PageOptions from '../../../config/PageOptions.vue'
 const moment = require('moment')
 const common = require('@/lib/common')
-const apiUrl = '/api/zhongtan/equipment/ImportOverdueCalculationSearch/'
+const apiUrl = '/api/zhongtan/equipment/EmptyStockManagement/'
 
 export default {
   name: 'ImportOverdueCalculation',
@@ -79,18 +82,6 @@ export default {
       table: {
         containerTable: {
           columns: [
-            {
-              title: '#M B/L No',
-              key: 'invoice_containers_bl',
-              width: 150,
-              align: 'center'
-            },
-            {
-              title: 'Files',
-              slot: 'files',
-              width: 80,
-              align: 'center'
-            },
             {
               title: 'Container No',
               key: 'invoice_containers_no',
@@ -104,15 +95,9 @@ export default {
               align: 'center'
             },
             {
-              title: 'IM/TR',
-              key: 'invoice_masterbi_cargo_type',
+              title: 'Line',
+              key: 'invoice_containers_bl_line',
               width: 80,
-              align: 'center'
-            },
-            {
-              title: 'Destination',
-              key: 'invoice_masterbi_destination',
-              width: 120,
               align: 'center'
             },
             {
@@ -122,24 +107,50 @@ export default {
               align: 'center'
             },
             {
+              title: 'Depot Name',
+              key: 'invoice_containers_depot_name',
+              align: 'center',
+            },
+            {
               title: 'OVERDUE CALCULATION',
               align: 'center',
               children: [
                 {
                   title: 'Return Date',
-                  key: 'invoice_containers_empty_return_date',
+                  slot: 'invoice_containers_empty_return_date',
                   align: 'center',
                 },
                 {
                   title: 'Overdue Days',
-                  key: 'invoice_containers_empty_return_overdue_days',
+                  slot: 'invoice_containers_empty_return_overdue_days',
                   align: 'right',
                 },
                 {
                   title: 'Demurrage',
-                  key: 'invoice_containers_empty_return_overdue_amount',
+                  slot: 'invoice_containers_empty_return_overdue_amount',
                   align: 'right',
                 }
+              ]
+            },
+            {
+              title: 'ACTUALLY',
+              align: 'center',
+              children: [
+                {
+                  title: 'Return Date',
+                  slot: 'invoice_containers_actually_return_date',
+                  align: 'center',
+                },
+                {
+                  title: 'Overdue Days',
+                  slot: 'invoice_containers_actually_return_overdue_days',
+                  align: 'right',
+                },
+                {
+                  title: 'Demurrage',
+                  slot: 'invoice_containers_actually_return_overdue_amount',
+                  align: 'right',
+                },
               ]
             }
           ],
@@ -149,50 +160,10 @@ export default {
           limit: 10,
           offset: 0,
           total: 0
-        },
-        filesTable: {
-          columns: [
-            {
-              title: 'Create Date',
-              key: 'date',
-              width: 120
-            },
-            {
-              title: 'Type',
-              key: 'file_type',
-              width: 120
-            },
-            {
-              title: 'Demurrage',
-              key: 'demurrage',
-              width: 120
-            },
-            {
-              title: 'State',
-              key: 'state',
-              render: common.selectRender(this, 'UPLOAD_STATE'),
-              width: 160
-            },
-            {
-              title: 'Action',
-              slot: 'act',
-              width: 120
-            },
-            {
-              title: 'Release User',
-              key: 'release_user',
-              width: 120
-            },
-            {
-              title: 'Release Date',
-              key: 'release_date',
-              width: 160
-            },
-          ]
         }
       },
       search_data: {
-        date: [moment().format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
+        ata_date: [moment().subtract(30, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
         invoice_vessel_name: '',
         invoice_containers_bl: '',
         invoice_containers_no: ''
@@ -219,8 +190,8 @@ export default {
         this.$commonact.fault(error)
       }
     },
-    searchDate: function(e) {
-      this.search_data.date = JSON.parse(JSON.stringify(e))
+    searchAtaDate: function(e) {
+      this.search_data.ata_date = JSON.parse(JSON.stringify(e))
     },
     getTableData: async function(index) {
       try {
@@ -252,30 +223,6 @@ export default {
     resetTableSizer: function(pageSizer) {
         this.table.containerTable.limit = pageSizer
         this.getTableData(1)
-    },
-    handleSpan: function({row, column, rowIndex, columnIndex}) {
-      if(column.title === '#M B/L No' || column.title === 'Files') {
-        return this.getLayout(row, rowIndex, columnIndex)
-      }
-    },
-    getLayout: function(row, rowIndex, columnIndex) {
-      let rowspan = 0
-      let colspan = 1
-      let tableData = this.table.containerTable.data
-      for(let d of tableData) {
-        if(d.invoice_masterbi_id === row.invoice_masterbi_id) {
-          rowspan++
-        }
-      }
-      if(rowspan > 1) {
-        if(rowIndex > 0 && tableData[rowIndex - 1].invoice_masterbi_id === row.invoice_masterbi_id) {
-          return [0, 0]
-        } else {
-          return [rowspan, colspan]
-        }
-      } else {
-        return [1, 1]
-      }
     },
   }
 }
