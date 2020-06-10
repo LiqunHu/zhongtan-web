@@ -190,6 +190,12 @@ export default {
                   slot: 'invoice_containers_actually_return_overdue_amount',
                   width: 125,
                   align: 'right',
+                },
+                {
+                  title: 'Depot Name',
+                  key: 'invoice_containers_depot_name',
+                  width: 125,
+                  align: 'center',
                 }
               ]
             }

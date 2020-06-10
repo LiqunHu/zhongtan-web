@@ -299,6 +299,13 @@ export default {
                   fixed: 'right'
                 },
                 {
+                  title: 'Depot Name',
+                  key: 'invoice_containers_depot_name',
+                  width: 125,
+                  align: 'center',
+                  fixed: 'right'
+                },
+                {
                   title: 'Save',
                   slot: 'actually_return_act',
                   width: 80,
