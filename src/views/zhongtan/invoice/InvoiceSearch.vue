@@ -147,7 +147,7 @@
         <Row>
           <Col>
             <FormItem label="VALID TO" prop="invoice_masterbi_valid_to">
-              <DatePicker type="date" placeholder="VALID TO" v-model="workPara.invoice_masterbi_valid_to" :disabled="!!workPara.invoice_masterbi_do_release_date"></DatePicker>
+              <DatePicker type="date" placeholder="VALID TO" v-model="workPara.invoice_masterbi_valid_to" @on-change="validToDateChange" :disabled="!!workPara.invoice_masterbi_do_release_date"></DatePicker>
             </FormItem>
           </Col>
         </Row>
@@ -700,7 +700,10 @@ export default {
       } catch (error) {
         this.$commonact.fault(error)
       }
-    }
+    },
+    validToDateChange: async function(date) {
+      this.workPara.invoice_masterbi_valid_to = date
+    },
   }
 }
 </script>

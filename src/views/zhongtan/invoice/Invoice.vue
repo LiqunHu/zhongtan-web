@@ -63,13 +63,13 @@
                       <p slot="title">
                         <i class="fa fa-ship" v-if="item.invoice_vessel_type === 'Bulk'" title="BULK SHIP"></i>
                         <i class="fa fa-cubes" v-else title="CONTAINER SHIP"></i>
-                        {{item.invoice_vessel_name}}({{item.invoice_vessel_code}}) - {{item.invoice_vessel_voyage}}
-                        <a href="#" @click.prevent="editVesselAct(item)" title="Edit">
-                          <i class="fa fa-edit"></i>
-                        </a>
+                        {{item.invoice_vessel_name}}({{item.invoice_vessel_code}})-{{item.invoice_vessel_voyage}}
                       </p>
-                      <a href="#" slot="extra" @click.prevent="deleteVesselAct(item)" title="Remove">
-                        <Icon type="ios-close" />
+                      <a href="#" slot="extra" @click.stop="editVesselAct(item)" title="Edit">
+                        <i class="fa fa-edit"></i>
+                      </a>
+                      <a href="#" slot="extra" @click.stop="deleteVesselAct(item)" title="Remove" style="color: red; margin-left: 5px;">
+                        <i class="fa fa-times"></i>
                       </a>
                       <Row>
                         <Col span="11">
@@ -366,7 +366,7 @@
         <Row>
           <Col>
             <FormItem label="VALID TO" prop="invoice_masterbi_valid_to">
-              <DatePicker type="date" placeholder="VALID TO" v-model="workPara.invoice_masterbi_valid_to" :disabled="doDeliverValidToEdit"></DatePicker>
+              <DatePicker type="date" placeholder="VALID TO" v-model="workPara.invoice_masterbi_valid_to" :disabled="doDeliverValidToEdit" @on-change="validToDateChange" format="yyyy-MM-dd" ></DatePicker>
               <a href="#" @click.prevent="changeDoDeliverValidToEdit" title="Edit" v-if="workPara.invoice_masterbi_do_date">
                 <i class="fa fa-edit"></i>
               </a>
@@ -611,17 +611,17 @@
         <FormItem label="Vessel Code" prop="invoice_vessel_code" v-if="vesselForm.invoice_vessel_type != 'Bulk'">
           <Input placeholder="Vessel Code" v-model="vesselForm.invoice_vessel_code" clearable></Input>
         </FormItem>
-        <FormItem label="Vessel Call Sign" prop="invoice_vessel_call_sign"  v-if="vesselForm.invoice_vessel_type != 'Bulk'">
+        <FormItem label="Call Sign" prop="invoice_vessel_call_sign"  v-if="vesselForm.invoice_vessel_type != 'Bulk'">
           <Input placeholder="Vessel Call Sign" v-model="vesselForm.invoice_vessel_call_sign" clearable></Input>
         </FormItem>
         <FormItem label="Vessel ETA" prop="invoice_vessel_eta">
-          <DatePicker type="date" placeholder="Select Vessel ETA" v-model="vesselForm.invoice_vessel_eta" format="dd/MM/yyyy"></DatePicker>
+          <DatePicker type="date" placeholder="Select Vessel ETA" v-model="vesselForm.invoice_vessel_eta" format="dd/MM/yyyy" @on-change="vesselEtaDateChange"></DatePicker>
         </FormItem> 
         <FormItem label="Vessel ATA" prop="invoice_vessel_ata">
-          <DatePicker type="date" placeholder="Select Vessel ATA" v-model="vesselForm.invoice_vessel_ata" format="dd/MM/yyyy"></DatePicker>
+          <DatePicker type="date" placeholder="Select Vessel ATA" v-model="vesselForm.invoice_vessel_ata" format="dd/MM/yyyy" @on-change="vesselAtaDateChange"></DatePicker>
         </FormItem> 
         <FormItem label="Vessel ATD" prop="invoice_vessel_atd">
-          <DatePicker type="date" placeholder="Select Vessel ATD" v-model="vesselForm.invoice_vessel_atd" format="dd/MM/yyyy"></DatePicker>
+          <DatePicker type="date" placeholder="Select Vessel ATD" v-model="vesselForm.invoice_vessel_atd" format="dd/MM/yyyy" @on-change="vesselAtdDateChange"></DatePicker>
         </FormItem> 
       </Form>
       <div slot="footer">
@@ -1059,15 +1059,6 @@ export default {
           ],
           invoice_vessel_voyage: [
                { required: true, message: 'The vessel voyage cannot be empty', trigger: 'blur' }
-          ],
-          invoice_vessel_eta: [
-              { required: true, type: 'date', message: 'The vessel ETA cannot be empty', trigger: 'change' }
-          ],
-          invoice_vessel_ata: [
-               { required: true, type: 'date', message: 'The vessel ATA cannot be empty', trigger: 'change' }
-          ],
-          invoice_vessel_atd: [
-              { required: true, type: 'date', message: 'The vessel ATD cannot be empty', trigger: 'change' }
           ],
           invoice_vessel_call_sign: [
               { required: true, message: 'The vessel call sign cannot be empty', trigger: 'blur' }
@@ -1709,6 +1700,18 @@ export default {
       } else {
         this.tableEdit = true
       }
+    },
+    validToDateChange: async function(date) {
+      this.workPara.invoice_masterbi_valid_to = date
+    },
+    vesselEtaDateChange: async function(date) {
+      this.vesselForm.invoice_vessel_eta = date
+    },
+    vesselAtaDateChange: async function(date) {
+      this.vesselForm.invoice_vessel_ata = date
+    },
+    vesselAtdDateChange: async function(date) {
+      this.vesselForm.invoice_vessel_atd = date
     },
   }
 }

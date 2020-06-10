@@ -133,20 +133,20 @@
             </FormItem>
             <FormItem label="Working Range">
                 <Row>
-                    <Col span="9">
+                    <Col span="8">
                         <FormItem prop="deposit_begin_date">
-                            <DatePicker type="date" placeholder="Select begin date" v-model="depositForm.deposit_begin_date" format="yyyy-MM-dd" :options="dateOptions"></DatePicker>
+                            <DatePicker type="date" placeholder="Select begin date" v-model="depositForm.deposit_begin_date" format="yyyy-MM-dd" :options="dateOptions" @on-change="beginDateChange"></DatePicker>
                          </FormItem> 
                     </Col>
                     <Col span="2" style="padding-left: 6px;">
                         TO
                     </Col>
-                    <Col span="9">
+                    <Col span="8">
                         <FormItem prop="deposit_expire_date" v-if="!depositForm.deposit_long_term">
-                            <DatePicker type="date" placeholder="Select expire date" v-model="depositForm.deposit_expire_date" format="yyyy-MM-dd" :options="dateOptions"></DatePicker>
+                            <DatePicker type="date" placeholder="Select expire date" v-model="depositForm.deposit_expire_date" format="yyyy-MM-dd" :options="dateOptions" @on-change="expireDateChange"></DatePicker>
                          </FormItem> 
                     </Col>
-                    <Col span="4">
+                    <Col span="6">
                         <Checkbox v-model="depositForm.deposit_long_term">Long Term</Checkbox>
                     </Col>
                 </Row>
@@ -367,12 +367,6 @@ export default {
             fixed_deposit_type: [
                 { required: true, message: 'The deposit type cannot be empty', trigger: 'change' }
             ],
-            deposit_begin_date: [
-                { required: true, type: 'date', message: 'The deposit begin date cannot be empty', trigger: 'change' }
-            ],
-            deposit_expire_date: [
-                { required: true, type: 'date', message: 'The deposit expire date cannot be empty', trigger: 'change' }
-            ],
             deposit_guarantee_letter_no: [
                 { required: true, message: 'The guarantee letter No. cannot be empty', trigger: 'blur' }
             ],
@@ -566,7 +560,13 @@ export default {
     handleUploadRemove(file, fileList) {
         const index = this.depositForm.deposit_guarantee_letter_list.indexOf(file)
         this.depositForm.deposit_guarantee_letter_list.splice(index, 1)
-    }
+    },
+    beginDateChange: async function(date) {
+      this.depositForm.deposit_begin_date = date
+    },
+    expireDateChange: async function(date) {
+      this.depositForm.deposit_expire_date = date
+    },
   }
 }
 </script>
