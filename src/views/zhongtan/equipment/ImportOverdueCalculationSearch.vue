@@ -18,6 +18,9 @@
         <div class="panel-toolbar">
           <div class="form-inline">
             <div class="form-group m-r-2">
+              <DatePicker type="daterange" :value="search_data.date" placeholder="Vessel Date" style="width: 200px" @on-change="searchDate"></DatePicker>
+            </div>
+            <div class="form-group m-r-2">
               <input type="text" class="form-control" v-model="search_data.invoice_vessel_name" placeholder="Vessel Name" style="width: 200px" />
             </div>
             <div class="form-group m-r-2">
@@ -88,6 +91,7 @@
 </template>
 <script>
 import PageOptions from '../../../config/PageOptions.vue'
+const moment = require('moment')
 const common = require('@/lib/common')
 const apiUrl = '/api/zhongtan/equipment/ImportOverdueCalculationSearch/'
 
@@ -239,6 +243,7 @@ export default {
         }
       },
       search_data: {
+        date: [moment().format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
         invoice_vessel_name: '',
         invoice_containers_bl: '',
         invoice_containers_no: ''
@@ -264,6 +269,9 @@ export default {
       } catch (error) {
         this.$commonact.fault(error)
       }
+    },
+    searchDate: function(e) {
+      this.search_data.date = JSON.parse(JSON.stringify(e))
     },
     getTableData: async function(index) {
       try {
