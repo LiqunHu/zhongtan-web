@@ -231,6 +231,10 @@ export default {
               key: 'comment',
               render: common.tooltipCellLengthRender(20)
             },
+            {
+              title: 'Create At',
+              key: 'uploadfile_created_at',
+            }
           ],
           data: [],
           height: common.getTableHeight() - 80,
@@ -260,7 +264,7 @@ export default {
             {
               title: 'Amount',
               key: 'overdue_invoice_containers_overdue_amount',
-            }
+            },
           ],
           data: []
         }

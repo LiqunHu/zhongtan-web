@@ -166,6 +166,12 @@ export default {
               align: 'center'
             },
             {
+              title: 'Discharge Date',
+              key: 'invoice_vessel_ata',
+              width: 140,
+              align: 'center'
+            },
+            {
               title: 'Size/Type',
               slot: 'invoice_containers_size',
               width: 120,
@@ -184,10 +190,10 @@ export default {
               align: 'center'
             },
             {
-              title: 'Discharge Date',
-              key: 'invoice_vessel_ata',
-              width: 140,
-              align: 'center'
+              title: 'Depot Name',
+              key: 'invoice_containers_depot_name',
+              width: 125,
+              align: 'center',
             },
             {
               title: 'OVERDUE CALCULATION',
@@ -195,23 +201,30 @@ export default {
               fixed: 'right',
               children: [
                 {
-                  title: 'Return Date',
+                  title: 'Return',
                   slot: 'invoice_containers_empty_return_date',
-                  width: 125,
+                  width: 100,
                   align: 'center',
                   fixed: 'right'
                 },
                 {
-                  title: 'Overdue Days',
+                  title: 'Free',
+                  key: 'invoice_containers_empty_return_overdue_free_days',
+                  width: 80,
+                  align: 'center',
+                  fixed: 'right'
+                },
+                {
+                  title: 'Overdue',
                   slot: 'invoice_containers_empty_return_overdue_days',
-                  width: 125,
+                  width: 100,
                   align: 'right',
                   fixed: 'right'
                 },
                 {
                   title: 'Demurrage',
                   slot: 'invoice_containers_empty_return_overdue_amount',
-                  width: 125,
+                  width: 110,
                   align: 'right',
                   fixed: 'right'
                 }
@@ -223,33 +236,26 @@ export default {
               fixed: 'right',
               children: [
                 {
-                  title: 'Return Date',
+                  title: 'Return',
                   slot: 'invoice_containers_actually_return_date',
-                  width: 125,
+                  width: 100,
                   align: 'center',
                   fixed: 'right'
                 },
                 {
-                  title: 'Overdue Days',
+                  title: 'Overdue',
                   slot: 'invoice_containers_actually_return_overdue_days',
-                  width: 125,
+                  width: 100,
                   align: 'right',
                   fixed: 'right'
                 },
                 {
                   title: 'Demurrage',
                   slot: 'invoice_containers_actually_return_overdue_amount',
-                  width: 125,
+                  width: 110,
                   align: 'right',
                   fixed: 'right'
                 },
-                {
-                  title: 'Depot Name',
-                  key: 'invoice_containers_depot_name',
-                  width: 125,
-                  align: 'center',
-                  fixed: 'right'
-                }
               ]
             }
           ],

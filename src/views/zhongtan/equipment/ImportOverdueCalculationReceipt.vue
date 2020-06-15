@@ -142,6 +142,12 @@ export default {
               align: 'center'
             },
             {
+              title: 'Discharge Date',
+              key: 'invoice_vessel_ata',
+              width: 140,
+              align: 'center'
+            },
+            {
               title: 'Size/Type',
               slot: 'invoice_containers_size',
               width: 120,
@@ -160,10 +166,10 @@ export default {
               align: 'center'
             },
             {
-              title: 'Discharge Date',
-              key: 'invoice_vessel_ata',
-              width: 140,
-              align: 'center'
+              title: 'Depot Name',
+              key: 'invoice_containers_depot_name',
+              width: 125,
+              align: 'center',
             },
             {
               title: 'OVERDUE CALCULATION',
@@ -172,6 +178,11 @@ export default {
                 {
                   title: 'Return Date',
                   key: 'invoice_containers_empty_return_date',
+                  align: 'center',
+                },
+                {
+                  title: 'Free Days',
+                  key: 'invoice_containers_empty_return_overdue_free_days',
                   align: 'center',
                 },
                 {

@@ -51,6 +51,8 @@ const routes = [
   { path: '/admin/zhongtan/equipment/ImportOverdueCalculationAdmin', component: resolve => require(['@/views/zhongtan/equipment/ImportOverdueCalculationAdmin'], resolve) },
   { path: '/admin/zhongtan/equipment/ImportOverdueCalculationReceiptAdmin', component: resolve => require(['@/views/zhongtan/equipment/ImportOverdueCalculationReceiptAdmin'], resolve) },
   { path: '/admin/zhongtan/equipment/ImportOverdueCalculationSearchAdmin', component: resolve => require(['@/views/zhongtan/equipment/ImportOverdueCalculationSearchAdmin'], resolve) },
+  { path: '/admin/zhongtan/equipment/ImportOverdueStatistics', component: resolve => require(['@/views/zhongtan/equipment/ImportOverdueStatistics'], resolve) },
+  { path: '/admin/zhongtan/equipment/ImportDemurrageStatisticsInvoice', component: resolve => require(['@/views/zhongtan/equipment/ImportDemurrageStatisticsInvoice'], resolve) },
   { path: '/admin/zhongtan/equipment/EmptyStockManagement', component: resolve => require(['@/views/zhongtan/equipment/EmptyStockManagement'], resolve) },
 ]
 
