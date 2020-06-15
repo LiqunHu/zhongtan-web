@@ -621,7 +621,6 @@ export default {
       try {
         let response = await this.$http.post(apiUrl + 'containerInvoiceDetail', row)
         this.containerInvoiceDetail = response.data.info
-        console.log(this.containerInvoiceDetail)
         if(this.containerInvoiceDetail && this.containerInvoiceDetail.length > 0) {
           this.invoiceTimelineTitle = row.invoice_containers_bl + ' : ' + row.invoice_containers_no
           this.modal.invoiceTimelineModal = true

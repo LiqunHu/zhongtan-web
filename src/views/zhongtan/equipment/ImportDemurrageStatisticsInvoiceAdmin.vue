@@ -144,6 +144,7 @@ export default {
             {
               title: 'Payer',
               key: 'user_name',
+              width: 200,
               align: 'center',
             },
             {
@@ -157,7 +158,31 @@ export default {
               key: 'invoice_containers_empty_return_date_receipt_no',
               width: 140,
               align: 'center',
-            }
+            },
+             {
+              title: 'EDI Return Date',
+              key: 'invoice_containers_actually_return_date',
+              width: 140,
+              align: 'center'
+            },
+            {
+              title: 'Actual Overdue Days',
+              key: 'invoice_containers_actually_return_overdue_days',
+              width: 140,
+              align: 'center'
+            },
+            {
+              title: 'Actual Amount',
+              key: 'invoice_containers_actually_return_overdue_amount',
+              width: 140,
+              align: 'center',
+            },
+            {
+              title: 'Balance',
+              key: 'invoice_containers_actually_balance',
+              width: 140,
+              align: 'center',
+            },
           ],
           data: [],
           unchanged: [],
@@ -240,7 +265,7 @@ export default {
     exportDemurrageReport: async function() {
       try {
         let response = await this.$http.request({
-            url: apiUrl + 'exportDemurrageReport',
+            url: apiUrl + 'exportDemurrageAdminReport',
             method: 'post',
             data: {search_data: this.search_data},
             responseType: 'blob'
