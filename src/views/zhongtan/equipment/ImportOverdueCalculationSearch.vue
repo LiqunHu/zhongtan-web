@@ -129,16 +129,19 @@ export default {
                   title: 'Return Date',
                   key: 'invoice_containers_empty_return_date',
                   align: 'center',
+                  width: 140
                 },
                 {
                   title: 'Overdue Days',
                   key: 'invoice_containers_empty_return_overdue_days',
                   align: 'right',
+                  width: 140
                 },
                 {
                   title: 'Demurrage',
                   key: 'invoice_containers_empty_return_overdue_amount',
                   align: 'right',
+                  width: 140
                 }
               ]
             }
