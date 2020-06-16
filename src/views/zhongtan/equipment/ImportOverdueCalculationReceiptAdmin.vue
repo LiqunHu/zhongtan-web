@@ -198,63 +198,54 @@ export default {
             {
               title: 'OVERDUE CALCULATION',
               align: 'center',
-              fixed: 'right',
               children: [
                 {
                   title: 'Return',
                   slot: 'invoice_containers_empty_return_date',
-                  width: 100,
+                  width: 120,
                   align: 'center',
-                  fixed: 'right'
                 },
                 {
                   title: 'Free',
                   key: 'invoice_containers_empty_return_overdue_free_days',
-                  width: 80,
+                  width: 120,
                   align: 'center',
-                  fixed: 'right'
                 },
                 {
                   title: 'Overdue',
                   slot: 'invoice_containers_empty_return_overdue_days',
-                  width: 100,
+                  width: 120,
                   align: 'right',
-                  fixed: 'right'
                 },
                 {
                   title: 'Demurrage',
                   slot: 'invoice_containers_empty_return_overdue_amount',
-                  width: 110,
+                  width: 120,
                   align: 'right',
-                  fixed: 'right'
                 }
               ]
             },
             {
               title: 'ACTUALLY',
               align: 'center',
-              fixed: 'right',
               children: [
                 {
                   title: 'Return',
                   slot: 'invoice_containers_actually_return_date',
-                  width: 100,
+                  width: 120,
                   align: 'center',
-                  fixed: 'right'
                 },
                 {
                   title: 'Overdue',
                   slot: 'invoice_containers_actually_return_overdue_days',
-                  width: 100,
+                  width: 120,
                   align: 'right',
-                  fixed: 'right'
                 },
                 {
                   title: 'Demurrage',
                   slot: 'invoice_containers_actually_return_overdue_amount',
-                  width: 110,
+                  width: 120,
                   align: 'right',
-                  fixed: 'right'
                 },
               ]
             }

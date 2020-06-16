@@ -265,26 +265,31 @@ export default {
                   title: 'Return Date',
                   slot: 'invoice_containers_empty_return_date',
                   align: 'center',
+                  width: 120,
                 },
                 {
                   title: 'Free Days',
                   key: 'invoice_containers_empty_return_overdue_free_days',
                   align: 'center',
+                  width: 100,
                 },
                 {
                   title: 'Overdue Days',
                   slot: 'invoice_containers_empty_return_overdue_days',
                   align: 'center',
+                  width: 140,
                 },
                 {
                   title: 'Demurrage',
                   slot: 'invoice_containers_empty_return_overdue_amount',
                   align: 'center',
+                  width: 120,
                 },
                 {
                   title: 'Act',
                   slot: 'empty_overdue_calculation',
                   align: 'center',
+                  width: 120,
                 }
               ]
             }

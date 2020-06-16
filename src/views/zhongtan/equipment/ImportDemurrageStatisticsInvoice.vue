@@ -144,6 +144,7 @@ export default {
             {
               title: 'Payer',
               key: 'user_name',
+              width: 200,
               align: 'center',
             },
             {

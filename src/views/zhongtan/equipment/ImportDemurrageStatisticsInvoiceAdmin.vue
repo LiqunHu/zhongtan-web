@@ -168,7 +168,7 @@ export default {
             {
               title: 'Actual Overdue Days',
               key: 'invoice_containers_actually_return_overdue_days',
-              width: 140,
+              width: 200,
               align: 'center'
             },
             {

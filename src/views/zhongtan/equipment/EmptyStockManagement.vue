@@ -109,6 +109,7 @@ export default {
             {
               title: 'Depot Name',
               key: 'invoice_containers_depot_name',
+              width: 120,
               align: 'center',
             },
             {
@@ -118,16 +119,19 @@ export default {
                 {
                   title: 'Return Date',
                   slot: 'invoice_containers_empty_return_date',
+                  width: 120,
                   align: 'center',
                 },
                 {
                   title: 'Overdue Days',
                   slot: 'invoice_containers_empty_return_overdue_days',
+                  width: 140,
                   align: 'right',
                 },
                 {
                   title: 'Demurrage',
                   slot: 'invoice_containers_empty_return_overdue_amount',
+                  width: 120,
                   align: 'right',
                 }
               ]
@@ -139,16 +143,19 @@ export default {
                 {
                   title: 'Return Date',
                   slot: 'invoice_containers_actually_return_date',
+                  width: 120,
                   align: 'center',
                 },
                 {
                   title: 'Overdue Days',
                   slot: 'invoice_containers_actually_return_overdue_days',
+                  width: 140,
                   align: 'right',
                 },
                 {
                   title: 'Demurrage',
                   slot: 'invoice_containers_actually_return_overdue_amount',
+                  width: 120,
                   align: 'right',
                 },
               ]
