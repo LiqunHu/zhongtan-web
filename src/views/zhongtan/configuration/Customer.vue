@@ -37,6 +37,12 @@
             <Option v-for="item in pagePara.groupInfo" :value="item.id" :key="item.id">{{ item.text }}</Option>
           </Select>
         </template>
+        <template slot-scope="{ row, index }" slot="user_blacklist">
+          <i-switch v-model="row.user_blacklist" @on-change="changeBlacklist(row)" size="large" true-value="1" false-value="0">
+              <span slot="open">ON</span>
+              <span slot="close">OFF</span>
+          </i-switch>
+        </template>
         <template slot-scope="{ row, index }" slot="action">
           <a href="#" class="btn btn-info btn-icon btn-sm" @click="modifyUserModal(row)">
             <i class="fa fa-edit"></i>
@@ -118,6 +124,10 @@ export default {
             {
               title: 'TIN',
               key: 'user_tin',
+            },
+            {
+              title: 'Blacklist',
+              slot: 'user_blacklist',
             },
             {
               title: 'Action',
@@ -225,6 +235,20 @@ export default {
           this.$commonact.fault(error)
         }
       })
+    },
+    changeBlacklist: async function(row) {
+      try {
+        await this.$http.post(apiUrl + 'changeBlacklist', row)
+        if(row.user_blacklist === '1'){
+          this.$Message.success('add blacklist Success')
+        } else {
+          this.$Message.success('remove blacklist Success')
+        }
+        this.getUserData()
+      } catch (error) {
+        row.user_blacklist = '0'
+        this.$commonact.fault(error)
+      }
     }
   }
 }

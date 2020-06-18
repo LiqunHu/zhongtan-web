@@ -178,8 +178,11 @@
                     </Select>
                 </Input>
             </FormItem>
-            <FormItem label="Check No." v-if="depositForm.deposit_check_cash === 'CHEQUE'">
+            <FormItem label="Check No." v-if="depositForm.fixed_deposit_type === 'FD' && depositForm.deposit_check_cash === 'CHEQUE'">
                 <Input v-model="depositForm.deposit_check_cash_no" placeholder="Enter your Check No."></Input>
+            </FormItem>
+            <FormItem label="Bank Reference" v-if="depositForm.fixed_deposit_type === 'FD' && depositForm.deposit_check_cash === 'TRANSFER'">
+                <Input v-model="depositForm.deposit_bank_reference_no" placeholder="Enter your Bank Reference"></Input>
             </FormItem>
         </Form>
         <div slot="footer">
@@ -356,7 +359,7 @@ export default {
             deposit_guarantee_letter_no: '',
             deposit_guarantee_letter_list: '',
             deposit_amount: '',
-            deposit_check_cash: 'CASH',
+            deposit_check_cash: 'TRANSFER',
             deposit_check_cash_no: '',
             deposit_currency: 'USD'
         },
@@ -439,7 +442,7 @@ export default {
             deposit_guarantee_letter_no: '',
             deposit_guarantee_letter_list: '',
             deposit_amount: '',
-            deposit_check_cash: 'CASH',
+            deposit_check_cash: 'TRANSFER',
             deposit_check_cash_no: '',
             deposit_currency: 'USD'
         }

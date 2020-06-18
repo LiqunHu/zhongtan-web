@@ -44,7 +44,7 @@
       <Page class="m-t-10" :total="table.ediDepotTable.total" :page-size="table.ediDepotTable.limit" @on-change="getEdiDepotData"/>
     </panel>
     <Modal v-model="modal.ediDepotModal" title="Discharge Port">
-      <Form :model="workPara" :label-width="120" :rules="formRule.ruleEdiDepotModal" ref="formEdiDepot">
+      <Form :model="workPara" :label-width="180" :rules="formRule.ruleEdiDepotModal" ref="formEdiDepot">
         <FormItem label="Depot Name" prop="edi_depot_name">
           <Input placeholder="Depot Name" v-model="workPara.edi_depot_name"/>
         </FormItem>
@@ -59,6 +59,9 @@
         </FormItem>
         <FormItem label="DMT Format" prop="edi_depot_dmt_format">
           <Input placeholder="DMT Format" v-model="workPara.edi_depot_dmt_format"/>
+        </FormItem>
+        <FormItem label="Storing Order Email" prop="edi_depot_storing_order_email">
+          <Input placeholder="Storing Order Email" v-model="workPara.edi_depot_storing_order_email"/>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -87,27 +90,45 @@ export default {
             },
             {
               title: 'Depot Name',
-              key: 'edi_depot_name'
+              key: 'edi_depot_name',
+              width: 150,
+              align: 'center'
             },
             {
               title: 'Sender Email',
-              key: 'edi_depot_sender_email'
+              key: 'edi_depot_sender_email',
+              width: 200,
+              align: 'center'
             },
             {
               title: 'CNT Regex',
-              key: 'edi_depot_cnt_regex'
+              key: 'edi_depot_cnt_regex',
+              width: 300,
+              align: 'center'
             },
             {
               title: 'DMT Regex',
-              key: 'edi_depot_dmt_regex'
+              key: 'edi_depot_dmt_regex',
+              width: 200,
+              align: 'center'
             },
             {
               title: 'DMT Format',
-              key: 'edi_depot_dmt_format'
+              key: 'edi_depot_dmt_format',
+              width: 200,
+              align: 'center'
+            },
+            {
+              title: 'Storing Order Email',
+              key: 'edi_depot_storing_order_email',
+              width: 200,
+              align: 'center'
             },
             {
               title: 'Action',
-              slot: 'action'
+              slot: 'action',
+              width: 100,
+              align: 'center'
             }
           ],
           data: [],
@@ -120,10 +141,8 @@ export default {
       formRule: {
         ruleEdiDepotModal: {
           edi_depot_name: [{ required: true, trigger: 'blur', message: 'Enter Depot Name' }],
-          edi_depot_sender_email: [{ required: true, trigger: 'blur', message: 'Enter Sender Email' }],
-          edi_depot_cnt_regex: [{ required: true, trigger: 'blur', message: 'Enter CNT Regex' }],
-          edi_depot_dmt_regex: [{ required: true, trigger: 'blur', message: 'Enter DMT Regex' }],
-          edi_depot_dmt_format: [{ required: true, trigger: 'blur', message: 'Enter DMT Format' }]
+          edi_depot_sender_email: [{ type: 'email', trigger: 'blur', message: 'Enter Sender Email' }],
+          edi_depot_storing_order_email: [{ type: 'email', trigger: 'blur', message: 'Enter Storing Order Email' }],
         }
       },
       pagePara: {},

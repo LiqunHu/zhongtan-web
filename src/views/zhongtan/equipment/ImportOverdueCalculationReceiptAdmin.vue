@@ -109,6 +109,13 @@
             <Option v-for="item in pagePara.CASH_BANK_INFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
           </Select>
         </FormItem>
+        <Row v-if="receiptForm.overdue_invoice_check_cash === 'TRANSFER'">
+          <Col>
+            <FormItem label="Bank Reference No" prop="overdue_invoice_bank_reference_no" >
+              <Input placeholder="Bank Reference No" v-model="receiptForm.overdue_invoice_bank_reference_no"/>
+            </FormItem>
+          </Col>
+        </Row>
         <Row v-if="receiptForm.overdue_invoice_check_cash === 'CHEQUE'">
           <Col>
             <FormItem label="Check No" prop="overdue_invoice_check_no" >
@@ -307,10 +314,12 @@ export default {
         file_id: '',
         overdue_invoice_received_from: '',
         overdue_invoice_demurrage: '',
-        overdue_invoice_check_cash: 'CASH',
-        overdue_invoice_check_no: ''
+        overdue_invoice_check_cash: 'TRANSFER',
+        overdue_invoice_check_no: '',
+        overdue_invoice_bank_reference_no:''
       },
       receiptRules: {
+        overdue_invoice_bank_reference_no: [{ required: true, trigger: 'blur', message: 'input bank reference no' }],
         overdue_invoice_check_no: [{ required: true, trigger: 'blur', message: 'input check no' }],
       }
     }
@@ -394,8 +403,9 @@ export default {
       this.receiptForm.file_id = row.file_id
       this.receiptForm.overdue_invoice_received_from = row.received_from
       this.receiptForm.overdue_invoice_demurrage = row.demurrage
-      this.receiptForm.overdue_invoice_check_cash = 'CASH'
+      this.receiptForm.overdue_invoice_check_cash = 'TRANSFER'
       this.receiptForm.overdue_invoice_check_no = ''
+      this.receiptForm.overdue_invoice_bank_reference_no = ''
       this.modal.receiptModal = true
     },
     receiptAct: async function() {

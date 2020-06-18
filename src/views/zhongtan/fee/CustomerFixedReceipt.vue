@@ -104,7 +104,7 @@
             </FormItem>
             <FormItem label="Working Range">
                 <Row>
-                    <Col span="9">
+                    <Col span="8">
                         <FormItem prop="deposit_begin_date">
                             <DatePicker type="date" placeholder="Select begin date" v-model="receiptForm.deposit_begin_date" format="yyyy-MM-dd" disabled></DatePicker>
                          </FormItem> 
@@ -112,12 +112,12 @@
                     <Col span="2" style="padding-left: 6px;">
                         TO
                     </Col>
-                    <Col span="9">
+                    <Col span="8">
                         <FormItem prop="deposit_expire_date" v-if="!receiptForm.deposit_long_term">
                             <DatePicker type="date" placeholder="Select expire date" v-model="receiptForm.deposit_expire_date" format="yyyy-MM-dd" disabled></DatePicker>
                          </FormItem> 
                     </Col>
-                    <Col span="4">
+                    <Col span="6">
                         <Checkbox v-model="receiptForm.deposit_long_term" disabled>Long Term</Checkbox>
                     </Col>
                 </Row>
@@ -133,7 +133,10 @@
                 </Input>
             </FormItem>
             <FormItem label="Check No." v-if="receiptForm.deposit_check_cash === 'CHEQUE'">
-                <Input v-model="receiptForm.deposit_check_cash_no" placeholder="Enter your Check No."></Input>
+                <Input v-model="receiptForm.deposit_check_cash_no"></Input>
+            </FormItem>
+            <FormItem label="Bank Reference" v-if="receiptForm.deposit_check_cash === 'TRANSFER'">
+                <Input v-model="receiptForm.deposit_bank_reference_no"></Input>
             </FormItem>
         </Form>
         <div slot="footer">

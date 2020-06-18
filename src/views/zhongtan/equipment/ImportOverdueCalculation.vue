@@ -36,6 +36,11 @@
                 <i class="fa fa-money-bill-alt"></i> Invoice
               </button>
             </div>
+            <div class="form-group m-r-10">
+              <button type="button" class="btn btn-success" @click="issuingStoringOrderModal" :disabled="emptyInvoiceDisabled">
+                <i class="fa fa-envelope"></i> Storing Order
+              </button>
+            </div>
           </div>
         </div>
       </template>
@@ -178,6 +183,19 @@
           <Button type="text" size="large" @click="modal.invoiceTimelineModal=false">Cancel</Button>
         </div>
       </Modal>
+      <Modal v-model="modal.storingOrderModal" title="Storing Order" width="600">
+        <Form ref="storingOrderForm" :model="storingOrderForm" :rules="storingOrderRules" :label-width="150" style="padding-right: 80px;">
+          <FormItem label="Depot Name" prop="invoice_containers_depot_name" style="margin-bottom: 0px;">
+            <Select v-model="storingOrderForm.invoice_containers_depot_name" filterable clearable placeholder="Customer">
+              <Option v-for="item in pagePara.EDI_DEPOT" :value="item.edi_depot_name" :key="item.edi_depot_name">{{item.edi_depot_name}}</Option>
+            </Select>
+          </FormItem>
+        </Form>
+        <div slot="footer">
+          <Button type="text" size="large" @click="modal.storingOrderModal = false">Cancel</Button>
+          <Button type="primary" size="large" @click="issuingStoringOrderAct" >Submit</Button>
+        </div>
+      </Modal>
     </panel>
   </div>
 </template>
@@ -191,7 +209,7 @@ export default {
   name: 'ImportOverdueCalculation',
   data: function() {
     return {
-      modal: { calculationModal: false, invoiceModal : false, checkPasswordModal: false, invoiceTimelineModal: false },
+      modal: { calculationModal: false, invoiceModal : false, checkPasswordModal: false, invoiceTimelineModal: false, storingOrderModal: false },
       cargoTypeFileter: [
         { id: 'IM', text: 'IM' },
         { id: 'TR', text: 'TR' }
@@ -367,6 +385,12 @@ export default {
       returnOverdueDaysDisabled: true,
       invoiceTimelineTitle: '',
       containerInvoiceDetail: [],
+      storingOrderForm: {
+        invoice_containers_depot_name: ''
+      },
+      storingOrderRules: {
+        invoice_containers_depot_name: [{ required: true, trigger: 'change', message: 'select depot name' }],
+      },
     }
   },
   created() {
@@ -569,6 +593,7 @@ export default {
               this.getTableData()
               this.$Message.success('Invoice Success')
               this.modal.invoiceModal = false
+              this.emptyInvoiceDisabled = true
             } catch (error) {
               this.$commonact.fault(error)
             }
@@ -635,6 +660,42 @@ export default {
       } catch (error) {
         this.$commonact.fault(error)
       }
+    },
+    issuingStoringOrderModal: async function(row) {
+      let selection = this.$refs.containerTable.getSelection()
+      let invoice_containers_depot_name = ''
+      if(selection && selection.length > 0) {
+        for(let d of selection) {
+          if(d.invoice_containers_depot_name) {
+            invoice_containers_depot_name = d.invoice_containers_depot_name
+            break
+          }
+        }
+      }
+      this.$nextTick(function() {
+        this.storingOrderForm.invoice_containers_depot_name = invoice_containers_depot_name
+      })
+      this.modal.storingOrderModal = true
+    },
+    issuingStoringOrderAct: async function() {
+      this.$refs['storingOrderForm'].validate(async valid => {
+        if (valid) {
+          let selection = this.$refs.containerTable.getSelection()
+          if(selection && selection.length > 0) {
+            try {
+              await this.$http.post(apiUrl + 'issuingStoringOrder', {selection: selection, storingOrderPara: this.storingOrderForm})
+              this.getTableData()
+              this.$Message.success('Storing Order Email Send Success')
+              this.modal.storingOrderModal = false
+              this.emptyInvoiceDisabled = true
+            } catch (error) {
+              this.$commonact.fault(error)
+            }
+          }
+        } else {
+            this.$Message.error('Validate Fail!')
+        }
+      })
     }
   }
 }

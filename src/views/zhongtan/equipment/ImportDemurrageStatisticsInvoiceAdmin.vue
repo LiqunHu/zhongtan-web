@@ -275,7 +275,7 @@ export default {
         reader.readAsDataURL(blob)
         reader.onload = e => {
           let a = document.createElement('a')
-          a.download = 'demurrage report.xlsx'
+          a.download = 'demurrage report ' + moment().format('YYYYMMDDHHmmSS') + '.xlsx'
           a.href = e.target.result
           document.body.appendChild(a)
           a.click()
