@@ -51,6 +51,9 @@
         <FormItem label="Sender Email" prop="edi_depot_sender_email">
           <Input placeholder="Sender Email" v-model="workPara.edi_depot_sender_email"/>
         </FormItem>
+        <FormItem label="Gate Regex" prop="edi_depot_gate_in_out_regex">
+          <Input placeholder="Gate IN/OUT Regex" v-model="workPara.edi_depot_gate_in_out_regex"/>
+        </FormItem>
         <FormItem label="CNT Regex" prop="edi_depot_cnt_regex">
           <Input placeholder="CNT Regex" v-model="workPara.edi_depot_cnt_regex"/>
         </FormItem>
@@ -101,9 +104,15 @@ export default {
               align: 'center'
             },
             {
+              title: 'GATE Regex',
+              key: 'edi_depot_gate_in_out_regex',
+              width: 200,
+              align: 'center'
+            },
+            {
               title: 'CNT Regex',
               key: 'edi_depot_cnt_regex',
-              width: 300,
+              width: 250,
               align: 'center'
             },
             {
