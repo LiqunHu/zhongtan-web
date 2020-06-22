@@ -32,6 +32,12 @@
         </div>
       </template>
       <Table stripe ref="containerSizeTable" :columns="table.containerSizeTable.rows" :data="table.containerSizeTable.data" :border="table.containerSizeTable.data && table.containerSizeTable.data.length > 0">
+        <template slot-scope="{ row, index }" slot="container_special_type">
+          <i-switch v-model="row.container_special_type" @on-change="changeSpecial(row)" size="large" true-value="1" false-value="0">
+              <span slot="open">IS</span>
+              <span slot="close">NO</span>
+          </i-switch>
+        </template>
         <template slot-scope="{ row, index }" slot="action">
           <a href="#" class="btn btn-info btn-icon btn-sm" @click="modifyContainerSizeModal(row)">
             <i class="fa fa-edit"></i>
@@ -83,6 +89,10 @@ export default {
             {
               title: 'CODE',
               key: 'container_size_code'
+            },
+            {
+              title: 'Special CTNR',
+              slot: 'container_special_type'
             },
             {
               title: 'Action',
@@ -189,6 +199,24 @@ export default {
           this.$commonact.fault(error)
         }
       })
+    },
+    changeSpecial: async function(row) {
+      try {
+        await this.$http.post(apiUrl + 'changeSpecial', row)
+        if(row.container_special_type === '1'){
+          this.$Message.success('set special Success')
+        } else {
+          this.$Message.success('set normal Success')
+        }
+        this.getContainerSizeData()
+      } catch (error) {
+        if(row.container_special_type === '1'){
+          row.container_special_type = '0'
+        } else {
+          row.container_special_type = '1'
+        }
+        this.$commonact.fault(error)
+      }
     }
   }
 }

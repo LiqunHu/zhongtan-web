@@ -141,6 +141,9 @@
                         <span slot="append" style="display:block; width: 40px">{{chargeRuleForm.overdue_charge_currency}}</span>
                     </Input>
                 </FormItem>
+                <FormItem label="Enabled Date" prop="overdue_charge_enabled_date">
+                    <DatePicker type="date" placeholder="Enabled Date" v-model="chargeRuleForm.overdue_charge_enabled_date" format="yyyy-MM-dd" @on-change="enabledToDateChange"></DatePicker>
+                </FormItem>
             </Form>
             <div slot="footer">
                 <Button type="text" size="large" @click="modal.chargeRuleModal=false">Cancel</Button>
@@ -206,6 +209,10 @@ export default {
             {
               title: 'Charge',
               slot: 'overdue_charge',
+            },
+            {
+              title: 'Enabled Date',
+              key: 'overdue_charge_enabled_date',
             },
             {
                 title: 'Action',
@@ -398,7 +405,10 @@ export default {
           this.$commonact.fault(error)
         }
       })
-    }
+    },
+    enabledToDateChange: async function(date) {
+      this.chargeRuleForm.overdue_charge_enabled_date = date
+    },
   }
 }
 </script>

@@ -350,7 +350,7 @@
       </div>
     </Modal>
     <Modal v-model="modal.downLoadDoModal" title="Download Do" width="600">
-      <Form :model="workPara" :label-width="120">
+      <Form :model="workPara" :label-width="160">
         <Row>
           <Col>
             <FormItem label="Delivery to" prop="invoice_masterbi_delivery_to">
@@ -367,9 +367,6 @@
           <Col>
             <FormItem label="VALID TO" prop="invoice_masterbi_valid_to">
               <DatePicker type="date" placeholder="VALID TO" v-model="workPara.invoice_masterbi_valid_to" :disabled="doDeliverValidToEdit" @on-change="validToDateChange" format="yyyy-MM-dd" ></DatePicker>
-              <a href="#" @click.prevent="changeDoDeliverValidToEdit" title="Edit" v-if="workPara.invoice_masterbi_do_date">
-                <i class="fa fa-edit"></i>
-              </a>
             </FormItem>
           </Col>
         </Row>
@@ -383,9 +380,9 @@
             </FormItem>
           </Col>
         </Row>
-        <Row>
+        <Row v-if="workPara.invoice_masterbi_vessel_type !== 'Bulk'">
           <Col>
-            <FormItem label="ICD" prop="invoice_masterbi_do_icd">
+            <FormItem label="LADEN RELEASE ICD" prop="invoice_masterbi_do_icd">
               <i-select v-model="workPara.invoice_masterbi_do_icd">
                 <i-option  v-for="item in pagePara.ICD" :value="item.icd_name" :key="item.icd_name" :label="item.icd_name">
                     <span>{{item.icd_name}}</span>
@@ -395,8 +392,22 @@
             </FormItem>
           </Col>
         </Row>
+        <Row v-if="workPara.invoice_masterbi_vessel_type !== 'Bulk'">
+          <Col>
+            <FormItem label="RETURN DEPOT" prop="invoice_masterbi_do_return_depot">
+              <i-select v-model="workPara.invoice_masterbi_do_return_depot" :disabled = "workPara.invoice_masterbi_do_return_depot_disabled && doDeliverValidToEdit">
+                <i-option  v-for="item in pagePara.DEPOT" :value="item.edi_depot_name" :key="item.edi_depot_id" :label="item.edi_depot_name">
+                    <span>{{item.edi_depot_name}}</span>
+                </i-option>
+              </i-select>
+            </FormItem>
+          </Col>
+        </Row>
       </Form>
       <div slot="footer">
+        <a href="#" style="float:left; padding-top:10px;" @click.prevent="changeDoDeliverValidToEdit" title="Edit" v-if="workPara.invoice_masterbi_do_date">
+          <i class="fa fa-edit"></i>Edit
+        </a>
         <Button type="text" size="large" @click="modal.downLoadDoModal=false">Cancel</Button>
         <Button type="primary" size="large" @click="downloadDo">Submit</Button>
       </div>
@@ -404,7 +415,7 @@
     <Modal v-model="modal.depositModal" title="Deposit" width="600">
       <Form :model="workPara" :label-width="140">
         <FormItem label="Customer" prop="invoice_masterbi_customer_id" style="margin-bottom: 0px;">
-          <Select ref="customer" v-model="workPara.invoice_masterbi_customer_id" filterable clearable allow-create remote :remote-method="searchCustomer" :loading="deposit.customer.loading" placeholder="Customer">
+          <Select ref="customer" v-model="workPara.invoice_masterbi_customer_id" filterable clearable remote :remote-method="searchCustomer" :loading="deposit.customer.loading" placeholder="Customer">
             <Option v-for="item in deposit.customer.options" :value="item.id" :key="item.id">{{item.text}}<i v-if="item.fixed" class="fa fa-lock" style="float: right;"></i></Option>
           </Select>
         </FormItem>
@@ -1271,6 +1282,10 @@ export default {
       }
       if(!this.workPara.invoice_masterbi_do_icd) {
         this.workPara.invoice_masterbi_do_icd = 'TICTS TERMINAL'
+      }
+
+      if(!this.workPara.invoice_masterbi_do_return_depot) {
+        this.workPara.invoice_masterbi_do_return_depot = 'FANTUZZI'
       }
       if(this.workPara.invoice_masterbi_do_date) {
         this.doDeliverValidToEdit = true

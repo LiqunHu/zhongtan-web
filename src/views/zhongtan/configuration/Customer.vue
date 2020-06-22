@@ -246,7 +246,11 @@ export default {
         }
         this.getUserData()
       } catch (error) {
-        row.user_blacklist = '0'
+        if(row.user_blacklist === '1'){
+          row.user_blacklist = '0'
+        } else {
+          row.user_blacklist = '1'
+        }
         this.$commonact.fault(error)
       }
     }
