@@ -143,7 +143,7 @@
         </Col>
       </Row>
     </panel>
-    <Modal v-model="modal.receiptModal" title="Download Receipt" width="600">
+    <Modal v-model="modal.receiptModal" title="Download Receipt" width="600" :mask-closable="false">
       <Form :model="workPara" :label-width="160">
         <Row>
           <Col>
@@ -218,7 +218,7 @@
         <Button type="primary" size="large" @click="downloadReceipt">Submit</Button>
       </div>
     </Modal>
-    <Modal v-model="modal.collectModal" title="Download Receipt Collect" width="600">
+    <Modal v-model="modal.collectModal" title="Download Receipt Collect" width="600" :mask-closable="false">
       <Form :model="workPara" :label-width="120">
         <Row>
           <Col>

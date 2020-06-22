@@ -319,7 +319,7 @@
         </Col>
       </Row>
     </panel>
-    <Modal v-model="modal.importModal" title="Import">
+    <Modal v-model="modal.importModal" title="Import" :mask-closable="false">
       <Form :model="workPara" :label-width="120">
         <FormItem label="Files">
           <div v-for="f in files.fileList" v-bind:key="f.name" class="upload-list">
@@ -349,7 +349,7 @@
         <Button type="primary" size="large" @click="importData">Submit</Button>
       </div>
     </Modal>
-    <Modal v-model="modal.downLoadDoModal" title="Download Do" width="600">
+    <Modal v-model="modal.downLoadDoModal" title="Download Do" width="600" :mask-closable="false">
       <Form :model="workPara" :label-width="160">
         <Row>
           <Col>
@@ -412,7 +412,7 @@
         <Button type="primary" size="large" @click="downloadDo">Submit</Button>
       </div>
     </Modal>
-    <Modal v-model="modal.depositModal" title="Deposit" width="600">
+    <Modal v-model="modal.depositModal" title="Deposit" width="600" :mask-closable="false">
       <Form :model="workPara" :label-width="140">
         <FormItem label="Customer" prop="invoice_masterbi_customer_id" style="margin-bottom: 0px;">
           <Select ref="customer" v-model="workPara.invoice_masterbi_customer_id" filterable clearable remote :remote-method="searchCustomer" :loading="deposit.customer.loading" placeholder="Customer">
@@ -572,7 +572,7 @@
         <Button type="primary" size="large" @click="depositDo" v-if="deposit.depositType=='Invoice Fee'">Submit</Button>
       </div>
     </Modal>
-    <Modal v-model="modal.deleteVoyageModal" title="Delete Voyage" width="600">
+    <Modal v-model="modal.deleteVoyageModal" title="Delete Voyage" width="600" :mask-closable="false">
       <Form :model="workPara" :label-width="120">
         <FormItem label="Voyage No." prop="voyage_no">
           <Input placeholder="Voyage No." v-model="workPara.voyage_no" />
@@ -583,7 +583,7 @@
         <Button type="primary" size="large" @click="doDeleteVoyageAct">Submit</Button>
       </div>
     </Modal>
-    <Modal v-model="modal.colletChangeModal" title="Collet Change" width="600">
+    <Modal v-model="modal.colletChangeModal" title="Collet Change" width="600" :mask-closable="false">
       <Form :model="workPara" :label-width="120">
         <FormItem v-show="false">
           <Input type="password" style='width:0;opacity:0;'></Input>       
@@ -597,7 +597,7 @@
         <Button type="primary" size="large" @click="actChangeCollectFlag">Submit</Button>
       </div>
     </Modal>
-    <Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :closable="false" :mask-closable="false">
+    <Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :mask-closable="false">
       <Form :label-width="120">
         <FormItem v-show="false">
           <Input type="password" style='width:0;opacity:0;'></Input>       
@@ -611,7 +611,7 @@
         <Button type="primary" size="large" @click="actCheckPassword">Submit</Button>
       </div>
     </Modal>
-    <Modal v-model="modal.editVesselModal" title="Edit Vessel" width="600">
+    <Modal v-model="modal.editVesselModal" title="Edit Vessel" width="600" :mask-closable="false">
       <Form ref="vesselForm" :model="vesselForm" :rules="formRules" :label-width="120" >
         <FormItem label="Vessel Name" prop="invoice_vessel_name">
           <Input placeholder="Vessel Name" v-model="vesselForm.invoice_vessel_name" clearable></Input>
