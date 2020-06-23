@@ -34,6 +34,9 @@
             <div class="form-group m-r-3">
               <button type="button" class="btn btn-info" @click="actCollectModal">Collect</button>
             </div>
+            <div class="form-group m-r-3">
+              <button type="button" class="btn btn-info" @click="actExportModal">Export</button>
+            </div>
           </div>
         </div>
       </template>
@@ -256,6 +259,46 @@
         <Button type="primary" size="large" @click="doUndoRelease">Submit</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.exportModal" title="Export Receipt" width="600" :mask-closable="false">
+      <Form :model="workPara" :label-width="120" style="padding-right: 60px;">
+        <Row>
+          <Col>
+            <FormItem label="VESSEL VOYAGE">
+              <Select v-model="exportPara.invoice_vessel_id" filterable clearable>
+                <Option v-for="item in pagePara.VESSEL_VOYAGE" :value="item.invoice_vessel_id" :key="item.invoice_vessel_id">{{item.invoice_vessel}}</Option>
+              </Select>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <FormItem label="VSL ATA">
+              <DatePicker type="daterange" v-model="exportPara.invoice_vessel_ata" placeholder="Date" style="width: 386px" @on-change="vesselAtaChangeData"></DatePicker>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <FormItem label="CUSTOMER">
+              <Select v-model="exportPara.invoice_customer_id" filterable clearable>
+                <Option v-for="item in pagePara.CUSTOMER" :value="item.user_id" :key="item.user_id">{{ item.user_name }}</Option>
+              </Select>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <FormItem label="D/O Date">
+              <DatePicker type="daterange" v-model="exportPara.invoice_do_date" placeholder="Date" style="width: 386px" @on-change="doChangeData"></DatePicker>
+            </FormItem>
+          </Col>
+        </Row>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.exportModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="exportReceiptData">Submit</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -284,7 +327,7 @@ function formatCurrency(num) {
 export default {
   data: function() {
     return {
-      modal: { receiptModal: false, collectModal: false, undoReleaseCheckModal: false },
+      modal: { receiptModal: false, collectModal: false, undoReleaseCheckModal: false, exportModal: false },
       table: {
         masterbiTable: {
           columns: [
@@ -686,7 +729,13 @@ export default {
         }
       },
       currentTab: 0,
-      checkType: ''
+      checkType: '',
+      exportPara: {
+        invoice_vessel_id: '',
+        invoice_vessel_ata: '',
+        invoice_customer_id: '',
+        invoice_do_date: ''
+      }
     }
   },
   created() {
@@ -950,7 +999,43 @@ export default {
       } catch (error) {
         this.$commonact.fault(error)
       }
-    }
+    },
+    actExportModal: async function() {
+      this.exportPara.invoice_vessel_id = ''
+      this.exportPara.invoice_vessel_ata = ''
+      this.exportPara.invoice_customer_id = ''
+      this.exportPara.invoice_do_date = ''
+      this.modal.exportModal = true
+    },
+    vesselAtaChangeData: function(e) {
+      this.exportPara.invoice_vessel_ata = JSON.parse(JSON.stringify(e))
+    },
+    doChangeData: function(e) {
+      this.exportPara.invoice_do_date = JSON.parse(JSON.stringify(e))
+    },
+    exportReceiptData: async function() {
+      try {
+        let response = await this.$http.request({
+          url: apiUrl + 'exportReceipt',
+          method: 'post',
+          data: this.exportPara,
+          responseType: 'blob'
+        })
+        let blob = response.data
+        let reader = new FileReader()
+        reader.readAsDataURL(blob)
+        reader.onload = e => {
+          let a = document.createElement('a')
+          a.download = 'receipt' + moment().format('YYYYMMDDHHmmSS') + '.xlsx'
+          a.href = e.target.result
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+        }
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
   }
 }
 </script>
