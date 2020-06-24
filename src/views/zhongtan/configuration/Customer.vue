@@ -102,36 +102,44 @@ export default {
             },
             {
               title: 'Username',
-              key: 'user_username'
+              key: 'user_username',
+              width: 200,
             },
             {
               title: 'Name',
-              key: 'user_name'
+              key: 'user_name',
+              width: 300,
             },
             {
               title: 'Phone',
-              key: 'user_phone'
+              key: 'user_phone',
+              width: 200,
             },
             {
               title: 'Email',
-              key: 'user_email'
+              key: 'user_email',
+              width: 200,
             },
             {
               title: 'Address',
               key: 'user_address',
-              render: common.tooltipRender()
+              render: common.tooltipRender(),
+              width: 150,
             },
             {
               title: 'TIN',
               key: 'user_tin',
+              width: 150,
             },
             {
               title: 'Blacklist',
               slot: 'user_blacklist',
+              width: 100,
             },
             {
               title: 'Action',
-              slot: 'action'
+              slot: 'action',
+              width: 100,
             }
           ],
           data: [],

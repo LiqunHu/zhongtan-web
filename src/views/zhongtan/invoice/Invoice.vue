@@ -110,6 +110,12 @@
                   <i class="fa fa-cubes" v-else></i>
                   {{row.invoice_masterbi_bl}}
                 </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_do_disabled">
+                  <i-switch v-model="row.invoice_masterbi_do_disabled" @on-change="changeDoDisabled(row)" size="large" true-value="1" false-value="0">
+                      <span slot="open">ON</span>
+                      <span slot="close">OFF</span>
+                  </i-switch>
+                </template>
                 <template slot-scope="{ row, index }" slot="Invoice">
                   <Tooltip content="Deposit" v-if="!row.invoice_masterbi_invoice_release_date">
                     <a href="#" class="btn btn-green btn-icon btn-sm" @click="actDepositModal(row)">
@@ -607,7 +613,7 @@
         </FormItem>
       </Form>
       <div slot="footer">
-        <Button type="text" size="large" @click="modal.checkPasswordModal = false; depositEdit = false; doDeliverEdit = false;">Cancel</Button>
+        <Button type="text" size="large" @click="cancelCheckPassword">Cancel</Button>
         <Button type="primary" size="large" @click="actCheckPassword">Submit</Button>
       </div>
     </Modal>
@@ -661,6 +667,11 @@ export default {
               title: '#M B/L No',
               slot: 'invoice_masterbi_bl',
               width: 180
+            },
+            {
+              title: 'D/O Disabled',
+              slot: 'invoice_masterbi_do_disabled',
+              width: 120
             },
             {
               title: 'Invoice',
@@ -1670,9 +1681,23 @@ export default {
           this.doDeliverValidToEdit = false
         } else if(this.checkPasswordType === 'downLoadDoModalCheck') {
           this.actDownLoadDoModal(this.workPara)
+        } else if(this.checkPasswordType === 'doDisabledChange') {
+          this.changeDoDisabledAct(this.workPara)
         }
       } catch (error) {
         this.$commonact.fault(error)
+      }
+    },
+    cancelCheckPassword: async function() {
+      this.modal.checkPasswordModal = false
+      this.depositEdit = false
+      this.doDeliverEdit = false
+      if(this.checkPasswordType === 'doDisabledChange') {
+        if (this.currentTab === 0) {
+          this.getMasterbiData(1)
+        } else {
+          this.getContainersData(1)
+        }
       }
     },
     resetVesselForm: function() {
@@ -1728,6 +1753,38 @@ export default {
     vesselAtdDateChange: async function(date) {
       this.vesselForm.invoice_vessel_atd = date
     },
+    changeDoDisabled: function(item) {
+      try {
+        this.workPara = JSON.parse(JSON.stringify(item))
+        this.checkPassword = ''
+        this.modal.checkPasswordModal = true
+        this.checkPasswordType = 'doDisabledChange'
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
+    changeDoDisabledAct: async function(row) {
+      try {
+        await this.$http.post(apiUrl + 'changeDoDisabled', row)
+        if(row.invoice_masterbi_do_disabled === '1'){
+          this.$Message.success('D/O disabled Success')
+        } else {
+          this.$Message.success('D/O enabled Success')
+        }
+        if (this.currentTab === 0) {
+          this.getMasterbiData(1)
+        } else {
+          this.getContainersData(1)
+        }
+      } catch (error) {
+        if(row.invoice_masterbi_do_disabled === '1'){
+          row.invoice_masterbi_do_disabled = '0'
+        } else {
+          row.invoice_masterbi_do_disabled = '1'
+        }
+        this.$commonact.fault(error)
+      }
+    }
   }
 }
 </script>

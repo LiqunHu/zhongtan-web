@@ -18,6 +18,9 @@
             <div class="panel-toolbar">
                 <div class="form-inline">
                     <div class="form-group m-r-2">
+                    <DatePicker type="date" :value="search_data.enabled_date" placeholder="Enabled Date" @on-change="searchDataChange"></DatePicker>
+                    </div>
+                    <div class="form-group m-r-2">
                         <Select clearable v-model="search_data.overdue_charge_cargo_type" placeholder = "select cargo type" style="width:180px">
                             <Option v-for="item in cargoTypeFileter" :value="item.id" :key="item.id">{{ item.text }}</Option>
                         </Select>
@@ -75,7 +78,7 @@
                 </a>
             </template>
         </Table>
-        <Page class="m-t-10" :total="table.ruleTable.total" :page-size="table.ruleTable.limit" @on-change="getTableData" />
+        <Page class="m-t-10" :total="table.ruleTable.total" :page-size="table.ruleTable.limit" @on-change="getTableData" show-total/>
         <Modal v-model="modal.chargeRuleModal" :title="textMap[modalStatus]" width="600">
             <Form ref="chargeRuleForm" :model="chargeRuleForm" :rules="chargeRules" :label-width="150" style="padding-right: 80px;">
                 <FormItem label="Cargo Type" prop="overdue_charge_cargo_type">
@@ -408,6 +411,9 @@ export default {
     },
     enabledToDateChange: async function(date) {
       this.chargeRuleForm.overdue_charge_enabled_date = date
+    },
+    searchDataChange: async function(date) {
+      this.search_data.enabled_date = date
     },
   }
 }
