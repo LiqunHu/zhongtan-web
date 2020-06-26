@@ -110,24 +110,26 @@
           </FormItem>
           <FormItem label="Return Date">
             <DatePicker type="date" placeholder="Return Date" v-model="overdueChargeForm.invoice_containers_empty_return_date" format="dd/MM/yyyy" @on-change="returnDateChange"></DatePicker>
+            <Tag type="dot" v-if="overdueChargeForm.invoice_containers_empty_return_diff_days">Diff {{overdueChargeForm.invoice_containers_empty_return_diff_days}} Days</Tag>
           </FormItem>
           <FormItem label="Free Days">
-            <Input-number :min="overdueChargeForm.invoice_containers_empty_return_overdue_static_free_days" v-model="overdueChargeForm.invoice_containers_empty_return_overdue_free_days" :active-change="false" @on-change="overdueFreeDaysChange" :disabled ="returnOverdueDaysDisabled || overdueChargeForm.invoice_containers_empty_return_overdue_free_days_fixed" style="width: 200px;"></Input-number>
+            <Input-number :min="parseInt(overdueChargeForm.invoice_containers_empty_return_overdue_static_free_days)" v-model="overdueChargeForm.invoice_containers_empty_return_overdue_free_days" :active-change="false" @on-change="overdueFreeDaysChange" :disabled ="returnOverdueDaysDisabled || overdueChargeForm.invoice_containers_empty_return_overdue_free_days_fixed" style="width: 200px;"></Input-number>
           </FormItem>
           <FormItem label="Overdue Days">
             <Input v-model="overdueChargeForm.invoice_containers_empty_return_overdue_days" disabled>
-                <span slot="append" style="display:block; width: 40px">Day</span>
+                <span slot="append" style="display:block; width: 40px">Days</span>
             </Input>
           </FormItem>
           <FormItem label="Overdue Charge">
             <Input v-model="overdueChargeForm.invoice_containers_empty_return_overdue_amount" :disabled ="returnOverdueDaysDisabled">
-              <a slot="append" href="#" @click.prevent="overdueDaysEditAct" title="Edit" style="display:block; width: 40px">
-                <i class="fa fa-edit"></i>
-              </a>
+              <span slot="append" style="display:block; width: 40px">USD</span>
             </Input>
           </FormItem>
         </Form>
         <div slot="footer">
+          <a href="#" style="float:left; padding-top:10px;" @click.prevent="overdueDaysEditAct" title="Edit">
+            <i class="fa fa-edit"></i>Edit
+          </a>
           <Button type="text" size="large" @click="modal.calculationModal = false">Cancel</Button>
           <Button type="primary" size="large" @click="emptySubmitAct" :disabled="emptySubmitDisabled">Submit</Button>
         </div>
@@ -520,7 +522,8 @@ export default {
           }
           let response = await this.$http.post(apiUrl + 'calculation', param)
           this.overdueChargeForm.invoice_containers_empty_return_date = date
-          this.overdueChargeForm.invoice_containers_empty_return_overdue_days = response.data.info.diff_days
+          this.overdueChargeForm.invoice_containers_empty_return_diff_days = response.data.info.diff_days
+          this.overdueChargeForm.invoice_containers_empty_return_overdue_days = response.data.info.overdue_days
           this.overdueChargeForm.invoice_containers_empty_return_overdue_amount = response.data.info.overdue_amount
           this.emptySubmitDisabled = false
         } catch (error) {
