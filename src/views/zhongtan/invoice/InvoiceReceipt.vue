@@ -890,7 +890,11 @@ export default {
         printJS(response.data.info.url)
         this.$Message.success('do success')
         this.modal.receiptModal = false
-        this.getMasterbiData()
+        if (this.currentTab === 0) {
+          this.getMasterbiData(1)
+        } else {
+          this.getContainersData(1)
+        }
       } catch (error) {
         this.$commonact.fault(error)
       }
@@ -898,8 +902,11 @@ export default {
     doRealse: async function(row, index) {
       try {
         await this.$http.post(apiUrl + 'doRelease', { file_id: row.file_id })
-        this.getVoyageData()
-        this.getMasterbiData()
+        if (this.currentTab === 0) {
+          this.getMasterbiData(1)
+        } else {
+          this.getContainersData(1)
+        }
         this.$Message.success('release success')
       } catch (error) {
         this.$commonact.fault(error)
@@ -988,8 +995,11 @@ export default {
         _self.$commonact.confirm(`undo this release?`, async () => {
           try {
             await _self.$http.post(apiUrl + 'doUndoRelease', { file_id: _self.workPara.file_id, undo_release_password: common.md52( _self.workPara.undo_release_password) })
-            _self.getVoyageData()
-            _self.getMasterbiData()
+            if (this.currentTab === 0) {
+              this.getMasterbiData(1)
+            } else {
+              this.getContainersData(1)
+            }
             _self.$Message.success('undo release success')
             _self.modal.undoReleaseCheckModal = false
           } catch (error) {

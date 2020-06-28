@@ -118,13 +118,19 @@
                 </template>
                 <template slot-scope="{ row, index }" slot="Invoice">
                   <Tooltip content="Deposit" v-if="!row.invoice_masterbi_invoice_release_date">
-                    <a href="#" class="btn btn-green btn-icon btn-sm" @click="actDepositModal(row)">
+                    <a href="#" class="btn btn-green btn-icon btn-sm" @click="actDepositModal(row)" v-if="row.invoice_masterbi_invoice_state">
                       <i class="fa fa-money-bill-alt"></i>
+                    </a>
+                    <a href="#" class="btn btn-info btn-icon btn-sm" @click="actDepositModalCheck(row)" v-else>
+                      <i class="fa fa-object-ungroup"></i>
                     </a>
                   </Tooltip>
                   <Tooltip :content="row.invoice_masterbi_invoice_release_date_fmt" v-if="row.invoice_masterbi_invoice_release_date">
-                    <a href="#" class="btn btn-pink btn-icon btn-sm" @click="actDepositModal(row)">
+                    <a href="#" class="btn btn-pink btn-icon btn-sm" @click="actDepositModal(row)" v-if="row.invoice_masterbi_invoice_state">
                       <i class="fa fa-money-bill-alt"></i>
+                    </a>
+                    <a href="#" class="btn btn-info btn-icon btn-sm" @click="actDepositModalCheck(row)" v-else>
+                      <i class="fa fa-object-ungroup"></i>
                     </a>
                   </Tooltip>
                 </template>
@@ -422,7 +428,7 @@
       <Form :model="workPara" :label-width="140">
         <FormItem label="Customer" prop="invoice_masterbi_customer_id" style="margin-bottom: 0px;">
           <Select ref="customer" v-model="workPara.invoice_masterbi_customer_id" filterable clearable remote :remote-method="searchCustomer" :loading="deposit.customer.loading" placeholder="Customer">
-            <Option v-for="item in deposit.customer.options" :value="item.id" :key="item.id">{{item.text}}<i v-if="item.fixed" class="fa fa-lock" style="float: right;"></i></Option>
+            <Option v-for="item in deposit.customer.options" :value="item.id" :key="item.id">{{item.text}}<i v-if="item.balcklist === '1'" class="fa fa-ban" style="float: right; color: red;"></i><i v-if="item.fixed" class="fa fa-lock" style="float: right; margin-right: 10px;"></i></Option>
           </Select>
         </FormItem>
         <FormItem label="Carrier" prop="invoice_masterbi_carrier" style="margin-bottom: 0px;">
@@ -574,8 +580,8 @@
       </Form>
       <div slot="footer">
         <Button type="text" size="large" @click="modal.depositModal=false">Cancel</Button>
-        <Button type="primary" size="large" @click="depositDo" v-if="deposit.depositType=='Container Deposit'" :disabled = "workPara.invoice_masterbi_deposit_fixed == '1' && !!workPara.invoice_masterbi_deposit_release_date && !depositEdit">Submit</Button>
-        <Button type="primary" size="large" @click="depositDo" v-if="deposit.depositType=='Invoice Fee'">Submit</Button>
+        <Button type="primary" size="large" @click="depositDo" v-if="deposit.depositType=='Container Deposit'" :disabled = "!depositEdit && (workPara.invoice_masterbi_customer_blacklist || (workPara.invoice_masterbi_deposit_fixed == '1' && !!workPara.invoice_masterbi_deposit_release_date))">Submit</Button>
+        <Button type="primary" size="large" @click="depositDo" v-if="deposit.depositType=='Invoice Fee'" :disabled = "workPara.invoice_masterbi_customer_blacklist">Submit</Button>
       </div>
     </Modal>
     <Modal v-model="modal.deleteVoyageModal" title="Delete Voyage" width="600" :mask-closable="false">
@@ -1208,21 +1214,13 @@ export default {
     checkVoyage: async function(invoice_vessel_id) {
       if (this.vessel.current != invoice_vessel_id) {
         this.vessel.current = invoice_vessel_id
-        if (this.currentTab === 0) {
-          this.getMasterbiData(1)
-        } else {
-          this.getContainersData(1)
-        }
+        this.refreshTableData()
       }
     },
     changeTab: function(name) {
       if (this.currentTab != name) {
         this.currentTab = name
-        if (name === 0) {
-          this.getMasterbiData(1)
-        } else {
-          this.getContainersData(1)
-        }
+        this.refreshTableData()
       }
     },
     getMasterbiData: async function(index) {
@@ -1317,7 +1315,7 @@ export default {
         printJS(response.data.info.url)
         this.$Message.success('do success')
         this.modal.downLoadDoModal = false
-        this.getMasterbiData()
+        this.refreshTableData()
       } catch (error) {
         this.$commonact.fault(error)
       }
@@ -1325,12 +1323,17 @@ export default {
     doRealse: async function(row, index) {
       try {
         await this.$http.post(apiUrl + 'doRelease', { file_id: row.file_id })
-        this.getVoyageData()
-        this.getMasterbiData()
+        this.refreshTableData()
         this.$Message.success('release success')
       } catch (error) {
         this.$commonact.fault(error)
       }
+    },
+    actDepositModalCheck: function(row) {
+      this.workPara = JSON.parse(JSON.stringify(row))
+      this.checkPassword = ''
+      this.modal.checkPasswordModal = true
+      this.checkPasswordType = 'depositModalCheck'
     },
     actDepositModal: function(row) {
       this.$refs.customer.reset()
@@ -1341,6 +1344,7 @@ export default {
       this.$nextTick(function() {
         this.workPara = JSON.parse(JSON.stringify(row))
         this.depositEdit = false
+        this.workPara.invoice_masterbi_customer_blacklist = true
         if(this.workPara.invoice_masterbi_vessel_type && this.workPara.invoice_masterbi_vessel_type === 'Bulk') {
           this.deposit.depositType = 'Invoice Fee'
           this.$refs.depositTabs.activeKey = 'Invoice Fee'
@@ -1405,7 +1409,7 @@ export default {
         // printJS(response.data.info.url)
         this.$Message.success('deposit success')
         this.modal.depositModal = false
-        this.getMasterbiData()
+        this.refreshTableData()
       } catch (error) {
         this.$commonact.fault(error)
       }
@@ -1421,7 +1425,7 @@ export default {
           return this.$Message.error('Please enter right password')
         }
         await this.$http.post(apiUrl + 'changeCollect', { invoice_masterbi_id: this.workPara.invoice_masterbi_id, act: this.workPara.collect_flag, collet_change_password: common.md52(this.workPara.collet_change_password) })
-        this.getMasterbiData()
+        this.refreshTableData()
         this.modal.colletChangeModal = false
       } catch (error) {
         this.$commonact.fault(error)
@@ -1438,7 +1442,7 @@ export default {
         if (changeData.length > 0) {
           try {
             await this.$http.post(apiUrl + 'changebl', { changedbl: changeData })
-            this.getMasterbiData()
+            this.refreshTableData()
             this.tableEdit = true
             this.$Message.success('save success')
           } catch (error) {
@@ -1456,8 +1460,7 @@ export default {
         _self.$commonact.confirm(`Delete the vessel?`, async () => {
           try {
             await _self.$http.post(apiUrl + 'deleteVoyage', { invoice_vessel_id: _self.workPara.invoice_vessel_id})
-            _self.getVoyageData()
-            _self.getMasterbiData()
+            this.refreshTableData()
             _self.modal.deleteVoyageModal = false
           } catch (error) {
             this.$commonact.fault(error)
@@ -1470,8 +1473,7 @@ export default {
     doCreateEdi: async function(row, index) {
       try {
         await this.$http.post(apiUrl + 'doCreateEdi', { invoice_masterbi_id: row.invoice_masterbi_id })
-        this.getVoyageData()
-        this.getMasterbiData()
+        this.refreshTableData()
         this.$Message.success('Send Edi Success')
       } catch (error) {
         this.$commonact.fault(error)
@@ -1480,8 +1482,7 @@ export default {
     doReplaceEdi: async function(row, index) {
       try {
         await this.$http.post(apiUrl + 'doReplaceEdi', { invoice_masterbi_id: row.invoice_masterbi_id })
-        this.getVoyageData()
-        this.getMasterbiData()
+        this.refreshTableData()
         this.$Message.success('Replace Edi Success')
       } catch (error) {
         this.$commonact.fault(error)
@@ -1490,8 +1491,7 @@ export default {
     doCancelEdi: async function(row, index) {
       try {
         await this.$http.post(apiUrl + 'doCancelEdi', { invoice_masterbi_id: row.invoice_masterbi_id })
-        this.getVoyageData()
-        this.getMasterbiData()
+        this.refreshTableData()
         this.$Message.success('Cancel Edi Success')
       } catch (error) {
         this.$commonact.fault(error)
@@ -1515,6 +1515,8 @@ export default {
         await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_tasac')
         await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_printing')
         await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_others')
+
+        this.workPara.invoice_masterbi_customer_blacklist = fixedDeposit.invoice_masterbi_customer_blacklist
         this.$forceUpdate()
       } catch (error) {
         this.$commonact.fault(error)
@@ -1683,6 +1685,8 @@ export default {
           this.actDownLoadDoModal(this.workPara)
         } else if(this.checkPasswordType === 'doDisabledChange') {
           this.changeDoDisabledAct(this.workPara)
+        } else if(this.checkPasswordType === 'depositModalCheck') {
+          this.actDepositModal(this.workPara)
         }
       } catch (error) {
         this.$commonact.fault(error)
@@ -1693,11 +1697,7 @@ export default {
       this.depositEdit = false
       this.doDeliverEdit = false
       if(this.checkPasswordType === 'doDisabledChange') {
-        if (this.currentTab === 0) {
-          this.getMasterbiData(1)
-        } else {
-          this.getContainersData(1)
-        }
+        this.refreshTableData()
       }
     },
     resetVesselForm: function() {
@@ -1717,8 +1717,7 @@ export default {
           if (valid) {
             try {
               await this.$http.post(apiUrl + 'doEditVessel', this.vesselForm)
-              this.getVoyageData()
-              this.getMasterbiData()
+              this.refreshTableData()
               this.modal.editVesselModal = false
             } catch (error) {
               this.$commonact.fault(error)
@@ -1771,11 +1770,7 @@ export default {
         } else {
           this.$Message.success('D/O enabled Success')
         }
-        if (this.currentTab === 0) {
-          this.getMasterbiData(1)
-        } else {
-          this.getContainersData(1)
-        }
+        this.refreshTableData()
       } catch (error) {
         if(row.invoice_masterbi_do_disabled === '1'){
           row.invoice_masterbi_do_disabled = '0'
@@ -1783,6 +1778,17 @@ export default {
           row.invoice_masterbi_do_disabled = '1'
         }
         this.$commonact.fault(error)
+      }
+    },
+    refreshTableData() {
+      if(this.vessel.search_data.vesselName || this.vessel.search_data.bl) {
+        this.getVoyageData()
+      } else {
+        if (this.currentTab === 0) {
+          this.getMasterbiData(1)
+        } else {
+          this.getContainersData(1)
+        }
       }
     }
   }
