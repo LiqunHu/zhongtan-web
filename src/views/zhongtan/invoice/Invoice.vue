@@ -581,7 +581,7 @@
       <div slot="footer">
         <Button type="text" size="large" @click="modal.depositModal=false">Cancel</Button>
         <Button type="primary" size="large" @click="depositDo" v-if="deposit.depositType=='Container Deposit'" :disabled = "!depositEdit && (workPara.invoice_masterbi_customer_blacklist || (workPara.invoice_masterbi_deposit_fixed == '1' && !!workPara.invoice_masterbi_deposit_release_date))">Submit</Button>
-        <Button type="primary" size="large" @click="depositDo" v-if="deposit.depositType=='Invoice Fee'" :disabled = "workPara.invoice_masterbi_customer_blacklist">Submit</Button>
+        <Button type="primary" size="large" @click="depositDo" v-if="deposit.depositType=='Invoice Fee'" :disabled = "!depositEdit && workPara.invoice_masterbi_customer_blacklist">Submit</Button>
       </div>
     </Modal>
     <Modal v-model="modal.deleteVoyageModal" title="Delete Voyage" width="600" :mask-closable="false">
