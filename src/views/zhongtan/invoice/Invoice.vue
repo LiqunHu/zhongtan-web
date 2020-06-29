@@ -428,7 +428,7 @@
       <Form :model="workPara" :label-width="140">
         <FormItem label="Customer" prop="invoice_masterbi_customer_id" style="margin-bottom: 0px;">
           <Select ref="customer" v-model="workPara.invoice_masterbi_customer_id" filterable clearable remote :remote-method="searchCustomer" :loading="deposit.customer.loading" placeholder="Customer">
-            <Option v-for="item in deposit.customer.options" :value="item.id" :key="item.id">{{item.text}}<i v-if="item.balcklist === '1'" class="fa fa-ban" style="float: right; color: red;"></i><i v-if="item.fixed" class="fa fa-lock" style="float: right; margin-right: 10px;"></i></Option>
+            <Option v-for="item in deposit.customer.options" :value="item.id" :key="item.id">{{item.text}}<i v-if="item.balcklist === '1'" class="fa fa-ban" style="float: right; color: red;" title="Blacklist"></i><i v-if="item.fixed" class="fa fa-lock" style="float: right; margin-right: 10px;" title="Fixed"></i></Option>
           </Select>
         </FormItem>
         <FormItem label="Carrier" prop="invoice_masterbi_carrier" style="margin-bottom: 0px;">
