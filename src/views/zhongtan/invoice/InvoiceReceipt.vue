@@ -161,11 +161,9 @@
         <Row>
           <Col>
             <FormItem label="Received From" prop="invoice_masterbi_received_from">
-              <Input
-                placeholder="Received From"
-                v-model="workPara.invoice_masterbi_received_from"
-                :disabled="!!workPara.invoice_masterbi_receipt_release_date || !!workPara.invoice_masterbi_deposit_date || !!workPara.invoice_masterbi_fee_date"
-              />
+              <Select v-model="workPara.invoice_masterbi_received_from" filterable clearable placeholder="Received From" :disabled="(!!workPara.invoice_masterbi_receipt_release_date || !!workPara.invoice_masterbi_deposit_date || !!workPara.invoice_masterbi_fee_date) && receiptDisabled">
+                <Option v-for="item in pagePara.RECEIVES" :value="item" :key="item">{{item}}</Option>
+              </Select>
             </FormItem>
           </Col>
         </Row>
@@ -217,6 +215,9 @@
         </Row>
       </Form>
       <div slot="footer">
+        <a href="#" style="float:left; padding-top:10px;" @click.prevent="receiptEditAct" title="Edit">
+          <i class="fa fa-edit"></i>Edit
+        </a>
         <Button type="text" size="large" @click="modal.receiptModal=false">Cancel</Button>
         <Button type="primary" size="large" @click="downloadReceipt">Submit</Button>
       </div>
@@ -299,6 +300,20 @@
         <Button type="primary" size="large" @click="exportReceiptData">Submit</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :closable="false" :mask-closable="false">
+        <Form :label-width="120">
+          <FormItem v-show="false">
+            <Input type="password" style='width:0;opacity:0;'></Input>       
+          </FormItem>
+          <FormItem label="Password" prop="checkPassword">
+            <Input type="password" placeholder="Password" v-model="checkPassword"></Input>
+          </FormItem>
+        </Form>
+        <div slot="footer">
+          <Button type="text" size="large" @click="modal.checkPasswordModal = false; depositEdit = false; doDeliverEdit = false;">Cancel</Button>
+          <Button type="primary" size="large" @click="actCheckPassword">Submit</Button>
+        </div>
+      </Modal>
   </div>
 </template>
 <script>
@@ -327,7 +342,7 @@ function formatCurrency(num) {
 export default {
   data: function() {
     return {
-      modal: { receiptModal: false, collectModal: false, undoReleaseCheckModal: false, exportModal: false },
+      modal: { receiptModal: false, collectModal: false, undoReleaseCheckModal: false, exportModal: false, checkPasswordModal: false },
       table: {
         masterbiTable: {
           columns: [
@@ -735,7 +750,8 @@ export default {
         invoice_vessel_ata: '',
         invoice_customer_id: '',
         invoice_do_date: ''
-      }
+      },
+      receiptDisabled: true
     }
   },
   created() {
@@ -1041,6 +1057,29 @@ export default {
           document.body.appendChild(a)
           a.click()
           document.body.removeChild(a)
+        }
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
+    receiptEditAct: function(item) {
+      try {
+        this.checkPassword = ''
+        this.modal.checkPasswordModal = true
+        this.checkPasswordType = 'receiptEdit'
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
+    actCheckPassword: async function() {
+      try {
+        if(!this.checkPassword) {
+          return this.$Message.error('Please enter right password')
+        }
+        await this.$http.post(apiUrl + 'checkPassword', { check_password: common.md52(this.checkPassword)})
+        this.modal.checkPasswordModal = false
+        if(this.checkPasswordType === 'receiptEdit') {
+          this.receiptDisabled = false
         }
       } catch (error) {
         this.$commonact.fault(error)
