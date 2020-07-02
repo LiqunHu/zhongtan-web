@@ -751,6 +751,7 @@ export default {
         invoice_customer_id: '',
         invoice_do_date: ''
       },
+      checkPassword: '',
       receiptDisabled: true
     }
   },

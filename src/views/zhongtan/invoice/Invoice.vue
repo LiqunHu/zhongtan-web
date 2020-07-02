@@ -102,7 +102,7 @@
           </div>
         </Col>
         <Col span="17" offset="1">
-          <Tabs :animated="false" @on-click="changeTab">
+          <Tabs :animated="true" @on-click="changeTab">
             <TabPane label="MasterBl">
               <Table stripe size="small" ref="masterbiTable" :columns="table.masterbiTable.columns" :data="table.masterbiTable.data" :height="table.masterbiTable.height">
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_bl">
@@ -324,7 +324,56 @@
               <Page class="m-t-10" :total="table.masterbiTable.total" :page-size="table.masterbiTable.limit" @on-change="getMasterbiData" />
             </TabPane>
             <TabPane label="Containers">
-              <Table stripe size="small" ref="containersTable" :columns="table.containersTable.columns" :data="table.containersTable.data" :height="table.containersTable.height"></Table>
+              <Table stripe size="small" ref="containersTable" :columns="table.containersTable.columns" :data="table.containersTable.data" :height="table.containersTable.height">
+                <template slot-scope="{ row, index }" slot="invoice_containers_type">
+                  <Input v-model="table.containersTable.data[index].invoice_containers_type" size="small" :disabled="tableEdit"/>
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_containers_no">
+                  <Input v-model="table.containersTable.data[index].invoice_containers_no" size="small" :disabled="tableEdit"/>
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_containers_size">
+                  <Input v-model="table.containersTable.data[index].invoice_containers_size" size="small" :disabled="tableEdit"/>
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_containers_seal1">
+                  <Input v-model="table.containersTable.data[index].invoice_containers_seal1" size="small" :disabled="tableEdit"/>
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_containers_seal2">
+                  <Input v-model="table.containersTable.data[index].invoice_containers_seal2" size="small" :disabled="tableEdit"/>
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_containers_seal3">
+                  <Input v-model="table.containersTable.data[index].invoice_containers_seal3" size="small" :disabled="tableEdit"/>
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_containers_freight_indicator">
+                  <Input v-model="table.containersTable.data[index].invoice_containers_freight_indicator" size="small" :disabled="tableEdit"/>
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_containers_package_no">
+                  <Input v-model="table.containersTable.data[index].invoice_containers_package_no" size="small" :disabled="tableEdit"/>
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_containers_package_unit">
+                  <Input v-model="table.containersTable.data[index].invoice_containers_package_unit" size="small" :disabled="tableEdit"/>
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_containers_volumn">
+                  <Input v-model="table.containersTable.data[index].invoice_containers_volumn" size="small" :disabled="tableEdit"/>
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_containers_volumn_unit">
+                  <Input v-model="table.containersTable.data[index].invoice_containers_volumn_unit" size="small" :disabled="tableEdit"/>
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_containers_weight">
+                  <Input v-model="table.containersTable.data[index].invoice_containers_weight" size="small" :disabled="tableEdit"/>
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_containers_weight_unit">
+                  <Input v-model="table.containersTable.data[index].invoice_containers_weight_unit" size="small" :disabled="tableEdit"/>
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_containers_plug_reefer">
+                  <Input v-model="table.containersTable.data[index].invoice_containers_plug_reefer" size="small" :disabled="tableEdit"/>
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_containers_min_temperature">
+                  <Input v-model="table.containersTable.data[index].invoice_containers_min_temperature" size="small" :disabled="tableEdit"/>
+                </template>
+                <template slot-scope="{ row, index }" slot="invoice_containers_max_temperature">
+                  <Input v-model="table.containersTable.data[index].invoice_containers_max_temperature" size="small" :disabled="tableEdit"/>
+                </template>
+              </Table>
               <Page class="m-t-10" :total="table.containersTable.total" :page-size="table.containersTable.limit" @on-change="getContainersData" />
             </TabPane>
           </Tabs>
@@ -912,86 +961,87 @@ export default {
             },
             {
               title: 'Type Of Container',
-              key: 'invoice_containers_type',
+              slot: 'invoice_containers_type',
               width: 100
             },
             {
               title: 'Container No',
-              key: 'invoice_containers_no',
+              slot: 'invoice_containers_no',
               width: 150
             },
             {
               title: 'Container Size',
-              key: 'invoice_containers_size',
+              slot: 'invoice_containers_size',
               width: 100
             },
             {
               title: 'Seal No.1',
-              key: 'invoice_containers_seal1',
+              slot: 'invoice_containers_seal1',
               width: 100
             },
             {
               title: 'Seal No.2',
-              key: 'invoice_containers_seal2',
+              slot: 'invoice_containers_seal2',
               width: 100
             },
             {
               title: 'Seal No.3',
-              key: 'invoice_containers_seal3',
+              slot: 'invoice_containers_seal3',
               width: 100
             },
             {
               title: 'Freight Indicator',
-              key: 'invoice_containers_freight_indicator',
+              slot: 'invoice_containers_freight_indicator',
               width: 100
             },
             {
               title: 'No Of Package',
-              key: 'invoice_containers_package_no',
+              slot: 'invoice_containers_package_no',
               width: 100
             },
             {
               title: 'Package Unit',
-              key: 'invoice_containers_package_unit',
+              slot: 'invoice_containers_package_unit',
               width: 100
             },
             {
               title: 'Volumn',
-              key: 'invoice_containers_volumn',
+              slot: 'invoice_containers_volumn',
               width: 100
             },
             {
               title: 'Volumn Unit',
-              key: 'invoice_containers_volumn_unit',
+              slot: 'invoice_containers_volumn_unit',
               width: 100
             },
             {
               title: 'Weight',
-              key: 'invoice_containers_weight',
+              slot: 'invoice_containers_weight',
               width: 100
             },
             {
               title: 'Weight Unit',
-              key: 'invoice_containers_weight_unit',
+              slot: 'invoice_containers_weight_unit',
               width: 100
             },
             {
               title: 'Plug type of reefer',
-              key: 'invoice_containers_plug_reefer',
+              slot: 'invoice_containers_plug_reefer',
               width: 100
             },
             {
               title: 'Minimum Temperature',
-              key: 'invoice_containers_min_temperature',
+              slot: 'invoice_containers_min_temperature',
               width: 100
             },
             {
               title: 'Maximum Temperature',
-              key: 'invoice_containers_max_temperature',
+              slot: 'invoice_containers_max_temperature',
               width: 100
             }
           ],
           data: [],
+          unchanged: [],
           height: common.getTableHeight() - 80,
           limit: 10,
           offset: 0,
@@ -1205,8 +1255,15 @@ export default {
         let data = response.data.info
         this.vessel.data = JSON.parse(JSON.stringify(data.vessels))
         this.table.masterbiTable.data = JSON.parse(JSON.stringify(data.masterbl.rows))
+        this.table.masterbiTable.unchanged = JSON.parse(JSON.stringify(data.masterbl.rows))
         this.table.masterbiTable.total = data.masterbl.total
         this.table.containersTable.data = []
+        if(this.vessel.search_data.bl && data.vessels && data.vessels.length === 1) {
+          this.vessel.current = data.vessels[0].invoice_vessel_id
+        }
+        if (this.currentTab != 0) {
+          this.refreshTableData()
+        }
       } catch (error) {
         this.$commonact.fault(error)
       }
@@ -1248,6 +1305,7 @@ export default {
       }
       let searchPara = {
         invoice_vessel_id: this.vessel.current,
+        bl: this.vessel.search_data.bl,
         offset: this.table.containersTable.offset,
         limit: this.table.containersTable.limit
       }
@@ -1256,6 +1314,7 @@ export default {
       let data = response.data.info
       this.table.containersTable.total = data.total
       this.table.containersTable.data = JSON.parse(JSON.stringify(data.rows))
+      this.table.containersTable.unchanged = JSON.parse(JSON.stringify(data.rows))
     },
     actDownLoadDoModal: function(row) {
       this.workPara = JSON.parse(JSON.stringify(row))
@@ -1432,21 +1491,44 @@ export default {
       }
     },
     saveData: async function() {
-      if (this.table.masterbiTable.data.length > 0) {
-        let changeData = []
-        for (let i = 0; i < this.table.masterbiTable.data.length; i++) {
-          if (JSON.stringify(this.table.masterbiTable.data[i]) !== JSON.stringify(this.table.masterbiTable.unchanged[i])) {
-            changeData.push(this.table.masterbiTable.data[i])
+      if (this.currentTab === 0) {
+        if (this.table.masterbiTable.data.length > 0) {
+          let changeData = []
+          for (let i = 0; i < this.table.masterbiTable.data.length; i++) {
+            if (JSON.stringify(this.table.masterbiTable.data[i]) !== JSON.stringify(this.table.masterbiTable.unchanged[i])) {
+              changeData.push(this.table.masterbiTable.data[i])
+            }
+          }
+          if (changeData.length > 0) {
+            try {
+              await this.$http.post(apiUrl + 'changebl', { changedbl: changeData })
+              this.refreshTableData()
+              this.tableEdit = true
+              this.$Message.success('save success')
+            } catch (error) {
+              this.$commonact.fault(error)
+            }
           }
         }
-        if (changeData.length > 0) {
-          try {
-            await this.$http.post(apiUrl + 'changebl', { changedbl: changeData })
-            this.refreshTableData()
-            this.tableEdit = true
-            this.$Message.success('save success')
-          } catch (error) {
-            this.$commonact.fault(error)
+      } else {
+        if (this.table.containersTable.data.length > 0) {
+          //
+          let changeData = []
+          for (let i = 0; i < this.table.containersTable.data.length; i++) {
+            if (JSON.stringify(this.table.containersTable.data[i]) !== JSON.stringify(this.table.containersTable.unchanged[i])) {
+              changeData.push(this.table.containersTable.data[i])
+            }
+          }
+          if (changeData.length > 0) {
+            console.log(changeData)
+            try {
+              await this.$http.post(apiUrl + 'changeCn', { changeCn: changeData })
+              this.refreshTableData()
+              this.tableEdit = true
+              this.$Message.success('save success')
+            } catch (error) {
+              this.$commonact.fault(error)
+            }
           }
         }
       }
@@ -1781,14 +1863,14 @@ export default {
       }
     },
     refreshTableData() {
-      if(this.vessel.search_data.vesselName || this.vessel.search_data.bl) {
-        this.getVoyageData()
-      } else {
-        if (this.currentTab === 0) {
-          this.getMasterbiData(1)
+      if (this.currentTab === 0) {
+        if(this.vessel.search_data.vesselName || this.vessel.search_data.bl) {
+          this.getVoyageData()
         } else {
-          this.getContainersData(1)
+          this.getMasterbiData(1)
         }
+      } else {
+        this.getContainersData(1)
       }
     }
   }
