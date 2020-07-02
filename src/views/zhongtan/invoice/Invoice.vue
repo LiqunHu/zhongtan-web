@@ -1520,7 +1520,6 @@ export default {
             }
           }
           if (changeData.length > 0) {
-            console.log(changeData)
             try {
               await this.$http.post(apiUrl + 'changeCn', { changeCn: changeData })
               this.refreshTableData()
