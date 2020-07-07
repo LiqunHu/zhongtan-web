@@ -34,9 +34,9 @@
             <div class="form-group m-r-3">
               <button type="button" class="btn btn-info" @click="actCollectModal">Collect</button>
             </div>
-            <div class="form-group m-r-3">
+            <!-- <div class="form-group m-r-3">
               <button type="button" class="btn btn-info" @click="actExportModal">Export</button>
-            </div>
+            </div> -->
           </div>
         </div>
       </template>
@@ -857,9 +857,15 @@ export default {
         this.workPara.invoice_masterbi_received_from = row.user_name
         if(row.invoice_masterbi_deposit_release_date && !row.invoice_masterbi_deposit_receipt_date) {
           this.checkType = 'deposit'
+          if(row.invoice_masterbi_deposit_received_from) {
+            this.workPara.invoice_masterbi_received_from = row.invoice_masterbi_deposit_received_from
+          }
           this.workPara.invoice_masterbi_receipt_amount = formatCurrency(parseFloat(row.invoice_masterbi_deposit))
         } else if(row.invoice_masterbi_fee_release_date && !row.invoice_masterbi_invoice_receipt_date) {
           this.checkType = 'fee'
+          if(row.invoice_masterbi_invoice_received_from) {
+            this.workPara.invoice_masterbi_received_from = row.invoice_masterbi_invoice_received_from
+          }
           this.workPara.invoice_masterbi_receipt_amount = 0
           if (row.invoice_masterbi_of) {
             this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_of)
@@ -931,12 +937,18 @@ export default {
     },
     changeType: function() {
       if (this.checkType === 'deposit') {
+        if(this.workPara.invoice_masterbi_deposit_received_from) {
+          this.workPara.invoice_masterbi_received_from = this.workPara.invoice_masterbi_deposit_received_from
+        }
         this.workPara.invoice_masterbi_receipt_currency = this.workPara.invoice_container_deposit_currency
         this.workPara.invoice_masterbi_receipt_amount = formatCurrency(parseFloat(this.workPara.invoice_masterbi_deposit))
       } else if (this.checkType === 'freight') {
         this.workPara.invoice_masterbi_receipt_currency = this.workPara.invoice_ocean_freight_fee_currency
         this.workPara.invoice_masterbi_receipt_amount = formatCurrency(parseFloat(this.workPara.invoice_masterbi_of))
       } else {
+        if(this.workPara.invoice_masterbi_invoice_received_from) {
+          this.workPara.invoice_masterbi_received_from = this.workPara.invoice_masterbi_invoice_received_from
+        }
         this.workPara.invoice_masterbi_receipt_currency = this.workPara.invoice_fee_currency
         this.workPara.invoice_masterbi_receipt_amount = 0
         if (this.workPara.invoice_masterbi_of) {

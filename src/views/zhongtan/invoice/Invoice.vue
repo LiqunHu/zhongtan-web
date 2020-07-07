@@ -52,59 +52,58 @@
           </div>
         </div>
       </template>
-      <Row>
-        <Col span="6">
-          <div style="border: 1px solid #dcdee2;">
-            <Scroll :height="vessel.height">
-              <Row v-for="item in vessel.data" v-bind:key="item.invoice_vessel_id">
+<Row>
+    <Col span="6">
+    <div style="border: 1px solid #dcdee2;">
+        <Scroll :height="vessel.height">
+            <Row v-for="item in vessel.data" v-bind:key="item.invoice_vessel_id">
                 <Col>
-                  <div @click="checkVoyage(item.invoice_vessel_id)">
+                <div @click="checkVoyage(item.invoice_vessel_id)">
                     <Card>
-                      <p slot="title">
-                        <i class="fa fa-ship" v-if="item.invoice_vessel_type === 'Bulk'" title="BULK SHIP"></i>
-                        <i class="fa fa-cubes" v-else title="CONTAINER SHIP"></i>
-                        {{item.invoice_vessel_name}}({{item.invoice_vessel_code}})-{{item.invoice_vessel_voyage}}
-                      </p>
-                      <a href="#" slot="extra" @click.stop="editVesselAct(item)" title="Edit">
-                        <i class="fa fa-edit"></i>
-                      </a>
-                      <a href="#" slot="extra" @click.stop="deleteVesselAct(item)" title="Remove" style="color: red; margin-left: 5px;">
-                        <i class="fa fa-times"></i>
-                      </a>
-                      <Row>
-                        <Col span="11">
-                          <p>ETA: {{item.invoice_vessel_eta}}</p>
-                        </Col>
-                        <Col span="13">Do release: {{item.invoice_do_release_rcount}}/{{item.invoice_acount}}</Col>
-                      </Row>
-                      <Row>
-                        <Col span="11">
-                          <p>ATA: {{item.invoice_vessel_ata}}</p>
-                        </Col>
-                        <Col span="13">In release: {{item.invoice_invoice_release_rcount}}/{{item.invoice_acount}}</Col>
-                      </Row>
-                      <Row>
-                        <Col span="11">
-                          <p>ATD: {{item.invoice_vessel_atd}}</p>
-                        </Col>
-                        <Col span="13">Re release: {{item.invoice_receipt_release_rcount}}/{{item.invoice_acount}}</Col>
-                      </Row>
-                      <Row v-if="item.invoice_vessel_call_sign">
-                        <Col span="11">
-                          <p>Call Sign: {{item.invoice_vessel_call_sign}}</p>
-                        </Col>
-                      </Row>
+                        <p slot="title">
+                            <i class="fa fa-ship" v-if="item.invoice_vessel_type === 'Bulk'" title="BULK SHIP"></i>
+                            <i class="fa fa-cubes" v-else title="CONTAINER SHIP"></i> {{item.invoice_vessel_name}}({{item.invoice_vessel_code}})-{{item.invoice_vessel_voyage}}
+                        </p>
+                        <a href="#" slot="extra" @click.stop="editVesselAct(item)" title="Edit">
+                            <i class="fa fa-edit"></i>
+                        </a>
+                        <a href="#" slot="extra" @click.stop="deleteVesselAct(item)" title="Remove" style="color: red; margin-left: 5px;">
+                            <i class="fa fa-times"></i>
+                        </a>
+                        <Row>
+                            <Col span="11">
+                            <p>ETA: {{item.invoice_vessel_eta}}</p>
+                            </Col>
+                            <Col span="13">Do release: {{item.invoice_do_release_rcount}}/{{item.invoice_acount}}</Col>
+                        </Row>
+                        <Row>
+                            <Col span="11">
+                            <p>ATA: {{item.invoice_vessel_ata}}</p>
+                            </Col>
+                            <Col span="13">In release: {{item.invoice_invoice_release_rcount}}/{{item.invoice_acount}}</Col>
+                        </Row>
+                        <Row>
+                            <Col span="11">
+                            <p>ATD: {{item.invoice_vessel_atd}}</p>
+                            </Col>
+                            <Col span="13">Re release: {{item.invoice_receipt_release_rcount}}/{{item.invoice_acount}}</Col>
+                        </Row>
+                        <Row v-if="item.invoice_vessel_call_sign">
+                            <Col span="11">
+                            <p>Call Sign: {{item.invoice_vessel_call_sign}}</p>
+                            </Col>
+                        </Row>
                     </Card>
-                  </div>
+                </div>
                 </Col>
-              </Row>
-            </Scroll>
-          </div>
-        </Col>
-        <Col span="17" offset="1">
-          <Tabs :animated="true" @on-click="changeTab">
-            <TabPane label="MasterBl">
-              <Table stripe size="small" ref="masterbiTable" :columns="table.masterbiTable.columns" :data="table.masterbiTable.data" :height="table.masterbiTable.height">
+            </Row>
+        </Scroll>
+    </div>
+    </Col>
+    <Col span="17" offset="1">
+    <Tabs :animated="true" @on-click="changeTab">
+        <TabPane label="MasterBl">
+            <Table stripe size="small" ref="masterbiTable" :columns="table.masterbiTable.columns" :data="table.masterbiTable.data" :height="table.masterbiTable.height">
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_bl">
                   <i class="fa fa-ship" v-if="row.invoice_masterbi_vessel_type === 'Bulk'"></i>
                   <i class="fa fa-cubes" v-else></i>
@@ -186,7 +185,7 @@
                               </a>
                             </Tooltip>
                           </template>
-                          <template v-else-if="row.state === 'AP'">
+                <template v-else-if="row.state === 'AP'">
                             <Tooltip content="Download">
                               <a :href="row.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
                                 <i class="fa fa-download"></i>
@@ -198,133 +197,133 @@
                               </a>
                             </Tooltip> -->
                           </template>
-                        </template>
-                      </Table>
-                    </template>
-                  </Poptip>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_cargo_type">
+            </Table>
+            </template>
+            </Poptip>
+            </template>
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_cargo_type">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_cargo_type" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_bl_type">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_bl_type">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_bl_type" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_destination">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_destination">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_destination" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_delivery">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_delivery">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_delivery" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_loading">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_loading">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_loading" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_container_no">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_container_no">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_container_no" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_goods_description">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_goods_description">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_goods_description" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_package_no">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_package_no">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_package_no" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_package_unit">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_package_unit">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_package_unit" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_gross_weight">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_gross_weight">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_gross_weight" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_gross_weight_unit">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_gross_weight_unit">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_gross_weight_unit" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_gross_volume">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_gross_volume">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_gross_volume" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_gross_volume_unit">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_gross_volume_unit">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_gross_volume_unit" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_invoice_value">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_invoice_value">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_invoice_value" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_invoice_currency">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_invoice_currency">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_invoice_currency" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_freight_charge">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_freight_charge">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_freight_charge" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_freight_currency">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_freight_currency">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_freight_currency" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_imdg">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_imdg">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_imdg" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_packing_type">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_packing_type">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_packing_type" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_forwarder_code">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_forwarder_code">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_forwarder_code" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_forwarder_name">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_forwarder_name">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_forwarder_name" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_forwarder_tel">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_forwarder_tel">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_forwarder_tel" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_exporter_name">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_exporter_name">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_exporter_name" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_exporter_tel">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_exporter_tel">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_exporter_tel" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_exporter_address">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_exporter_address">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_exporter_address" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_exporter_tin">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_exporter_tin">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_exporter_tin" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_consignee_name">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_consignee_name">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_consignee_name" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_consignee_tel">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_consignee_tel">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_consignee_tel" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_consignee_address">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_consignee_address">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_consignee_address" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_consignee_tin">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_consignee_tin">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_consignee_tin" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_notify_name">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_notify_name">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_notify_name" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_notify_tel">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_notify_tel">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_notify_tel" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_notify_address">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_notify_address">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_notify_address" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_notify_tin">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_notify_tin">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_notify_tin" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_shipping_mark">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_shipping_mark">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_shipping_mark" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_net_weight">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_net_weight">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_net_weight" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_net_weight_unit">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_net_weight_unit">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_net_weight_unit" size="small" :disabled="tableEdit"/>
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_line_code">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_line_code">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_line_code" size="small" />
                 </template>
-                <template slot-scope="{ row, index }" slot="invoice_masterbi_terminal_code">
+            <template slot-scope="{ row, index }" slot="invoice_masterbi_terminal_code">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_terminal_code" size="small" />
                 </template>
-              </Table>
-              <Page class="m-t-10" :total="table.masterbiTable.total" :page-size="table.masterbiTable.limit" @on-change="getMasterbiData" />
-            </TabPane>
-            <TabPane label="Containers">
-              <Table stripe size="small" ref="containersTable" :columns="table.containersTable.columns" :data="table.containersTable.data" :height="table.containersTable.height">
+            </Table>
+            <Page class="m-t-10" :total="table.masterbiTable.total" :page-size="table.masterbiTable.limit" @on-change="getMasterbiData" />
+        </TabPane>
+        <TabPane label="Containers">
+            <Table stripe size="small" ref="containersTable" :columns="table.containersTable.columns" :data="table.containersTable.data" :height="table.containersTable.height">
                 <template slot-scope="{ row, index }" slot="invoice_containers_type">
                   <Input v-model="table.containersTable.data[index].invoice_containers_type" size="small" :disabled="tableEdit"/>
                 </template>
@@ -373,1505 +372,1468 @@
                 <template slot-scope="{ row, index }" slot="invoice_containers_max_temperature">
                   <Input v-model="table.containersTable.data[index].invoice_containers_max_temperature" size="small" :disabled="tableEdit"/>
                 </template>
-              </Table>
-              <Page class="m-t-10" :total="table.containersTable.total" :page-size="table.containersTable.limit" @on-change="getContainersData" />
-            </TabPane>
-          </Tabs>
-        </Col>
-      </Row>
-    </panel>
-    <Modal v-model="modal.importModal" title="Import" :mask-closable="false">
-      <Form :model="workPara" :label-width="120">
+            </Table>
+            <Page class="m-t-10" :total="table.containersTable.total" :page-size="table.containersTable.limit" @on-change="getContainersData" />
+        </TabPane>
+    </Tabs>
+    </Col>
+</Row>
+</panel>
+<Modal v-model="modal.importModal" title="Import" :mask-closable="false">
+    <Form :model="workPara" :label-width="120">
         <FormItem label="Files">
-          <div v-for="f in files.fileList" v-bind:key="f.name" class="upload-list">
-            <Icon type="ios-document" size="60" />
-          </div>
-          <Upload
-            ref="upload"
-            :headers="headers"
-            :show-upload-list="false"
-            :on-success="handleSuccess"
-            :format="['xlsx']"
-            :max-size="4096"
-            :on-format-error="handleFormatError"
-            :on-exceeded-size="handleMaxSize"
-            type="drag"
-            action="/api/zhongtan/invoice/Invoice/upload"
-            style="display: inline-block;width:58px;"
-          >
-            <div style="width: 58px;height:58px;line-height: 58px;">
-              <Icon type="md-add" size="20"></Icon>
+            <div v-for="f in files.fileList" v-bind:key="f.name" class="upload-list">
+                <Icon type="ios-document" size="60" />
             </div>
-          </Upload>
+            <Upload ref="upload" :headers="headers" :show-upload-list="false" :on-success="handleSuccess" :format="['xlsx']" :max-size="4096" :on-format-error="handleFormatError" :on-exceeded-size="handleMaxSize" type="drag" action="/api/zhongtan/invoice/Invoice/upload"
+                style="display: inline-block;width:58px;">
+                <div style="width: 58px;height:58px;line-height: 58px;">
+                    <Icon type="md-add" size="20"></Icon>
+                </div>
+            </Upload>
         </FormItem>
-      </Form>
-      <div slot="footer">
+    </Form>
+    <div slot="footer">
         <Button type="text" size="large" @click="modal.importModal=false">Cancel</Button>
         <Button type="primary" size="large" @click="importData">Submit</Button>
-      </div>
-    </Modal>
-    <Modal v-model="modal.downLoadDoModal" title="Download Do" width="600" :mask-closable="false">
-      <Form :model="workPara" :label-width="160">
+    </div>
+</Modal>
+<Modal v-model="modal.downLoadDoModal" title="Download Do" width="600" :mask-closable="false">
+    <Form :model="workPara" :label-width="160">
         <Row>
-          <Col>
+            <Col>
             <FormItem label="Delivery to" prop="invoice_masterbi_delivery_to">
-              <Select v-model="workPara.invoice_masterbi_delivery_to" filterable clearable placeholder="Delivery" style="width:400px">
+                <Select v-model="workPara.invoice_masterbi_delivery_to" filterable clearable placeholder="Delivery" style="width:400px">
                 <Option v-for="item in delivery.options" :value="item" :key="item">{{item}}</Option>
               </Select>
-              <!-- <a href="#" @click.prevent="changeDoDeliverEdit" title="Edit">
+                <!-- <a href="#" @click.prevent="changeDoDeliverEdit" title="Edit">
                 <i class="fa fa-edit"></i>
               </a> -->
             </FormItem>
-          </Col>
+            </Col>
         </Row>
         <Row>
-          <Col>
+            <Col>
             <FormItem label="VALID TO" prop="invoice_masterbi_valid_to">
-              <DatePicker type="date" placeholder="VALID TO" v-model="workPara.invoice_masterbi_valid_to" :disabled="doDeliverValidToEdit" @on-change="validToDateChange" format="yyyy-MM-dd" ></DatePicker>
+                <DatePicker type="date" placeholder="VALID TO" v-model="workPara.invoice_masterbi_valid_to" :disabled="doDeliverValidToEdit" @on-change="validToDateChange" format="yyyy-MM-dd"></DatePicker>
             </FormItem>
-          </Col>
+            </Col>
         </Row>
         <Row v-if="workPara.invoice_masterbi_vessel_type !== 'Bulk'">
-          <Col>
+            <Col>
             <FormItem label="FCL" prop="invoice_masterbi_do_fcl">
-              <RadioGroup v-model="workPara.invoice_masterbi_do_fcl">
-                <Radio value="FCL/FCL" label="FCL/FCL" style="margin-right: 50px;"></Radio>
-                <Radio value="FCL/LCL" label="FCL/LCL" style="margin-right: 50px;"></Radio>
-              </RadioGroup>
+                <RadioGroup v-model="workPara.invoice_masterbi_do_fcl">
+                    <Radio value="FCL/FCL" label="FCL/FCL" style="margin-right: 50px;"></Radio>
+                    <Radio value="FCL/LCL" label="FCL/LCL" style="margin-right: 50px;"></Radio>
+                </RadioGroup>
             </FormItem>
-          </Col>
+            </Col>
         </Row>
         <Row v-if="workPara.invoice_masterbi_vessel_type !== 'Bulk'">
-          <Col>
+            <Col>
             <FormItem label="LADEN RELEASE ICD" prop="invoice_masterbi_do_icd">
-              <i-select v-model="workPara.invoice_masterbi_do_icd">
-                <i-option  v-for="item in pagePara.ICD" :value="item.icd_name" :key="item.icd_name" :label="item.icd_name">
-                    <span>{{item.icd_name}}</span>
-                    <span style="float:right;color:#ccc">{{item.icd_code}}</span>
-                </i-option>
-              </i-select>
+                <i-select v-model="workPara.invoice_masterbi_do_icd">
+                    <i-option v-for="item in pagePara.ICD" :value="item.icd_name" :key="item.icd_name" :label="item.icd_name">
+                        <span>{{item.icd_name}}</span>
+                        <span style="float:right;color:#ccc">{{item.icd_code}}</span>
+                    </i-option>
+                </i-select>
             </FormItem>
-          </Col>
+            </Col>
         </Row>
         <Row v-if="workPara.invoice_masterbi_vessel_type !== 'Bulk'">
-          <Col>
+            <Col>
             <FormItem label="RETURN DEPOT" prop="invoice_masterbi_do_return_depot">
-              <i-select v-model="workPara.invoice_masterbi_do_return_depot" :disabled = "workPara.invoice_masterbi_do_return_depot_disabled && doDeliverValidToEdit">
-                <i-option  v-for="item in pagePara.DEPOT" :value="item.edi_depot_name" :key="item.edi_depot_id" :label="item.edi_depot_name">
-                    <span>{{item.edi_depot_name}}</span>
-                </i-option>
-              </i-select>
+                <i-select v-model="workPara.invoice_masterbi_do_return_depot" :disabled="workPara.invoice_masterbi_do_return_depot_disabled && doDeliverValidToEdit">
+                    <i-option v-for="item in pagePara.DEPOT" :value="item.edi_depot_name" :key="item.edi_depot_id" :label="item.edi_depot_name">
+                        <span>{{item.edi_depot_name}}</span>
+                    </i-option>
+                </i-select>
             </FormItem>
-          </Col>
+            </Col>
         </Row>
-      </Form>
-      <div slot="footer">
+    </Form>
+    <div slot="footer">
         <a href="#" style="float:left; padding-top:10px;" @click.prevent="changeDoDeliverValidToEdit" title="Edit" v-if="workPara.invoice_masterbi_do_date">
-          <i class="fa fa-edit"></i>Edit
+            <i class="fa fa-edit"></i>Edit
         </a>
         <Button type="text" size="large" @click="modal.downLoadDoModal=false">Cancel</Button>
         <Button type="primary" size="large" @click="downloadDo">Submit</Button>
-      </div>
-    </Modal>
-    <Modal v-model="modal.depositModal" title="Deposit" width="600" :mask-closable="false">
-      <Form :model="workPara" :label-width="140">
+    </div>
+</Modal>
+<Modal v-model="modal.depositModal" title="Deposit" width="600" :mask-closable="false">
+    <Form :model="workPara" :label-width="140">
         <FormItem label="Customer" prop="invoice_masterbi_customer_id" style="margin-bottom: 0px;">
-          <Select ref="customer" v-model="workPara.invoice_masterbi_customer_id" filterable clearable remote :remote-method="searchCustomer" :loading="deposit.customer.loading" placeholder="Customer">
+            <Select ref="customer" v-model="workPara.invoice_masterbi_customer_id" filterable clearable remote :remote-method="searchCustomer" :loading="deposit.customer.loading" placeholder="Customer">
             <Option v-for="item in deposit.customer.options" :value="item.id" :key="item.id">{{item.text}}<i v-if="item.balcklist === '1'" class="fa fa-ban" style="float: right; color: red;" title="Blacklist"></i><i v-if="item.fixed" class="fa fa-lock" style="float: right; margin-right: 10px;" title="Fixed"></i></Option>
           </Select>
         </FormItem>
         <FormItem label="Carrier" prop="invoice_masterbi_carrier" style="margin-bottom: 0px;">
-          <Select v-model="workPara.invoice_masterbi_carrier" :disabled="!!workPara.invoice_masterbi_carrier">
+            <Select v-model="workPara.invoice_masterbi_carrier" :disabled="!!workPara.invoice_masterbi_carrier">
             <Option v-for="item in pagePara.RECEIPT_TYPE_INFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
           </Select>
         </FormItem>
         <Divider />
         <Row>
-          <Col span="12">
+            <Col span="12">
             <FormItem label="Vessel Name" style="margin-bottom: 0px;">
-              <span> {{ workPara.invoice_vessel_name }}</span>
+                <span> {{ workPara.invoice_vessel_name }}</span>
             </FormItem>
-          </Col>
-          <Col span="12">
+            </Col>
+            <Col span="12">
             <FormItem label="Vessel Voyage" style="margin-bottom: 0px;">
-              <span> {{ workPara.invoice_vessel_voyage }}</span>
+                <span> {{ workPara.invoice_vessel_voyage }}</span>
             </FormItem>
-          </Col>
+            </Col>
         </Row>
         <Row>
-          <Col span="12">
+            <Col span="12">
             <FormItem label="#M B/L No" style="margin-bottom: 0px;">
-              <span> {{ workPara.invoice_masterbi_bl }}</span>
+                <span> {{ workPara.invoice_masterbi_bl }}</span>
             </FormItem>
-          </Col>
-          <Col span="12">
+            </Col>
+            <Col span="12">
             <FormItem label="Cargo" style="margin-bottom: 0px;">
-              <span> {{ workPara.invoice_masterbi_cargo_type }} / {{ workPara.invoice_masterbi_freight }}</span>
+                <span> {{ workPara.invoice_masterbi_cargo_type }} / {{ workPara.invoice_masterbi_freight }}</span>
             </FormItem>
-          </Col>
+            </Col>
         </Row>
         <Row>
-          <Col span="12">
+            <Col span="12">
             <FormItem label="Port of Loading" style="margin-bottom: 0px;">
-              <span> {{ workPara.invoice_masterbi_loading }}</span>
+                <span> {{ workPara.invoice_masterbi_loading }}</span>
             </FormItem>
-          </Col>
-          <Col span="12">
+            </Col>
+            <Col span="12">
             <FormItem label="Destination" style="margin-bottom: 0px;">
-              <span> {{ workPara.invoice_masterbi_destination }}</span>
+                <span> {{ workPara.invoice_masterbi_destination }}</span>
             </FormItem>
-          </Col>
+            </Col>
         </Row>
         <FormItem label="Container Size" style="margin-bottom: 0px;" v-if="workPara.invoice_masterbi_vessel_type !== 'Bulk'">
-          <span style='white-space:pre;'> {{ workPara.container_size_type }}</span>
+            <span style='white-space:pre;'> {{ workPara.container_size_type }}</span>
         </FormItem>
-        <Checkbox v-model = "depositEdit" style="position: absolute; top: 366px; right: 20px;" @on-change="changeDepositEdit">EDIT</Checkbox>
+        <Checkbox v-model="depositEdit" style="position: absolute; top: 366px; right: 20px;" @on-change="changeDepositEdit">EDIT</Checkbox>
         <Tabs ref="depositTabs" active-key="Container Deposit" @on-click="currentFeeTabChanged">
-          <Tab-pane :label="containerDepositFeeLabel" name = "Container Deposit" key="Container Deposit" :disabled="workPara.invoice_masterbi_vessel_type === 'Bulk'">
-            <FormItem label="Deposit Amount" prop="invoice_masterbi_deposit" style="margin-bottom: 0px;">
-              <Input placeholder="Deposit Amount" v-model="workPara.invoice_masterbi_deposit" :disabled = "!!workPara.invoice_masterbi_deposit_disabled && !depositEdit"> 
-                <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_deposit_necessary" :disabled="workPara.invoice_masterbi_deposit_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_deposit')">Fixed</Checkbox>
-                <Select slot="append" v-model="workPara.invoice_container_deposit_currency" style="width: 80px" maxlength=10 show-word-limit :disabled = "!!workPara.invoice_masterbi_deposit_disabled && !depositEdit">
+            <Tab-pane :label="containerDepositFeeLabel" name="Container Deposit" key="Container Deposit" :disabled="workPara.invoice_masterbi_vessel_type === 'Bulk'">
+                <FormItem label="Deposit Amount" prop="invoice_masterbi_deposit" style="margin-bottom: 0px;">
+                    <Input placeholder="Deposit Amount" v-model="workPara.invoice_masterbi_deposit" :disabled="!!workPara.invoice_masterbi_deposit_disabled && !depositEdit">
+                    <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_deposit_necessary" :disabled="workPara.invoice_masterbi_deposit_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_deposit')">Fixed</Checkbox>
+                    <Select slot="append" v-model="workPara.invoice_container_deposit_currency" style="width: 80px" maxlength=10 show-word-limit :disabled="!!workPara.invoice_masterbi_deposit_disabled && !depositEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
                 </Select>
-              </Input>
-            </FormItem>
-            <FormItem label="Comment" prop="invoice_masterbi_deposit_comment" style="margin-bottom: 0px;">
-              <Input v-model="workPara.invoice_masterbi_deposit_comment"  type="textarea" :maxlength="200" :autosize="{ minRows: 2, maxRows: 6 }" placeholder="Deposit Amount Comment"/>
-            </FormItem>
-          </Tab-pane>
-          <Tab-pane :label="invoiceFeeLabel" name = "Invoice Fee" key="Invoice Fee">
-            <FormItem label="Ocean Freight" prop="invoice_masterbi_of" style="margin-bottom: 0px;">
-              <Input placeholder="Ocean Freight Fee" v-model="workPara.invoice_masterbi_of" :disabled = "!!workPara.invoice_masterbi_of_disabled && !depositEdit">
-                <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_of_necessary" :disabled="workPara.invoice_masterbi_of_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_of')">Fixed</Checkbox>
-                <Select slot="append" v-model="workPara.invoice_masterbi_of_currency" style="width: 80px" :disabled = "!!workPara.invoice_masterbi_of_currency_disabled && !depositEdit">
+                    </Input>
+                </FormItem>
+                <FormItem label="Comment" prop="invoice_masterbi_deposit_comment" style="margin-bottom: 0px;">
+                    <Input v-model="workPara.invoice_masterbi_deposit_comment" type="textarea" :maxlength="200" :autosize="{ minRows: 2, maxRows: 6 }" placeholder="Deposit Amount Comment" />
+                </FormItem>
+            </Tab-pane>
+            <Tab-pane :label="invoiceFeeLabel" name="Invoice Fee" key="Invoice Fee">
+                <FormItem label="Ocean Freight" prop="invoice_masterbi_of" style="margin-bottom: 0px;">
+                    <Input placeholder="Ocean Freight Fee" v-model="workPara.invoice_masterbi_of" :disabled="!!workPara.invoice_masterbi_of_disabled && !depositEdit">
+                    <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_of_necessary" :disabled="workPara.invoice_masterbi_of_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_of')">Fixed</Checkbox>
+                    <Select slot="append" v-model="workPara.invoice_masterbi_of_currency" style="width: 80px" :disabled="!!workPara.invoice_masterbi_of_currency_disabled && !depositEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
                 </Select>
-              </Input>
-            </FormItem>
-            <FormItem label="B/L amendment" prop="invoice_masterbi_bl_amendment" style="margin-bottom: 0px;">
-              <Input placeholder="B/L amendment" v-model="workPara.invoice_masterbi_bl_amendment" :disabled = "!!workPara.invoice_masterbi_bl_amendment_disabled && !depositEdit">
-                <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_bl_amendment_necessary" :disabled="workPara.invoice_masterbi_bl_amendment_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_bl_amendment')">Fixed</Checkbox>
-                <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled = "!!workPara.invoice_fee_currency_disabled && !depositEdit">
+                    </Input>
+                </FormItem>
+                <FormItem label="B/L amendment" prop="invoice_masterbi_bl_amendment" style="margin-bottom: 0px;">
+                    <Input placeholder="B/L amendment" v-model="workPara.invoice_masterbi_bl_amendment" :disabled="!!workPara.invoice_masterbi_bl_amendment_disabled && !depositEdit">
+                    <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_bl_amendment_necessary" :disabled="workPara.invoice_masterbi_bl_amendment_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_bl_amendment')">Fixed</Checkbox>
+                    <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !depositEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
                 </Select>
-              </Input>
-            </FormItem>
-            <FormItem label="COD Charge" prop="invoice_masterbi_cod_charge" style="margin-bottom: 0px;">
-              <Input placeholder="COD Charge" v-model="workPara.invoice_masterbi_cod_charge" :disabled = "!!workPara.invoice_masterbi_cod_charge_disabled && !depositEdit">
-                <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_cod_charge_necessary" :disabled="workPara.invoice_masterbi_cod_charge_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_cod_charge')">Fixed</Checkbox>
-                <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled = "!!workPara.invoice_fee_currency_disabled && !depositEdit">
+                    </Input>
+                </FormItem>
+                <FormItem label="COD Charge" prop="invoice_masterbi_cod_charge" style="margin-bottom: 0px;">
+                    <Input placeholder="COD Charge" v-model="workPara.invoice_masterbi_cod_charge" :disabled="!!workPara.invoice_masterbi_cod_charge_disabled && !depositEdit">
+                    <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_cod_charge_necessary" :disabled="workPara.invoice_masterbi_cod_charge_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_cod_charge')">Fixed</Checkbox>
+                    <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !depositEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
                 </Select>
-              </Input>
-            </FormItem>
-            <FormItem label="Container Transfer" prop="invoice_masterbi_transfer" style="margin-bottom: 0px;">
-              <Input placeholder="Container Transfer" v-model="workPara.invoice_masterbi_transfer" :disabled = "!!workPara.invoice_masterbi_transfer_disabled && !depositEdit">
-                <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_transfer_necessary" :disabled="workPara.invoice_masterbi_transfer_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_transfer')">Fixed</Checkbox>
-                <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled = "!!workPara.invoice_fee_currency_disabled && !depositEdit">
+                    </Input>
+                </FormItem>
+                <FormItem label="Container Transfer" prop="invoice_masterbi_transfer" style="margin-bottom: 0px;">
+                    <Input placeholder="Container Transfer" v-model="workPara.invoice_masterbi_transfer" :disabled="!!workPara.invoice_masterbi_transfer_disabled && !depositEdit">
+                    <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_transfer_necessary" :disabled="workPara.invoice_masterbi_transfer_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_transfer')">Fixed</Checkbox>
+                    <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !depositEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
                 </Select>
-              </Input>
-            </FormItem>
-            <FormItem label="Lift On Lift Off" prop="invoice_masterbi_lolf" style="margin-bottom: 0px;">
-              <Input placeholder="Lift On Lift Off" v-model="workPara.invoice_masterbi_lolf" :disabled = "!!workPara.invoice_masterbi_lolf_disabled && !depositEdit">
-                <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_lolf_necessary" :disabled="workPara.invoice_masterbi_lolf_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_lolf')">Fixed</Checkbox>
-                <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled = "!!workPara.invoice_fee_currency_disabled && !depositEdit">
+                    </Input>
+                </FormItem>
+                <FormItem label="Lift On Lift Off" prop="invoice_masterbi_lolf" style="margin-bottom: 0px;">
+                    <Input placeholder="Lift On Lift Off" v-model="workPara.invoice_masterbi_lolf" :disabled="!!workPara.invoice_masterbi_lolf_disabled && !depositEdit">
+                    <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_lolf_necessary" :disabled="workPara.invoice_masterbi_lolf_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_lolf')">Fixed</Checkbox>
+                    <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !depositEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
                 </Select>
-              </Input>
-            </FormItem>
-            <FormItem label="LCL" prop="invoice_masterbi_lcl" style="margin-bottom: 0px;">
-              <Input placeholder="LCL" v-model="workPara.invoice_masterbi_lcl" :disabled = "!!workPara.invoice_masterbi_lcl_disabled && depositEdit">
-                <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_lcl_necessary" :disabled="workPara.invoice_masterbi_lcl_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_lcl')">Fixed</Checkbox>
-                <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled = "!!workPara.invoice_fee_currency_disabled && !depositEdit">
+                    </Input>
+                </FormItem>
+                <FormItem label="LCL" prop="invoice_masterbi_lcl" style="margin-bottom: 0px;">
+                    <Input placeholder="LCL" v-model="workPara.invoice_masterbi_lcl" :disabled="!!workPara.invoice_masterbi_lcl_disabled && depositEdit">
+                    <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_lcl_necessary" :disabled="workPara.invoice_masterbi_lcl_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_lcl')">Fixed</Checkbox>
+                    <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !depositEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
                 </Select>
-              </Input>
-            </FormItem>
-            <FormItem label="Amendment" prop="invoice_masterbi_amendment" style="margin-bottom: 0px;">
-              <Input placeholder="Amendment" v-model="workPara.invoice_masterbi_amendment" :disabled = "!!workPara.invoice_masterbi_amendment_disabled && !depositEdit">
-                <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_amendment_necessary" :disabled="workPara.invoice_masterbi_amendment_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_amendment')">Fixed</Checkbox>
-                <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled = "!!workPara.invoice_fee_currency_disabled && !depositEdit">
+                    </Input>
+                </FormItem>
+                <FormItem label="Amendment" prop="invoice_masterbi_amendment" style="margin-bottom: 0px;">
+                    <Input placeholder="Amendment" v-model="workPara.invoice_masterbi_amendment" :disabled="!!workPara.invoice_masterbi_amendment_disabled && !depositEdit">
+                    <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_amendment_necessary" :disabled="workPara.invoice_masterbi_amendment_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_amendment')">Fixed</Checkbox>
+                    <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !depositEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
                 </Select>
-              </Input>
-            </FormItem>
-            <FormItem label="Tasac" prop="invoice_masterbi_tasac" style="margin-bottom: 0px;">
-              <Input placeholder="Tasac" v-model="workPara.invoice_masterbi_tasac" :disabled = "!!workPara.invoice_masterbi_tasac_disabled && !depositEdit">
-                <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_tasac_necessary" :disabled="workPara.invoice_masterbi_tasac_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_tasac')">Fixed</Checkbox>
-                <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled = "!!workPara.invoice_fee_currency_disabled && !depositEdit">
+                    </Input>
+                </FormItem>
+                <FormItem label="Tasac" prop="invoice_masterbi_tasac" style="margin-bottom: 0px;">
+                    <Input placeholder="Tasac" v-model="workPara.invoice_masterbi_tasac" :disabled="!!workPara.invoice_masterbi_tasac_disabled && !depositEdit">
+                    <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_tasac_necessary" :disabled="workPara.invoice_masterbi_tasac_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_tasac')">Fixed</Checkbox>
+                    <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !depositEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
                 </Select>
-              </Input>
-            </FormItem>
-            <FormItem label="Bill Pringting" prop="invoice_masterbi_printing" style="margin-bottom: 0px;">
-              <Input placeholder="Bill Pringting" v-model="workPara.invoice_masterbi_printing" :disabled = "!!workPara.invoice_masterbi_printing_disabled && !depositEdit">
-                <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_printing_necessary" :disabled="workPara.invoice_masterbi_printing_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_printing')">Fixed</Checkbox>
-                <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled = "!!workPara.invoice_fee_currency_disabled && !depositEdit">
+                    </Input>
+                </FormItem>
+                <FormItem label="Bill Pringting" prop="invoice_masterbi_printing" style="margin-bottom: 0px;">
+                    <Input placeholder="Bill Pringting" v-model="workPara.invoice_masterbi_printing" :disabled="!!workPara.invoice_masterbi_printing_disabled && !depositEdit">
+                    <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_printing_necessary" :disabled="workPara.invoice_masterbi_printing_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_printing')">Fixed</Checkbox>
+                    <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !depositEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
                 </Select>
-              </Input>
-            </FormItem>
-            <FormItem label="Others" prop="invoice_masterbi_others" style="margin-bottom: 0px;">
-              <Input placeholder="Others" v-model="workPara.invoice_masterbi_others" :disabled = "!!workPara.invoice_masterbi_others_disabled && !depositEdit">
-                <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_others_necessary" :disabled="workPara.invoice_masterbi_others_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_others')">Fixed</Checkbox>
-                <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled = "!!workPara.invoice_fee_currency_disabled && !depositEdit">
+                    </Input>
+                </FormItem>
+                <FormItem label="Others" prop="invoice_masterbi_others" style="margin-bottom: 0px;">
+                    <Input placeholder="Others" v-model="workPara.invoice_masterbi_others" :disabled="!!workPara.invoice_masterbi_others_disabled && !depositEdit">
+                    <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_others_necessary" :disabled="workPara.invoice_masterbi_others_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_others')">Fixed</Checkbox>
+                    <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !depositEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
                 </Select>
-              </Input>
-            </FormItem>
-            <FormItem label="Comment" prop="invoice_fee_comment" style="margin-bottom: 0px;">
-              <Input v-model="workPara.invoice_fee_comment"  type="textarea" :maxlength="200" :autosize="{ minRows: 2, maxRows: 6 }" placeholder="Invoice Fee Comment"/>
-            </FormItem>
-          </Tab-pane>
+                    </Input>
+                </FormItem>
+                <FormItem label="Comment" prop="invoice_fee_comment" style="margin-bottom: 0px;">
+                    <Input v-model="workPara.invoice_fee_comment" type="textarea" :maxlength="200" :autosize="{ minRows: 2, maxRows: 6 }" placeholder="Invoice Fee Comment" />
+                </FormItem>
+            </Tab-pane>
         </Tabs>
-      </Form>
-      <div slot="footer">
+    </Form>
+    <div slot="footer">
         <Button type="text" size="large" @click="modal.depositModal=false">Cancel</Button>
-        <Button type="primary" size="large" @click="depositDo" v-if="deposit.depositType=='Container Deposit'" :disabled = "!depositEdit && (workPara.invoice_masterbi_customer_blacklist || (workPara.invoice_masterbi_deposit_fixed == '1' && !!workPara.invoice_masterbi_deposit_release_date))">Submit</Button>
-        <Button type="primary" size="large" @click="depositDo" v-if="deposit.depositType=='Invoice Fee'" :disabled = "!depositEdit && workPara.invoice_masterbi_customer_blacklist">Submit</Button>
-      </div>
-    </Modal>
-    <Modal v-model="modal.deleteVoyageModal" title="Delete Voyage" width="600" :mask-closable="false">
-      <Form :model="workPara" :label-width="120">
+        <Button type="primary" size="large" @click="depositDo" v-if="deposit.depositType=='Container Deposit'" :disabled="!depositEdit && (workPara.invoice_masterbi_customer_blacklist || (workPara.invoice_masterbi_deposit_fixed == '1' && !!workPara.invoice_masterbi_deposit_release_date))">Submit</Button>
+        <Button type="primary" size="large" @click="depositDo" v-if="deposit.depositType=='Invoice Fee'" :disabled="!depositEdit && workPara.invoice_masterbi_customer_blacklist">Submit</Button>
+    </div>
+</Modal>
+<Modal v-model="modal.deleteVoyageModal" title="Delete Voyage" width="600" :mask-closable="false">
+    <Form :model="workPara" :label-width="120">
         <FormItem label="Voyage No." prop="voyage_no">
-          <Input placeholder="Voyage No." v-model="workPara.voyage_no" />
+            <Input placeholder="Voyage No." v-model="workPara.voyage_no" />
         </FormItem>
-      </Form>
-      <div slot="footer">
+    </Form>
+    <div slot="footer">
         <Button type="text" size="large" @click="modal.deleteVoyageModal=false">Cancel</Button>
         <Button type="primary" size="large" @click="doDeleteVoyageAct">Submit</Button>
-      </div>
-    </Modal>
-    <Modal v-model="modal.colletChangeModal" title="Collet Change" width="600" :mask-closable="false">
-      <Form :model="workPara" :label-width="120">
+    </div>
+</Modal>
+<Modal v-model="modal.colletChangeModal" title="Collet Change" width="600" :mask-closable="false">
+    <Form :model="workPara" :label-width="120">
         <FormItem v-show="false">
-          <Input type="password" style='width:0;opacity:0;'></Input>       
+            <Input type="password" style='width:0;opacity:0;'></Input>
         </FormItem>
         <FormItem label="Password" prop="colletChangePassword">
-          <Input type="password" placeholder="Password" v-model="workPara.collet_change_password"></Input>
+            <Input type="password" placeholder="Password" v-model="workPara.collet_change_password"></Input>
         </FormItem>
-      </Form>
-      <div slot="footer">
+    </Form>
+    <div slot="footer">
         <Button type="text" size="large" @click="modal.colletChangeModal=false">Cancel</Button>
         <Button type="primary" size="large" @click="actChangeCollectFlag">Submit</Button>
-      </div>
-    </Modal>
-    <Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :mask-closable="false">
-      <Form :label-width="120">
+    </div>
+</Modal>
+<Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :mask-closable="false">
+    <Form :label-width="120">
         <FormItem v-show="false">
-          <Input type="password" style='width:0;opacity:0;'></Input>       
+            <Input type="password" style='width:0;opacity:0;'></Input>
         </FormItem>
         <FormItem label="Password" prop="checkPassword">
-          <Input type="password" placeholder="Password" v-model="checkPassword"></Input>
+            <Input type="password" placeholder="Password" v-model="checkPassword"></Input>
         </FormItem>
-      </Form>
-      <div slot="footer">
+    </Form>
+    <div slot="footer">
         <Button type="text" size="large" @click="cancelCheckPassword">Cancel</Button>
         <Button type="primary" size="large" @click="actCheckPassword">Submit</Button>
-      </div>
-    </Modal>
-    <Modal v-model="modal.editVesselModal" title="Edit Vessel" width="600" :mask-closable="false">
-      <Form ref="vesselForm" :model="vesselForm" :rules="formRules" :label-width="120" >
+    </div>
+</Modal>
+<Modal v-model="modal.editVesselModal" title="Edit Vessel" width="600" :mask-closable="false">
+    <Form ref="vesselForm" :model="vesselForm" :rules="formRules" :label-width="120">
         <FormItem label="Vessel Name" prop="invoice_vessel_name">
-          <Input placeholder="Vessel Name" v-model="vesselForm.invoice_vessel_name" clearable></Input>
+            <Input placeholder="Vessel Name" v-model="vesselForm.invoice_vessel_name" clearable></Input>
         </FormItem>
         <FormItem label="Vessel Voyage" prop="invoice_vessel_voyage">
-          <Input placeholder="Vessel Voyage" v-model="vesselForm.invoice_vessel_voyage" clearable></Input>
+            <Input placeholder="Vessel Voyage" v-model="vesselForm.invoice_vessel_voyage" clearable></Input>
         </FormItem>
         <FormItem label="Vessel Code" prop="invoice_vessel_code" v-if="vesselForm.invoice_vessel_type != 'Bulk'">
-          <Input placeholder="Vessel Code" v-model="vesselForm.invoice_vessel_code" clearable></Input>
+            <Input placeholder="Vessel Code" v-model="vesselForm.invoice_vessel_code" clearable></Input>
         </FormItem>
-        <FormItem label="Call Sign" prop="invoice_vessel_call_sign"  v-if="vesselForm.invoice_vessel_type != 'Bulk'">
-          <Input placeholder="Vessel Call Sign" v-model="vesselForm.invoice_vessel_call_sign" clearable></Input>
+        <FormItem label="Call Sign" prop="invoice_vessel_call_sign" v-if="vesselForm.invoice_vessel_type != 'Bulk'">
+            <Input placeholder="Vessel Call Sign" v-model="vesselForm.invoice_vessel_call_sign" clearable></Input>
         </FormItem>
         <FormItem label="Vessel ETA" prop="invoice_vessel_eta">
-          <DatePicker type="date" placeholder="Select Vessel ETA" v-model="vesselForm.invoice_vessel_eta" format="dd/MM/yyyy" @on-change="vesselEtaDateChange"></DatePicker>
-        </FormItem> 
+            <DatePicker type="date" placeholder="Select Vessel ETA" v-model="vesselForm.invoice_vessel_eta" format="dd/MM/yyyy" @on-change="vesselEtaDateChange"></DatePicker>
+        </FormItem>
         <FormItem label="Vessel ATA" prop="invoice_vessel_ata">
-          <DatePicker type="date" placeholder="Select Vessel ATA" v-model="vesselForm.invoice_vessel_ata" format="dd/MM/yyyy" @on-change="vesselAtaDateChange"></DatePicker>
-        </FormItem> 
+            <DatePicker type="date" placeholder="Select Vessel ATA" v-model="vesselForm.invoice_vessel_ata" format="dd/MM/yyyy" @on-change="vesselAtaDateChange"></DatePicker>
+        </FormItem>
         <FormItem label="Vessel ATD" prop="invoice_vessel_atd">
-          <DatePicker type="date" placeholder="Select Vessel ATD" v-model="vesselForm.invoice_vessel_atd" format="dd/MM/yyyy" @on-change="vesselAtdDateChange"></DatePicker>
-        </FormItem> 
-      </Form>
-      <div slot="footer">
+            <DatePicker type="date" placeholder="Select Vessel ATD" v-model="vesselForm.invoice_vessel_atd" format="dd/MM/yyyy" @on-change="vesselAtdDateChange"></DatePicker>
+        </FormItem>
+    </Form>
+    <div slot="footer">
         <Button type="text" size="large" @click="modal.editVesselModal = false">Cancel</Button>
         <Button type="primary" size="large" @click="doEditVesselAct">Submit</Button>
-      </div>
-    </Modal>
-  </div>
+    </div>
+</Modal>
+</div>
 </template>
 <script>
-import PageOptions from '../../../config/PageOptions.vue'
-import printJS from 'print-js'
-const moment = require('moment')
-const _ = require('lodash')
-const common = require('@/lib/common')
-const apiUrl = '/api/zhongtan/invoice/Invoice/'
+    import PageOptions from '../../../config/PageOptions.vue'
+    import printJS from 'print-js'
+    const moment = require('moment')
+    const _ = require('lodash')
+    const common = require('@/lib/common')
+    const apiUrl = '/api/zhongtan/invoice/Invoice/'
 
-export default {
-  data: function() {
-    return {
-      modal: { importModal: false, downLoadDoModal: false, depositModal: false, deleteVoyageModal: false, colletChangeModal: false, checkPasswordModal: false, editVesselModal: false },
-      table: {
-        masterbiTable: {
-          columns: [
-            {
-              title: '#M B/L No',
-              slot: 'invoice_masterbi_bl',
-              width: 180
-            },
-            {
-              title: 'D/O Disabled',
-              slot: 'invoice_masterbi_do_disabled',
-              width: 120
-            },
-            {
-              title: 'Invoice',
-              slot: 'Invoice',
-              width: 80
-            },
-            {
-              title: 'Do',
-              slot: 'Do',
-              width: 60
-            },
-            {
-              title: 'Freight Terms',
-              slot: 'Collect',
-              width: 120
-            },
-            {
-              title: 'Files',
-              slot: 'files',
-              width: 100
-            },
-            {
-              title: 'Cargo Classification',
-              slot: 'invoice_masterbi_cargo_type',
-              width: 100
-            },
-            {
-              title: '*B/L Type',
-              slot: 'invoice_masterbi_bl_type',
-              width: 100
-            },
-            {
-              title: 'Place of Destination',
-              slot: 'invoice_masterbi_destination',
-              width: 130
-            },
-            {
-              title: 'Place of Delivery',
-              slot: 'invoice_masterbi_delivery',
-              width: 130
-            },
-            {
-              title: 'Port of Loading',
-              slot: 'invoice_masterbi_loading',
-              width: 130
-            },
-            {
-              title: 'Number of Containers',
-              slot: 'invoice_masterbi_container_no',
-              width: 100
-            },
-            {
-              title: 'Description of Goods',
-              slot: 'invoice_masterbi_goods_description',
-              width: 200
-            },
-            {
-              title: 'Number of Package',
-              slot: 'invoice_masterbi_package_no',
-              width: 100
-            },
-            {
-              title: 'Package Unit',
-              slot: 'invoice_masterbi_package_unit',
-              width: 100
-            },
-            {
-              title: 'Gross Weight',
-              slot: 'invoice_masterbi_gross_weight',
-              width: 100
-            },
-            {
-              title: 'Gross Weight Unit',
-              slot: 'invoice_masterbi_gross_weight_unit',
-              width: 100
-            },
-            {
-              title: 'Gross Volume',
-              slot: 'invoice_masterbi_gross_volume',
-              width: 100
-            },
-            {
-              title: 'Gross Volume Unit',
-              slot: 'invoice_masterbi_gross_volume_unit',
-              width: 100
-            },
-            {
-              title: 'Invoice Value',
-              slot: 'invoice_masterbi_invoice_value',
-              width: 100
-            },
-            {
-              title: 'Invoice Currency',
-              slot: 'invoice_masterbi_invoice_currency',
-              width: 100
-            },
-            {
-              title: 'Freight Charge',
-              slot: 'invoice_masterbi_freight_charge',
-              width: 100
-            },
-            {
-              title: 'Freight Currency',
-              slot: 'invoice_masterbi_freight_currency',
-              width: 100
-            },
-            {
-              title: 'IMDG Code',
-              slot: 'invoice_masterbi_imdg',
-              width: 100
-            },
-            {
-              title: 'Packing Type',
-              slot: 'invoice_masterbi_packing_type',
-              width: 100
-            },
-            {
-              title: 'Forwarder Code',
-              slot: 'invoice_masterbi_forwarder_code',
-              width: 150
-            },
-            {
-              title: 'Forwarder Name',
-              slot: 'invoice_masterbi_forwarder_name',
-              width: 200
-            },
-            {
-              title: 'Forwarder Tel',
-              slot: 'invoice_masterbi_forwarder_tel',
-              width: 150
-            },
-            {
-              title: 'Exporter Name',
-              slot: 'invoice_masterbi_exporter_name',
-              width: 200
-            },
-            {
-              title: 'Exporter Tel',
-              slot: 'invoice_masterbi_exporter_tel',
-              width: 100
-            },
-            {
-              title: 'Exporter Address',
-              slot: 'invoice_masterbi_exporter_address',
-              width: 200
-            },
-            {
-              title: 'Exporter TIN',
-              slot: 'invoice_masterbi_exporter_tin',
-              width: 100
-            },
-            {
-              title: 'Consignee Name',
-              slot: 'invoice_masterbi_consignee_name',
-              tooltip: true,
-              width: 200
-            },
-            {
-              title: 'Consignee Tel',
-              slot: 'invoice_masterbi_consignee_tel',
-              width: 100
-            },
-            {
-              title: 'Consignee Address',
-              slot: 'invoice_masterbi_consignee_address',
-              width: 200
-            },
-            {
-              title: 'Consignee TIN',
-              slot: 'invoice_masterbi_consignee_tin',
-              width: 100
-            },
-            {
-              title: 'Notify Name',
-              slot: 'invoice_masterbi_notify_name',
-              width: 200
-            },
-            {
-              title: 'Notify Tel',
-              slot: 'invoice_masterbi_notify_tel',
-              width: 100
-            },
-            {
-              title: 'Notify Address',
-              slot: 'invoice_masterbi_notify_address',
-              width: 200
-            },
-            {
-              title: 'Notify TIN',
-              slot: 'invoice_masterbi_notify_tin',
-              width: 100
-            },
-            {
-              title: 'Shipping Mark',
-              slot: 'invoice_masterbi_shipping_mark',
-              width: 200
-            },
-            {
-              title: 'Net Weight',
-              slot: 'invoice_masterbi_net_weight',
-              width: 100
-            },
-            {
-              title: 'Net Weight Unit',
-              slot: 'invoice_masterbi_net_weight_unit',
-              width: 100
-            },
-            {
-              title: 'LineAgent Code',
-              slot: 'invoice_masterbi_line_code',
-              width: 100
-            },
-            {
-              title: 'TerminalCode',
-              slot: 'invoice_masterbi_terminal_code',
-              width: 100
+    export default {
+        data: function() {
+            return {
+                modal: {
+                    importModal: false,
+                    downLoadDoModal: false,
+                    depositModal: false,
+                    deleteVoyageModal: false,
+                    colletChangeModal: false,
+                    checkPasswordModal: false,
+                    editVesselModal: false
+                },
+                table: {
+                    masterbiTable: {
+                        columns: [{
+                            title: '#M B/L No',
+                            slot: 'invoice_masterbi_bl',
+                            width: 180
+                        }, {
+                            title: 'D/O Disabled',
+                            slot: 'invoice_masterbi_do_disabled',
+                            width: 120
+                        }, {
+                            title: 'Invoice',
+                            slot: 'Invoice',
+                            width: 80
+                        }, {
+                            title: 'Do',
+                            slot: 'Do',
+                            width: 60
+                        }, {
+                            title: 'Freight Terms',
+                            slot: 'Collect',
+                            width: 120
+                        }, {
+                            title: 'Files',
+                            slot: 'files',
+                            width: 100
+                        }, {
+                            title: 'Cargo Classification',
+                            slot: 'invoice_masterbi_cargo_type',
+                            width: 100
+                        }, {
+                            title: '*B/L Type',
+                            slot: 'invoice_masterbi_bl_type',
+                            width: 100
+                        }, {
+                            title: 'Place of Destination',
+                            slot: 'invoice_masterbi_destination',
+                            width: 130
+                        }, {
+                            title: 'Place of Delivery',
+                            slot: 'invoice_masterbi_delivery',
+                            width: 130
+                        }, {
+                            title: 'Port of Loading',
+                            slot: 'invoice_masterbi_loading',
+                            width: 130
+                        }, {
+                            title: 'Number of Containers',
+                            slot: 'invoice_masterbi_container_no',
+                            width: 100
+                        }, {
+                            title: 'Description of Goods',
+                            slot: 'invoice_masterbi_goods_description',
+                            width: 200
+                        }, {
+                            title: 'Number of Package',
+                            slot: 'invoice_masterbi_package_no',
+                            width: 100
+                        }, {
+                            title: 'Package Unit',
+                            slot: 'invoice_masterbi_package_unit',
+                            width: 100
+                        }, {
+                            title: 'Gross Weight',
+                            slot: 'invoice_masterbi_gross_weight',
+                            width: 100
+                        }, {
+                            title: 'Gross Weight Unit',
+                            slot: 'invoice_masterbi_gross_weight_unit',
+                            width: 100
+                        }, {
+                            title: 'Gross Volume',
+                            slot: 'invoice_masterbi_gross_volume',
+                            width: 100
+                        }, {
+                            title: 'Gross Volume Unit',
+                            slot: 'invoice_masterbi_gross_volume_unit',
+                            width: 100
+                        }, {
+                            title: 'Invoice Value',
+                            slot: 'invoice_masterbi_invoice_value',
+                            width: 100
+                        }, {
+                            title: 'Invoice Currency',
+                            slot: 'invoice_masterbi_invoice_currency',
+                            width: 100
+                        }, {
+                            title: 'Freight Charge',
+                            slot: 'invoice_masterbi_freight_charge',
+                            width: 100
+                        }, {
+                            title: 'Freight Currency',
+                            slot: 'invoice_masterbi_freight_currency',
+                            width: 100
+                        }, {
+                            title: 'IMDG Code',
+                            slot: 'invoice_masterbi_imdg',
+                            width: 100
+                        }, {
+                            title: 'Packing Type',
+                            slot: 'invoice_masterbi_packing_type',
+                            width: 100
+                        }, {
+                            title: 'Forwarder Code',
+                            slot: 'invoice_masterbi_forwarder_code',
+                            width: 150
+                        }, {
+                            title: 'Forwarder Name',
+                            slot: 'invoice_masterbi_forwarder_name',
+                            width: 200
+                        }, {
+                            title: 'Forwarder Tel',
+                            slot: 'invoice_masterbi_forwarder_tel',
+                            width: 150
+                        }, {
+                            title: 'Exporter Name',
+                            slot: 'invoice_masterbi_exporter_name',
+                            width: 200
+                        }, {
+                            title: 'Exporter Tel',
+                            slot: 'invoice_masterbi_exporter_tel',
+                            width: 100
+                        }, {
+                            title: 'Exporter Address',
+                            slot: 'invoice_masterbi_exporter_address',
+                            width: 200
+                        }, {
+                            title: 'Exporter TIN',
+                            slot: 'invoice_masterbi_exporter_tin',
+                            width: 100
+                        }, {
+                            title: 'Consignee Name',
+                            slot: 'invoice_masterbi_consignee_name',
+                            tooltip: true,
+                            width: 200
+                        }, {
+                            title: 'Consignee Tel',
+                            slot: 'invoice_masterbi_consignee_tel',
+                            width: 100
+                        }, {
+                            title: 'Consignee Address',
+                            slot: 'invoice_masterbi_consignee_address',
+                            width: 200
+                        }, {
+                            title: 'Consignee TIN',
+                            slot: 'invoice_masterbi_consignee_tin',
+                            width: 100
+                        }, {
+                            title: 'Notify Name',
+                            slot: 'invoice_masterbi_notify_name',
+                            width: 200
+                        }, {
+                            title: 'Notify Tel',
+                            slot: 'invoice_masterbi_notify_tel',
+                            width: 100
+                        }, {
+                            title: 'Notify Address',
+                            slot: 'invoice_masterbi_notify_address',
+                            width: 200
+                        }, {
+                            title: 'Notify TIN',
+                            slot: 'invoice_masterbi_notify_tin',
+                            width: 100
+                        }, {
+                            title: 'Shipping Mark',
+                            slot: 'invoice_masterbi_shipping_mark',
+                            width: 200
+                        }, {
+                            title: 'Net Weight',
+                            slot: 'invoice_masterbi_net_weight',
+                            width: 100
+                        }, {
+                            title: 'Net Weight Unit',
+                            slot: 'invoice_masterbi_net_weight_unit',
+                            width: 100
+                        }, {
+                            title: 'LineAgent Code',
+                            slot: 'invoice_masterbi_line_code',
+                            width: 100
+                        }, {
+                            title: 'TerminalCode',
+                            slot: 'invoice_masterbi_terminal_code',
+                            width: 100
+                        }],
+                        data: [],
+                        unchanged: [],
+                        height: common.getTableHeight() - 80,
+                        limit: 10,
+                        offset: 0,
+                        total: 0
+                    },
+                    containersTable: {
+                        columns: [{
+                            title: '#M B/L No',
+                            key: 'invoice_containers_bl',
+                            width: 150
+                        }, {
+                            title: 'Type Of Container',
+                            slot: 'invoice_containers_type',
+                            width: 100
+                        }, {
+                            title: 'Container No',
+                            slot: 'invoice_containers_no',
+                            width: 150
+                        }, {
+                            title: 'Container Size',
+                            slot: 'invoice_containers_size',
+                            width: 100
+                        }, {
+                            title: 'Seal No.1',
+                            slot: 'invoice_containers_seal1',
+                            width: 100
+                        }, {
+                            title: 'Seal No.2',
+                            slot: 'invoice_containers_seal2',
+                            width: 100
+                        }, {
+                            title: 'Seal No.3',
+                            slot: 'invoice_containers_seal3',
+                            width: 100
+                        }, {
+                            title: 'Freight Indicator',
+                            slot: 'invoice_containers_freight_indicator',
+                            width: 100
+                        }, {
+                            title: 'No Of Package',
+                            slot: 'invoice_containers_package_no',
+                            width: 100
+                        }, {
+                            title: 'Package Unit',
+                            slot: 'invoice_containers_package_unit',
+                            width: 100
+                        }, {
+                            title: 'Volumn',
+                            slot: 'invoice_containers_volumn',
+                            width: 100
+                        }, {
+                            title: 'Volumn Unit',
+                            slot: 'invoice_containers_volumn_unit',
+                            width: 100
+                        }, {
+                            title: 'Weight',
+                            slot: 'invoice_containers_weight',
+                            width: 100
+                        }, {
+                            title: 'Weight Unit',
+                            slot: 'invoice_containers_weight_unit',
+                            width: 100
+                        }, {
+                            title: 'Plug type of reefer',
+                            slot: 'invoice_containers_plug_reefer',
+                            width: 100
+                        }, {
+                            title: 'Minimum Temperature',
+                            slot: 'invoice_containers_min_temperature',
+                            width: 100
+                        }, {
+                            title: 'Maximum Temperature',
+                            slot: 'invoice_containers_max_temperature',
+                            width: 100
+                        }],
+                        data: [],
+                        unchanged: [],
+                        height: common.getTableHeight() - 80,
+                        limit: 10,
+                        offset: 0,
+                        total: 0
+                    },
+                    filesTable: {
+                        columns: [{
+                            title: 'Create Date',
+                            key: 'date',
+                            width: 120
+                        }, {
+                            title: 'Type',
+                            key: 'filetype',
+                            width: 80
+                        }, {
+                            title: 'Receipt Type',
+                            key: 'receipt_type',
+                            width: 80
+                        }, {
+                            title: 'State',
+                            key: 'state',
+                            render: common.selectRender(this, 'UPLOAD_STATE'),
+                            width: 150
+                        }, {
+                            title: 'Action',
+                            slot: 'act',
+                            width: 150
+                        }, {
+                            title: 'Release Date',
+                            key: 'release_date',
+                            width: 150
+                        }, {
+                            title: 'Release User',
+                            key: 'release_user',
+                            width: 150
+                        }]
+                    }
+                },
+                pagePara: {},
+                workPara: {},
+                headers: common.uploadHeaders(),
+                action: '',
+                files: {
+                    fileList: []
+                },
+                vessel: {
+                    data: [],
+                    search_data: {
+                        date: [
+                            moment()
+                            .subtract(30, 'days')
+                            .format('YYYY-MM-DD'),
+                            moment().format('YYYY-MM-DD')
+                        ],
+                        vesselName: '',
+                        bl: '',
+                        collect: ''
+                    },
+                    current: '',
+                    height: common.getTableHeight()
+                },
+                deposit: {
+                    depositType: 'Container Deposit',
+                    fees: [],
+                    customer: {
+                        options: [],
+                        loading: false
+                    }
+                },
+                currentTab: 0,
+                containerDepositFeeLabel: '',
+                oceanFreightFeeLabel: '',
+                invoiceFeeLabel: '',
+                checkPassword: '',
+                checkPasswordType: '',
+                depositEdit: false,
+                doDeliverEdit: false,
+                doDeliverValidToEdit: false,
+                formRules: {
+                    invoice_vessel_name: [{
+                        required: true,
+                        message: 'The vessel name cannot be empty',
+                        trigger: 'blur'
+                    }],
+                    invoice_vessel_code: [{
+                        required: true,
+                        message: 'The vessel code cannot be empty',
+                        trigger: 'blur'
+                    }],
+                    invoice_vessel_voyage: [{
+                        required: true,
+                        message: 'The vessel voyage cannot be empty',
+                        trigger: 'blur'
+                    }],
+                    invoice_vessel_call_sign: [{
+                        required: true,
+                        message: 'The vessel call sign cannot be empty',
+                        trigger: 'blur'
+                    }]
+                },
+                vesselForm: {
+                    invoice_vessel_id: '',
+                    invoice_vessel_name: '',
+                    invoice_vessel_code: '',
+                    invoice_vessel_voyage: '',
+                    invoice_vessel_eta: '',
+                    invoice_vessel_ata: '',
+                    invoice_vessel_atd: '',
+                    invoice_vessel_call_sign: '',
+                },
+                delivery: {
+                    options: []
+                },
+                tableEdit: true,
+                importFileType: ''
             }
-          ],
-          data: [],
-          unchanged: [],
-          height: common.getTableHeight() - 80,
-          limit: 10,
-          offset: 0,
-          total: 0
         },
-        containersTable: {
-          columns: [
-            {
-              title: '#M B/L No',
-              key: 'invoice_containers_bl',
-              width: 150
-            },
-            {
-              title: 'Type Of Container',
-              slot: 'invoice_containers_type',
-              width: 100
-            },
-            {
-              title: 'Container No',
-              slot: 'invoice_containers_no',
-              width: 150
-            },
-            {
-              title: 'Container Size',
-              slot: 'invoice_containers_size',
-              width: 100
-            },
-            {
-              title: 'Seal No.1',
-              slot: 'invoice_containers_seal1',
-              width: 100
-            },
-            {
-              title: 'Seal No.2',
-              slot: 'invoice_containers_seal2',
-              width: 100
-            },
-            {
-              title: 'Seal No.3',
-              slot: 'invoice_containers_seal3',
-              width: 100
-            },
-            {
-              title: 'Freight Indicator',
-              slot: 'invoice_containers_freight_indicator',
-              width: 100
-            },
-            {
-              title: 'No Of Package',
-              slot: 'invoice_containers_package_no',
-              width: 100
-            },
-            {
-              title: 'Package Unit',
-              slot: 'invoice_containers_package_unit',
-              width: 100
-            },
-            {
-              title: 'Volumn',
-              slot: 'invoice_containers_volumn',
-              width: 100
-            },
-            {
-              title: 'Volumn Unit',
-              slot: 'invoice_containers_volumn_unit',
-              width: 100
-            },
-            {
-              title: 'Weight',
-              slot: 'invoice_containers_weight',
-              width: 100
-            },
-            {
-              title: 'Weight Unit',
-              slot: 'invoice_containers_weight_unit',
-              width: 100
-            },
-            {
-              title: 'Plug type of reefer',
-              slot: 'invoice_containers_plug_reefer',
-              width: 100
-            },
-            {
-              title: 'Minimum Temperature',
-              slot: 'invoice_containers_min_temperature',
-              width: 100
-            },
-            {
-              title: 'Maximum Temperature',
-              slot: 'invoice_containers_max_temperature',
-              width: 100
-            }
-          ],
-          data: [],
-          unchanged: [],
-          height: common.getTableHeight() - 80,
-          limit: 10,
-          offset: 0,
-          total: 0
+        created() {
+            PageOptions.pageEmpty = false
         },
-        filesTable: {
-          columns: [
-            {
-              title: 'Create Date',
-              key: 'date',
-              width: 120
+        mounted: async function() {
+            await this.getPara()
+            await this.getVoyageData()
+        },
+        methods: {
+            getPara: async function() {
+                try {
+                    let response = await this.$http.post(apiUrl + 'init', {})
+                    this.pagePara = JSON.parse(JSON.stringify(response.data.info))
+                } catch (error) {
+                    this.$commonact.fault(error)
+                }
             },
-            {
-              title: 'Type',
-              key: 'filetype',
-              width: 80
+            loadImportModal: async function(importFileType) {
+                this.workPara = {}
+                this.$refs.upload.fileList = []
+                this.files.fileList = []
+                this.action = 'add'
+                this.importFileType = importFileType
+                this.modal.importModal = true
             },
-            {
-              title: 'Receipt Type',
-              key: 'receipt_type',
-              width: 80
+            handleSuccess(res, file, fileList) {
+                file.url = res.info.url
+                file.name = res.info.name
+                this.files.fileList = JSON.parse(JSON.stringify(this.$refs.upload.fileList))
             },
-            {
-              title: 'State',
-              key: 'state',
-              render: common.selectRender(this, 'UPLOAD_STATE'),
-              width: 150
+            handleImportbefore(file) {
+                this.$Spin.show()
             },
-            {
-              title: 'Action',
-              slot: 'act',
-              width: 150
+            handleImportSuccess(res, file, fileList) {
+                this.$Spin.hide()
+                this.$Notice.success({
+                    title: 'Success',
+                    desc: 'File Import Success'
+                })
+                this.getPara()
+                this.getImportData()
             },
-            {
-              title: 'Release Date',
-              key: 'release_date',
-              width: 150
+            handleImportError(error, file, fileList) {
+                this.$Spin.hide()
+                this.$Notice.error({
+                    title: 'Error',
+                    desc: 'File Import Failed'
+                })
             },
-            {
-              title: 'Release User',
-              key: 'release_user',
-              width: 150
+            handleFormatError(file) {
+                this.$Notice.warning({
+                    title: 'The file format is incorrect',
+                    desc: 'File format of ' + file.name + ' is incorrect, please select pdf.'
+                })
+            },
+            handleMaxSize(file) {
+                this.$Notice.warning({
+                    title: 'Exceeding file size limit',
+                    desc: 'File  ' + file.name + ' is too large, no more than 4M.'
+                })
+            },
+            importData: async function() {
+                try {
+                    if (this.files.fileList.length < 1) {
+                        return this.$Message.error('Please upload xml file')
+                    }
+                    this.workPara.upload_files = this.files.fileList
+                    this.workPara.importFileType = this.importFileType
+                    await this.$http.post(apiUrl + 'uploadImport', this.workPara)
+                    this.$Message.success('submit success')
+                    this.getVoyageData()
+                    this.modal.importModal = false
+                    this.importFileType = ''
+                } catch (error) {
+                    this.$refs.upload.fileList = []
+                    this.files.fileList = []
+                    this.$commonact.fault(error)
+                }
+            },
+            searchData: function(e) {
+                this.vessel.search_data.date = JSON.parse(JSON.stringify(e))
+            },
+            getVoyageData: async function() {
+                try {
+                    let searchPara = {
+                        start_date: this.vessel.search_data.date[0],
+                        end_date: this.vessel.search_data.date[1],
+                        vesselName: this.vessel.search_data.vesselName,
+                        bl: this.vessel.search_data.bl,
+                        limit: 10,
+                        offset: 0
+                    }
+
+                    let response = await this.$http.post(apiUrl + 'searchVoyage', searchPara)
+                    let data = response.data.info
+                    this.vessel.data = JSON.parse(JSON.stringify(data.vessels))
+                    this.table.masterbiTable.data = JSON.parse(JSON.stringify(data.masterbl.rows))
+                    this.table.masterbiTable.unchanged = JSON.parse(JSON.stringify(data.masterbl.rows))
+                    this.table.masterbiTable.total = data.masterbl.total
+                    this.table.containersTable.data = []
+                    if (this.vessel.search_data.bl && data.vessels && data.vessels.length === 1) {
+                        this.vessel.current = data.vessels[0].invoice_vessel_id
+                    }
+                    if (this.currentTab != 0) {
+                        this.refreshTableData()
+                    }
+                } catch (error) {
+                    this.$commonact.fault(error)
+                }
+            },
+            checkVoyage: async function(invoice_vessel_id) {
+                if (this.vessel.current != invoice_vessel_id) {
+                    this.vessel.current = invoice_vessel_id
+                    this.refreshTableData()
+                }
+            },
+            changeTab: function(name) {
+                if (this.currentTab != name) {
+                    this.currentTab = name
+                    this.refreshTableData()
+                }
+            },
+            getMasterbiData: async function(index) {
+                if (this.vessel.current) {
+                    if (index) {
+                        this.table.masterbiTable.offset = (index - 1) * this.table.masterbiTable.limit
+                    }
+                    let searchPara = {
+                        invoice_vessel_id: this.vessel.current,
+                        collect: this.vessel.search_data.collect,
+                        offset: this.table.masterbiTable.offset,
+                        limit: this.table.masterbiTable.limit
+                    }
+
+                    let response = await this.$http.post(apiUrl + 'getMasterbiData', searchPara)
+                    let data = response.data.info
+                    this.table.masterbiTable.total = data.total
+                    this.table.masterbiTable.data = JSON.parse(JSON.stringify(data.rows))
+                    this.table.masterbiTable.unchanged = JSON.parse(JSON.stringify(data.rows))
+                }
+            },
+            getContainersData: async function(index) {
+                if (index) {
+                    this.table.containersTable.offset = (index - 1) * this.table.containersTable.limit
+                }
+                let searchPara = {
+                    invoice_vessel_id: this.vessel.current,
+                    bl: this.vessel.search_data.bl,
+                    offset: this.table.containersTable.offset,
+                    limit: this.table.containersTable.limit
+                }
+
+                let response = await this.$http.post(apiUrl + 'getContainersData', searchPara)
+                let data = response.data.info
+                this.table.containersTable.total = data.total
+                this.table.containersTable.data = JSON.parse(JSON.stringify(data.rows))
+                this.table.containersTable.unchanged = JSON.parse(JSON.stringify(data.rows))
+            },
+            actDownLoadDoModal: function(row) {
+                this.workPara = JSON.parse(JSON.stringify(row))
+                this.doDeliverEdit = false
+                this.delivery.options = JSON.parse(JSON.stringify(this.pagePara.DELIVER))
+                if (row.invoice_masterbi_delivery_to) {
+                    const index = this.delivery.options.indexOf(row.invoice_masterbi_delivery_to)
+                    if (index < 0) {
+                        this.delivery.options.unshift(row.invoice_masterbi_delivery_to)
+                    }
+                }
+                if (!this.workPara.invoice_masterbi_do_fcl) {
+                    if (this.workPara.invoice_masterbi_lcl) {
+                        this.workPara.invoice_masterbi_do_fcl = 'FCL/LCL'
+                    } else {
+                        this.workPara.invoice_masterbi_do_fcl = 'FCL/FCL'
+                    }
+                }
+
+                if (this.pagePara.DELIVER.ICD) {
+                    let defaultICD = false
+                    for (let i = 0; i < this.pagePara.DELIVER.ICD.length; i++) {
+                        if (this.pagePara.DELIVER.ICD[i].icd_name === 'TICTS TERMINAL') {
+                            defaultICD = true
+                            break
+                        }
+                    }
+                    if (!defaultICD) {
+                        this.pagePara.DELIVER.ICD.push({
+                            'icd_name': 'TICTS TERMINAL',
+                            'icd_code': 'WTTZDL002'
+                        })
+                    }
+                } else {
+                    this.pagePara.DELIVER.ICD = [{
+                        'icd_name': 'TICTS TERMINAL',
+                        'icd_code': 'WTTZDL002'
+                    }]
+                }
+                if (!this.workPara.invoice_masterbi_do_icd) {
+                    this.workPara.invoice_masterbi_do_icd = 'TICTS TERMINAL'
+                }
+
+                if (!this.workPara.invoice_masterbi_do_return_depot) {
+                    this.workPara.invoice_masterbi_do_return_depot = 'FANTUZZI'
+                }
+                if (this.workPara.invoice_masterbi_do_date) {
+                    this.doDeliverValidToEdit = true
+                } else {
+                    this.doDeliverValidToEdit = false
+                }
+                this.modal.downLoadDoModal = true
+            },
+            actDownLoadDoModalCheck: function(row) {
+                this.workPara = JSON.parse(JSON.stringify(row))
+                this.checkPassword = ''
+                this.modal.checkPasswordModal = true
+                this.checkPasswordType = 'downLoadDoModalCheck'
+            },
+            downloadDo: async function() {
+                try {
+                    let response = await this.$http.post(apiUrl + 'downloadDo', this.workPara)
+                    printJS(response.data.info.url)
+                    this.$Message.success('do success')
+                    this.modal.downLoadDoModal = false
+                    this.refreshTableData()
+                } catch (error) {
+                    this.$commonact.fault(error)
+                }
+            },
+            doRealse: async function(row, index) {
+                try {
+                    await this.$http.post(apiUrl + 'doRelease', {
+                        file_id: row.file_id
+                    })
+                    this.refreshTableData()
+                    this.$Message.success('release success')
+                } catch (error) {
+                    this.$commonact.fault(error)
+                }
+            },
+            actDepositModalCheck: function(row) {
+                this.workPara = JSON.parse(JSON.stringify(row))
+                this.checkPassword = ''
+                this.modal.checkPasswordModal = true
+                this.checkPasswordType = 'depositModalCheck'
+            },
+            actDepositModal: function(row) {
+                this.$refs.customer.reset()
+                this.deposit.customer.loading = true
+                this.deposit.customer.options = JSON.parse(JSON.stringify(row.customerINFO))
+                this.deposit.customer.loading = false
+                this.deposit.fees = []
+                this.$nextTick(function() {
+                    this.workPara = JSON.parse(JSON.stringify(row))
+                    this.depositEdit = false
+                    this.workPara.invoice_masterbi_customer_blacklist = true
+                    if (this.workPara.invoice_masterbi_vessel_type && this.workPara.invoice_masterbi_vessel_type === 'Bulk') {
+                        this.deposit.depositType = 'Invoice Fee'
+                        this.$refs.depositTabs.activeKey = 'Invoice Fee'
+                    } else {
+                        this.deposit.depositType = 'Container Deposit'
+                        this.$refs.depositTabs.activeKey = 'Container Deposit'
+                    }
+                    if (this.workPara.invoice_masterbi_deposit_state) {
+                        this.containerDepositFeeLabel = h => {
+                            return h("div", [
+                                h("i", {
+                                    class: 'fa fa-check'
+                                }),
+                                h("span", "Container Deposit Fee")
+                            ])
+                        }
+                    } else {
+                        this.containerDepositFeeLabel = 'Container Deposit Fee'
+                    }
+                    if (this.workPara.invoice_fee_state) {
+                        this.invoiceFeeLabel = h => {
+                            return h("div", [
+                                h("i", {
+                                    class: 'fa fa-check'
+                                }),
+                                h("span", "Invoice Fee")
+                            ])
+                        }
+                    } else {
+                        this.invoiceFeeLabel = 'Invoice Fee'
+                    }
+                    this.searchFixedDeposit()
+                })
+                this.modal.depositModal = true
+            },
+            searchCustomer: async function(query) {
+                if (query !== '') {
+                    this.deposit.customer.loading = true
+                    let response = await this.$http.post(apiUrl + 'searchCustomer', {
+                        search_text: query
+                    })
+                    this.deposit.customer.options = JSON.parse(JSON.stringify(response.data.info.customerINFO))
+                    this.deposit.customer.loading = false
+                    if (this.deposit.customer.options && this.deposit.customer.options.length === 1) {
+                        this.searchFixedDeposit()
+                    }
+                } else {
+                    this.deposit.customer.options = []
+                }
+            },
+            currentFeeTabChanged: function(name) {
+                this.deposit.depositType = name
+            },
+            depositDo: async function(depositType) {
+                try {
+                    if (!this.workPara.invoice_masterbi_customer_id) {
+                        return this.$Message.error('Please choose customer')
+                    }
+
+                    if (!this.workPara.invoice_masterbi_carrier) {
+                        return this.$Message.error('Please choose carrier')
+                    }
+                    let param = _.extend(this.workPara, this.deposit)
+                    param.depositEdit = this.depositEdit
+                    await this.$http.post(apiUrl + 'depositDo', param)
+                        // printJS(response.data.info.url)
+                    this.$Message.success('deposit success')
+                    this.modal.depositModal = false
+                    this.refreshTableData()
+                } catch (error) {
+                    this.$commonact.fault(error)
+                }
+            },
+            showChangeCollectModal: async function(row, cflag) {
+                this.workPara = JSON.parse(JSON.stringify(row))
+                this.workPara.collect_flag = cflag
+                this.modal.colletChangeModal = true
+            },
+            actChangeCollectFlag: async function() {
+                try {
+                    if (!this.workPara.collet_change_password) {
+                        return this.$Message.error('Please enter right password')
+                    }
+                    await this.$http.post(apiUrl + 'changeCollect', {
+                        invoice_masterbi_id: this.workPara.invoice_masterbi_id,
+                        act: this.workPara.collect_flag,
+                        collet_change_password: common.md52(this.workPara.collet_change_password)
+                    })
+                    this.refreshTableData()
+                    this.modal.colletChangeModal = false
+                } catch (error) {
+                    this.$commonact.fault(error)
+                }
+            },
+            saveData: async function() {
+                if (this.currentTab === 0) {
+                    if (this.table.masterbiTable.data.length > 0) {
+                        let changeData = []
+                        for (let i = 0; i < this.table.masterbiTable.data.length; i++) {
+                            if (JSON.stringify(this.table.masterbiTable.data[i]) !== JSON.stringify(this.table.masterbiTable.unchanged[i])) {
+                                changeData.push(this.table.masterbiTable.data[i])
+                            }
+                        }
+                        if (changeData.length > 0) {
+                            try {
+                                await this.$http.post(apiUrl + 'changebl', {
+                                    changedbl: changeData
+                                })
+                                this.refreshTableData()
+                                this.tableEdit = true
+                                this.$Message.success('save success')
+                            } catch (error) {
+                                this.$commonact.fault(error)
+                            }
+                        }
+                    }
+                } else {
+                    if (this.table.containersTable.data.length > 0) {
+                        //
+                        let changeData = []
+                        for (let i = 0; i < this.table.containersTable.data.length; i++) {
+                            if (JSON.stringify(this.table.containersTable.data[i]) !== JSON.stringify(this.table.containersTable.unchanged[i])) {
+                                changeData.push(this.table.containersTable.data[i])
+                            }
+                        }
+                        if (changeData.length > 0) {
+                            try {
+                                await this.$http.post(apiUrl + 'changeCn', {
+                                    changeCn: changeData
+                                })
+                                this.refreshTableData()
+                                this.tableEdit = true
+                                this.$Message.success('save success')
+                            } catch (error) {
+                                this.$commonact.fault(error)
+                            }
+                        }
+                    }
+                }
+            },
+            doDeleteVoyageAct: function() {
+                try {
+                    let _self = this
+                    if (_self.workPara.voyage_no !== _self.workPara.invoice_vessel_voyage) {
+                        return _self.$Message.error('Please enter right Voyage No.')
+                    }
+                    _self.$commonact.confirm(`Delete the vessel?`, async() => {
+                        try {
+                            await _self.$http.post(apiUrl + 'deleteVoyage', {
+                                invoice_vessel_id: _self.workPara.invoice_vessel_id
+                            })
+                            this.refreshTableData()
+                            _self.modal.deleteVoyageModal = false
+                        } catch (error) {
+                            this.$commonact.fault(error)
+                        }
+                    })
+                } catch (error) {
+                    this.$commonact.fault(error)
+                }
+            },
+            doCreateEdi: async function(row, index) {
+                try {
+                    await this.$http.post(apiUrl + 'doCreateEdi', {
+                        invoice_masterbi_id: row.invoice_masterbi_id
+                    })
+                    this.refreshTableData()
+                    this.$Message.success('Send Edi Success')
+                } catch (error) {
+                    this.$commonact.fault(error)
+                }
+            },
+            doReplaceEdi: async function(row, index) {
+                try {
+                    await this.$http.post(apiUrl + 'doReplaceEdi', {
+                        invoice_masterbi_id: row.invoice_masterbi_id
+                    })
+                    this.refreshTableData()
+                    this.$Message.success('Replace Edi Success')
+                } catch (error) {
+                    this.$commonact.fault(error)
+                }
+            },
+            doCancelEdi: async function(row, index) {
+                try {
+                    await this.$http.post(apiUrl + 'doCancelEdi', {
+                        invoice_masterbi_id: row.invoice_masterbi_id
+                    })
+                    this.refreshTableData()
+                    this.$Message.success('Cancel Edi Success')
+                } catch (error) {
+                    this.$commonact.fault(error)
+                }
+            },
+            searchFixedDeposit: async function() {
+                try {
+                    let response = await this.$http.post(apiUrl + 'searchFixedDeposit', _.extend(this.workPara, this.deposit))
+                    let fixedDeposit = JSON.parse(JSON.stringify(response.data.info))
+                        // container deposit
+                    await this.resetInvoiceDeposit(fixedDeposit)
+                        // Invoice Fee - Ocean
+                    await this.resetInvoiceOcean(fixedDeposit)
+                        // Invoice Fee
+                    await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_bl_amendment')
+                    await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_cod_charge')
+                    await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_transfer')
+                    await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_lolf')
+                    await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_lcl')
+                    await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_amendment')
+                    await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_tasac')
+                    await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_printing')
+                    await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_others')
+
+                    this.workPara.invoice_masterbi_customer_blacklist = fixedDeposit.invoice_masterbi_customer_blacklist
+                    this.$forceUpdate()
+                } catch (error) {
+                    this.$commonact.fault(error)
+                }
+            },
+            resetInvoiceDeposit: async function(fixedDeposit) {
+                this.workPara.invoice_masterbi_deposit_necessary_disabled = true
+                if (fixedDeposit['invoice_masterbi_deposit_fixed'] && fixedDeposit['invoice_masterbi_deposit_fixed'] === '1') {
+                    this.workPara.invoice_masterbi_deposit = this.workPara.invoice_masterbi_deposit ? this.workPara.invoice_masterbi_deposit : fixedDeposit['invoice_masterbi_deposit']
+                    this.workPara.invoice_container_deposit_currency = this.workPara.invoice_container_deposit_currency ? this.workPara.invoice_container_deposit_currency : fixedDeposit['invoice_container_deposit_currency']
+                    this.workPara.invoice_masterbi_deposit_comment = this.workPara.invoice_masterbi_deposit_comment ? this.workPara.invoice_masterbi_deposit_comment : fixedDeposit['invoice_masterbi_deposit_comment']
+                    this.workPara.invoice_masterbi_deposit_necessary = true
+                    this.workPara.invoice_masterbi_deposit_fixed = '1'
+                    this.workPara.invoice_masterbi_deposit_fixed_id = fixedDeposit['invoice_masterbi_deposit_fixed_id']
+                } else if (fixedDeposit['invoice_masterbi_deposit_necessary']) {
+                    if (fixedDeposit['invoice_masterbi_deposit_necessary'] === '1') {
+                        this.workPara.invoice_masterbi_deposit = this.workPara.invoice_masterbi_deposit ? this.workPara.invoice_masterbi_deposit : fixedDeposit['invoice_masterbi_deposit']
+                        this.workPara.invoice_container_deposit_currency = this.workPara.invoice_container_deposit_currency ? this.workPara.invoice_container_deposit_currency : fixedDeposit['invoice_container_deposit_currency']
+                        this.workPara.invoice_masterbi_deposit_comment = this.workPara.invoice_masterbi_deposit_comment ? this.workPara.invoice_masterbi_deposit_comment : fixedDeposit['invoice_masterbi_deposit_comment']
+                    } else {
+                        this.workPara.invoice_container_deposit_currency = this.workPara.invoice_container_deposit_currency ? this.workPara.invoice_container_deposit_currency : 'USD'
+                        this.workPara.invoice_masterbi_deposit_temp = fixedDeposit['invoice_masterbi_deposit']
+                        this.workPara.invoice_container_deposit_currency_temp = fixedDeposit['invoice_container_deposit_currency']
+                        this.workPara.invoice_masterbi_deposit_comment_temp = fixedDeposit['invoice_masterbi_deposit_comment']
+                        this.workPara.invoice_masterbi_deposit_necessary_disabled = false
+                    }
+                    this.workPara.invoice_masterbi_deposit_necessary = fixedDeposit['invoice_masterbi_deposit_necessary'] === '1' ? true : false
+                    this.workPara.invoice_masterbi_deposit_type = fixedDeposit['invoice_masterbi_deposit_type']
+                } else {
+                    this.workPara.invoice_masterbi_deposit_necessary = false
+                }
+                this.workPara.invoice_masterbi_deposit_disabled = fixedDeposit['invoice_masterbi_deposit'] ? true : false
+                this.workPara.invoice_container_deposit_currency_disabled = fixedDeposit['invoice_container_deposit_currency'] ? true : false
+            },
+            resetInvoiceOcean: async function(fixedDeposit) {
+                this.workPara.invoice_masterbi_of_necessary_disabled = true
+                if (fixedDeposit['invoice_masterbi_of_fixed'] && fixedDeposit['invoice_masterbi_of_fixed'] === '1') {
+                    this.workPara.invoice_masterbi_of = this.workPara.invoice_masterbi_of ? this.workPara.invoice_masterbi_of : fixedDeposit['invoice_masterbi_of']
+                    this.workPara.invoice_masterbi_of_currency = this.workPara.invoice_masterbi_of_currency ? this.workPara.invoice_masterbi_of_currency : fixedDeposit['invoice_masterbi_of_currency']
+                    this.workPara.invoice_masterbi_of_necessary = true
+                    this.workPara.invoice_masterbi_of_fixed = '1'
+                } else if (fixedDeposit['invoice_masterbi_of_necessary']) {
+                    if (fixedDeposit['invoice_masterbi_of_necessary'] === '1') {
+                        this.workPara.invoice_masterbi_of = this.workPara.invoice_masterbi_of ? this.workPara.invoice_masterbi_of : fixedDeposit['invoice_masterbi_of']
+                        this.workPara.invoice_masterbi_of_currency = this.workPara.invoice_masterbi_of_currency ? this.workPara.invoice_masterbi_of_currency : fixedDeposit['invoice_masterbi_of_currency']
+                        this.workPara.invoice_masterbi_of_necessary_disabled = true
+                    } else {
+                        this.workPara.invoice_masterbi_of_temp = fixedDeposit['invoice_masterbi_of']
+                        this.workPara.invoice_masterbi_of_currency_temp = fixedDeposit['invoice_masterbi_of_currency']
+                        this.workPara.invoice_masterbi_of_necessary_disabled = false
+                    }
+                    this.workPara.invoice_masterbi_of_type = fixedDeposit['invoice_masterbi_of_type']
+                    this.workPara.invoice_masterbi_of_necessary = fixedDeposit['invoice_masterbi_of_necessary'] === '1' ? true : false
+                } else {
+                    this.workPara.invoice_masterbi_of_necessary = false
+                }
+                this.workPara.invoice_masterbi_of_disabled = fixedDeposit['invoice_masterbi_of'] ? true : false
+                this.workPara.invoice_masterbi_of_currency_disabled = fixedDeposit['invoice_masterbi_of_currency'] ? true : false
+            },
+            resetInvoiceFee: async function(fixedDeposit, feeName) {
+                this.workPara[feeName + '_necessary_disabled'] = true
+                if (fixedDeposit[feeName + '_necessary']) {
+                    this.workPara[feeName + '_type'] = fixedDeposit[feeName + '_type']
+                    this.workPara[feeName + '_necessary'] = fixedDeposit[feeName + '_necessary'] === '1' ? true : false
+                    if (fixedDeposit[feeName + '_necessary'] === '1') {
+                        this.workPara[feeName] = this.workPara[feeName] ? this.workPara[feeName] : fixedDeposit[feeName]
+                        this.workPara.invoice_fee_currency = this.workPara.invoice_fee_currency ? this.workPara.invoice_fee_currency : fixedDeposit['invoice_fee_currency']
+                        this.workPara[feeName + '_necessary_disabled'] = true
+                    } else {
+                        this.workPara[feeName + '_temp'] = fixedDeposit[feeName]
+                        this.workPara.invoice_fee_currency_temp = fixedDeposit['invoice_fee_currency']
+                        this.workPara[feeName + '_necessary_disabled'] = false
+                        if (this.workPara[feeName] && this.workPara[feeName] === fixedDeposit[feeName]) {
+                            this.workPara[feeName + '_necessary'] = true
+                        }
+                    }
+                }
+                this.workPara[feeName + '_disabled'] = fixedDeposit[feeName] ? true : false
+            },
+            changeFixedAct: function(item) {
+                if (this.workPara[item + '_necessary']) {
+                    this.workPara[item] = this.workPara[item + '_temp']
+                    this.workPara[item + '_currency'] = this.workPara[item + '_currency_temp']
+                } else {
+                    this.workPara[item] = ''
+                    this.workPara[item + '_currency'] = ''
+                }
+            },
+            changeDepositEdit: function() {
+                if (this.depositEdit) {
+                    try {
+                        this.modal.checkPasswordModal = true
+                        this.checkPassword = ''
+                        this.checkPasswordType = 'depositEdit'
+                    } catch (error) {
+                        this.$commonact.fault(error)
+                    }
+                }
+            },
+            changeDoDeliverEdit: function() {
+                if (!this.doDeliverEdit) {
+                    try {
+                        this.modal.checkPasswordModal = true
+                        this.checkPassword = ''
+                        this.checkPasswordType = 'doDeliverEdit'
+                    } catch (error) {
+                        this.$commonact.fault(error)
+                    }
+                }
+            },
+            changeDoDeliverValidToEdit: function() {
+                if (this.doDeliverValidToEdit) {
+                    try {
+                        this.modal.checkPasswordModal = true
+                        this.checkPassword = ''
+                        this.checkPasswordType = 'doDeliverValidToEdit'
+                    } catch (error) {
+                        this.$commonact.fault(error)
+                    }
+                }
+            },
+            deleteVesselAct: function(item) {
+                try {
+                    this.workPara = JSON.parse(JSON.stringify(item))
+                    this.checkPassword = ''
+                    this.modal.checkPasswordModal = true
+                    this.checkPasswordType = 'doVesselDelete'
+                } catch (error) {
+                    this.$commonact.fault(error)
+                }
+            },
+            editVesselAct: function(item) {
+                try {
+                    this.$nextTick(function() {
+                        this.resetVesselForm()
+                        this.$refs['vesselForm'].resetFields()
+                        this.vesselForm = JSON.parse(JSON.stringify(item))
+                        this.checkPassword = ''
+                        this.modal.checkPasswordModal = true
+                        this.checkPasswordType = 'doVesselEdit'
+                    })
+                } catch (error) {
+                    this.$commonact.fault(error)
+                }
+            },
+            actCheckPassword: async function() {
+                try {
+                    if (!this.checkPassword) {
+                        return this.$Message.error('Please enter right password')
+                    }
+                    await this.$http.post(apiUrl + 'checkPassword', {
+                        check_password: common.md52(this.checkPassword)
+                    })
+                    this.modal.checkPasswordModal = false
+                    if (this.checkPasswordType === 'depositEdit') {
+                        this.depositEdit = true
+                    } else if (this.checkPasswordType === 'doDeliverEdit') {
+                        this.doDeliverEdit = true
+                    } else if (this.checkPasswordType === 'doVesselDelete') {
+                        this.modal.deleteVoyageModal = true
+                    } else if (this.checkPasswordType === 'doVesselEdit') {
+                        this.modal.editVesselModal = true
+                    } else if (this.checkPasswordType === 'doTableEdit') {
+                        this.tableEdit = false
+                    } else if (this.checkPasswordType === 'doDeliverValidToEdit') {
+                        this.doDeliverValidToEdit = false
+                    } else if (this.checkPasswordType === 'downLoadDoModalCheck') {
+                        this.actDownLoadDoModal(this.workPara)
+                    } else if (this.checkPasswordType === 'doDisabledChange') {
+                        this.changeDoDisabledAct(this.workPara)
+                    } else if (this.checkPasswordType === 'depositModalCheck') {
+                        this.actDepositModal(this.workPara)
+                    }
+                } catch (error) {
+                    this.$commonact.fault(error)
+                }
+            },
+            cancelCheckPassword: async function() {
+                this.modal.checkPasswordModal = false
+                this.depositEdit = false
+                this.doDeliverEdit = false
+                if (this.checkPasswordType === 'doDisabledChange') {
+                    this.refreshTableData()
+                }
+            },
+            resetVesselForm: function() {
+                this.vesselForm = {
+                    invoice_vessel_id: '',
+                    invoice_vessel_name: '',
+                    invoice_vessel_code: '',
+                    invoice_vessel_voyage: '',
+                    invoice_vessel_eta: '',
+                    invoice_vessel_ata: '',
+                    invoice_vessel_atd: '',
+                    invoice_vessel_call_sign: '',
+                }
+            },
+            doEditVesselAct: async function() {
+                this.$refs['vesselForm'].validate(async valid => {
+                    if (valid) {
+                        try {
+                            await this.$http.post(apiUrl + 'doEditVessel', this.vesselForm)
+                            this.refreshTableData()
+                            this.modal.editVesselModal = false
+                        } catch (error) {
+                            this.$commonact.fault(error)
+                        }
+                    } else {
+                        this.$Message.error('Validate Fail!')
+                    }
+                })
+            },
+            changeTableEdit: function() {
+                if (this.tableEdit) {
+                    try {
+                        this.modal.checkPasswordModal = true
+                        this.checkPassword = ''
+                        this.checkPasswordType = 'doTableEdit'
+                    } catch (error) {
+                        this.$commonact.fault(error)
+                    }
+                } else {
+                    this.tableEdit = true
+                }
+            },
+            validToDateChange: async function(date) {
+                this.workPara.invoice_masterbi_valid_to = date
+            },
+            vesselEtaDateChange: async function(date) {
+                this.vesselForm.invoice_vessel_eta = date
+            },
+            vesselAtaDateChange: async function(date) {
+                this.vesselForm.invoice_vessel_ata = date
+            },
+            vesselAtdDateChange: async function(date) {
+                this.vesselForm.invoice_vessel_atd = date
+            },
+            changeDoDisabled: function(item) {
+                try {
+                    this.workPara = JSON.parse(JSON.stringify(item))
+                    this.checkPassword = ''
+                    this.modal.checkPasswordModal = true
+                    this.checkPasswordType = 'doDisabledChange'
+                } catch (error) {
+                    this.$commonact.fault(error)
+                }
+            },
+            changeDoDisabledAct: async function(row) {
+                try {
+                    await this.$http.post(apiUrl + 'changeDoDisabled', row)
+                    if (row.invoice_masterbi_do_disabled === '1') {
+                        this.$Message.success('D/O disabled Success')
+                    } else {
+                        this.$Message.success('D/O enabled Success')
+                    }
+                    this.refreshTableData()
+                } catch (error) {
+                    if (row.invoice_masterbi_do_disabled === '1') {
+                        row.invoice_masterbi_do_disabled = '0'
+                    } else {
+                        row.invoice_masterbi_do_disabled = '1'
+                    }
+                    this.$commonact.fault(error)
+                }
+            },
+            refreshTableData() {
+                if (this.currentTab === 0) {
+                    if (this.vessel.search_data.vesselName || this.vessel.search_data.bl) {
+                        this.getVoyageData()
+                    } else {
+                        this.getMasterbiData(1)
+                    }
+                } else {
+                    this.getContainersData(1)
+                }
             }
-          ]
         }
-      },
-      pagePara: {},
-      workPara: {},
-      headers: common.uploadHeaders(),
-      action: '',
-      files: {
-        fileList: []
-      },
-      vessel: {
-        data: [],
-        search_data: {
-          date: [
-            moment()
-              .subtract(30, 'days')
-              .format('YYYY-MM-DD'),
-            moment().format('YYYY-MM-DD')
-          ],
-          vesselName: '',
-          bl: '',
-          collect: ''
-        },
-        current: '',
-        height: common.getTableHeight()
-      },
-      deposit: {
-        depositType: 'Container Deposit',
-        fees: [],
-        customer: {
-          options: [],
-          loading: false
-        }
-      },
-      currentTab: 0,
-      containerDepositFeeLabel: '',
-      oceanFreightFeeLabel: '',
-      invoiceFeeLabel: '',
-      checkPassword: '',
-      checkPasswordType: '',
-      depositEdit: false,
-      doDeliverEdit: false,
-      doDeliverValidToEdit: false,
-      formRules: {
-          invoice_vessel_name: [
-              { required: true, message: 'The vessel name cannot be empty', trigger: 'blur' }
-          ],
-          invoice_vessel_code: [
-              { required: true, message: 'The vessel code cannot be empty', trigger: 'blur' }
-          ],
-          invoice_vessel_voyage: [
-               { required: true, message: 'The vessel voyage cannot be empty', trigger: 'blur' }
-          ],
-          invoice_vessel_call_sign: [
-              { required: true, message: 'The vessel call sign cannot be empty', trigger: 'blur' }
-          ]
-      },
-      vesselForm: {
-        invoice_vessel_id: '',
-        invoice_vessel_name: '',
-        invoice_vessel_code: '',
-        invoice_vessel_voyage: '',
-        invoice_vessel_eta: '',
-        invoice_vessel_ata: '',
-        invoice_vessel_atd: '',
-        invoice_vessel_call_sign: '',
-      },
-      delivery: {
-        options: []
-      },
-      tableEdit: true,
-      importFileType: ''
     }
-  },
-  created() {
-    PageOptions.pageEmpty = false
-  },
-  mounted: async function() {
-    await this.getPara()
-    await this.getVoyageData()
-  },
-  methods: {
-    getPara: async function() {
-      try {
-        let response = await this.$http.post(apiUrl + 'init', {})
-        this.pagePara = JSON.parse(JSON.stringify(response.data.info))
-      } catch (error) {
-        this.$commonact.fault(error)
-      }
-    },
-    loadImportModal: async function(importFileType) {
-      this.workPara = {}
-      this.$refs.upload.fileList = []
-      this.files.fileList = []
-      this.action = 'add'
-      this.importFileType = importFileType
-      this.modal.importModal = true
-    },
-    handleSuccess(res, file, fileList) {
-      file.url = res.info.url
-      file.name = res.info.name
-      this.files.fileList = JSON.parse(JSON.stringify(this.$refs.upload.fileList))
-    },
-    handleImportbefore(file) {
-      this.$Spin.show()
-    },
-    handleImportSuccess(res, file, fileList) {
-      this.$Spin.hide()
-      this.$Notice.success({
-        title: 'Success',
-        desc: 'File Import Success'
-      })
-      this.getPara()
-      this.getImportData()
-    },
-    handleImportError(error, file, fileList) {
-      this.$Spin.hide()
-      this.$Notice.error({
-        title: 'Error',
-        desc: 'File Import Failed'
-      })
-    },
-    handleFormatError(file) {
-      this.$Notice.warning({
-        title: 'The file format is incorrect',
-        desc: 'File format of ' + file.name + ' is incorrect, please select pdf.'
-      })
-    },
-    handleMaxSize(file) {
-      this.$Notice.warning({
-        title: 'Exceeding file size limit',
-        desc: 'File  ' + file.name + ' is too large, no more than 4M.'
-      })
-    },
-    importData: async function() {
-      try {
-        if (this.files.fileList.length < 1) {
-          return this.$Message.error('Please upload xml file')
-        }
-        this.workPara.upload_files = this.files.fileList
-        this.workPara.importFileType = this.importFileType
-        await this.$http.post(apiUrl + 'uploadImport', this.workPara)
-        this.$Message.success('submit success')
-        this.getVoyageData()
-        this.modal.importModal = false
-        this.importFileType = ''
-      } catch (error) {
-        this.$refs.upload.fileList = []
-        this.files.fileList = []
-        this.$commonact.fault(error)
-      }
-    },
-    searchData: function(e) {
-      this.vessel.search_data.date = JSON.parse(JSON.stringify(e))
-    },
-    getVoyageData: async function() {
-      try {
-        let searchPara = {
-          start_date: this.vessel.search_data.date[0],
-          end_date: this.vessel.search_data.date[1],
-          vesselName: this.vessel.search_data.vesselName,
-          bl: this.vessel.search_data.bl,
-          limit: 10,
-          offset: 0
-        }
-
-        let response = await this.$http.post(apiUrl + 'searchVoyage', searchPara)
-        let data = response.data.info
-        this.vessel.data = JSON.parse(JSON.stringify(data.vessels))
-        this.table.masterbiTable.data = JSON.parse(JSON.stringify(data.masterbl.rows))
-        this.table.masterbiTable.unchanged = JSON.parse(JSON.stringify(data.masterbl.rows))
-        this.table.masterbiTable.total = data.masterbl.total
-        this.table.containersTable.data = []
-        if(this.vessel.search_data.bl && data.vessels && data.vessels.length === 1) {
-          this.vessel.current = data.vessels[0].invoice_vessel_id
-        }
-        if (this.currentTab != 0) {
-          this.refreshTableData()
-        }
-      } catch (error) {
-        this.$commonact.fault(error)
-      }
-    },
-    checkVoyage: async function(invoice_vessel_id) {
-      if (this.vessel.current != invoice_vessel_id) {
-        this.vessel.current = invoice_vessel_id
-        this.refreshTableData()
-      }
-    },
-    changeTab: function(name) {
-      if (this.currentTab != name) {
-        this.currentTab = name
-        this.refreshTableData()
-      }
-    },
-    getMasterbiData: async function(index) {
-      if (this.vessel.current) {
-        if (index) {
-          this.table.masterbiTable.offset = (index - 1) * this.table.masterbiTable.limit
-        }
-        let searchPara = {
-          invoice_vessel_id: this.vessel.current,
-          collect: this.vessel.search_data.collect,
-          offset: this.table.masterbiTable.offset,
-          limit: this.table.masterbiTable.limit
-        }
-
-        let response = await this.$http.post(apiUrl + 'getMasterbiData', searchPara)
-        let data = response.data.info
-        this.table.masterbiTable.total = data.total
-        this.table.masterbiTable.data = JSON.parse(JSON.stringify(data.rows))
-        this.table.masterbiTable.unchanged = JSON.parse(JSON.stringify(data.rows))
-      }
-    },
-    getContainersData: async function(index) {
-      if (index) {
-        this.table.containersTable.offset = (index - 1) * this.table.containersTable.limit
-      }
-      let searchPara = {
-        invoice_vessel_id: this.vessel.current,
-        bl: this.vessel.search_data.bl,
-        offset: this.table.containersTable.offset,
-        limit: this.table.containersTable.limit
-      }
-
-      let response = await this.$http.post(apiUrl + 'getContainersData', searchPara)
-      let data = response.data.info
-      this.table.containersTable.total = data.total
-      this.table.containersTable.data = JSON.parse(JSON.stringify(data.rows))
-      this.table.containersTable.unchanged = JSON.parse(JSON.stringify(data.rows))
-    },
-    actDownLoadDoModal: function(row) {
-      this.workPara = JSON.parse(JSON.stringify(row))
-      this.doDeliverEdit = false
-      this.delivery.options = JSON.parse(JSON.stringify(this.pagePara.DELIVER))
-      if(row.invoice_masterbi_delivery_to) {
-        const index = this.delivery.options.indexOf(row.invoice_masterbi_delivery_to)
-        if(index < 0) {
-          this.delivery.options.unshift(row.invoice_masterbi_delivery_to)
-        }
-      }
-      if(!this.workPara.invoice_masterbi_do_fcl) {
-        if(this.workPara.invoice_masterbi_lcl) {
-          this.workPara.invoice_masterbi_do_fcl = 'FCL/LCL'
-        } else {
-          this.workPara.invoice_masterbi_do_fcl = 'FCL/FCL'
-        }
-      }
-      
-      if(this.pagePara.DELIVER.ICD) {
-        let defaultICD = false
-        for(let i = 0; i < this.pagePara.DELIVER.ICD.length; i++) {
-          if(this.pagePara.DELIVER.ICD[i].icd_name === 'TICTS TERMINAL') {
-            defaultICD = true
-            break
-          }
-        }
-        if(!defaultICD) {
-          this.pagePara.DELIVER.ICD.push({'icd_name': 'TICTS TERMINAL', 'icd_code': 'WTTZDL002'})
-        }
-      } else {
-        this.pagePara.DELIVER.ICD = [{'icd_name': 'TICTS TERMINAL', 'icd_code': 'WTTZDL002'}]
-      }
-      if(!this.workPara.invoice_masterbi_do_icd) {
-        this.workPara.invoice_masterbi_do_icd = 'TICTS TERMINAL'
-      }
-
-      if(!this.workPara.invoice_masterbi_do_return_depot) {
-        this.workPara.invoice_masterbi_do_return_depot = 'FANTUZZI'
-      }
-      if(this.workPara.invoice_masterbi_do_date) {
-        this.doDeliverValidToEdit = true
-      } else {
-        this.doDeliverValidToEdit = false
-      }
-      this.modal.downLoadDoModal = true
-    },
-    actDownLoadDoModalCheck: function(row) {
-      this.workPara = JSON.parse(JSON.stringify(row))
-      this.checkPassword = ''
-      this.modal.checkPasswordModal = true
-      this.checkPasswordType = 'downLoadDoModalCheck'
-    },
-    downloadDo: async function() {
-      try {
-        let response = await this.$http.post(apiUrl + 'downloadDo', this.workPara)
-        printJS(response.data.info.url)
-        this.$Message.success('do success')
-        this.modal.downLoadDoModal = false
-        this.refreshTableData()
-      } catch (error) {
-        this.$commonact.fault(error)
-      }
-    },
-    doRealse: async function(row, index) {
-      try {
-        await this.$http.post(apiUrl + 'doRelease', { file_id: row.file_id })
-        this.refreshTableData()
-        this.$Message.success('release success')
-      } catch (error) {
-        this.$commonact.fault(error)
-      }
-    },
-    actDepositModalCheck: function(row) {
-      this.workPara = JSON.parse(JSON.stringify(row))
-      this.checkPassword = ''
-      this.modal.checkPasswordModal = true
-      this.checkPasswordType = 'depositModalCheck'
-    },
-    actDepositModal: function(row) {
-      this.$refs.customer.reset()
-      this.deposit.customer.loading = true
-      this.deposit.customer.options = JSON.parse(JSON.stringify(row.customerINFO))
-      this.deposit.customer.loading = false
-      this.deposit.fees = []
-      this.$nextTick(function() {
-        this.workPara = JSON.parse(JSON.stringify(row))
-        this.depositEdit = false
-        this.workPara.invoice_masterbi_customer_blacklist = true
-        if(this.workPara.invoice_masterbi_vessel_type && this.workPara.invoice_masterbi_vessel_type === 'Bulk') {
-          this.deposit.depositType = 'Invoice Fee'
-          this.$refs.depositTabs.activeKey = 'Invoice Fee'
-        } else {
-          this.deposit.depositType = 'Container Deposit'
-          this.$refs.depositTabs.activeKey = 'Container Deposit'
-        }
-        if(this.workPara.invoice_masterbi_deposit_state) {
-          this.containerDepositFeeLabel = h => {
-                return h("div", [
-                  h("i", {class: 'fa fa-check'}),
-                  h("span", "Container Deposit Fee")
-                ])
-              }
-        } else {
-          this.containerDepositFeeLabel = 'Container Deposit Fee'
-        }
-        if(this.workPara.invoice_fee_state) {
-          this.invoiceFeeLabel = h => {
-            return h("div", [
-              h("i", {class: 'fa fa-check'}),
-              h("span", "Invoice Fee")
-            ])
-          }
-        } else {
-          this.invoiceFeeLabel = 'Invoice Fee'
-        }
-        this.searchFixedDeposit()
-      })
-      this.modal.depositModal = true
-    },
-    searchCustomer: async function(query) {
-      if (query !== '') {
-        this.deposit.customer.loading = true
-        let response = await this.$http.post(apiUrl + 'searchCustomer', {
-          search_text: query
-        })
-        this.deposit.customer.options = JSON.parse(JSON.stringify(response.data.info.customerINFO))
-        this.deposit.customer.loading = false
-        if(this.deposit.customer.options && this.deposit.customer.options.length === 1) {
-          this.searchFixedDeposit()
-        }
-      } else {
-        this.deposit.customer.options = []
-      }
-    },
-    currentFeeTabChanged: function(name) {
-      this.deposit.depositType = name
-    },
-    depositDo: async function(depositType) {
-      try {
-        if (!this.workPara.invoice_masterbi_customer_id) {
-          return this.$Message.error('Please choose customer')
-        }
-
-        if (!this.workPara.invoice_masterbi_carrier) {
-          return this.$Message.error('Please choose carrier')
-        }
-        let param = _.extend(this.workPara, this.deposit)
-        param.depositEdit = this.depositEdit
-        await this.$http.post(apiUrl + 'depositDo', param)
-        // printJS(response.data.info.url)
-        this.$Message.success('deposit success')
-        this.modal.depositModal = false
-        this.refreshTableData()
-      } catch (error) {
-        this.$commonact.fault(error)
-      }
-    },
-    showChangeCollectModal: async function(row, cflag) {
-      this.workPara = JSON.parse(JSON.stringify(row))
-      this.workPara.collect_flag = cflag
-      this.modal.colletChangeModal = true
-    },
-    actChangeCollectFlag: async function() {
-      try {
-        if(!this.workPara.collet_change_password) {
-          return this.$Message.error('Please enter right password')
-        }
-        await this.$http.post(apiUrl + 'changeCollect', { invoice_masterbi_id: this.workPara.invoice_masterbi_id, act: this.workPara.collect_flag, collet_change_password: common.md52(this.workPara.collet_change_password) })
-        this.refreshTableData()
-        this.modal.colletChangeModal = false
-      } catch (error) {
-        this.$commonact.fault(error)
-      }
-    },
-    saveData: async function() {
-      if (this.currentTab === 0) {
-        if (this.table.masterbiTable.data.length > 0) {
-          let changeData = []
-          for (let i = 0; i < this.table.masterbiTable.data.length; i++) {
-            if (JSON.stringify(this.table.masterbiTable.data[i]) !== JSON.stringify(this.table.masterbiTable.unchanged[i])) {
-              changeData.push(this.table.masterbiTable.data[i])
-            }
-          }
-          if (changeData.length > 0) {
-            try {
-              await this.$http.post(apiUrl + 'changebl', { changedbl: changeData })
-              this.refreshTableData()
-              this.tableEdit = true
-              this.$Message.success('save success')
-            } catch (error) {
-              this.$commonact.fault(error)
-            }
-          }
-        }
-      } else {
-        if (this.table.containersTable.data.length > 0) {
-          //
-          let changeData = []
-          for (let i = 0; i < this.table.containersTable.data.length; i++) {
-            if (JSON.stringify(this.table.containersTable.data[i]) !== JSON.stringify(this.table.containersTable.unchanged[i])) {
-              changeData.push(this.table.containersTable.data[i])
-            }
-          }
-          if (changeData.length > 0) {
-            try {
-              await this.$http.post(apiUrl + 'changeCn', { changeCn: changeData })
-              this.refreshTableData()
-              this.tableEdit = true
-              this.$Message.success('save success')
-            } catch (error) {
-              this.$commonact.fault(error)
-            }
-          }
-        }
-      }
-    },
-    doDeleteVoyageAct: function() {
-      try {
-        let _self = this
-        if (_self.workPara.voyage_no !== _self.workPara.invoice_vessel_voyage) {
-          return _self.$Message.error('Please enter right Voyage No.')
-        }
-        _self.$commonact.confirm(`Delete the vessel?`, async () => {
-          try {
-            await _self.$http.post(apiUrl + 'deleteVoyage', { invoice_vessel_id: _self.workPara.invoice_vessel_id})
-            this.refreshTableData()
-            _self.modal.deleteVoyageModal = false
-          } catch (error) {
-            this.$commonact.fault(error)
-          }
-        })
-      } catch (error) {
-        this.$commonact.fault(error)
-      }
-    },
-    doCreateEdi: async function(row, index) {
-      try {
-        await this.$http.post(apiUrl + 'doCreateEdi', { invoice_masterbi_id: row.invoice_masterbi_id })
-        this.refreshTableData()
-        this.$Message.success('Send Edi Success')
-      } catch (error) {
-        this.$commonact.fault(error)
-      }
-    },
-    doReplaceEdi: async function(row, index) {
-      try {
-        await this.$http.post(apiUrl + 'doReplaceEdi', { invoice_masterbi_id: row.invoice_masterbi_id })
-        this.refreshTableData()
-        this.$Message.success('Replace Edi Success')
-      } catch (error) {
-        this.$commonact.fault(error)
-      }
-    },
-    doCancelEdi: async function(row, index) {
-      try {
-        await this.$http.post(apiUrl + 'doCancelEdi', { invoice_masterbi_id: row.invoice_masterbi_id })
-        this.refreshTableData()
-        this.$Message.success('Cancel Edi Success')
-      } catch (error) {
-        this.$commonact.fault(error)
-      }
-    },
-    searchFixedDeposit: async function() {
-      try {
-        let response = await this.$http.post(apiUrl + 'searchFixedDeposit', _.extend(this.workPara, this.deposit))
-        let fixedDeposit = JSON.parse(JSON.stringify(response.data.info))
-        // container deposit
-        await this.resetInvoiceDeposit(fixedDeposit)
-        // Invoice Fee - Ocean
-        await this.resetInvoiceOcean(fixedDeposit)
-        // Invoice Fee
-        await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_bl_amendment')
-        await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_cod_charge')
-        await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_transfer')
-        await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_lolf')
-        await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_lcl')
-        await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_amendment')
-        await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_tasac')
-        await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_printing')
-        await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_others')
-
-        this.workPara.invoice_masterbi_customer_blacklist = fixedDeposit.invoice_masterbi_customer_blacklist
-        this.$forceUpdate()
-      } catch (error) {
-        this.$commonact.fault(error)
-      }
-    },
-    resetInvoiceDeposit: async function(fixedDeposit) {
-      this.workPara.invoice_masterbi_deposit_necessary_disabled = true
-        if(fixedDeposit['invoice_masterbi_deposit_fixed'] && fixedDeposit['invoice_masterbi_deposit_fixed'] === '1') {
-          this.workPara.invoice_masterbi_deposit = this.workPara.invoice_masterbi_deposit ? this.workPara.invoice_masterbi_deposit : fixedDeposit['invoice_masterbi_deposit'] 
-          this.workPara.invoice_container_deposit_currency = this.workPara.invoice_container_deposit_currency ? this.workPara.invoice_container_deposit_currency : fixedDeposit['invoice_container_deposit_currency']
-          this.workPara.invoice_masterbi_deposit_comment = this.workPara.invoice_masterbi_deposit_comment ? this.workPara.invoice_masterbi_deposit_comment : fixedDeposit['invoice_masterbi_deposit_comment'] 
-          this.workPara.invoice_masterbi_deposit_necessary = true
-          this.workPara.invoice_masterbi_deposit_fixed = '1'
-          this.workPara.invoice_masterbi_deposit_fixed_id = fixedDeposit['invoice_masterbi_deposit_fixed_id'] 
-        } else if(fixedDeposit['invoice_masterbi_deposit_necessary']) {
-          if(fixedDeposit['invoice_masterbi_deposit_necessary'] === '1') {
-            this.workPara.invoice_masterbi_deposit = this.workPara.invoice_masterbi_deposit ? this.workPara.invoice_masterbi_deposit : fixedDeposit['invoice_masterbi_deposit']
-            this.workPara.invoice_container_deposit_currency = this.workPara.invoice_container_deposit_currency ? this.workPara.invoice_container_deposit_currency : fixedDeposit['invoice_container_deposit_currency']
-            this.workPara.invoice_masterbi_deposit_comment = this.workPara.invoice_masterbi_deposit_comment ? this.workPara.invoice_masterbi_deposit_comment : fixedDeposit['invoice_masterbi_deposit_comment']
-          } else {
-            this.workPara.invoice_container_deposit_currency =  this.workPara.invoice_container_deposit_currency ? this.workPara.invoice_container_deposit_currency : 'USD'
-            this.workPara.invoice_masterbi_deposit_temp = fixedDeposit['invoice_masterbi_deposit']
-            this.workPara.invoice_container_deposit_currency_temp = fixedDeposit['invoice_container_deposit_currency']
-            this.workPara.invoice_masterbi_deposit_comment_temp = fixedDeposit['invoice_masterbi_deposit_comment']
-            this.workPara.invoice_masterbi_deposit_necessary_disabled = false
-          }
-          this.workPara.invoice_masterbi_deposit_necessary = fixedDeposit['invoice_masterbi_deposit_necessary'] === '1' ? true : false
-          this.workPara.invoice_masterbi_deposit_type = fixedDeposit['invoice_masterbi_deposit_type']
-        } else {
-          this.workPara.invoice_masterbi_deposit_necessary = false
-        }
-        this.workPara.invoice_masterbi_deposit_disabled = fixedDeposit['invoice_masterbi_deposit'] ? true : false
-        this.workPara.invoice_container_deposit_currency_disabled = fixedDeposit['invoice_container_deposit_currency'] ? true : false
-    },
-    resetInvoiceOcean: async function(fixedDeposit) {
-      this.workPara.invoice_masterbi_of_necessary_disabled = true
-      if(fixedDeposit['invoice_masterbi_of_fixed'] && fixedDeposit['invoice_masterbi_of_fixed'] === '1') {
-        this.workPara.invoice_masterbi_of = this.workPara.invoice_masterbi_of ? this.workPara.invoice_masterbi_of : fixedDeposit['invoice_masterbi_of']
-        this.workPara.invoice_masterbi_of_currency = this.workPara.invoice_masterbi_of_currency ? this.workPara.invoice_masterbi_of_currency : fixedDeposit['invoice_masterbi_of_currency']
-        this.workPara.invoice_masterbi_of_necessary = true
-        this.workPara.invoice_masterbi_of_fixed = '1'
-      } else if(fixedDeposit['invoice_masterbi_of_necessary']) {
-        if(fixedDeposit['invoice_masterbi_of_necessary'] === '1') {
-          this.workPara.invoice_masterbi_of = this.workPara.invoice_masterbi_of ? this.workPara.invoice_masterbi_of : fixedDeposit['invoice_masterbi_of']
-          this.workPara.invoice_masterbi_of_currency = this.workPara.invoice_masterbi_of_currency ? this.workPara.invoice_masterbi_of_currency : fixedDeposit['invoice_masterbi_of_currency']
-          this.workPara.invoice_masterbi_of_necessary_disabled = true
-        } else {
-          this.workPara.invoice_masterbi_of_temp = fixedDeposit['invoice_masterbi_of']
-          this.workPara.invoice_masterbi_of_currency_temp = fixedDeposit['invoice_masterbi_of_currency']
-          this.workPara.invoice_masterbi_of_necessary_disabled = false
-        }
-        this.workPara.invoice_masterbi_of_type = fixedDeposit['invoice_masterbi_of_type']
-        this.workPara.invoice_masterbi_of_necessary = fixedDeposit['invoice_masterbi_of_necessary'] === '1' ? true : false
-      } else {
-        this.workPara.invoice_masterbi_of_necessary = false
-      }
-      this.workPara.invoice_masterbi_of_disabled = fixedDeposit['invoice_masterbi_of'] ? true : false
-      this.workPara.invoice_masterbi_of_currency_disabled = fixedDeposit['invoice_masterbi_of_currency'] ? true : false
-    },
-    resetInvoiceFee: async function(fixedDeposit, feeName) {
-      this.workPara[feeName + '_necessary_disabled'] = true
-      if(fixedDeposit[feeName + '_necessary']) {
-        this.workPara[feeName + '_type'] = fixedDeposit[feeName + '_type']
-        this.workPara[feeName + '_necessary'] = fixedDeposit[feeName + '_necessary'] === '1' ? true : false
-        if(fixedDeposit[feeName + '_necessary'] === '1') {
-          this.workPara[feeName] = this.workPara[feeName] ? this.workPara[feeName] : fixedDeposit[feeName]
-          this.workPara.invoice_fee_currency = this.workPara.invoice_fee_currency ? this.workPara.invoice_fee_currency : fixedDeposit['invoice_fee_currency']
-          this.workPara[feeName + '_necessary_disabled'] = true
-        } else {
-          this.workPara[feeName + '_temp'] = fixedDeposit[feeName]
-          this.workPara.invoice_fee_currency_temp = fixedDeposit['invoice_fee_currency']
-          this.workPara[feeName + '_necessary_disabled'] = false
-          if(this.workPara[feeName] && this.workPara[feeName] === fixedDeposit[feeName]) {
-            this.workPara[feeName + '_necessary'] = true
-          }
-        }
-      }
-      this.workPara[feeName + '_disabled'] = fixedDeposit[feeName] ? true : false
-    },
-    changeFixedAct: function(item) {
-      if(this.workPara[item + '_necessary']) {
-        this.workPara[item] = this.workPara[item + '_temp']
-        this.workPara[item + '_currency'] = this.workPara[item + '_currency_temp']
-      } else {
-        this.workPara[item] = ''
-        this.workPara[item + '_currency'] = ''
-      }
-    },
-    changeDepositEdit: function() {
-      if(this.depositEdit) {
-        try {
-          this.modal.checkPasswordModal = true
-          this.checkPassword = ''
-          this.checkPasswordType = 'depositEdit'
-        } catch (error) {
-          this.$commonact.fault(error)
-        }
-      }
-    },
-    changeDoDeliverEdit: function() {
-      if(!this.doDeliverEdit) {
-        try {
-          this.modal.checkPasswordModal = true
-          this.checkPassword = ''
-          this.checkPasswordType = 'doDeliverEdit'
-        } catch (error) {
-          this.$commonact.fault(error)
-        }
-      }
-    },
-    changeDoDeliverValidToEdit: function() {
-      if(this.doDeliverValidToEdit) {
-        try {
-          this.modal.checkPasswordModal = true
-          this.checkPassword = ''
-          this.checkPasswordType = 'doDeliverValidToEdit'
-        } catch (error) {
-          this.$commonact.fault(error)
-        }
-      }
-    },
-    deleteVesselAct: function(item) {
-      try {
-        this.workPara = JSON.parse(JSON.stringify(item))
-        this.checkPassword = ''
-        this.modal.checkPasswordModal = true
-        this.checkPasswordType = 'doVesselDelete'
-      } catch (error) {
-        this.$commonact.fault(error)
-      }
-    },
-    editVesselAct: function(item) {
-      try {
-        this.$nextTick(function() {
-          this.resetVesselForm()
-          this.$refs['vesselForm'].resetFields()
-          this.vesselForm = JSON.parse(JSON.stringify(item))
-          this.checkPassword = ''
-          this.modal.checkPasswordModal = true
-          this.checkPasswordType = 'doVesselEdit'
-        })
-      } catch (error) {
-        this.$commonact.fault(error)
-      }
-    },
-    actCheckPassword: async function() {
-      try {
-        if(!this.checkPassword) {
-          return this.$Message.error('Please enter right password')
-        }
-        await this.$http.post(apiUrl + 'checkPassword', { check_password: common.md52(this.checkPassword)})
-        this.modal.checkPasswordModal = false
-        if(this.checkPasswordType === 'depositEdit') {
-          this.depositEdit = true
-        } else if(this.checkPasswordType === 'doDeliverEdit') {
-          this.doDeliverEdit = true
-        } else if(this.checkPasswordType === 'doVesselDelete') {
-          this.modal.deleteVoyageModal = true
-        } else if(this.checkPasswordType === 'doVesselEdit') {
-          this.modal.editVesselModal = true
-        } else if(this.checkPasswordType === 'doTableEdit') {
-          this.tableEdit = false
-        } else if(this.checkPasswordType === 'doDeliverValidToEdit') {
-          this.doDeliverValidToEdit = false
-        } else if(this.checkPasswordType === 'downLoadDoModalCheck') {
-          this.actDownLoadDoModal(this.workPara)
-        } else if(this.checkPasswordType === 'doDisabledChange') {
-          this.changeDoDisabledAct(this.workPara)
-        } else if(this.checkPasswordType === 'depositModalCheck') {
-          this.actDepositModal(this.workPara)
-        }
-      } catch (error) {
-        this.$commonact.fault(error)
-      }
-    },
-    cancelCheckPassword: async function() {
-      this.modal.checkPasswordModal = false
-      this.depositEdit = false
-      this.doDeliverEdit = false
-      if(this.checkPasswordType === 'doDisabledChange') {
-        this.refreshTableData()
-      }
-    },
-    resetVesselForm: function() {
-      this.vesselForm = {
-        invoice_vessel_id: '',
-        invoice_vessel_name: '',
-        invoice_vessel_code: '',
-        invoice_vessel_voyage: '',
-        invoice_vessel_eta: '',
-        invoice_vessel_ata: '',
-        invoice_vessel_atd: '',
-        invoice_vessel_call_sign: '',
-      }
-    },
-    doEditVesselAct: async function() {
-       this.$refs['vesselForm'].validate(async valid => {
-          if (valid) {
-            try {
-              await this.$http.post(apiUrl + 'doEditVessel', this.vesselForm)
-              this.refreshTableData()
-              this.modal.editVesselModal = false
-            } catch (error) {
-              this.$commonact.fault(error)
-            }
-          } else {
-            this.$Message.error('Validate Fail!')
-          }
-      })
-    },
-    changeTableEdit: function() {
-      if(this.tableEdit) {
-        try {
-          this.modal.checkPasswordModal = true
-          this.checkPassword = ''
-          this.checkPasswordType = 'doTableEdit'
-        } catch (error) {
-          this.$commonact.fault(error)
-        }
-      } else {
-        this.tableEdit = true
-      }
-    },
-    validToDateChange: async function(date) {
-      this.workPara.invoice_masterbi_valid_to = date
-    },
-    vesselEtaDateChange: async function(date) {
-      this.vesselForm.invoice_vessel_eta = date
-    },
-    vesselAtaDateChange: async function(date) {
-      this.vesselForm.invoice_vessel_ata = date
-    },
-    vesselAtdDateChange: async function(date) {
-      this.vesselForm.invoice_vessel_atd = date
-    },
-    changeDoDisabled: function(item) {
-      try {
-        this.workPara = JSON.parse(JSON.stringify(item))
-        this.checkPassword = ''
-        this.modal.checkPasswordModal = true
-        this.checkPasswordType = 'doDisabledChange'
-      } catch (error) {
-        this.$commonact.fault(error)
-      }
-    },
-    changeDoDisabledAct: async function(row) {
-      try {
-        await this.$http.post(apiUrl + 'changeDoDisabled', row)
-        if(row.invoice_masterbi_do_disabled === '1'){
-          this.$Message.success('D/O disabled Success')
-        } else {
-          this.$Message.success('D/O enabled Success')
-        }
-        this.refreshTableData()
-      } catch (error) {
-        if(row.invoice_masterbi_do_disabled === '1'){
-          row.invoice_masterbi_do_disabled = '0'
-        } else {
-          row.invoice_masterbi_do_disabled = '1'
-        }
-        this.$commonact.fault(error)
-      }
-    },
-    refreshTableData() {
-      if (this.currentTab === 0) {
-        if(this.vessel.search_data.vesselName || this.vessel.search_data.bl) {
-          this.getVoyageData()
-        } else {
-          this.getMasterbiData(1)
-        }
-      } else {
-        this.getContainersData(1)
-      }
-    }
-  }
-}
 </script>
