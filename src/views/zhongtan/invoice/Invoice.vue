@@ -185,12 +185,12 @@
                               </a>
                             </Tooltip>
                           </template>
-                <template v-else-if="row.state === 'AP'">
-                            <Tooltip content="Download">
-                              <a :href="row.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
-                                <i class="fa fa-download"></i>
-                              </a>
-                            </Tooltip>
+                            <template v-else-if="row.state === 'AP'">
+                                <Tooltip content="Download">
+                                <a :href="row.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
+                                    <i class="fa fa-download"></i>
+                                </a>
+                                </Tooltip>
                             <!-- <Tooltip content="Release" v-if="!row.release_date && (row.filetype === 'Deposit' || row.filetype === 'Fee' || row.filetype === 'DO' || row.filetype === 'Freight')">
                               <a href="#" class="btn btn-primary btn-icon btn-sm" @click="doRealse(row, index)">
                                 <i class="fa fa-share-square"></i>
@@ -402,31 +402,28 @@
     <Form :model="workPara" :label-width="160">
         <Row>
             <Col>
-            <FormItem label="Delivery to" prop="invoice_masterbi_delivery_to">
-                <Select v-model="workPara.invoice_masterbi_delivery_to" filterable clearable placeholder="Delivery" style="width:400px">
-                <Option v-for="item in delivery.options" :value="item" :key="item">{{item}}</Option>
-              </Select>
-                <!-- <a href="#" @click.prevent="changeDoDeliverEdit" title="Edit">
-                <i class="fa fa-edit"></i>
-              </a> -->
-            </FormItem>
+                <FormItem label="Delivery to" prop="invoice_masterbi_delivery_to">
+                    <Select v-model="workPara.invoice_masterbi_delivery_to" filterable clearable placeholder="Delivery" style="width:400px" :disabled="!doDeliverValidToEdit && workPara.invoice_masterbi_delivery_to_customer_type !== '2'">
+                        <Option v-for="item in delivery.options" :value="item" :key="item">{{item}}</Option>
+                    </Select>
+                </FormItem>
             </Col>
         </Row>
         <Row>
             <Col>
-            <FormItem label="VALID TO" prop="invoice_masterbi_valid_to">
-                <DatePicker type="date" placeholder="VALID TO" v-model="workPara.invoice_masterbi_valid_to" :disabled="doDeliverValidToEdit" @on-change="validToDateChange" format="yyyy-MM-dd"></DatePicker>
-            </FormItem>
+                <FormItem label="VALID TO" prop="invoice_masterbi_valid_to">
+                    <DatePicker type="date" placeholder="VALID TO" v-model="workPara.invoice_masterbi_valid_to" :disabled="!doDeliverValidToEdit && !!workPara.invoice_masterbi_do_date" @on-change="validToDateChange" format="yyyy-MM-dd"></DatePicker>
+                </FormItem>
             </Col>
         </Row>
         <Row v-if="workPara.invoice_masterbi_vessel_type !== 'Bulk'">
             <Col>
-            <FormItem label="FCL" prop="invoice_masterbi_do_fcl">
-                <RadioGroup v-model="workPara.invoice_masterbi_do_fcl">
-                    <Radio value="FCL/FCL" label="FCL/FCL" style="margin-right: 50px;"></Radio>
-                    <Radio value="FCL/LCL" label="FCL/LCL" style="margin-right: 50px;"></Radio>
-                </RadioGroup>
-            </FormItem>
+                <FormItem label="FCL" prop="invoice_masterbi_do_fcl">
+                    <RadioGroup v-model="workPara.invoice_masterbi_do_fcl">
+                        <Radio value="FCL/FCL" label="FCL/FCL" style="margin-right: 50px;"></Radio>
+                        <Radio value="FCL/LCL" label="FCL/LCL" style="margin-right: 50px;"></Radio>
+                    </RadioGroup>
+                </FormItem>
             </Col>
         </Row>
         <Row v-if="workPara.invoice_masterbi_vessel_type !== 'Bulk'">
@@ -444,7 +441,7 @@
         <Row v-if="workPara.invoice_masterbi_vessel_type !== 'Bulk'">
             <Col>
             <FormItem label="RETURN DEPOT" prop="invoice_masterbi_do_return_depot">
-                <i-select v-model="workPara.invoice_masterbi_do_return_depot" :disabled="workPara.invoice_masterbi_do_return_depot_disabled && doDeliverValidToEdit">
+                <i-select v-model="workPara.invoice_masterbi_do_return_depot" :disabled="workPara.invoice_masterbi_do_return_depot_disabled && !doDeliverValidToEdit">
                     <i-option v-for="item in pagePara.DEPOT" :value="item.edi_depot_name" :key="item.edi_depot_id" :label="item.edi_depot_name">
                         <span>{{item.edi_depot_name}}</span>
                     </i-option>
@@ -454,7 +451,7 @@
         </Row>
     </Form>
     <div slot="footer">
-        <a href="#" style="float:left; padding-top:10px;" @click.prevent="changeDoDeliverValidToEdit" title="Edit" v-if="workPara.invoice_masterbi_do_date">
+        <a href="#" style="float:left; padding-top:10px;" @click.prevent="changeDoDeliverValidToEdit" title="Edit">
             <i class="fa fa-edit"></i>Edit
         </a>
         <Button type="text" size="large" @click="modal.downLoadDoModal=false">Cancel</Button>
@@ -1293,11 +1290,7 @@
                 if (!this.workPara.invoice_masterbi_do_return_depot) {
                     this.workPara.invoice_masterbi_do_return_depot = 'FANTUZZI'
                 }
-                if (this.workPara.invoice_masterbi_do_date) {
-                    this.doDeliverValidToEdit = true
-                } else {
-                    this.doDeliverValidToEdit = false
-                }
+                this.doDeliverValidToEdit = false
                 this.modal.downLoadDoModal = true
             },
             actDownLoadDoModalCheck: function(row) {
@@ -1669,7 +1662,7 @@
                 }
             },
             changeDoDeliverValidToEdit: function() {
-                if (this.doDeliverValidToEdit) {
+                if (!this.doDeliverValidToEdit) {
                     try {
                         this.modal.checkPasswordModal = true
                         this.checkPassword = ''
@@ -1677,6 +1670,8 @@
                     } catch (error) {
                         this.$commonact.fault(error)
                     }
+                } else {
+                    this.doDeliverValidToEdit = false
                 }
             },
             deleteVesselAct: function(item) {
@@ -1723,7 +1718,7 @@
                     } else if (this.checkPasswordType === 'doTableEdit') {
                         this.tableEdit = false
                     } else if (this.checkPasswordType === 'doDeliverValidToEdit') {
-                        this.doDeliverValidToEdit = false
+                        this.doDeliverValidToEdit = true
                     } else if (this.checkPasswordType === 'downLoadDoModalCheck') {
                         this.actDownLoadDoModal(this.workPara)
                     } else if (this.checkPasswordType === 'doDisabledChange') {

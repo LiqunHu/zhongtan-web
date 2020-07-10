@@ -33,6 +33,8 @@ import './assets/css/default/style-responsive.min.css'
 import './assets/css/default/theme/default.css'
 import './assets/css/style.css'
 import './assets/css/ui.css'
+import './assets/css/font/css.css'
+import './assets/css/fontawesome/css/all.css'
 
 import App from './App'
 // use mavon-editor

@@ -37,6 +37,11 @@
               </button>
             </div>
             <div class="form-group m-r-10">
+              <button type="button" class="btn btn-warning" @click="emptyReInvoiceModal" :disabled="emptyInvoiceDisabled">
+                <i class="fa fa-money-bill-alt"></i> RE Invoice
+              </button>
+            </div>
+            <div class="form-group m-r-10">
               <button type="button" class="btn btn-success" @click="issuingStoringOrderModal" :disabled="emptyInvoiceDisabled">
                 <i class="fa fa-envelope"></i> Storing Order
               </button>
@@ -162,6 +167,19 @@
           <Button type="primary" size="large" @click="emptyInvoiceAct" >Submit</Button>
         </div>
       </Modal>
+      <Modal v-model="modal.reInvoiceModal" title="RE INVOICE" width="600">
+        <Form ref="invoiceForm" :model="invoiceForm" :rules="invoiceRules" :label-width="150" style="padding-right: 80px;">
+          <FormItem label="MESSRS" prop="invoice_customer_id" style="margin-bottom: 0px;">
+            <Select ref="customer" v-model="invoiceForm.invoice_customer_id" filterable clearable remote :remote-method="searchCustomer" :loading="customer.loading" placeholder="Customer">
+              <Option v-for="item in customer.options" :value="item.id" :key="item.id">{{item.text}}</Option>
+            </Select>
+          </FormItem>
+        </Form>
+        <div slot="footer">
+          <Button type="text" size="large" @click="modal.reInvoiceModal = false">Cancel</Button>
+          <Button type="primary" size="large" @click="emptyReInvoiceAct" >Submit</Button>
+        </div>
+      </Modal>
       <Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :closable="false" :mask-closable="false">
         <Form :label-width="120">
           <FormItem v-show="false">
@@ -226,7 +244,7 @@ export default {
   name: 'ImportOverdueCalculation',
   data: function() {
     return {
-      modal: { calculationModal: false, invoiceModal : false, checkPasswordModal: false, invoiceTimelineModal: false, storingOrderModal: false },
+      modal: { calculationModal: false, invoiceModal : false, checkPasswordModal: false, invoiceTimelineModal: false, storingOrderModal: false, reInvoiceModal: false },
       cargoTypeFileter: [
         { id: 'IM', text: 'IM' },
         { id: 'TR', text: 'TR' }
@@ -631,6 +649,34 @@ export default {
       })
       this.modal.invoiceModal = true
     },
+    emptyReInvoiceModal: async function() {
+      try {
+        this.checkPassword = ''
+        this.modal.checkPasswordModal = true
+        this.checkPasswordType = 'emptyReInvoice'
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
+    actemptyReInvoiceModal: async function() {
+      let selection = this.$refs.containerTable.getSelection()
+      let invoice_customer_id = ''
+      if(selection && selection.length > 0) {
+        for(let d of selection) {
+          if(d.customerINFO && d.customerINFO.length > 0) {
+            this.customer.loading = true
+            this.customer.options = JSON.parse(JSON.stringify(d.customerINFO))
+            this.customer.loading = false
+            invoice_customer_id = d.invoice_containers_customer_id
+            break
+          }
+        }
+      }
+      this.$nextTick(function() {
+        this.invoiceForm.invoice_customer_id = invoice_customer_id
+      })
+      this.modal.reInvoiceModal = true
+    },
     emptyInvoiceAct: async function() {
       this.$refs['invoiceForm'].validate(async valid => {
         if (valid) {
@@ -641,6 +687,26 @@ export default {
               this.getTableData()
               this.$Message.success('Invoice Success')
               this.modal.invoiceModal = false
+              this.emptyInvoiceDisabled = true
+            } catch (error) {
+              this.$commonact.fault(error)
+            }
+          }
+        } else {
+            this.$Message.error('Validate Fail!')
+        }
+      })
+    },
+    emptyReInvoiceAct: async function() {
+      this.$refs['invoiceForm'].validate(async valid => {
+        if (valid) {
+          let selection = this.$refs.containerTable.getSelection()
+          if(selection && selection.length > 0) {
+            try {
+              await this.$http.post(apiUrl + 'emptyReInvoice', {selection: selection, invoicePara: this.invoiceForm})
+              this.getTableData()
+              this.$Message.success('Invoice Success')
+              this.modal.reInvoiceModal = false
               this.emptyInvoiceDisabled = true
             } catch (error) {
               this.$commonact.fault(error)
@@ -671,6 +737,8 @@ export default {
           this.returnOverdueDaysDisabled = false
           this.emptySubmitDisabled = false
           this.ladenSubmitDisabled = false
+        } else if(this.checkPasswordType === 'emptyReInvoice'){
+          this.actemptyReInvoiceModal()
         }
       } catch (error) {
         this.$commonact.fault(error)

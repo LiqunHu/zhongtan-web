@@ -32,10 +32,10 @@
         </div>
       </template>
       <Table stripe ref="userTable" :columns="table.userTable.rows" :data="table.userTable.data">
-        <template slot-scope="{ row, index }" slot="user_groups">
-          <Select multiple v-model="row.user_groups" disabled>
-            <Option v-for="item in pagePara.groupInfo" :value="item.id" :key="item.id">{{ item.text }}</Option>
-          </Select>
+        <template slot-scope="{ row, index }" slot="user_customer_type">
+          <div v-for="item in pagePara.USER_CUSTOMER_TYPE" v-bind:key="item.id">
+            <Tag :color="item.color" v-if="row.user_customer_type == item.id">{{item.text}}</Tag>
+          </div>
         </template>
         <template slot-scope="{ row, index }" slot="user_blacklist">
           <i-switch v-model="row.user_blacklist" @on-change="changeBlacklist(row)" size="large" true-value="1" false-value="0">
@@ -70,6 +70,11 @@
         </FormItem>
         <FormItem label="Address" prop="user_address">
           <Input placeholder="Address" v-model="workPara.user_address"/>
+        </FormItem>
+        <FormItem label="Type" prop="user_type">
+          <Select v-model="workPara.user_customer_type">
+            <Option v-for="item in pagePara.USER_CUSTOMER_TYPE" :value="item.id" :key="item.id">{{item.text}}</Option>
+          </Select>
         </FormItem>
         <FormItem label="TIN" prop="user_tin">
           <Input placeholder="TIN" v-model="workPara.user_tin"/>
@@ -111,9 +116,14 @@ export default {
               width: 300,
             },
             {
+              title: 'Type',
+              slot: 'user_customer_type',
+              width: 150,
+            },
+            {
               title: 'Phone',
               key: 'user_phone',
-              width: 200,
+              width: 150,
             },
             {
               title: 'Email',
@@ -199,7 +209,9 @@ export default {
       }
     },
     addUserModal: async function() {
-      this.workPara = {}
+      this.workPara = {
+        user_customer_type: '1'
+      }
       this.action = 'add'
       this.$refs.formUser.resetFields()
       this.modal.userModal = true
