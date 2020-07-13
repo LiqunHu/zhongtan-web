@@ -106,7 +106,7 @@
         </FormItem>
         <FormItem label="Cash/Cheque" style="margin-bottom: 0px;">
           <Select v-model="receiptForm.overdue_invoice_check_cash" >
-            <Option v-for="item in pagePara.CASH_BANK_INFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+            <Option v-for="item in pagePara.CASH_BANK_INFO" :value="item.id" :key="item.id" :disabled = "item.id === 'CASH'">{{ item.text }}</Option>
           </Select>
         </FormItem>
         <Row v-if="receiptForm.overdue_invoice_check_cash === 'TRANSFER'">

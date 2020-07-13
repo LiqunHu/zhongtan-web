@@ -150,8 +150,6 @@ export default {
       formRule: {
         ruleEdiDepotModal: {
           edi_depot_name: [{ required: true, trigger: 'blur', message: 'Enter Depot Name' }],
-          edi_depot_sender_email: [{ type: 'email', trigger: 'blur', message: 'Enter Sender Email' }],
-          edi_depot_storing_order_email: [{ type: 'email', trigger: 'blur', message: 'Enter Storing Order Email' }],
         }
       },
       pagePara: {},

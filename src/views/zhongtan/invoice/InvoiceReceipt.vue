@@ -193,8 +193,8 @@
         <Row>
           <Col>
             <FormItem label="Cash/Cheque" prop="invoice_masterbi_check_cash">
-              <Select v-model="workPara.invoice_masterbi_check_cash" :disabled="!!workPara.invoice_masterbi_receipt_release_date">
-                <Option v-for="item in pagePara.CASH_BANK_INFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+              <Select v-model="workPara.invoice_masterbi_check_cash">
+                <Option v-for="item in pagePara.CASH_BANK_INFO" :value="item.id" :key="item.id" :disabled = "item.id === 'CASH'">{{ item.text }}</Option>
               </Select>
             </FormItem>
           </Col>
@@ -202,14 +202,14 @@
         <Row v-if="workPara.invoice_masterbi_check_cash === 'TRANSFER'">
           <Col>
             <FormItem label="Bank Reference No" prop="invoice_masterbi_bank_reference_no" >
-              <Input placeholder="Bank Reference No" v-model="workPara.invoice_masterbi_bank_reference_no" :disabled="!!workPara.invoice_masterbi_receipt_release_date"/>
+              <Input placeholder="Bank Reference No" v-model="workPara.invoice_masterbi_bank_reference_no"/>
             </FormItem>
           </Col>
         </Row>
         <Row v-show="workPara.invoice_masterbi_check_cash === 'CHEQUE'">
           <Col>
             <FormItem label="Check No" prop="invoice_masterbi_check_no">
-              <Input placeholder="Check No" v-model="workPara.invoice_masterbi_check_no" :disabled="!!workPara.invoice_masterbi_receipt_release_date" />
+              <Input placeholder="Check No" v-model="workPara.invoice_masterbi_check_no"/>
             </FormItem>
           </Col>
         </Row>

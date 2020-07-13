@@ -113,7 +113,7 @@
         </FormItem>
         <FormItem label="Receipt Type" prop="billlading_cash_bank_flag">
           <Select v-model="workPara.billlading_cash_bank_flag">
-            <Option v-for="item in pagePara.CASH_BANK_INFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+            <Option v-for="item in pagePara.CASH_BANK_INFO" :value="item.id" :key="item.id" :disabled = "item.id === 'CASH'">{{ item.text }}</Option>
           </Select>
         </FormItem>
         <FormItem label="Bank Detail" prop="billlading_bank_detail" v-if="workPara.billlading_cash_bank_flag === 'B'">

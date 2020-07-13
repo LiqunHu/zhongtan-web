@@ -1577,6 +1577,8 @@
                         this.workPara.invoice_masterbi_deposit_comment_temp = fixedDeposit['invoice_masterbi_deposit_comment']
                         this.workPara.invoice_masterbi_deposit_necessary_disabled = false
                     }
+                    this.workPara.invoice_masterbi_deposit_fixed = '0'
+                    this.workPara.invoice_masterbi_deposit_fixed_id = ''
                     this.workPara.invoice_masterbi_deposit_necessary = fixedDeposit['invoice_masterbi_deposit_necessary'] === '1' ? true : false
                     this.workPara.invoice_masterbi_deposit_type = fixedDeposit['invoice_masterbi_deposit_type']
                 } else {
