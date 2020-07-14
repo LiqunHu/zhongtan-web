@@ -133,7 +133,7 @@
             <Tag type="dot" v-if="overdueChargeForm.invoice_containers_empty_return_diff_days">Diff {{overdueChargeForm.invoice_containers_empty_return_diff_days}} Days</Tag>
           </FormItem>
           <FormItem label="Free Days">
-            <Input-number :min="parseInt(overdueChargeForm.invoice_containers_empty_return_overdue_static_free_days)" v-model="overdueChargeForm.invoice_containers_empty_return_overdue_free_days" :active-change="false" @on-change="overdueFreeDaysChange" :disabled ="returnOverdueDaysDisabled || overdueChargeForm.invoice_containers_empty_return_overdue_free_days_fixed" style="width: 200px;"></Input-number>
+            <Input-number :min="parseInt(overdueChargeForm.invoice_containers_empty_return_overdue_static_free_days)" v-model="overdueChargeForm.invoice_containers_empty_return_overdue_free_days" :active-change="false" @on-change="overdueFreeDaysChange" :disabled ="returnOverdueDaysDisabled" style="width: 200px;"></Input-number>
           </FormItem>
           <FormItem label="Overdue Days">
             <Input v-model="overdueChargeForm.invoice_containers_empty_return_overdue_days" disabled>

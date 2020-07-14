@@ -143,7 +143,10 @@
                     </a>
                   </Tooltip>
                   <Tooltip :content="row.invoice_masterbi_do_release_date_fmt" v-if="row.invoice_masterbi_do_release_date">
-                    <a href="#" class="btn btn-pink btn-icon btn-sm" @click="actDownLoadDoModal(row)">
+                    <a href="#" class="btn btn-pink btn-icon btn-sm" @click="actDownLoadDoModal(row)" v-if="row.invoice_masterbi_do_state">
+                      <i class="fa fa-object-ungroup"></i>
+                    </a>
+                    <a href="#" class="btn btn-pink btn-icon btn-sm" @click="actDownLoadDoModalCheck(row)" v-else>
                       <i class="fa fa-object-ungroup"></i>
                     </a>
                   </Tooltip>
