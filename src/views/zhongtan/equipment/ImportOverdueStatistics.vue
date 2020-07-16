@@ -34,6 +34,11 @@
                 <i class="fa fa-search"></i> Search
               </button>
             </div>
+            <div class="form-group m-r-10">
+              <button type="button" class="btn btn-info" @click="exportData">
+                <i class="fa fa-download"></i> Export
+              </button>
+            </div>
           </div>
         </div>
       </template>
@@ -67,7 +72,7 @@
             <span v-for="item in pagePara.CONTAINER_SIZE" v-if="item.container_size_code === row.invoice_containers_size">{{item.container_size_name}}</span> ]
         </template>
       </Table>
-      <Page class="m-t-10" :total="table.containerTable.total" show-sizer :page-size="table.containerTable.limit" @on-change="getTableData" @on-page-size-change="resetTableSizer"/>
+      <Page class="m-t-10" :total="table.containerTable.total" show-sizer show-total :page-size="table.containerTable.limit" @on-change="getTableData" @on-page-size-change="resetTableSizer"/>
     </panel>
   </div>
 </template>
@@ -99,7 +104,7 @@ export default {
             },
             {
               title: 'Line',
-              key: 'invoice_containers_bl_line',
+              key: 'invoice_masterbi_carrier',
               width: 100,
               align: 'center'
             },
@@ -124,25 +129,37 @@ export default {
             {
               title: 'Discharge Date',
               key: 'invoice_vessel_ata',
-              width: 140,
+              width: 130,
               align: 'center'
             },
             {
               title: 'Return Date',
               key: 'invoice_containers_empty_return_date',
-              width: 140,
+              width: 130,
               align: 'center'
+            },
+            {
+              title: 'Free Days',
+              key: 'invoice_containers_free_days',
+              width: 100,
+              align: 'center',
             },
             {
               title: 'Overdue Days',
               key: 'invoice_containers_empty_return_overdue_days',
-              width: 140,
+              width: 130,
               align: 'center',
             },
             {
               title: 'Overdue Amount',
               key: 'invoice_containers_empty_return_overdue_amount',
-              width: 160,
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'Deposit party',
+              key: 'invoice_masterbi_deposit_party',
+              width: 260,
               align: 'center'
             }
           ],
@@ -216,6 +233,29 @@ export default {
         this.table.containerTable.limit = pageSizer
         this.getTableData(1)
     },
+    exportData: async function() {
+      try {
+        let response = await this.$http.request({
+            url: apiUrl + 'exportData',
+            method: 'post',
+            data: {search_data: this.search_data},
+            responseType: 'blob'
+          })
+        let blob = response.data
+        let reader = new FileReader()
+        reader.readAsDataURL(blob)
+        reader.onload = e => {
+          let a = document.createElement('a')
+          a.download = 'overdue report ' + moment().format('YYYYMMDDHHmmSS') + '.xlsx'
+          a.href = e.target.result
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+        }
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    }
   }
 }
 </script>
