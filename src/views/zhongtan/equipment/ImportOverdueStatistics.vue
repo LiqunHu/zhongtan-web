@@ -21,13 +21,18 @@
               ATA&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.ata_date" placeholder="ATA Date" style="width: 200px" @on-change="searchAtaDate"></DatePicker>
             </div>
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.invoice_vessel_name" placeholder="Vessel Name" style="width: 200px" />
+              <input type="text" class="form-control" v-model="search_data.invoice_vessel_name" placeholder="Vessel Name" style="width: 160px" />
             </div>
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.invoice_containers_bl" placeholder="B/L#" style="width: 200px" />
+              <input type="text" class="form-control" v-model="search_data.invoice_containers_bl" placeholder="B/L#" style="width: 160px" />
             </div>
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.invoice_containers_no" placeholder="Container#" style="width: 200px" />
+              <input type="text" class="form-control" v-model="search_data.invoice_containers_no" placeholder="Container#" style="width: 160px" />
+            </div>
+            <div class="form-group m-r-2">
+              <Select v-model="search_data.free_days_range" clearable placeholder="Free Days" style="width: 160px;">
+                <Option v-for="item in pagePara.FREE_DAYS_RANGE" :value="item" :key="item">{{item}}</Option>
+              </Select>
             </div>
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="getTableData">
@@ -142,6 +147,12 @@ export default {
               title: 'Free Days',
               key: 'invoice_containers_free_days',
               width: 100,
+              align: 'center',
+            },
+            {
+              title: 'Current Overdue Days',
+              key: 'invoice_containers_current_overdue_days',
+              width: 180,
               align: 'center',
             },
             {
