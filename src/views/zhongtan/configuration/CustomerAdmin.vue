@@ -25,6 +25,9 @@
                 </button>
               </div>
             </div>
+            <div class="form-group m-r-10">
+              <button type="button" class="btn btn-info" @click="addUserModal">Add Customer</button>
+            </div>
           </div>
         </div>
       </template>
@@ -35,10 +38,18 @@
           </div>
         </template>
         <template slot-scope="{ row, index }" slot="user_blacklist">
-          <i-switch v-model="row.user_blacklist" @on-change="changeBlacklist(row)" size="large" true-value="1" false-value="0" disabled>
+          <i-switch v-model="row.user_blacklist" @on-change="changeBlacklist(row)" size="large" true-value="1" false-value="0">
               <span slot="open">ON</span>
               <span slot="close">OFF</span>
           </i-switch>
+        </template>
+        <template slot-scope="{ row, index }" slot="action">
+          <a href="#" class="btn btn-info btn-icon btn-sm" @click="modifyUserModal(row)">
+            <i class="fa fa-edit"></i>
+          </a>
+          <a href="#" class="btn btn-danger btn-icon btn-sm" @click="deleteUser(row)">
+            <i class="fa fa-times"></i>
+          </a>
         </template>
       </Table>
       <Page class="m-t-10" :total="table.userTable.total" :page-size="table.userTable.limit" @on-change="getUserData"/>
@@ -133,6 +144,11 @@ export default {
             {
               title: 'Blacklist',
               slot: 'user_blacklist',
+              width: 100,
+            },
+            {
+              title: 'Action',
+              slot: 'action',
               width: 100,
             }
           ],
