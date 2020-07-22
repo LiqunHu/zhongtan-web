@@ -18,6 +18,7 @@ const routes = [
     component: resolve => require(['@/views/zhongtan/configuration/ContainerManagerConfig'], resolve)
   },
   { path: '/admin/zhongtan/configuration/Customer', component: resolve => require(['@/views/zhongtan/configuration/Customer'], resolve) },
+  { path: '/admin/zhongtan/configuration/CustomerAdmin', component: resolve => require(['@/views/zhongtan/configuration/CustomerAdmin'], resolve) },
   { path: '/admin/zhongtan/configuration/Employee', component: resolve => require(['@/views/zhongtan/configuration/Employee'], resolve) },
   {
     path: '/admin/zhongtan/configuration/BillladingNoConfig',
