@@ -40,6 +40,7 @@
         <template slot-scope="{ row, index }" slot="amount">
           <span v-if="row.receipt_type === 'Fixed Invoice'">{{row.fixed_deposit_amount}}</span>
           <span v-if="row.receipt_type === 'Overdue Invoice'">{{row.overdue_invoice_amount}}</span>
+          <span v-if="row.receipt_type === 'MNR Invoice'">{{row.mnr_amount}}</span>
           <span v-if="row.receipt_type === 'Deposit Amount'">{{row.deposit}}</span>
           <Poptip v-if="row.receipt_type === 'Invoice Fee'" trigger="hover" placement="bottom-start" :transfer="true" width="300">
             <span>{{row.feeTotal}}</span>
@@ -98,6 +99,9 @@
             <Icon type="md-link" />
           </a>
           <a v-if = "row.receipt_type === 'Overdue Invoice'" href="#" class="btn btn-success btn-icon btn-sm" @click.prevent="actOverdueInvoiceDetailModal(row)">
+            <Icon type="md-link" />
+          </a>
+          <a v-if = "row.receipt_type === 'MNR Invoice'" href="#" class="btn btn-success btn-icon btn-sm" @click.prevent="actMNRInvoiceDetailModal(row)">
             <Icon type="md-link" />
           </a>
           <a href="#" class="btn btn-default btn-icon btn-sm" @click.prevent="actVerificationTimelineModal(row)">
@@ -160,6 +164,7 @@
           </Col>
         </Row>
         <Table v-if="workPara.invoice_contaienrs" stripe size="small" :columns="table.overdueTable.columns" :data="workPara.invoice_contaienrs"></Table>
+        <Table v-if="workPara.mnr_containers" stripe size="small" :columns="table.mnrTable.columns" :data="workPara.mnr_containers"></Table>
       </Form>
       <div slot="footer">
         <Button type="text" size="large" @click="modal.invoiceDetail=false">Cancel</Button>
@@ -267,6 +272,32 @@ export default {
             },
           ],
           data: []
+        },
+        mnrTable: {
+          columns: [
+            {
+              title: 'Contaienr#',
+              key: 'mnr_ledger_container_no',
+              width: 120
+            },
+            {
+              title: 'D/V Amount',
+              key: 'mnr_ledger_dv_amount',
+            },
+            {
+              title: 'Actual',
+              key: 'mnr_ledger_actual_charge_amount',
+            },
+            {
+              title: 'Declaring',
+              key: 'mnr_ledger_loss_declaring_date',
+            },
+            {
+              title: 'Payment',
+              key: 'mnr_ledger_payment_date',
+            },
+          ],
+          data: []
         }
       },
       pagePara: {},
@@ -360,6 +391,15 @@ export default {
     actOverdueInvoiceDetailModal: async function(row) {
       try {
         let response = await this.$http.post(apiUrl + 'getOverdueInvoiceDetail', { invoice_masterbi_id: row.invoice_masterbi_id, uploadfile_id: row.uploadfile_id })
+        this.workPara = response.data.info
+        this.modal.invoiceDetail = true
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
+    actMNRInvoiceDetailModal: async function(row) {
+      try {
+        let response = await this.$http.post(apiUrl + 'getMNRInvoiceDetail', { container_mnr_ledger_id: row.container_mnr_ledger_id})
         this.workPara = response.data.info
         this.modal.invoiceDetail = true
       } catch (error) {

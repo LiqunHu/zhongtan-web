@@ -674,7 +674,7 @@ export default {
         reader.readAsDataURL(blob)
         reader.onload = e => {
           let a = document.createElement('a')
-          a.download = 'MBL_UPLOAD.csv'
+          a.download = 'MBL_UPLOAD_' + moment().format('YYYYMMDDHHmmSS') + '.csv'
           a.href = e.target.result
           document.body.appendChild(a)
           a.click()
@@ -713,7 +713,7 @@ export default {
         reader.readAsDataURL(blob)
         reader.onload = e => {
           let a = document.createElement('a')
-          a.download = 'CBL_UPLOAD.csv'
+          a.download = 'CBL_UPLOAD_' + moment().format('YYYYMMDDHHmmSS') + '.csv'
           a.href = e.target.result
           document.body.appendChild(a)
           a.click()
