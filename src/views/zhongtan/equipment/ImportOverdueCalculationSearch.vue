@@ -34,6 +34,11 @@
                 <i class="fa fa-search"></i> Search
               </button>
             </div>
+            <div class="form-group m-r-10">
+              <button type="button" class="btn btn-info" @click="exportData">
+                <i class="fa fa-download"></i> Export
+              </button>
+            </div>
           </div>
         </div>
       </template>
@@ -119,6 +124,18 @@ export default {
               title: 'Discharge Date',
               key: 'invoice_vessel_ata',
               width: 140,
+              align: 'center'
+            },
+            {
+              title: 'Demurrage party',
+              key: 'invoice_masterbi_demurrage_party',
+              width: 260,
+              align: 'center'
+            },
+            {
+              title: 'Deposit party',
+              key: 'invoice_masterbi_deposit_party',
+              width: 260,
               align: 'center'
             },
             {
@@ -280,6 +297,29 @@ export default {
         return [1, 1]
       }
     },
+    exportData: async function() {
+      try {
+        let response = await this.$http.request({
+            url: apiUrl + 'exportData',
+            method: 'post',
+            data: {search_data: this.search_data},
+            responseType: 'blob'
+          })
+        let blob = response.data
+        let reader = new FileReader()
+        reader.readAsDataURL(blob)
+        reader.onload = e => {
+          let a = document.createElement('a')
+          a.download = 'overdue ' + moment().format('YYYYMMDDHHmmSS') + '.xlsx'
+          a.href = e.target.result
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+        }
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    }
   }
 }
 </script>

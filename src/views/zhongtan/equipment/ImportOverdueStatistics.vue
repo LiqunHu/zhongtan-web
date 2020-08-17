@@ -21,17 +21,29 @@
               ATA&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.ata_date" placeholder="ATA Date" style="width: 200px" @on-change="searchAtaDate"></DatePicker>
             </div>
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.invoice_vessel_name" placeholder="Vessel Name" style="width: 160px" />
+              <input type="text" class="form-control" v-model="search_data.invoice_vessel_name" placeholder="Vessel Name" style="width: 120px" />
             </div>
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.invoice_containers_bl" placeholder="B/L#" style="width: 160px" />
+              <input type="text" class="form-control" v-model="search_data.invoice_containers_bl" placeholder="B/L#" style="width: 120px" />
             </div>
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.invoice_containers_no" placeholder="Container#" style="width: 160px" />
+              <input type="text" class="form-control" v-model="search_data.invoice_containers_no" placeholder="Container#" style="width: 120px" />
             </div>
             <div class="form-group m-r-2">
-              <Select v-model="search_data.free_days_range" clearable placeholder="Free Days" style="width: 160px;">
+              <Select v-model="search_data.free_days_range" clearable placeholder="Free Days" style="width: 120px;">
                 <Option v-for="item in pagePara.FREE_DAYS_RANGE" :value="item" :key="item">{{item}}</Option>
+              </Select>
+            </div>
+            <div class="form-group m-r-2">
+              <Select v-model="search_data.is_overdue" clearable placeholder="OVERDUE" style="width: 120px;">
+                <Option value="1">OVERDUE</Option>
+                <Option value="0">FREE</Option>
+              </Select>
+            </div>
+            <div class="form-group m-r-2">
+              <Select v-model="search_data.is_invoice" clearable placeholder="INVOICE" style="width: 120px;">
+                <Option value="1">INVOICE</Option>
+                <Option value="0">UN INVOICE</Option>
               </Select>
             </div>
             <div class="form-group m-r-10">
@@ -165,6 +177,12 @@ export default {
               title: 'Overdue Amount',
               key: 'invoice_containers_empty_return_overdue_amount',
               width: 150,
+              align: 'center'
+            },
+            {
+              title: 'Demurrage party',
+              key: 'invoice_masterbi_demurrage_party',
+              width: 260,
               align: 'center'
             },
             {

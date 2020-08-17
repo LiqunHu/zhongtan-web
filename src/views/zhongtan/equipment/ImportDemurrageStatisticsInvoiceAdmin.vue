@@ -142,10 +142,16 @@ export default {
               align: 'center',
             },
             {
-              title: 'Payer',
-              key: 'user_name',
-              width: 200,
-              align: 'center',
+              title: 'Demurrage party',
+              key: 'invoice_masterbi_demurrage_party',
+              width: 260,
+              align: 'center'
+            },
+            {
+              title: 'Deposit party',
+              key: 'invoice_masterbi_deposit_party',
+              width: 260,
+              align: 'center'
             },
             {
               title: 'Receipt Date',
