@@ -422,9 +422,9 @@
         <Row v-if="workPara.invoice_masterbi_vessel_type !== 'Bulk'">
             <Col>
                 <FormItem label="FCL" prop="invoice_masterbi_do_fcl">
-                    <RadioGroup v-model="workPara.invoice_masterbi_do_fcl" disabled>
-                        <Radio value="FCL/FCL" label="FCL/FCL" style="margin-right: 50px;"></Radio>
-                        <Radio value="FCL/LCL" label="FCL/LCL" style="margin-right: 50px;"></Radio>
+                    <RadioGroup v-model="workPara.invoice_masterbi_do_fcl">
+                        <Radio value="FCL/FCL" label="FCL/FCL" style="margin-right: 50px;" disabled></Radio>
+                        <Radio value="FCL/LCL" label="FCL/LCL" style="margin-right: 50px;" disabled></Radio>
                     </RadioGroup>
                 </FormItem>
             </Col>
