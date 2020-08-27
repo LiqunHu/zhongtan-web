@@ -241,10 +241,10 @@
 import PageOptions from '../../../config/PageOptions.vue'
 const moment = require('moment')
 const common = require('@/lib/common')
-const apiUrl = '/api/zhongtan/equipment/ImportOverdueCalculation/'
+const apiUrl = '/api/zhongtan/equipment/ImportOverdueCalculationAdmin/'
 
 export default {
-  name: 'ImportOverdueCalculation',
+  name: 'ImportOverdueCalculationAdmin',
   data: function() {
     return {
       modal: { calculationModal: false, invoiceModal : false, checkPasswordModal: false, invoiceTimelineModal: false, storingOrderModal: false, reInvoiceModal: false },

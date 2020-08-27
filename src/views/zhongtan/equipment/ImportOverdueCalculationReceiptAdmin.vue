@@ -135,10 +135,10 @@
 import PageOptions from '../../../config/PageOptions.vue'
 const common = require('@/lib/common')
 import printJS from 'print-js'
-const apiUrl = '/api/zhongtan/equipment/ImportOverdueReceipt/'
+const apiUrl = '/api/zhongtan/equipment/ImportOverdueCalculationReceiptAdmin/'
 
 export default {
-  name: 'ImportOverdueReceipt',
+  name: 'ImportOverdueCalculationReceiptAdmin',
   data: function() {
     return {
       modal: { receiptModal: false },

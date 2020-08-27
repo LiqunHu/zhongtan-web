@@ -98,10 +98,10 @@
 import PageOptions from '../../../config/PageOptions.vue'
 const moment = require('moment')
 const common = require('@/lib/common')
-const apiUrl = '/api/zhongtan/equipment/ImportOverdueCalculationSearch/'
+const apiUrl = '/api/zhongtan/equipment/ImportOverdueCalculationSearchAdmin/'
 
 export default {
-  name: 'ImportOverdueCalculation',
+  name: 'ImportOverdueCalculationSearchAdmin',
   data: function() {
     return {
       pagePara: {},

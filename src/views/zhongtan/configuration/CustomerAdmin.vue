@@ -90,10 +90,10 @@
 <script>
 import PageOptions from '../../../config/PageOptions.vue'
 const common = require('@/lib/common')
-const apiUrl = '/api/zhongtan/configuration/Customer/'
+const apiUrl = '/api/zhongtan/configuration/CustomerAdmin/'
 
 export default {
-  name: 'CustomerControl',
+  name: 'CustomerAdmin',
   data: function() {
     return {
       modal: { userModal: false },
