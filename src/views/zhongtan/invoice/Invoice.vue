@@ -406,7 +406,7 @@
         <Row>
             <Col>
                 <FormItem label="Delivery to" prop="invoice_masterbi_delivery_to">
-                    <Select v-model="workPara.invoice_masterbi_delivery_to" filterable clearable placeholder="Delivery" style="width:400px" :disabled="!doDeliverValidToEdit && workPara.invoice_masterbi_delivery_to_customer_type !== '2'">
+                    <Select v-model="workPara.invoice_masterbi_delivery_to" filterable clearable placeholder="Delivery" style="width:400px" :disabled="(!doDeliverValidToEdit && workPara.invoice_masterbi_delivery_to_customer_type !== '2') || !(workPara.invoice_masterbi_vessel_type === 'Bulk' && workPara.invoice_masterbi_cargo_type === 'TR' && workPara.invoice_masterbi_freight === 'PREPAID')">
                         <Option v-for="item in delivery.options" :value="item" :key="item">{{item}}</Option>
                     </Select>
                 </FormItem>
