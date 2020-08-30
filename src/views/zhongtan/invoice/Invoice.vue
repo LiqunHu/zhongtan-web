@@ -120,7 +120,7 @@
                     <a href="#" class="btn btn-green btn-icon btn-sm" @click="actDepositModal(row)" v-if="row.invoice_masterbi_invoice_state">
                       <i class="fa fa-money-bill-alt"></i>
                     </a>
-                    <a href="#" class="btn btn-info btn-icon btn-sm" @click="actDepositModalCheck(row)" v-else>
+                    <a href="#" class="btn btn-info btn-icon btn-sm" @click="actDepositModalCheck(row)" v-else title="blacklist">
                       <i class="fa fa-object-ungroup"></i>
                     </a>
                   </Tooltip>
@@ -128,7 +128,7 @@
                     <a href="#" class="btn btn-pink btn-icon btn-sm" @click="actDepositModal(row)" v-if="row.invoice_masterbi_invoice_state">
                       <i class="fa fa-money-bill-alt"></i>
                     </a>
-                    <a href="#" class="btn btn-info btn-icon btn-sm" @click="actDepositModalCheck(row)" v-else>
+                    <a href="#" class="btn btn-info btn-icon btn-sm" @click="actDepositModalCheck(row)" v-else title="blacklist">
                       <i class="fa fa-object-ungroup"></i>
                     </a>
                   </Tooltip>
@@ -138,7 +138,7 @@
                     <a href="#" class="btn btn-green btn-icon btn-sm" @click="actDownLoadDoModal(row)" v-if="row.invoice_masterbi_do_state">
                       <i class="fa fa-object-ungroup"></i>
                     </a>
-                    <a href="#" class="btn btn-info btn-icon btn-sm" @click="actDownLoadDoModalCheck(row)" v-else>
+                    <a href="#" class="btn btn-info btn-icon btn-sm" @click="actDownLoadDoModalCheck(row)" v-else :title="row.invoice_masterbi_do_state_message">
                       <i class="fa fa-object-ungroup"></i>
                     </a>
                   </Tooltip>
@@ -146,7 +146,7 @@
                     <a href="#" class="btn btn-pink btn-icon btn-sm" @click="actDownLoadDoModal(row)" v-if="row.invoice_masterbi_do_state">
                       <i class="fa fa-object-ungroup"></i>
                     </a>
-                    <a href="#" class="btn btn-pink btn-icon btn-sm" @click="actDownLoadDoModalCheck(row)" v-else>
+                    <a href="#" class="btn btn-pink btn-icon btn-sm" @click="actDownLoadDoModalCheck(row)" v-else :title="row.invoice_masterbi_do_state_message">
                       <i class="fa fa-object-ungroup"></i>
                     </a>
                   </Tooltip>
@@ -406,7 +406,8 @@
         <Row>
             <Col>
                 <FormItem label="Delivery to" prop="invoice_masterbi_delivery_to">
-                    <Select v-model="workPara.invoice_masterbi_delivery_to" filterable clearable placeholder="Delivery" style="width:400px" :disabled="(!doDeliverValidToEdit && workPara.invoice_masterbi_delivery_to_customer_type !== '2') || !(workPara.invoice_masterbi_vessel_type === 'Bulk' && workPara.invoice_masterbi_cargo_type === 'TR' && workPara.invoice_masterbi_freight === 'PREPAID')">
+                    <Select v-model="workPara.invoice_masterbi_delivery_to" filterable clearable placeholder="Delivery" style="width:400px" 
+                            :disabled="(!doDeliverValidToEdit && workPara.invoice_masterbi_delivery_to_customer_type !== '2') && !(workPara.invoice_masterbi_vessel_type === 'Bulk' && workPara.invoice_masterbi_cargo_type === 'TR' && workPara.invoice_masterbi_freight === 'PREPAID')">
                         <Option v-for="item in delivery.options" :value="item" :key="item">{{item}}</Option>
                     </Select>
                 </FormItem>
