@@ -1259,7 +1259,9 @@
                         this.delivery.options.unshift(row.invoice_masterbi_delivery_to)
                     }
                 }
-                if (!this.workPara.invoice_masterbi_do_fcl) {
+                if (this.workPara.invoice_masterbi_lcl) {
+                    this.workPara.invoice_masterbi_do_fcl = 'FCL/LCL'
+                }else if (!this.workPara.invoice_masterbi_do_fcl) {
                     if (this.workPara.invoice_masterbi_lcl) {
                         this.workPara.invoice_masterbi_do_fcl = 'FCL/LCL'
                     } else {
