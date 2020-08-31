@@ -18,7 +18,7 @@
         <div class="panel-toolbar">
           <div class="form-inline">
             <div class="input-group m-r-10">
-              <input type="text" placeholder="voyage name、operator、code" v-model="table.dataTable.search_text" class="form-control" />
+              <input type="text" placeholder="voyage name〝operator〝code" v-model="table.dataTable.search_text" class="form-control" />
               <div class="input-group-append">
                 <button type="button" class="btn btn-info" @click="getTableData(1)">
                   <i class="fa fa-search"></i>
@@ -66,7 +66,7 @@
 </template>
 <script>
 import PageOptions from '../../../config/PageOptions.vue'
-const Isemail = require('isemail')
+// const Isemail = require('isemail')
 const apiUrl = '/api/zhongtan/configuration/ContainerManagerConfig/'
 
 export default {
@@ -109,14 +109,14 @@ export default {
             {
               required: true,
               validator: (rule, value, callback) => {
-                let mails = value.split(',')
-                for (let m of mails) {
-                  if (m) {
-                    if (!Isemail.validate(m)) {
-                      return callback(new Error('Enter manager email'))
-                    }
-                  }
-                }
+                // let mails = value.split(',')
+                // for (let m of mails) {
+                //   if (m) {
+                //     if (!Isemail.validate(m)) {
+                //       return callback(new Error('Enter manager email'))
+                //     }
+                //   }
+                // }
                 callback()
               },
               trigger: 'change',
