@@ -33,7 +33,7 @@
               D/O&nbsp;&nbsp;
               <Select clearable v-model="search_data.do_status" style="width:100px" placeholder="D/O">
                 <Option value="1" key="1">D/O</Option>
-                <Option value="0" key="0">UN RELEASE</Option>
+                <Option value="0" key="0">RELEASE</Option>
               </Select>
               <DatePicker v-if="search_data.do_status == '1'" type="daterange" :value="search_data.do_date" placeholder="D/O Date" style="width: 140px" @on-change="searchDoDate"></DatePicker>
               <DatePicker v-if="search_data.do_status == '0'" type="daterange" :value="search_data.invoice_date" placeholder="INVOICE Date" style="width: 140px" @on-change="searchInvoiceDate"></DatePicker>
