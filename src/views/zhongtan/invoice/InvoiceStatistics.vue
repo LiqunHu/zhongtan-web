@@ -33,11 +33,13 @@
               D/O&nbsp;&nbsp;
               <Select clearable v-model="search_data.do_status" style="width:100px" placeholder="D/O">
                 <Option value="1" key="1">D/O</Option>
-                <Option value="0" key="0">RELEASE</Option>
+                <Option value="1" key="2">UN D/O</Option>
+                <Option value="0" key="3">RELEASE</Option>
+                <Option value="1" key="4">UN RELEASE</Option>
               </Select>
               <DatePicker v-if="search_data.do_status == '1'" type="daterange" :value="search_data.do_date" placeholder="D/O Date" style="width: 140px" @on-change="searchDoDate"></DatePicker>
-              <DatePicker v-if="search_data.do_status == '0'" type="daterange" :value="search_data.invoice_date" placeholder="INVOICE Date" style="width: 140px" @on-change="searchInvoiceDate"></DatePicker>
-              <DatePicker v-if="search_data.do_status == '0'" type="daterange" :value="search_data.receipt_date" placeholder="RECEIPT Date" style="width: 140px" @on-change="searchReceiptDate"></DatePicker>
+              <DatePicker v-if="search_data.do_status == '3'" type="daterange" :value="search_data.invoice_date" placeholder="INVOICE Date" style="width: 140px" @on-change="searchInvoiceDate"></DatePicker>
+              <DatePicker v-if="search_data.do_status == '3'" type="daterange" :value="search_data.receipt_date" placeholder="RECEIPT Date" style="width: 140px" @on-change="searchReceiptDate"></DatePicker>
             </div>
             <div class="form-group m-r-2">
               <input clearable type="text" class="form-control" v-model="search_data.bl" placeholder="B/L No" style="width: 140px" />
