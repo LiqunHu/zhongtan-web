@@ -105,9 +105,12 @@
         <TabPane label="MasterBl">
             <Table stripe size="small" ref="masterbiTable" :columns="table.masterbiTable.columns" :data="table.masterbiTable.data" :height="table.masterbiTable.height">
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_bl">
-                  <i class="fa fa-ship" v-if="row.invoice_masterbi_vessel_type === 'Bulk'"></i>
-                  <i class="fa fa-cubes" v-else></i>
-                  {{row.invoice_masterbi_bl}}
+                    <i class="fa fa-ship" v-if="row.invoice_masterbi_vessel_type === 'Bulk'"></i>
+                    <i class="fa fa-cubes" v-else></i>
+                    {{row.invoice_masterbi_bl}}
+                    <a href="#" style="color: red; margin-left: 5px;" @click="deleteMasterbl(row)">
+                        <i class="fa fa-times"></i>
+                    </a>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_do_disabled">
                   <i-switch v-model="row.invoice_masterbi_do_disabled" @on-change="changeDoDisabled(row)" size="large" true-value="1" false-value="0">
@@ -1733,7 +1736,9 @@
                         this.changeDoDisabledAct(this.workPara)
                     } else if (this.checkPasswordType === 'depositModalCheck') {
                         this.actDepositModal(this.workPara)
-                    }
+                    } else if (this.checkPasswordType === 'doDeleteMasterbl') {
+                        this.deleteMasterblAct(this.workPara)
+                    } 
                 } catch (error) {
                     this.$commonact.fault(error)
                 }
@@ -1823,6 +1828,25 @@
                     } else {
                         row.invoice_masterbi_do_disabled = '1'
                     }
+                    this.$commonact.fault(error)
+                }
+            },
+            deleteMasterbl: function(item) {
+                try {
+                    this.workPara = JSON.parse(JSON.stringify(item))
+                    this.checkPassword = ''
+                    this.modal.checkPasswordModal = true
+                    this.checkPasswordType = 'doDeleteMasterbl'
+                } catch (error) {
+                    this.$commonact.fault(error)
+                }
+            },
+            deleteMasterblAct: async function(item) {
+                try {
+                    await this.$http.post(apiUrl + 'deleteMasterbl', item)
+                    this.$Message.success('delete ' + item.invoice_masterbi_bl + ' success')
+                    this.refreshTableData()
+                } catch (error) {
                     this.$commonact.fault(error)
                 }
             },
