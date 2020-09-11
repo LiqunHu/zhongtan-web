@@ -46,10 +46,21 @@
     <Modal v-model="modal.icdModal" title="Icd">
       <Form :model="workPara" :label-width="120" :rules="formRule.ruleIcdModal" ref="formIcd">
         <FormItem label="Icd Name" prop="icd_name">
-          <Input placeholder="Icd Name" v-model="workPara.icd_name"/>
+          <Input placeholder="Icd Name" v-model.trim="workPara.icd_name"/>
         </FormItem>
         <FormItem label="Icd Code" prop="icd_code">
-          <Input placeholder="Icd Code" v-model="workPara.icd_code"/>
+          <Input placeholder="Icd Code" v-model.trim="workPara.icd_code"/>
+        </FormItem>
+        <FormItem label="Icd Email">
+          <Input placeholder="Icd Email" v-model.trim="workPara.icd_email"/>
+        </FormItem>
+        <FormItem label="Icd Tel">
+          <Input placeholder="Icd Tel" v-model.trim="workPara.icd_tel"/>
+        </FormItem>
+        <FormItem label="Icd Edi Type">
+          <Select v-model="workPara.icd_edi_type">
+            <Option v-for="item in pagePara.ICD_EDI_TYPE" :value="item.id" :key="item.id">{{ item.text }}</Option>
+          </Select>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -83,6 +94,18 @@ export default {
             {
               title: 'Icd Code',
               key: 'icd_code'
+            },
+            {
+              title: 'Icd Email',
+              key: 'icd_email'
+            },
+            {
+              title: 'Icd Tel',
+              key: 'icd_tel'
+            },
+            {
+              title: 'Icd Edi Type',
+              key: 'icd_edi_type'
             },
             {
               title: 'Action',

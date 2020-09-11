@@ -419,7 +419,7 @@
         <Row>
             <Col>
                 <FormItem label="VALID TO" prop="invoice_masterbi_valid_to">
-                    <DatePicker type="date" placeholder="VALID TO" v-model="workPara.invoice_masterbi_valid_to" :disabled="!doDeliverValidToEdit && !!workPara.invoice_masterbi_do_date" @on-change="validToDateChange" format="yyyy-MM-dd"></DatePicker>
+                    <DatePicker type="date" placeholder="VALID TO" v-model="workPara.invoice_masterbi_valid_to" :disabled="!doDeliverValidToEdit" @on-change="validToDateChange" format="yyyy-MM-dd"></DatePicker>
                 </FormItem>
             </Col>
         </Row>
@@ -427,8 +427,8 @@
             <Col>
                 <FormItem label="FCL" prop="invoice_masterbi_do_fcl">
                     <RadioGroup v-model="workPara.invoice_masterbi_do_fcl">
-                        <Radio value="FCL/FCL" label="FCL/FCL" style="margin-right: 50px;" disabled></Radio>
-                        <Radio value="FCL/LCL" label="FCL/LCL" style="margin-right: 50px;" disabled></Radio>
+                        <Radio value="FCL/FCL" label="FCL/FCL" style="margin-right: 50px;" :disabled="!doDeliverValidToEdit"></Radio>
+                        <Radio value="FCL/LCL" label="FCL/LCL" style="margin-right: 50px;" :disabled="!doDeliverValidToEdit"></Radio>
                     </RadioGroup>
                 </FormItem>
             </Col>
@@ -436,7 +436,7 @@
         <Row v-if="workPara.invoice_masterbi_vessel_type !== 'Bulk'">
             <Col>
             <FormItem label="LADEN RELEASE ICD" prop="invoice_masterbi_do_icd">
-                <i-select v-model="workPara.invoice_masterbi_do_icd">
+                <i-select v-model="workPara.invoice_masterbi_do_icd" :disabled="!doDeliverValidToEdit">
                     <i-option v-for="item in pagePara.ICD" :value="item.icd_name" :key="item.icd_name" :label="item.icd_name">
                         <span>{{item.icd_name}}</span>
                         <span style="float:right;color:#ccc">{{item.icd_code}}</span>
@@ -1508,37 +1508,43 @@
                 }
             },
             doCreateEdi: async function(row, index) {
-                try {
-                    await this.$http.post(apiUrl + 'doCreateEdi', {
-                        invoice_masterbi_id: row.invoice_masterbi_id
-                    })
-                    this.refreshTableData()
-                    this.$Message.success('Send Edi Success')
-                } catch (error) {
-                    this.$commonact.fault(error)
-                }
+                this.$commonact.confirm(`SEND TO ICD?`, async() => {
+                    try {
+                        await this.$http.post(apiUrl + 'doCreateEdi', {
+                            invoice_masterbi_id: row.invoice_masterbi_id
+                        })
+                        this.refreshTableData()
+                        this.$Message.success('Send Edi Success')
+                    } catch (error) {
+                        this.$commonact.fault(error)
+                    }
+                })
             },
             doReplaceEdi: async function(row, index) {
-                try {
-                    await this.$http.post(apiUrl + 'doReplaceEdi', {
-                        invoice_masterbi_id: row.invoice_masterbi_id
-                    })
-                    this.refreshTableData()
-                    this.$Message.success('Replace Edi Success')
-                } catch (error) {
-                    this.$commonact.fault(error)
-                }
+                this.$commonact.confirm(`RESEND TO ICD?`, async() => {
+                    try {
+                        await this.$http.post(apiUrl + 'doReplaceEdi', {
+                            invoice_masterbi_id: row.invoice_masterbi_id
+                        })
+                        this.refreshTableData()
+                        this.$Message.success('Replace Edi Success')
+                    } catch (error) {
+                        this.$commonact.fault(error)
+                    }
+                })
             },
             doCancelEdi: async function(row, index) {
-                try {
-                    await this.$http.post(apiUrl + 'doCancelEdi', {
-                        invoice_masterbi_id: row.invoice_masterbi_id
-                    })
-                    this.refreshTableData()
-                    this.$Message.success('Cancel Edi Success')
-                } catch (error) {
-                    this.$commonact.fault(error)
-                }
+                this.$commonact.confirm(`CANCEL ICD?`, async() => {
+                    try {
+                        await this.$http.post(apiUrl + 'doCancelEdi', {
+                            invoice_masterbi_id: row.invoice_masterbi_id
+                        })
+                        this.refreshTableData()
+                        this.$Message.success('Cancel Edi Success')
+                    } catch (error) {
+                        this.$commonact.fault(error)
+                    }
+                })
             },
             searchFixedDeposit: async function() {
                 try {
