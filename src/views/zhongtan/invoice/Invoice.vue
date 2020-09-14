@@ -416,10 +416,17 @@
                 </FormItem>
             </Col>
         </Row>
-        <Row>
+        <Row v-if="workPara.invoice_masterbi_vessel_type !== 'Bulk'">
             <Col>
                 <FormItem label="VALID TO" prop="invoice_masterbi_valid_to">
                     <DatePicker type="date" placeholder="VALID TO" v-model="workPara.invoice_masterbi_valid_to" :disabled="!doDeliverValidToEdit" @on-change="validToDateChange" format="yyyy-MM-dd"></DatePicker>
+                </FormItem>
+            </Col>
+        </Row>
+        <Row v-else>
+            <Col>
+                <FormItem label="VALID TO" prop="invoice_masterbi_valid_to">
+                    <DatePicker type="date" placeholder="VALID TO" v-model="workPara.invoice_masterbi_valid_to" @on-change="validToDateChange" format="yyyy-MM-dd"></DatePicker>
                 </FormItem>
             </Col>
         </Row>
