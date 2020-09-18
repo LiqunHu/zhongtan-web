@@ -18,19 +18,26 @@
         <div class="panel-toolbar">
           <div class="form-inline">
             <div class="form-group m-r-2">
-              ATA&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.ata_date" placeholder="ATA Date" style="width: 200px" @on-change="searchAtaDate"></DatePicker>
+              ATA&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.ata_date" placeholder="ATA Date" style="width: 160px" @on-change="searchAtaDate"></DatePicker>
             </div>
             <div class="form-group m-r-2">
-              Invoice Date&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.invoice_date" placeholder="Invoice Date" style="width: 200px" @on-change="searchInvoiceDate"></DatePicker>
+              Invoice Date&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.invoice_date" placeholder="Invoice Date" style="width: 160px" @on-change="searchInvoiceDate"></DatePicker>
             </div>
             <div class="form-group m-r-2">
-              Receipt Date&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.receipt_date" placeholder="Receipt Date" style="width: 200px" @on-change="searchReceiptDate"></DatePicker>
+              Receipt Date&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.receipt_date" placeholder="Receipt Date" style="width: 160px" @on-change="searchReceiptDate"></DatePicker>
             </div>
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.invoice_vessel_name" placeholder="Vessel Name" style="width: 200px" />
+              <Select v-model="search_data.vessel_id" clearable filterable placeholder="VESSEL" style="width: 160px;">
+                <Option v-for="item in pagePara.VESSEL" :value="item.invoice_vessel_id" :key="item.invoice_vessel_id">{{item.vessel_info}}</Option>
+              </Select>
             </div>
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.invoice_containers_no" placeholder="Container No" style="width: 200px" />
+              <Select v-model="search_data.customer_id" clearable filterable placeholder="MESSRS" style="width: 160px;">
+                <Option v-for="item in pagePara.CUSTOMER" :value="item.user_id" :key="item.user_id">{{item.user_name}}</Option>
+              </Select>
+            </div>
+            <div class="form-group m-r-2">
+              <input type="text" class="form-control" v-model="search_data.invoice_containers_no" placeholder="Container No" style="width: 160px" />
             </div>
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="getTableData">
@@ -74,6 +81,33 @@
             {{row.invoice_containers_size}} [
             <span v-for="item in pagePara.CONTAINER_SIZE" v-if="item.container_size_code === row.invoice_containers_size">{{item.container_size_name}}</span> ]
         </template>
+        <template slot-scope="{ row, index }" slot="invoice_vessel">
+          <Tooltip placement="right">
+            {{row.invoice_vessel_name}} / {{row.invoice_vessel_voyage}}
+            <div slot="content">
+              <Row>
+                <i-col span="12">Vessel Name:</i-col>
+                <i-col span="12" style="text-align:right ">{{row.invoice_vessel_name}}</i-col>
+              </Row>
+              <Row>
+                <i-col span="12">Vessel Voyage:</i-col>
+                <i-col span="12" style="text-align:right ">{{row.invoice_vessel_voyage}}</i-col>
+              </Row>
+              <Row>
+                <i-col span="12">ETA:</i-col>
+                <i-col span="12" style="text-align:right ">{{row.invoice_vessel_eta}}</i-col>
+              </Row>
+              <Row>
+                <i-col span="12">ATA:</i-col>
+                <i-col span="12" style="text-align:right ">{{row.invoice_vessel_ata}}</i-col>
+              </Row>
+              <Row>
+                <i-col span="12">ATD:</i-col>
+                <i-col span="12" style="text-align:right ">{{row.invoice_vessel_atd}}</i-col>
+              </Row>
+            </div>
+          </Tooltip>
+        </template>
       </Table>
       <Page class="m-t-10" :total="table.containerTable.total" show-sizer show-total :page-size="table.containerTable.limit" @on-change="getTableData" @on-page-size-change="resetTableSizer"/>
     </panel>
@@ -115,6 +149,12 @@ export default {
               title: 'B/L#',
               key: 'invoice_containers_bl',
               width: 140,
+              align: 'center'
+            },
+            {
+              title: 'vessel',
+              slot: 'invoice_vessel',
+              width: 240,
               align: 'center'
             },
             {
