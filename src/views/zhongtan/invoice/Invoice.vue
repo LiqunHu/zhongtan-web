@@ -1259,7 +1259,8 @@
                 this.table.containersTable.data = JSON.parse(JSON.stringify(data.rows))
                 this.table.containersTable.unchanged = JSON.parse(JSON.stringify(data.rows))
             },
-            actDownLoadDoModal: function(row) {
+            actDownLoadDoModal: async function(row) {
+                await this.getPara()
                 this.workPara = JSON.parse(JSON.stringify(row))
                 this.doDeliverEdit = false
                 this.delivery.options = JSON.parse(JSON.stringify(this.pagePara.DELIVER))
