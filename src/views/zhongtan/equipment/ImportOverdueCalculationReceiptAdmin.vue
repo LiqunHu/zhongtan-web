@@ -43,9 +43,9 @@
           <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_days && row.invoice_containers_actually_return_overdue_days && row.invoice_containers_empty_return_overdue_days !== row.invoice_containers_actually_return_overdue_days"> {{row.invoice_containers_empty_return_overdue_days}} </span>
           <span v-else>{{row.invoice_containers_empty_return_overdue_days}}</span>
         </template>
-        <template slot-scope="{ row, index }" slot="invoice_containers_empty_return_overdue_amount">
-          <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_amount && row.invoice_containers_actually_return_overdue_amount && row.invoice_containers_empty_return_overdue_amount !== row.invoice_containers_actually_return_overdue_amount"> {{row.invoice_containers_empty_return_overdue_amount}} </span>
-          <span v-else>{{row.invoice_containers_empty_return_overdue_amount}}</span>
+        <template slot-scope="{ row, index }" slot="invoice_containers_empty_return_overdue_amount_invoice">
+          <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_amount_invoice && row.invoice_containers_actually_return_overdue_amount && row.invoice_containers_empty_return_overdue_amount_invoice !== row.invoice_containers_actually_return_overdue_amount"> {{row.invoice_containers_empty_return_overdue_amount_invoice}} </span>
+          <span v-else>{{row.invoice_containers_empty_return_overdue_amount_invoice}}</span>
         </template>
         <template slot-scope="{ row, index }" slot="invoice_containers_actually_return_date">
           <span style="color: red;" v-if="row.invoice_containers_empty_return_date && row.invoice_containers_actually_return_date && row.invoice_containers_empty_return_date !== row.invoice_containers_actually_return_date"> {{row.invoice_containers_actually_return_date}} </span>
@@ -226,9 +226,15 @@ export default {
                 },
                 {
                   title: 'Demurrage',
-                  slot: 'invoice_containers_empty_return_overdue_amount',
+                  slot: 'invoice_containers_empty_return_overdue_amount_invoice',
                   width: 120,
                   align: 'right',
+                },
+                {
+                  title: 'Deduction',
+                  key: 'invoice_containers_empty_return_overdue_deduction',
+                  width: 120,
+                  align: 'center',
                 }
               ]
             },

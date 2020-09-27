@@ -177,6 +177,12 @@
               <Option v-for="item in customer.options" :value="item.id" :key="item.id">{{item.text}}</Option>
             </Select>
           </FormItem>
+          <FormItem label="TOTAL DEMURRAGE" style="margin-bottom: 0px;">
+            <Input v-model="invoiceForm.totalDemurrage" disabled></Input>
+          </FormItem>
+          <FormItem label="DEDUCTION" style="margin-bottom: 0px;">
+            <Input-number v-model="invoiceForm.deduction" :max="invoiceForm.totalDemurrage" :min="0"></Input-number>
+          </FormItem>
         </Form>
         <div slot="footer">
           <Button type="text" size="large" @click="modal.reInvoiceModal = false">Cancel</Button>
@@ -205,6 +211,7 @@
             <p class="timeline-content">Return Date: {{item.overdue_invoice_containers_return_date}}</p>
             <p class="timeline-content">Overdue Days: {{item.overdue_invoice_containers_overdue_days}} Days</p>
             <p class="timeline-content">Overdue Amount: {{item.overdue_invoice_containers_overdue_amount}} USD</p>
+            <p class="timeline-content">Deduction: {{item.overdue_invoice_containers_overdue_deduction}} USD</p>
           </TimelineItem>
           <TimelineItem v-for="(item, index) in containerInvoiceDetail" v-bind:key="item.overdue_invoice_containers_id">
               <p class="timeline-time">{{item.invoice_created_at}}</p>
@@ -214,6 +221,7 @@
               <p class="timeline-content">Return Date: {{item.overdue_invoice_containers_return_date}}</p>
               <p class="timeline-content">Overdue Days: {{item.overdue_invoice_containers_overdue_increase_days}} Days</p>
               <p class="timeline-content">Overdue Amount: {{item.overdue_invoice_containers_overdue_invoice_amount}} USD</p>
+              <p class="timeline-content">Deduction: {{item.overdue_invoice_containers_overdue_deduction}} USD</p>
               <p class="timeline-content">Receipt: {{item.overdue_invoice_containers_receipt_date}}</p>
           </TimelineItem>
         </Timeline>
@@ -342,6 +350,12 @@ export default {
                   align: 'center',
                 },
                 {
+                  title: 'Deduction',
+                  key: 'invoice_containers_empty_return_overdue_deduction',
+                  width: 120,
+                  align: 'center',
+                },
+                {
                   title: 'Act',
                   slot: 'empty_overdue_calculation',
                   width: 120,
@@ -439,7 +453,9 @@ export default {
       emptySubmitDisabled: true,
       emptyInvoiceDisabled: true,
       invoiceForm: {
-        invoice_customer_id: ''
+        invoice_customer_id: '',
+        deduction: 0,
+        totalDemurrage: 10
       },
       invoiceRules: {
         invoice_customer_id: [{ required: true, trigger: 'change', message: 'select messrs' }],
@@ -664,7 +680,13 @@ export default {
     actemptyReInvoiceModal: async function() {
       let selection = this.$refs.containerTable.getSelection()
       let invoice_customer_id = ''
+      let totalDemurrage = 0
       if(selection && selection.length > 0) {
+        for(let d of selection) {
+          if(d.invoice_containers_empty_return_overdue_amount) {
+            totalDemurrage += parseInt(d.invoice_containers_empty_return_overdue_amount)
+          }
+        }
         for(let d of selection) {
           if(d.customerINFO && d.customerINFO.length > 0) {
             this.customer.loading = true
@@ -678,6 +700,8 @@ export default {
       this.$nextTick(function() {
         this.invoiceForm.invoice_customer_id = invoice_customer_id
       })
+      this.invoiceForm.totalDemurrage = totalDemurrage
+      this.invoiceForm.deduction = 0
       this.modal.reInvoiceModal = true
     },
     emptyInvoiceAct: async function() {

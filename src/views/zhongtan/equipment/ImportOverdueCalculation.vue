@@ -327,6 +327,12 @@ export default {
                   width: 120,
                 },
                 {
+                  title: 'Deduction',
+                  key: 'invoice_containers_empty_return_overdue_deduction',
+                  width: 120,
+                  align: 'center',
+                },
+                {
                   title: 'Act',
                   slot: 'empty_overdue_calculation',
                   align: 'center',
@@ -394,7 +400,9 @@ export default {
       emptySubmitDisabled: true,
       emptyInvoiceDisabled: true,
       invoiceForm: {
-        invoice_customer_id: ''
+        invoice_customer_id: '',
+        deduction: 0,
+        totalDemurrage: 10
       },
       invoiceRules: {
         invoice_customer_id: [{ required: true, trigger: 'change', message: 'select messrs' }],
@@ -619,7 +627,13 @@ export default {
     actemptyReInvoiceModal: async function() {
       let selection = this.$refs.containerTable.getSelection()
       let invoice_customer_id = ''
+      let totalDemurrage = 0
       if(selection && selection.length > 0) {
+        for(let d of selection) {
+          if(d.invoice_containers_empty_return_overdue_amount) {
+            totalDemurrage += parseInt(d.invoice_containers_empty_return_overdue_amount)
+          }
+        }
         for(let d of selection) {
           if(d.customerINFO && d.customerINFO.length > 0) {
             this.customer.loading = true
@@ -633,6 +647,8 @@ export default {
       this.$nextTick(function() {
         this.invoiceForm.invoice_customer_id = invoice_customer_id
       })
+      this.invoiceForm.totalDemurrage = totalDemurrage
+      this.invoiceForm.deduction = 0
       this.modal.reInvoiceModal = true
     },
     emptyInvoiceAct: async function() {
