@@ -1582,7 +1582,7 @@
             resetInvoiceDeposit: async function(fixedDeposit) {
                 this.workPara.invoice_masterbi_deposit_necessary_disabled = true
                 if (fixedDeposit['invoice_masterbi_deposit_fixed'] && fixedDeposit['invoice_masterbi_deposit_fixed'] === '1') {
-                    this.workPara.invoice_masterbi_deposit = this.workPara.invoice_masterbi_deposit ? this.workPara.invoice_masterbi_deposit : fixedDeposit['invoice_masterbi_deposit']
+                    this.workPara.invoice_masterbi_deposit = fixedDeposit['invoice_masterbi_deposit']
                     this.workPara.invoice_container_deposit_currency = this.workPara.invoice_container_deposit_currency ? this.workPara.invoice_container_deposit_currency : fixedDeposit['invoice_container_deposit_currency']
                     this.workPara.invoice_masterbi_deposit_comment = this.workPara.invoice_masterbi_deposit_comment ? this.workPara.invoice_masterbi_deposit_comment : fixedDeposit['invoice_masterbi_deposit_comment']
                     this.workPara.invoice_masterbi_deposit_necessary = true
@@ -1613,7 +1613,7 @@
             resetInvoiceOcean: async function(fixedDeposit) {
                 this.workPara.invoice_masterbi_of_necessary_disabled = true
                 if (fixedDeposit['invoice_masterbi_of_fixed'] && fixedDeposit['invoice_masterbi_of_fixed'] === '1') {
-                    this.workPara.invoice_masterbi_of = this.workPara.invoice_masterbi_of ? this.workPara.invoice_masterbi_of : fixedDeposit['invoice_masterbi_of']
+                    this.workPara.invoice_masterbi_of = fixedDeposit['invoice_masterbi_of']
                     this.workPara.invoice_masterbi_of_currency = this.workPara.invoice_masterbi_of_currency ? this.workPara.invoice_masterbi_of_currency : fixedDeposit['invoice_masterbi_of_currency']
                     this.workPara.invoice_masterbi_of_necessary = true
                     this.workPara.invoice_masterbi_of_fixed = '1'
