@@ -513,7 +513,8 @@ export default {
         this.table.containerTable.data = JSON.parse(JSON.stringify(data.rows))
         if(this.table.containerTable.data) {
           for(let d of this.table.containerTable.data) {
-            if((d.invoice_containers_laden_release_date && d.invoice_containers_laden_release_overdue_amount && parseInt(d.invoice_containers_laden_release_overdue_amount) > 0) || (d.invoice_containers_empty_return_date && d.invoice_containers_empty_return_overdue_amount && parseInt(d.invoice_containers_empty_return_overdue_amount) > 0)) {
+            if((d.invoice_containers_empty_return_receipt_date && d.invoice_containers_empty_return_overdue_amount && parseInt(d.invoice_containers_empty_return_overdue_amount) === 0) 
+                || (d.invoice_containers_empty_return_date && d.invoice_containers_empty_return_overdue_amount && parseInt(d.invoice_containers_empty_return_overdue_amount) > 0)) {
               d._disabled = false
             } else {
               d._disabled = true
