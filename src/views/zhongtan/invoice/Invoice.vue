@@ -1614,8 +1614,6 @@
                     this.workPara.invoice_masterbi_deposit_necessary = false
                 }
                 this.workPara.invoice_masterbi_deposit_disabled = fixedDeposit['invoice_masterbi_deposit'] || fixedDeposit['invoice_masterbi_deposit'] >= 0 ? true : false
-                console.log(fixedDeposit['invoice_masterbi_deposit'])
-                console.log(this.workPara.invoice_masterbi_deposit_disabled)
                 this.workPara.invoice_container_deposit_currency_disabled = fixedDeposit['invoice_container_deposit_currency'] ? true : false
             },
             resetInvoiceOcean: async function(fixedDeposit) {
