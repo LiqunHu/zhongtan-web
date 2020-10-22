@@ -108,6 +108,50 @@
             </div>
           </Tooltip>
         </template>
+        <template slot-scope="{ row, index }" slot="invoice_data">
+          <Poptip trigger="hover" placement="right" width="400">
+            {{row.invoice_containers_empty_return_overdue_amount_invoice}}
+            <div slot="content">
+              <table>
+                  <thead>
+                      <tr>
+                          <th style="width: 150px; text-align: center;">Invoice No</th>
+                          <th style="width: 100px; text-align: center;">Amount</th>
+                          <th style="width: 150px; text-align: center;">Invoice Date</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr v-for="item in row.invoice_data" :key="item">
+                          <td style="width: 150px; text-align: center;">{{item.invoice_no}}</td>
+                          <td style="width: 100px; text-align: center;">{{item.invoice_amount}}</td>
+                          <td style="width: 150px; text-align: center;">{{item.invoice_date}}</td>
+                      </tr>
+                  </tbody>
+              </table>
+            </div>
+          </Poptip>
+        </template>
+        <template slot-scope="{ row, index }" slot="receipt_data">
+          <Poptip trigger="hover" placement="right" width="400">
+            {{row.invoice_containers_empty_return_overdue_amount_receipt}}
+            <div slot="content">
+              <table>
+                  <thead>
+                      <tr>
+                        <th style="width: 250px; text-align: center;">Receipt No</th>
+                        <th style="width: 150px; text-align: center;">Receipt Date</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr v-for="item in row.receipt_data" :key="item">
+                        <td style="width: 250px; text-align: center;">{{item.receipt_no}}</td>
+                        <td style="width: 150px; text-align: center;">{{item.receipt_date}}</td>
+                      </tr>
+                  </tbody>
+              </table>
+            </div>
+          </Poptip>
+        </template>
       </Table>
       <Page class="m-t-10" :total="table.containerTable.total" show-sizer show-total :page-size="table.containerTable.limit" @on-change="getTableData" @on-page-size-change="resetTableSizer"/>
     </panel>
@@ -170,14 +214,8 @@ export default {
               align: 'center'
             },
             {
-              title: 'Invoice Amount',
-              key: 'invoice_containers_empty_return_overdue_amount_invoice',
-              width: 140,
-              align: 'center'
-            },
-            {
-              title: 'Invoice Date',
-              key: 'invoice_containers_empty_return_invoice_date',
+              title: 'Invoice#',
+              slot: 'invoice_data',
               width: 140,
               align: 'center',
             },
@@ -194,17 +232,11 @@ export default {
               align: 'center'
             },
             {
-              title: 'Receipt Date',
-              key: 'invoice_containers_empty_return_receipt_date',
+              title: 'Receipt#',
+              slot: 'receipt_data',
               width: 140,
               align: 'center',
             },
-            {
-              title: 'Receipt#',
-              key: 'invoice_containers_empty_return_date_receipt_no',
-              width: 140,
-              align: 'center',
-            }
           ],
           data: [],
           unchanged: [],

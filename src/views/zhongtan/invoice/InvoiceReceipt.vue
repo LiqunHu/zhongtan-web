@@ -71,6 +71,12 @@
                         </Col>
                         <Col span="13">Re release: {{item.invoice_receipt_release_rcount}}/{{item.invoice_acount}}</Col>
                       </Row>
+                      <Row>
+                          <Col span="11">
+                          <p>Call Sign: {{item.invoice_vessel_call_sign}}</p>
+                          </Col>
+                          <Col span="13">Container: {{item.invoice_container_soc_count}}/{{item.invoice_container_count}}</Col>
+                      </Row>
                     </Card>
                   </div>
                 </Col>

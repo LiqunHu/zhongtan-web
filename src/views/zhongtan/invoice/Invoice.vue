@@ -88,10 +88,11 @@
                             </Col>
                             <Col span="13">Re release: {{item.invoice_receipt_release_rcount}}/{{item.invoice_acount}}</Col>
                         </Row>
-                        <Row v-if="item.invoice_vessel_call_sign">
+                        <Row>
                             <Col span="11">
                             <p>Call Sign: {{item.invoice_vessel_call_sign}}</p>
                             </Col>
+                            <Col span="13">Container: {{item.invoice_container_soc_count}}/{{item.invoice_container_count}}</Col>
                         </Row>
                     </Card>
                 </div>
@@ -107,6 +108,7 @@
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_bl">
                     <i class="fa fa-ship" v-if="row.invoice_masterbi_vessel_type === 'Bulk'"></i>
                     <i class="fa fa-cubes" v-else></i>
+                    <font color="#1890ff" style="margin-left:5px; margin-right:5px;" v-if="row.container_has_soc">SOC</font>
                     {{row.invoice_masterbi_bl}}
                     <a href="#" style="color: red; margin-left: 5px;" @click="deleteMasterbl(row)">
                         <i class="fa fa-times"></i>
@@ -331,7 +333,11 @@
         <TabPane label="Containers">
             <Table stripe size="small" ref="containersTable" :columns="table.containersTable.columns" :data="table.containersTable.data" :height="table.containersTable.height">
                 <template slot-scope="{ row, index }" slot="invoice_containers_type">
-                  <Input v-model="table.containersTable.data[index].invoice_containers_type" size="small" :disabled="tableEdit"/>
+                  <!-- <Input v-model="table.containersTable.data[index].invoice_containers_type" size="small" :disabled="tableEdit"/> -->
+                  <i-switch v-model="row.invoice_containers_type" @on-change="changeContainersType(row)" size="large" true-value="S" false-value="C">
+                      <span slot="open">SOC</span>
+                      <span slot="close">I/O</span>
+                  </i-switch>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_containers_no">
                   <Input v-model="table.containersTable.data[index].invoice_containers_no" size="small" :disabled="tableEdit"/>
@@ -727,7 +733,7 @@
                         columns: [{
                             title: '#M B/L No',
                             slot: 'invoice_masterbi_bl',
-                            width: 180
+                            width: 220
                         }, {
                             title: 'D/O Disabled',
                             slot: 'invoice_masterbi_do_disabled',
@@ -1607,7 +1613,9 @@
                 } else {
                     this.workPara.invoice_masterbi_deposit_necessary = false
                 }
-                this.workPara.invoice_masterbi_deposit_disabled = fixedDeposit['invoice_masterbi_deposit'] ? true : false
+                this.workPara.invoice_masterbi_deposit_disabled = fixedDeposit['invoice_masterbi_deposit'] || fixedDeposit['invoice_masterbi_deposit'] >= 0 ? true : false
+                console.log(fixedDeposit['invoice_masterbi_deposit'])
+                console.log(this.workPara.invoice_masterbi_deposit_disabled)
                 this.workPara.invoice_container_deposit_currency_disabled = fixedDeposit['invoice_container_deposit_currency'] ? true : false
             },
             resetInvoiceOcean: async function(fixedDeposit) {
@@ -1752,6 +1760,8 @@
                         this.actDepositModal(this.workPara)
                     } else if (this.checkPasswordType === 'doDeleteMasterbl') {
                         this.deleteMasterblAct(this.workPara)
+                    } else if (this.checkPasswordType === 'containersTypeChange') {
+                        this.changeContainersTypeAct(this.workPara)
                     } 
                 } catch (error) {
                     this.$commonact.fault(error)
@@ -1761,7 +1771,7 @@
                 this.modal.checkPasswordModal = false
                 this.depositEdit = false
                 this.doDeliverEdit = false
-                if (this.checkPasswordType === 'doDisabledChange') {
+                if (this.checkPasswordType === 'doDisabledChange' || this.checkPasswordType === 'containersTypeChange') {
                     this.refreshTableData()
                 }
             },
@@ -1874,7 +1884,35 @@
                 } else {
                     this.getContainersData(1)
                 }
-            }
+            },
+            changeContainersType: function(item) {
+                try {
+                    this.workPara = JSON.parse(JSON.stringify(item))
+                    this.checkPassword = ''
+                    this.modal.checkPasswordModal = true
+                    this.checkPasswordType = 'containersTypeChange'
+                } catch (error) {
+                    this.$commonact.fault(error)
+                }
+            },
+            changeContainersTypeAct: async function(row) {
+                try {
+                    await this.$http.post(apiUrl + 'changeContainersType', row)
+                    if (row.invoice_containers_type === 'S') {
+                        this.$Message.success('SOC Success')
+                    } else {
+                        this.$Message.success('I/O Success')
+                    }
+                    this.refreshTableData()
+                } catch (error) {
+                    if (row.invoice_masterbi_do_disabled === 'S') {
+                        row.invoice_masterbi_do_disabled = 'C'
+                    } else {
+                        row.invoice_masterbi_do_disabled = 'S'
+                    }
+                    this.$commonact.fault(error)
+                }
+            },
         }
     }
 </script>

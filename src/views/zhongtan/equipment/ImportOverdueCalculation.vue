@@ -68,6 +68,9 @@
             </template>
           </Poptip>
         </template>
+        <template slot-scope="{ row, index }" slot="invoice_containers_no">
+          {{row.invoice_containers_no}}<font color="#1890ff" style="margin-left:10px;" v-if="row.invoice_containers_type==='S'">SOC</font>
+        </template>
         <template slot-scope="{ row, index }" slot="invoice_containers_size">
           {{row.invoice_containers_size}} [
           <span v-for="item in pagePara.CONTAINER_SIZE" v-if="item.container_size_code === row.invoice_containers_size">{{item.container_size_name}}</span> ]
@@ -94,13 +97,13 @@
           </Row>
         </template>
         <template slot-scope="{ row, index }" slot="empty_overdue_calculation">
-          <a href="#" class="btn btn-danger btn-icon btn-sm" title="UNINVOICE" v-if="row.invoice_containers_empty_return_edit_flg === '1'" @click.prevent="emptyOverdueCalculationModal(row)">
+          <a href="#" class="btn btn-danger btn-icon btn-sm" title="UNINVOICE" v-if="row.invoice_containers_empty_return_edit_flg === '1' && row.invoice_containers_type!=='S'" @click.prevent="emptyOverdueCalculationModal(row)">
             <i class="fa fa-calculator"></i>
           </a>
-          <a href="#" class="btn btn-primary btn-icon btn-sm" v-else @click.prevent="emptyOverdueCalculationModal(row)">
+          <a href="#" class="btn btn-primary btn-icon btn-sm" v-else-if="row.invoice_containers_type!=='S'" @click.prevent="emptyOverdueCalculationModal(row)">
             <i class="fa fa-calculator"></i>
           </a>
-          <a href="#" class="btn btn-default btn-icon btn-sm" @click.prevent="containerInvoiceDetailAct(row)">
+          <a href="#" class="btn btn-default btn-icon btn-sm" v-if="row.invoice_containers_type!=='S'" @click.prevent="containerInvoiceDetailAct(row)">
             <Icon type="md-options" />
           </a>
         </template>
@@ -122,6 +125,7 @@
           </FormItem>
           <FormItem label="Free Days">
             <Input-number :min="parseInt(overdueChargeForm.invoice_containers_empty_return_overdue_static_free_days)" v-model="overdueChargeForm.invoice_containers_empty_return_overdue_free_days" :active-change="false" @on-change="overdueFreeDaysChange" :disabled ="returnOverdueDaysDisabled" style="width: 200px;"></Input-number>
+            <Checkbox v-model="overdueChargeForm.free_days_single" :disabled ="returnOverdueDaysDisabled">SINGLE</Checkbox>
           </FormItem>
           <FormItem label="Overdue Days">
             <Input v-model="overdueChargeForm.invoice_containers_empty_return_overdue_days" disabled>
@@ -264,8 +268,8 @@ export default {
             },
             {
               title: 'Container No',
-              key: 'invoice_containers_no',
-              width: 130,
+              slot: 'invoice_containers_no',
+              width: 160,
               align: 'center'
             },
             {
@@ -734,8 +738,6 @@ export default {
         } else {
           await this.returnDateChange(this.overdueChargeForm.invoice_containers_empty_return_date)
         }
-      } else {
-        this.$Message.warning('please select return date')
       }
     },
     containerInvoiceDetailAct: async function(row) {
