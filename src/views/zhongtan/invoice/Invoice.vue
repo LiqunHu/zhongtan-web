@@ -106,6 +106,7 @@
         <TabPane label="MasterBl">
             <Table stripe size="small" ref="masterbiTable" :columns="table.masterbiTable.columns" :data="table.masterbiTable.data" :height="table.masterbiTable.height">
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_bl">
+                    <i class="fa fa-bell" v-if="row.has_same_container_no" style="color:green;"></i>
                     <i class="fa fa-ship" v-if="row.invoice_masterbi_vessel_type === 'Bulk'"></i>
                     <i class="fa fa-cubes" v-else></i>
                     <font color="#1890ff" style="margin-left:5px; margin-right:5px;" v-if="row.container_has_soc">SOC</font>
@@ -332,6 +333,10 @@
         </TabPane>
         <TabPane label="Containers">
             <Table stripe size="small" ref="containersTable" :columns="table.containersTable.columns" :data="table.containersTable.data" :height="table.containersTable.height">
+                <template slot-scope="{ row, index }" slot="invoice_containers_bl">
+                    <i class="fa fa-bell" v-if="row.has_same_container_no" style="color:green;"></i>
+                    {{row.invoice_containers_bl}}
+                </template>
                 <template slot-scope="{ row, index }" slot="invoice_containers_type">
                   <!-- <Input v-model="table.containersTable.data[index].invoice_containers_type" size="small" :disabled="tableEdit"/> -->
                   <i-switch v-model="row.invoice_containers_type" @on-change="changeContainersType(row)" size="large" true-value="S" false-value="C">
@@ -922,7 +927,7 @@
                     containersTable: {
                         columns: [{
                             title: '#M B/L No',
-                            key: 'invoice_containers_bl',
+                            slot: 'invoice_containers_bl',
                             width: 150
                         }, {
                             title: 'Type Of Container',
