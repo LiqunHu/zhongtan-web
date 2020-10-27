@@ -338,7 +338,6 @@
                     {{row.invoice_containers_bl}}
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_containers_type">
-                  <!-- <Input v-model="table.containersTable.data[index].invoice_containers_type" size="small" :disabled="tableEdit"/> -->
                   <i-switch v-model="row.invoice_containers_type" @on-change="changeContainersType(row)" size="large" true-value="S" false-value="C">
                       <span slot="open">SOC</span>
                       <span slot="close">I/O</span>
@@ -430,7 +429,8 @@
         <Row v-if="workPara.invoice_masterbi_vessel_type !== 'Bulk'">
             <Col>
                 <FormItem label="VALID TO" prop="invoice_masterbi_valid_to">
-                    <DatePicker type="date" placeholder="VALID TO" v-model="workPara.invoice_masterbi_valid_to" :disabled="!doDeliverValidToEdit" @on-change="validToDateChange" format="yyyy-MM-dd"></DatePicker>
+                    <Input v-if="!doDeliverValidToEdit" v-model="workPara.invoice_masterbi_valid_to" disabled/>
+                    <DatePicker v-else type="date" placeholder="VALID TO" v-model="workPara.invoice_masterbi_valid_to" @on-change="validToDateChange" format="yyyy-MM-dd"></DatePicker>
                 </FormItem>
             </Col>
         </Row>
@@ -463,7 +463,7 @@
             </FormItem>
             </Col>
         </Row>
-        <Row v-if="workPara.invoice_masterbi_vessel_type !== 'Bulk'">
+        <Row v-if="workPara.invoice_masterbi_vessel_type !== 'Bulk' && !workPara.container_has_soc">
             <Col>
             <FormItem label="RETURN DEPOT" prop="invoice_masterbi_do_return_depot">
                 <i-select v-model="workPara.invoice_masterbi_do_return_depot" :disabled="workPara.invoice_masterbi_do_return_depot_disabled && !doDeliverValidToEdit">
@@ -486,7 +486,7 @@
 <Modal v-model="modal.depositModal" title="Deposit" width="600" :mask-closable="false">
     <Form :model="workPara" :label-width="140">
         <FormItem label="Customer" prop="invoice_masterbi_customer_id" style="margin-bottom: 0px;">
-            <Select ref="customer" v-model="workPara.invoice_masterbi_customer_id" filterable clearable remote :remote-method="searchCustomer" :loading="deposit.customer.loading" placeholder="Customer">
+            <Select ref="customer" v-model="workPara.invoice_masterbi_customer_id" filterable clearable remote :remote-method="searchCustomer" :loading="deposit.customer.loading" placeholder="Customer" @on-change="doChangeCustomer">
             <Option v-for="item in deposit.customer.options" :value="item.id" :key="item.id">{{item.text}}<i v-if="item.balcklist === '1'" class="fa fa-ban" style="float: right; color: red;" title="Blacklist"></i><i v-if="item.fixed" class="fa fa-lock" style="float: right; margin-right: 10px;" title="Fixed"></i></Option>
           </Select>
         </FormItem>
@@ -639,8 +639,8 @@
     </Form>
     <div slot="footer">
         <Button type="text" size="large" @click="modal.depositModal=false">Cancel</Button>
-        <Button type="primary" size="large" @click="depositDo" v-if="deposit.depositType=='Container Deposit'" :disabled="!depositEdit && (workPara.invoice_masterbi_customer_blacklist || (workPara.invoice_masterbi_deposit_fixed == '1' && !!workPara.invoice_masterbi_deposit_release_date))">Submit</Button>
-        <Button type="primary" size="large" @click="depositDo" v-if="deposit.depositType=='Invoice Fee'" :disabled="!depositEdit && workPara.invoice_masterbi_customer_blacklist">Submit</Button>
+        <Button type="primary" size="large" @click="depositDo" v-if="deposit.depositType=='Container Deposit'" :disabled="!depositEdit && (workPara.invoice_masterbi_customer_blacklist || (workPara.invoice_masterbi_deposit_fixed == '1' && !!workPara.invoice_masterbi_deposit_release_date)) && !changeCustomer">Submit</Button>
+        <Button type="primary" size="large" @click="depositDo" v-if="deposit.depositType=='Invoice Fee'" :disabled="!depositEdit && workPara.invoice_masterbi_customer_blacklist && !changeCustomer">Submit</Button>
     </div>
 </Modal>
 <Modal v-model="modal.deleteVoyageModal" title="Delete Voyage" width="600" :mask-closable="false">
@@ -1072,6 +1072,7 @@
                 checkPassword: '',
                 checkPasswordType: '',
                 depositEdit: false,
+                changeCustomer: false,
                 doDeliverEdit: false,
                 doDeliverValidToEdit: false,
                 formRules: {
@@ -1364,6 +1365,7 @@
                 this.$nextTick(function() {
                     this.workPara = JSON.parse(JSON.stringify(row))
                     this.depositEdit = false
+                    this.changeCustomer = false
                     this.workPara.invoice_masterbi_customer_blacklist = true
                     if (this.workPara.invoice_masterbi_vessel_type && this.workPara.invoice_masterbi_vessel_type === 'Bulk') {
                         this.deposit.depositType = 'Invoice Fee'
@@ -1413,6 +1415,11 @@
                     }
                 } else {
                     this.deposit.customer.options = []
+                }
+            },
+            doChangeCustomer: function(value) {
+                if(value) {
+                    this.changeCustomer = true
                 }
             },
             currentFeeTabChanged: function(name) {
