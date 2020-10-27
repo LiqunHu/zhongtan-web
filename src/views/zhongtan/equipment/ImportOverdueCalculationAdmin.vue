@@ -743,7 +743,7 @@ export default {
           let selection = this.$refs.containerTable.getSelection()
           if(selection && selection.length > 0) {
             try {
-              await this.$http.post(apiUrl + 'emptyReInvoice', {selection: selection, invoicePara: this.invoiceForm})
+              await this.$http.post(apiUrl + 'emptyReInvoice', {selectAll: this.tableSelectAll, selection: selection, invoicePara: this.invoiceForm})
               this.getTableData()
               this.$Message.success('Invoice Success')
               this.modal.reInvoiceModal = false
