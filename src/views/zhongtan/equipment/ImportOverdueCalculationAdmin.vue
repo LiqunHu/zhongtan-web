@@ -49,7 +49,7 @@
           </div>
         </div>
       </template>
-      <Table stripe size="small" ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data" :height="table.containerTable.height" :border="table.containerTable.data && table.containerTable.data.length > 0" @on-selection-change="containerSelectedChange" :span-method="handleSpan">
+      <Table stripe size="small" ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data" :height="table.containerTable.height" :border="table.containerTable.data && table.containerTable.data.length > 0" @on-select-all="containerSelectedAll" @on-selection-change="containerSelectedChange" :span-method="handleSpan">
         <template slot-scope="{ row, index }" slot="files">
           <Poptip trigger="hover" placement="bottom-start" :transfer="true" v-if="row.files && row.files.length > 0">
             <span>Files [{{row.files.length}}]</span>
@@ -456,6 +456,7 @@ export default {
       ladenSubmitDisabled: true,
       emptySubmitDisabled: true,
       emptyInvoiceDisabled: true,
+      tableSelectAll: false,
       invoiceForm: {
         invoice_customer_id: '',
         deduction: 0,
@@ -555,6 +556,13 @@ export default {
         }
       } else {
         return [1, 1]
+      }
+    },
+    containerSelectedAll: async function(selection) {
+      if(selection && selection.length > 0) {
+        this.tableSelectAll = true
+      } else {
+        this.tableSelectAll = false
       }
     },
     containerSelectedChange: async function(selection) {
@@ -715,7 +723,7 @@ export default {
           let selection = this.$refs.containerTable.getSelection()
           if(selection && selection.length > 0) {
             try {
-              await this.$http.post(apiUrl + 'emptyInvoice', {selection: selection, invoicePara: this.invoiceForm})
+              await this.$http.post(apiUrl + 'emptyInvoice', {selectAll: this.tableSelectAll, selection: selection, invoicePara: this.invoiceForm})
               this.getTableData()
               this.$Message.success('Invoice Success')
               this.modal.invoiceModal = false
