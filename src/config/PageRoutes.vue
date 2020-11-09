@@ -28,6 +28,7 @@ const routes = [
   { path: '/admin/zhongtan/export/BookingWork', component: resolve => require(['@/views/zhongtan/export/BookingWork'], resolve) },
   { path: '/admin/zhongtan/import/ImportWork', component: resolve => require(['@/views/zhongtan/import/ImportWork'], resolve) },
   { path: '/admin/zhongtan/export/Receipt', component: resolve => require(['@/views/zhongtan/export/Receipt'], resolve) },
+  { path: '/admin/zhongtan/export/BookingLoad', component: resolve => require(['@/views/zhongtan/export/BookingLoad'], resolve) },
   { path: '/admin/zhongtan/invoice/Invoice', component: resolve => require(['@/views/zhongtan/invoice/Invoice'], resolve) },
   { path: '/admin/zhongtan/invoice/InvoiceReceipt', component: resolve => require(['@/views/zhongtan/invoice/InvoiceReceipt'], resolve) },
   { path: '/admin/zhongtan/invoice/ManagerCheck', component: resolve => require(['@/views/zhongtan/invoice/ManagerCheck'], resolve) },

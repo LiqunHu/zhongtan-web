@@ -57,6 +57,9 @@
         <FormItem label="CODE" prop="container_size_code">
           <Input placeholder="CODE" v-model="workPara.container_size_code"/>
         </FormItem>
+        <FormItem label="NAME" prop="container_size_full_name">
+          <Input placeholder="NAME" v-model="workPara.container_size_full_name"/>
+        </FormItem>
       </Form>
       <div slot="footer">
         <Button type="text" size="large" @click="modal.containerSizeModal=false">Cancel</Button>
@@ -91,6 +94,10 @@ export default {
               key: 'container_size_code'
             },
             {
+              title: 'NAME',
+              key: 'container_size_full_name'
+            },
+            {
               title: 'Special CTNR',
               slot: 'container_special_type'
             },
@@ -109,7 +116,7 @@ export default {
       formRule: {
         ruleContainerSizeModal: {
           container_size_name: [{ required: true, trigger: 'change', message: 'Enter container size name' }],
-          container_size_code: [{ required: true, trigger: 'change', message: 'Enter container size code' }],
+          container_size_code: [{ required: true, trigger: 'change', message: 'Enter container size code' }]
         }
       },
       pagePara: {},
