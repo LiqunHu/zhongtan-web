@@ -274,8 +274,8 @@ export default {
                 this.vesselData[i].active = false
               }
             }
-            this.searchBlAct()
           }
+          this.searchBlAct()
         })
       } catch (error) {
           this.$commonact.fault(error)
