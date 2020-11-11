@@ -32,6 +32,12 @@
         </div>
       </template>
       <Table stripe ref="ediDepotTable" :columns="table.ediDepotTable.rows" :data="table.ediDepotTable.data" :border="table.ediDepotTable.data && table.ediDepotTable.data.length > 0">
+        <template slot-scope="{ row, index }" slot="edi_depot_send_edi">
+          <i-switch v-model="row.edi_depot_send_edi" size="large" true-value="1" false-value="0" disabled>
+              <span slot="open">ON</span>
+              <span slot="close">OFF</span>
+          </i-switch>
+        </template>
         <template slot-scope="{ row, index }" slot="action">
           <a href="#" class="btn btn-info btn-icon btn-sm" @click="modifyEdiDepotModal(row)">
             <i class="fa fa-edit"></i>
@@ -65,6 +71,15 @@
         </FormItem>
         <FormItem label="Storing Order Email" prop="edi_depot_storing_order_email">
           <Input placeholder="Storing Order Email" v-model="workPara.edi_depot_storing_order_email"/>
+        </FormItem>
+        <FormItem label="Send EDI" prop="edi_depot_send_edi">
+          <i-switch v-model="workPara.edi_depot_send_edi" size="large" true-value="1" false-value="0">
+              <span slot="open">ON</span>
+              <span slot="close">OFF</span>
+          </i-switch>
+        </FormItem>
+        <FormItem label="Send EDI Email" prop="edi_depot_send_edi_email">
+          <Input placeholder="Send EDI Email" v-model="workPara.edi_depot_send_edi_email"/>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -130,6 +145,18 @@ export default {
             {
               title: 'Storing Order Email',
               key: 'edi_depot_storing_order_email',
+              width: 200,
+              align: 'center'
+            },
+            {
+              title: 'Send EDI',
+              slot: 'edi_depot_send_edi',
+              width: 200,
+              align: 'center'
+            },
+            {
+              title: 'Send EDI Email',
+              key: 'edi_depot_send_edi_email',
               width: 200,
               align: 'center'
             },
