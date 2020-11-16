@@ -9,11 +9,10 @@
     <!-- end breadcrumb -->
     <!-- begin page-header -->
     <h1 class="page-header">
-      Booking
-      <small></small>
+      Booking Empty Release
     </h1>
     <!-- end page-header -->
-    <panel title="Panel title here">
+    <panel title="Booking Empty Release">
       <template slot="beforeBody">
         <div class="panel-toolbar">
           <div class="form-inline">
@@ -48,10 +47,10 @@
                       <p slot="title">
                         {{item.export_vessel_name}}({{item.export_vessel_code}})-{{item.export_vessel_voyage}}
                       </p>
-                      <a href="#" slot="extra" @click.stop="editVesselAct(item)" title="Edit">
+                      <a href="#" slot="extra" @click.stop="vesselModifyAct(item)" title="Edit">
                           <i class="fa fa-edit"></i>
                       </a>
-                      <a href="#" slot="extra" @click.stop="deleteVesselAct(item)" title="Remove" style="color: red; margin-left: 5px;">
+                      <a href="#" slot="extra" @click.stop="vesselDeleteAct(item)" title="Remove" style="color: red; margin-left: 5px;">
                           <i class="fa fa-times"></i>
                       </a>
                       <Row>
@@ -72,14 +71,31 @@
         <Col span="17" offset="1">
           <Tabs :animated="true" @on-click="changeTabAct">
               <TabPane label="MasterBl">
-                  <Table stripe size="small" ref="masterbiTable" :columns="blTable.columns" :data="blTable.data" :height="blTable.height">
-                  </Table>
-                  <Page class="m-t-10" :total="blTable.total" :page-size="blTable.limit" @on-change="searchBlAct" />
+                <Table stripe size="small" ref="masterbiTable" :columns="blTable.columns" :data="blTable.data" :height="blTable.height">
+                  <template slot-scope="{ row, index }" slot="empty_release">
+                    <Tooltip :content="row.export_masterbl_empty_release_approve_date" v-if="row.export_masterbl_empty_release_approve_date">
+                      <a href="#" class="btn btn-green btn-icon btn-sm" v-on:click="emptyReleaseModalCheckAct(row)">
+                        <i class="fa fa-money-bill-alt"></i>
+                      </a>
+                    </Tooltip>
+                    <Tooltip :content="row.export_masterbl_empty_release_date" v-else-if="row.export_masterbl_empty_release_date">
+                      <a href="#" class="btn btn-primary btn-icon btn-sm" v-on:click="emptyReleaseModalAct(row)">
+                        <i class="fa fa-money-bill-alt"></i>
+                      </a>
+                    </Tooltip>
+                    <Tooltip content="EMPTY RELEASE" v-else>
+                      <a href="#" class="btn btn-info btn-icon btn-sm" v-on:click="emptyReleaseModalAct(row)">
+                        <i class="fa fa-money-bill-alt"></i>
+                      </a>
+                    </Tooltip>
+                  </template>
+                </Table>
+                <Page class="m-t-10" :total="blTable.total" :page-size="blTable.limit" @on-change="searchBlAct" />
               </TabPane>
               <TabPane label="Containers">
                 <Table stripe size="small" ref="containerTable" :columns="containerTable.columns" :data="containerTable.data" :height="containerTable.height">
-                  </Table>
-                  <Page class="m-t-10" :total="containerTable.total" :page-size="containerTable.limit" @on-change="searchContainerAct" />
+                </Table>
+                <Page class="m-t-10" :total="containerTable.total" :page-size="containerTable.limit" @on-change="searchContainerAct" />
               </TabPane>
           </Tabs>
           </Col>
@@ -115,10 +131,76 @@
         <Button type="primary" size="large" @click="bookingData">Submit</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.vesselModal" title="Vessel">
+      <Form ref="vesselForm" :model="vesselForm" :rules="vesselFormRule" :label-width="120">
+        <FormItem label="Vessel Name" prop="export_vessel_name">
+            <Input placeholder="Vessel Name" v-model="vesselForm.export_vessel_name" clearable></Input>
+        </FormItem>
+        <FormItem label="Vessel Voyage" prop="export_vessel_voyage">
+            <Input placeholder="Vessel Voyage" v-model="vesselForm.export_vessel_voyage" clearable></Input>
+        </FormItem>
+        <FormItem label="Vessel ETD">
+            <DatePicker type="date" placeholder="Select Vessel ETD" v-model="vesselForm.export_vessel_etd" format="dd/MM/yyyy" @on-change="vesselEtdDateChange"></DatePicker>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.vesselModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="submitVesselModifyAct">Submit</Button>
+      </div>
+    </Modal>
+    <Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :mask-closable="false">
+      <Form :label-width="120">
+          <FormItem v-show="false">
+              <Input type="password" style='width:0;opacity:0;'></Input>
+          </FormItem>
+          <FormItem label="Password" prop="checkPassword">
+              <Input type="password" placeholder="Password" v-model="checkPassword"></Input>
+          </FormItem>
+      </Form>
+      <div slot="footer">
+          <Button type="text" size="large" @click="checkPasswordCancel">Cancel</Button>
+          <Button type="primary" size="large" @click="checkPasswordAct">Submit</Button>
+      </div>
+    </Modal>
+    <Modal v-model="modal.emptyReleaseModal" title="EMPTY RELEASE" width="640">
+      <Form ref="emptyReleaseForm" :model="emptyReleaseForm" :rules="emptyReleaseFormRule" :label-width="128">
+        <FormItem label="Release Party" prop="export_masterbl_empty_release_agent">
+          <Select v-model="emptyReleaseForm.export_masterbl_empty_release_agent" filterable :remote-method="remoteEmptyReleaseAgent">
+            <Option v-for="(item, index) in emptyReleaseAgent" :value="item.user_id" :key="index" :label="item.user_name">
+              <span>{{item.user_name}}</span>
+              <Tag color="success" v-if="item.user_customer_type === '1'" style="float: right;">AGEN</Tag>
+              <Tag color="warning" v-if="item.user_customer_type === '2'" style="float: right;">CNEE</Tag>
+              <Tag color="error" v-if="item.user_blacklist === '1'" style="float: right;">BLACK</Tag>
+            </Option>
+          </Select>
+        </FormItem>
+        <FormItem label="Release Depot" prop="export_masterbl_empty_release_depot">
+          <Select v-model="emptyReleaseForm.export_masterbl_empty_release_depot">
+            <Option v-for="(item, index) in emptyReleaseDepot" :value="item.edi_depot_name" :key="index">{{ item.edi_depot_name }}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="Quantity">
+          <Row>
+            <Col v-for="(item, index) in emptyReleaseQuantitys" span="12" :key="index">
+              <InputNumber :max="item.quantity" :min="0" v-model="item.release_quantity">
+              </InputNumber>
+              <Input v-model="item.container_type" style="width: 78px" disabled/>
+            </Col>
+          </Row>
+        </FormItem>
+        <FormItem label="Valid To" prop="export_masterbl_empty_release_valid_to">
+          <DatePicker type="date" placeholder="Select Vessel ETD" v-model="emptyReleaseForm.export_masterbl_empty_release_valid_to" format="yyyy-MM-dd" @on-change="releaseValidDateChange"></DatePicker>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.emptyReleaseModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="submitEmptyReleaseAct">Submit</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
-// import PageOptions from '../../../config/PageOptions.vue'
+import PageOptions from '../../../config/PageOptions.vue'
 const moment = require('moment')
 const common = require('@/lib/common')
 const apiUrl = '/api/zhongtan/export/BookingLoad/'
@@ -127,7 +209,7 @@ export default {
   name: 'BookingLoadControl',
   data: function() {
     return {
-      modal: { bookingModal: false},
+      modal: { bookingModal: false, checkPasswordModal: false, emptyReleaseModal: false},
       headers: common.uploadHeaders(),
       vesselHeight: common.getTableHeight(),
       search_data: {
@@ -139,68 +221,76 @@ export default {
         export_vessel_id: ''
       },
       workPara: {},
+      files: {
+        fileList: []
+      },
       vesselData: [],
       blTable: {
         columns: [
           {
             title: '#M B/L No',
-            key: 'export_masterbi_bl',
+            key: 'export_masterbl_bl',
             width: 220
           },
           {
+            title: 'EMPTY RELEASE',
+            slot: 'empty_release',
+            width: 200
+          },
+          {
             title: 'CSO/AGREEMENT NUMBER',
-            key: 'export_masterbi_cso_number',
+            key: 'export_masterbl_cso_number',
             width: 220
           },
           {
             title: 'SHIPPER',
-            key: 'export_masterbi_shipper_company',
-            width: 220
+            key: 'export_masterbl_shipper_company',
+            width: 200
           },
           {
             title: 'FORWARDER',
-            key: 'export_masterbi_forwarder_company',
-            width: 220
+            key: 'export_masterbl_forwarder_company',
+            width: 200
           },
           {
             title: 'CONSIGNEE',
-            key: 'export_masterbi_consignee_company',
-            width: 220
+            key: 'export_masterbl_consignee_company',
+            width: 200
           },
           {
             title: 'PORT OF LOAD',
-            key: 'export_masterbi_port_of_load',
-            width: 220
+            key: 'export_masterbl_port_of_load',
+            width: 200
           },
           {
             title: 'PORT OF DISCHARGE',
-            key: 'export_masterbi_port_of_discharge',
-            width: 220
+            key: 'export_masterbl_port_of_discharge',
+            width: 200
           },
           {
             title: 'TRAFFIC MODE',
-            key: 'export_masterbi_traffic_mode',
-            width: 220
+            key: 'export_masterbl_traffic_mode',
+            width: 200
           },
           {
             title: 'CONTAINER QTY',
-            key: 'export_masterbi_container_quantity',
-            width: 220
+            key: 'export_masterbl_container_quantity',
+            width: 200
           },
           {
             title: 'CONTAINER WEIGHT',
-            key: 'export_masterbi_container_weight',
-            width: 220
+            key: 'export_masterbl_container_weight',
+            width: 200
           },
           {
             title: 'CARGO NATURE',
-            key: 'export_masterbi_cargo_nature',
-            width: 220
+            key: 'export_masterbl_cargo_nature',
+            width: 200
           },
           {
             title: 'CARGO DESCRIPTIONS',
-            key: 'export_masterbi_cargo_descriptions',
-            width: 220
+            key: 'export_masterbl_cargo_descriptions',
+            width: 200
           }
         ],
         height: common.getTableHeight() - 90,
@@ -220,22 +310,22 @@ export default {
           {
             title: 'Container No',
             slot: 'export_container_no',
-            width: 150
+            width: 200
           },
           {
             title: 'SOC/COC',
             key: 'export_container_soc_type',
-            width: 220
+            width: 200
           },
           {
             title: 'SIZE/TYPE',
             key: 'export_container_size_type',
-            width: 220
+            width: 200
           },
           {
             title: 'CARGO WEIGHT',
             key: 'export_container_cargo_weight',
-            width: 220
+            width: 200
           }
         ],
         height: common.getTableHeight() - 90,
@@ -247,11 +337,25 @@ export default {
       },
       containerData: [],
       currentTab: 0,
-      action: '',
-      files: {
-        fileList: []
-      }
+      vesselForm: {},
+      vesselFormRule: {
+        export_vessel_name: [{required: true,  message: 'The vessel name cannot be empty', trigger: 'blur'}],
+        export_vessel_voyage: [{required: true, message: 'The vessel voyage cannot be empty', trigger: 'blur'}]
+      },
+      emptyReleaseForm: {},
+      emptyReleaseFormRule: {
+        export_masterbl_empty_release_agent: [{required: true,  message: 'The empty release agent cannot be empty', trigger: 'blur'}],
+        export_masterbl_empty_release_depot: [{required: true, message: 'The empty release depot cannot be empty', trigger: 'blur'}]
+      },
+      emptyReleaseQuantitys: [],
+      emptyReleaseAgent: [],
+      emptyReleaseDepot: [],
+      checkPassword: '',
+      checkPasswordType: ''
     }
+  },
+  created() {
+    PageOptions.pageEmpty = false
   },
   mounted: function() {
     this.searchDataAct()
@@ -266,12 +370,22 @@ export default {
         this.$nextTick(function() {
           this.vesselData = response.data.info
           if(this.vesselData) {
+            let active = false
             for(let i = 0; i < this.vesselData.length; i++) {
-              if(i === 0) {
+              if(this.vesselData[i].export_vessel_id === this.search_data.export_vessel_id) {
                 this.vesselData[i].active = true
-                this.search_data.export_vessel_id = this.vesselData[i].export_vessel_id
-              } else {
-                this.vesselData[i].active = false
+                active = true
+                break
+              }
+            }
+            if(!active) {
+              for(let i = 0; i < this.vesselData.length; i++) {
+                if(i === 0) {
+                  this.vesselData[i].active = true
+                  this.search_data.export_vessel_id = this.vesselData[i].export_vessel_id
+                } else {
+                  this.vesselData[i].active = false
+                }
               }
             }
           }
@@ -338,21 +452,56 @@ export default {
         }
       })
     },
-    editVesselAct: function(item) {
-      // try {
-      //   this.$nextTick(function() {
-      //     this.resetVesselForm()
-      //     this.$refs['vesselForm'].resetFields()
-      //     this.vesselForm = JSON.parse(JSON.stringify(item))
-      //     this.checkPassword = ''
-      //     this.modal.checkPasswordModal = true
-      //     this.checkPasswordType = 'doVesselEdit'
-      //   })
-      // } catch (error) {
-      //     this.$commonact.fault(error)
-      // }
+    vesselModifyAct: function(item) {
+      this.$nextTick(function() {
+        this.vesselForm = JSON.parse(JSON.stringify(item))
+        this.checkPassword = ''
+        this.checkPasswordType = 'vesselModify'
+        this.modal.checkPasswordModal = true
+      })
     },
-    deleteVesselAct: function(item) {
+    vesselEtdDateChange: async function(date) {
+        this.vesselForm.export_vessel_etd = date
+    },
+    doVesselModifyAct: async function() {
+      this.modal.vesselModal = true
+    },
+    submitVesselModifyAct: async function() {
+      this.$refs['vesselForm'].validate(async valid => {
+        if (valid) {
+          try {
+            let param = {
+              ...this.vesselForm
+            }
+            await this.$http.post(apiUrl + 'modifyVessel', param)
+            this.searchDataAct()
+          }catch (error) {
+            this.$commonact.fault(error)
+          }
+          this.modal.vesselModal = false
+        }
+      })
+    },
+    vesselDeleteAct: function(item) {
+      this.$nextTick(function() {
+        this.vesselForm = JSON.parse(JSON.stringify(item))
+        this.checkPassword = ''
+        this.checkPasswordType = 'vesselDelete'
+        this.modal.checkPasswordModal = true
+      })
+    },
+    doVesselDeleteAct: async function() {
+      this.$commonact.confirm(`Delete the vessel?`, async() => {
+        try {
+          let param = {
+            ...this.vesselForm
+          }
+          await this.$http.post(apiUrl + 'deleteVessel', param)
+          this.searchDataAct()
+        }catch (error) {
+          this.$commonact.fault(error)
+        }
+      })
     },
     changeTabAct: function(name) {
       if (this.currentTab != name) {
@@ -402,6 +551,97 @@ export default {
       } catch (error) {
         this.$commonact.fault(error)
       }
+    },
+    checkPasswordCancel: async function() {
+      this.modal.checkPasswordModal = false
+    },
+    checkPasswordAct: async function() {
+      if (this.checkPassword) {
+        try {
+          let param = {
+            page: 'BookingLoad',
+            action: this.checkPasswordType,
+            checkPassword: common.md52(this.checkPassword)
+          }
+          await this.$http.post(apiUrl + 'checkPassword', param)
+          this.modal.checkPasswordModal = false
+          if (this.checkPasswordType === 'vesselModify') {
+            this.doVesselModifyAct()
+          } else if (this.checkPasswordType === 'vesselDelete') {
+            this.doVesselDeleteAct()
+          } else if (this.checkPasswordType === 'emptyRelease') {
+            this.emptyReleaseModalAct(this.emptyReleaseForm)
+          } 
+        } catch (error) {
+          this.$commonact.fault(error)
+        }
+      } else {
+        return this.$Message.error('Please enter right password')
+      }
+    },
+    emptyReleaseModalAct: async function(item) {
+      let param = {
+        export_masterbl_id: item.export_masterbl_id
+      }
+      let response = await this.$http.post(apiUrl + 'getEmptyReleaseData', param)
+      this.$nextTick(function() {
+        let data = response.data.info
+        this.emptyReleaseForm = JSON.parse(JSON.stringify(data.masterbl_bl))
+        this.emptyReleaseQuantitys =  data.quantitys ? JSON.parse(JSON.stringify(data.quantitys)) : []
+        this.emptyReleaseAgent = data.agents ? JSON.parse(JSON.stringify(data.agents)) : []
+        this.emptyReleaseDepot = data.depots ? JSON.parse(JSON.stringify(data.depots)) : []
+        this.modal.emptyReleaseModal = true
+      })
+    },
+    emptyReleaseModalCheckAct: async function(item) {
+      this.$nextTick(function() {
+        this.emptyReleaseForm = JSON.parse(JSON.stringify(item))
+        this.checkPassword = ''
+        this.checkPasswordType = 'emptyRelease'
+        this.modal.checkPasswordModal = true
+      })
+    },
+    releaseValidDateChange: async function(date) {
+        this.emptyReleaseForm.export_masterbl_empty_release_valid_to = date
+    },
+    remoteEmptyReleaseAgent: async function(query) {
+      if(query) {
+        let param = {
+          query: query
+        }
+        let response = await this.$http.post(apiUrl + 'getEmptyReleaseAgents', param)
+        this.$nextTick(function() {
+          let data = response.data.info
+          this.emptyReleaseAgent = data.agents ? JSON.parse(JSON.stringify(data.agents)) : []
+        })
+      }
+    },
+    submitEmptyReleaseAct: async function() {
+      this.$refs['emptyReleaseForm'].validate(async valid => {
+        if (valid) {
+          try {
+            let release_quantity = 0
+            if(this.emptyReleaseQuantitys) {
+              for(let q of this.emptyReleaseQuantitys) {
+                release_quantity = release_quantity + q.release_quantity
+              }
+            }
+            if(release_quantity <= 0) {
+              this.$Message.error('Please input release quantity')
+              return
+            }
+            let param = {
+              ...this.emptyReleaseForm,
+              quantitys: this.emptyReleaseQuantitys
+            }
+            await this.$http.post(apiUrl + 'emptyRelease', param)
+            this.searchDataAct()
+          }catch (error) {
+            this.$commonact.fault(error)
+          }
+          this.modal.emptyReleaseModal = false
+        }
+      })
     }
   }
 }

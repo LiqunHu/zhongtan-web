@@ -38,6 +38,12 @@
               <span slot="close">OFF</span>
           </i-switch>
         </template>
+        <template slot-scope="{ row, index }" slot="edi_depot_empty_release">
+          <i-switch v-model="row.edi_depot_empty_release" size="large" true-value="1" false-value="0" disabled>
+              <span slot="open">ON</span>
+              <span slot="close">OFF</span>
+          </i-switch>
+        </template>
         <template slot-scope="{ row, index }" slot="action">
           <a href="#" class="btn btn-info btn-icon btn-sm" @click="modifyEdiDepotModal(row)">
             <i class="fa fa-edit"></i>
@@ -50,36 +56,45 @@
       <Page class="m-t-10" :total="table.ediDepotTable.total" :page-size="table.ediDepotTable.limit" @on-change="getEdiDepotData"/>
     </panel>
     <Modal v-model="modal.ediDepotModal" title="Discharge Port">
-      <Form :model="workPara" :label-width="180" :rules="formRule.ruleEdiDepotModal" ref="formEdiDepot">
-        <FormItem label="Depot Name" prop="edi_depot_name">
+      <Form :model="workPara" :label-width="150" :rules="formRule.ruleEdiDepotModal" ref="formEdiDepot">
+        <FormItem label="Depot Name" prop="edi_depot_name" style="margin-bottom: 0px;">
           <Input placeholder="Depot Name" v-model="workPara.edi_depot_name"/>
         </FormItem>
-        <FormItem label="Sender Email" prop="edi_depot_sender_email">
+        <FormItem label="Sender Email" prop="edi_depot_sender_email" style="margin-bottom: 0px;">
           <Input placeholder="Sender Email" v-model="workPara.edi_depot_sender_email"/>
         </FormItem>
-        <FormItem label="Gate Regex" prop="edi_depot_gate_in_out_regex">
+        <FormItem label="Gate Regex" prop="edi_depot_gate_in_out_regex" style="margin-bottom: 0px;">
           <Input placeholder="Gate IN/OUT Regex" v-model="workPara.edi_depot_gate_in_out_regex"/>
         </FormItem>
-        <FormItem label="CNT Regex" prop="edi_depot_cnt_regex">
+        <FormItem label="CNT Regex" prop="edi_depot_cnt_regex" style="margin-bottom: 0px;">
           <Input placeholder="CNT Regex" v-model="workPara.edi_depot_cnt_regex"/>
         </FormItem>
-        <FormItem label="DMT Regex" prop="edi_depot_dmt_regex">
+        <FormItem label="DMT Regex" prop="edi_depot_dmt_regex" style="margin-bottom: 0px;">
           <Input placeholder="DMT Regex" v-model="workPara.edi_depot_dmt_regex"/>
         </FormItem>
-        <FormItem label="DMT Format" prop="edi_depot_dmt_format">
+        <FormItem label="DMT Format" prop="edi_depot_dmt_format" style="margin-bottom: 0px;">
           <Input placeholder="DMT Format" v-model="workPara.edi_depot_dmt_format"/>
         </FormItem>
-        <FormItem label="Storing Order Email" prop="edi_depot_storing_order_email">
+        <FormItem label="Storing Order Email" prop="edi_depot_storing_order_email" style="margin-bottom: 0px;">
           <Input placeholder="Storing Order Email" v-model="workPara.edi_depot_storing_order_email"/>
         </FormItem>
-        <FormItem label="Send EDI" prop="edi_depot_send_edi">
+        <FormItem label="Send EDI" prop="edi_depot_send_edi" style="margin-bottom: 0px;">
           <i-switch v-model="workPara.edi_depot_send_edi" size="large" true-value="1" false-value="0">
               <span slot="open">ON</span>
               <span slot="close">OFF</span>
           </i-switch>
         </FormItem>
-        <FormItem label="Send EDI Email" prop="edi_depot_send_edi_email">
+        <FormItem label="Send EDI Email" prop="edi_depot_send_edi_email" style="margin-bottom: 0px;">
           <Input placeholder="Send EDI Email" v-model="workPara.edi_depot_send_edi_email"/>
+        </FormItem>
+        <FormItem label="Send EDI" prop="edi_depot_empty_release" style="margin-bottom: 0px;">
+          <i-switch v-model="workPara.edi_depot_empty_release" size="large" true-value="1" false-value="0">
+              <span slot="open">ON</span>
+              <span slot="close">OFF</span>
+          </i-switch>
+        </FormItem>
+        <FormItem label="Send EDI Email" prop="edi_depot_empty_release_email" style="margin-bottom: 0px;">
+          <Input placeholder="Send EDI Email" type="textarea" v-model="workPara.edi_depot_empty_release_email"/>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -157,6 +172,18 @@ export default {
             {
               title: 'Send EDI Email',
               key: 'edi_depot_send_edi_email',
+              width: 200,
+              align: 'center'
+            },
+            {
+              title: 'Empty Release',
+              slot: 'edi_depot_empty_release',
+              width: 200,
+              align: 'center'
+            },
+            {
+              title: 'Empty Release Email',
+              key: 'edi_depot_empty_release_email',
               width: 200,
               align: 'center'
             },

@@ -3,17 +3,16 @@
     <!-- begin breadcrumb -->
     <ol class="breadcrumb pull-right">
       <li class="breadcrumb-item active">
-        <a href="javascript:;">Business Verification</a>
+        <a href="javascript:;">Commercial Verification</a>
       </li>
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
     <h1 class="page-header">
-      Business Verification
-      <small>Business Verification...</small>
+      Commercial Verification
     </h1>
     <!-- end page-header -->
-    <panel title="Business Verification">
+    <panel title="Commercial Verification">
       <template slot="beforeBody">
         <div class="panel-toolbar">
           <div class="form-inline">
