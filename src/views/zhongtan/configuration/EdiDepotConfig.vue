@@ -87,13 +87,13 @@
         <FormItem label="Send EDI Email" prop="edi_depot_send_edi_email" style="margin-bottom: 0px;">
           <Input placeholder="Send EDI Email" v-model="workPara.edi_depot_send_edi_email"/>
         </FormItem>
-        <FormItem label="Send EDI" prop="edi_depot_empty_release" style="margin-bottom: 0px;">
+        <FormItem label="Empty Release" prop="edi_depot_empty_release" style="margin-bottom: 0px;">
           <i-switch v-model="workPara.edi_depot_empty_release" size="large" true-value="1" false-value="0">
               <span slot="open">ON</span>
               <span slot="close">OFF</span>
           </i-switch>
         </FormItem>
-        <FormItem label="Send EDI Email" prop="edi_depot_empty_release_email" style="margin-bottom: 0px;">
+        <FormItem label="Empty Release Email" prop="edi_depot_empty_release_email" style="margin-bottom: 0px;">
           <Input placeholder="Send EDI Email" type="textarea" v-model="workPara.edi_depot_empty_release_email"/>
         </FormItem>
       </Form>
