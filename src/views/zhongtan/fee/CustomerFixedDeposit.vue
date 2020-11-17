@@ -112,9 +112,9 @@
                 <a href="#" v-if="!row.deposit_approve_date" class="btn btn-primary btn-icon btn-sm" @click="updateFixedDepositModal(row)" title="EDIT">
                     <i class="fa fa-edit"></i>
                 </a>
-                <a href="#" class="btn btn-danger btn-icon btn-sm" @click="invalidFixedDepositAct(row)" title="INVALID">
+                <!-- <a href="#" class="btn btn-danger btn-icon btn-sm" @click="invalidFixedDepositAct(row)" title="INVALID">
                     <i class="fa fa-times"></i>
-                </a>
+                </a> -->
             </template>
         </Table>
         <Page class="m-t-10" :total="table.fixedDepositTable.total" :page-size="table.fixedDepositTable.limit" @on-change="getTableData" />

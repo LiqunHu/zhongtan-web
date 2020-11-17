@@ -72,25 +72,28 @@
             <template slot-scope="{ row, index }" slot="workState">
                 <Tag v-for="item in pagePara.WORK_STATE" v-bind:key="item.id" :color="item.color" v-if="row.deposit_work_state === item.id">{{item.text}}</Tag>
             </template>
-            <template slot-scope="{ row, index }" slot="action" v-if="row.deposit_work_state !=='I' && row.fixed_deposit_type === 'FD'">
-                <a href="#" v-if="!row.deposit_invoice_release_date" class="btn btn-green btn-icon btn-sm disabled">
+            <template slot-scope="{ row, index }" slot="action" v-if="row.deposit_work_state !=='I'">
+                <a href="#" v-if="!row.deposit_invoice_release_date && row.fixed_deposit_type === 'FD'" class="btn btn-green btn-icon btn-sm disabled">
                     <i class="fa fa-money-bill-alt"></i>
                 </a>
-                <Tooltip :content="row.deposit_receipt_release_date_fm" v-else-if="row.deposit_receipt_release_date">
+                <Tooltip :content="row.deposit_receipt_release_date_fm" v-else-if="row.deposit_receipt_release_date && row.fixed_deposit_type === 'FD'">
                     <a href="#" v-if="row.deposit_invoice_release_date" class="btn btn-green btn-icon btn-sm disabled">
                         <i class="fa fa-money-bill-alt"></i>
                     </a>
                 </Tooltip>
-                <Tooltip :content="row.deposit_receipt_date_fm" v-else-if="row.deposit_receipt_date">
+                <Tooltip :content="row.deposit_receipt_date_fm" v-else-if="row.deposit_receipt_date && row.fixed_deposit_type === 'FD'">
                     <a href="#" v-if="row.deposit_invoice_release_date" class="btn btn-green btn-icon btn-sm disabled">
                         <i class="fa fa-money-bill-alt"></i>
                     </a>
                 </Tooltip>
-                <Tooltip :content="row.deposit_invoice_release_date_fm" v-else-if="row.deposit_invoice_release_date">
+                <Tooltip :content="row.deposit_invoice_release_date_fm" v-else-if="row.deposit_invoice_release_date && row.fixed_deposit_type === 'FD'">
                     <a href="#" v-if="row.deposit_invoice_release_date" class="btn btn-green btn-icon btn-sm" @click="receiptFixedDepositModal(row)">
                         <i class="fa fa-money-bill-alt"></i>
                     </a>
                 </Tooltip>
+                <a href="#" class="btn btn-danger btn-icon btn-sm" @click="invalidFixedDepositAct(row)" title="INVALID">
+                    <i class="fa fa-times"></i>
+                </a>
             </template>
         </Table>
         <Page class="m-t-10" :total="table.fixedDepositTable.total" :page-size="table.fixedDepositTable.limit" @on-change="getTableData" />
@@ -394,7 +397,23 @@ export default {
       } else {
         this.customer.options = []
       }
-    }
+    },
+    invalidFixedDepositAct: async function(row) {
+        try {
+            let _self = this
+            _self.$commonact.confirm(`Invalid the fixed deposit?`, async () => {
+                try {
+                    await _self.$http.post(apiUrl + 'invalid', row)
+                    _self.getTableData()
+                    _self.$Message.success('Invalid Fixed Deposit Success')
+                } catch (error) {
+                    this.$commonact.fault(error)
+                }
+            })
+        } catch (error) {
+            this.$commonact.fault(error)
+        }
+    },
   }
 }
 </script>

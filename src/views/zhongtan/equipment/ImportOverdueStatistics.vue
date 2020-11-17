@@ -68,28 +68,25 @@
       </template>
       <Table stripe size="small" ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data" :height="table.containerTable.height" :border="table.containerTable.data && table.containerTable.data.length > 0">
         <template slot-scope="{ row, index }" slot="invoice_containers_empty_return_date">
-          <span style="color: red;" v-if="row.invoice_containers_empty_return_date && row.invoice_containers_actually_return_date && row.invoice_containers_empty_return_date !== row.invoice_containers_actually_return_date"> {{row.invoice_containers_empty_return_date}} </span>
-          <span v-else>{{row.invoice_containers_empty_return_date}}</span>
-        </template>
-        <template slot-scope="{ row, index }" slot="invoice_containers_empty_return_overdue_days">
-          <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_days && row.invoice_containers_actually_return_overdue_days && row.invoice_containers_empty_return_overdue_days !== row.invoice_containers_actually_return_overdue_days"> {{row.invoice_containers_empty_return_overdue_days}} </span>
-          <span v-else>{{row.invoice_containers_empty_return_overdue_days}}</span>
-        </template>
-        <template slot-scope="{ row, index }" slot="invoice_containers_empty_return_overdue_amount">
-          <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_amount && row.invoice_containers_actually_return_overdue_amount && row.invoice_containers_empty_return_overdue_amount !== row.invoice_containers_actually_return_overdue_amount"> {{row.invoice_containers_empty_return_overdue_amount}} </span>
-          <span v-else>{{row.invoice_containers_empty_return_overdue_amount}}</span>
-        </template>
-        <template slot-scope="{ row, index }" slot="invoice_containers_actually_return_date">
           <span style="color: red;" v-if="row.invoice_containers_empty_return_date && row.invoice_containers_actually_return_date && row.invoice_containers_empty_return_date !== row.invoice_containers_actually_return_date"> {{row.invoice_containers_actually_return_date}} </span>
           <span v-else>{{row.invoice_containers_actually_return_date}}</span>
+          <Row class="right-bottom-title" v-if="row.invoice_containers_empty_return_date">
+            <span>{{row.invoice_containers_empty_return_date}}</span>
+          </Row>
         </template>
-        <template slot-scope="{ row, index }" slot="invoice_containers_actually_return_overdue_days">
+        <template slot-scope="{ row, index }" slot="invoice_containers_empty_return_overdue_days">
           <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_days && row.invoice_containers_actually_return_overdue_days && row.invoice_containers_empty_return_overdue_days !== row.invoice_containers_actually_return_overdue_days"> {{row.invoice_containers_actually_return_overdue_days}} </span>
           <span v-else>{{row.invoice_containers_actually_return_overdue_days}}</span>
+          <Row class="right-bottom-title" v-if="row.invoice_containers_empty_return_overdue_days">
+            <span>{{row.invoice_containers_empty_return_overdue_days}}</span>
+          </Row>
         </template>
-        <template slot-scope="{ row, index }" slot="invoice_containers_actually_return_overdue_amount">
+        <template slot-scope="{ row, index }" slot="invoice_containers_empty_return_overdue_amount">
           <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_amount && row.invoice_containers_actually_return_overdue_amount && row.invoice_containers_empty_return_overdue_amount !== row.invoice_containers_actually_return_overdue_amount"> {{row.invoice_containers_actually_return_overdue_amount}} </span>
           <span v-else>{{row.invoice_containers_actually_return_overdue_amount}}</span>
+          <Row class="right-bottom-title" v-if="row.invoice_containers_empty_return_overdue_amount">
+            <span>{{row.invoice_containers_empty_return_overdue_amount}}</span>
+          </Row>
         </template>
         <template slot-scope="{ row, index }" slot="invoice_containers_size">
             {{row.invoice_containers_size}} [
@@ -191,8 +188,8 @@ export default {
             },
             {
               title: 'Return Date',
-              key: 'invoice_containers_empty_return_date',
-              width: 130,
+              slot: 'invoice_containers_empty_return_date',
+              width: 120,
               align: 'center'
             },
             {
@@ -209,13 +206,19 @@ export default {
             },
             {
               title: 'Overdue Days',
-              key: 'invoice_containers_empty_return_overdue_days',
+              slot: 'invoice_containers_empty_return_overdue_days',
               width: 130,
               align: 'center',
             },
             {
               title: 'Overdue Amount',
-              key: 'invoice_containers_empty_return_overdue_amount',
+              slot: 'invoice_containers_empty_return_overdue_amount',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'Receipt Amount',
+              key: 'invoice_containers_empty_return_overdue_amount_receipt',
               width: 150,
               align: 'center'
             },
@@ -328,3 +331,10 @@ export default {
   }
 }
 </script>
+<style scoped>
+.right-bottom-title {
+  text-align: right;
+  font-size: 12px;
+  color: #9ea7b4;
+}
+</style>
