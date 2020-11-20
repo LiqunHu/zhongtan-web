@@ -44,6 +44,12 @@
               <span slot="close">OFF</span>
           </i-switch>
         </template>
+        <template slot-scope="{ row, index }" slot="edi_depot_is_wharf">
+          <i-switch v-model="row.edi_depot_is_wharf" size="large" true-value="1" false-value="0" disabled>
+              <span slot="open">ON</span>
+              <span slot="close">OFF</span>
+          </i-switch>
+        </template>
         <template slot-scope="{ row, index }" slot="action">
           <a href="#" class="btn btn-info btn-icon btn-sm" @click="modifyEdiDepotModal(row)">
             <i class="fa fa-edit"></i>
@@ -56,7 +62,7 @@
       <Page class="m-t-10" :total="table.ediDepotTable.total" :page-size="table.ediDepotTable.limit" @on-change="getEdiDepotData"/>
     </panel>
     <Modal v-model="modal.ediDepotModal" title="Discharge Port">
-      <Form :model="workPara" :label-width="150" :rules="formRule.ruleEdiDepotModal" ref="formEdiDepot">
+      <Form :model="workPara" :label-width="160" :rules="formRule.ruleEdiDepotModal" ref="formEdiDepot">
         <FormItem label="Depot Name" prop="edi_depot_name" style="margin-bottom: 0px;">
           <Input placeholder="Depot Name" v-model="workPara.edi_depot_name"/>
         </FormItem>
@@ -74,6 +80,12 @@
         </FormItem>
         <FormItem label="DMT Format" prop="edi_depot_dmt_format" style="margin-bottom: 0px;">
           <Input placeholder="DMT Format" v-model="workPara.edi_depot_dmt_format"/>
+        </FormItem>
+        <FormItem label="Carrier Regex" prop="edi_depot_carrier_regex" style="margin-bottom: 0px;">
+          <Input placeholder="Carrier Regex" v-model="workPara.edi_depot_carrier_regex"/>
+        </FormItem>
+        <FormItem label="BL Regex" prop="edi_depot_bl_regex" style="margin-bottom: 0px;">
+          <Input placeholder="BL Regex" v-model="workPara.edi_depot_bl_regex"/>
         </FormItem>
         <FormItem label="Storing Order Email" prop="edi_depot_storing_order_email" style="margin-bottom: 0px;">
           <Input placeholder="Storing Order Email" v-model="workPara.edi_depot_storing_order_email"/>
@@ -95,6 +107,12 @@
         </FormItem>
         <FormItem label="Empty Release Email" prop="edi_depot_empty_release_email" style="margin-bottom: 0px;">
           <Input placeholder="Send EDI Email" type="textarea" v-model="workPara.edi_depot_empty_release_email"/>
+        </FormItem>
+        <FormItem label="Wharf" prop="edi_depot_is_wharf" style="margin-bottom: 0px;">
+          <i-switch v-model="workPara.edi_depot_is_wharf" size="large" true-value="1" false-value="0">
+              <span slot="open">ON</span>
+              <span slot="close">OFF</span>
+          </i-switch>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -158,6 +176,18 @@ export default {
               align: 'center'
             },
             {
+              title: 'Carrier Regex',
+              key: 'edi_depot_carrier_regex',
+              width: 250,
+              align: 'center'
+            },
+            {
+              title: 'BL Regex',
+              key: 'edi_depot_bl_regex',
+              width: 250,
+              align: 'center'
+            },
+            {
               title: 'Storing Order Email',
               key: 'edi_depot_storing_order_email',
               width: 200,
@@ -184,6 +214,12 @@ export default {
             {
               title: 'Empty Release Email',
               key: 'edi_depot_empty_release_email',
+              width: 200,
+              align: 'center'
+            },
+            {
+              title: 'Wharf',
+              slot: 'edi_depot_is_wharf',
               width: 200,
               align: 'center'
             },

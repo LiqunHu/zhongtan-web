@@ -62,7 +62,7 @@
         </FormItem>
       </Form>
       <div slot="footer">
-        <Button type="text" size="large" @click="modal.groupModal=false">取消</Button>
+        <Button type="text" size="large" @click="modal.operationPasswordModal=false">取消</Button>
         <Button type="primary" size="large" @click="submitPassword()">确定</Button>
       </div>
     </Modal>
