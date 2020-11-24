@@ -71,9 +71,15 @@
         <template slot-scope="{ row, index }" slot="invoice_containers_no">
           {{row.invoice_containers_no}}<font color="#1890ff" style="margin-left:10px;" v-if="row.invoice_containers_type==='S'">SOC</font>
         </template>
+        <template slot-scope="{ row, index }" slot="invoice_discharge_date">
+          {{row.invoice_containers_edi_discharge_date}}
+          <Row class="right-bottom-title">
+            <span>ATA: {{row.invoice_vessel_ata}}</span>
+          </Row>
+        </template>
         <template slot-scope="{ row, index }" slot="invoice_containers_size">
           {{row.invoice_containers_size}} [
-          <span v-for="item in pagePara.CONTAINER_SIZE" v-if="item.container_size_code === row.invoice_containers_size">{{item.container_size_name}}</span> ]
+          <span v-for="(item, index) in pagePara.CONTAINER_SIZE" :key="index" v-if="item.container_size_code === row.invoice_containers_size">{{item.container_size_name}}</span> ]
         </template>
         <template slot-scope="{ row, index }" slot="invoice_containers_empty_return_date">
           <span style="color: #ff9900;" v-if="row.invoice_containers_empty_return_date_receipt">{{row.invoice_containers_empty_return_date}}</span>
@@ -114,10 +120,12 @@
         </template>
       </Table>
       <Page class="m-t-10" :total="table.containerTable.total" show-sizer show-total :page-size="table.containerTable.limit" @on-change="getTableData" @on-page-size-change="resetTableSizer"/>
-      <Modal v-model="modal.calculationModal" title="Overdue Calculation" width="600">
+      <Modal v-model="modal.calculationModal" title="Overdue Calculation" width="640">
         <Form ref="overdueChargeForm" :model="overdueChargeForm" :label-width="150" style="padding-right: 80px;">
           <FormItem label="Discharge Date">
-            <Input icon="ios-calendar-outline" v-model="overdueChargeForm.invoice_vessel_ata" disabled style="width: 200px;"></Input>
+            <DatePicker v-if="overdueChargeForm.invoice_containers_edi_discharge_date_disabled" type="date" placeholder="Discharge Date" v-model="overdueChargeForm.invoice_containers_edi_discharge_date" format="dd/MM/yyyy" @on-change="dischargeDateChange" :disabled ="returnOverdueDaysDisabled"></DatePicker>
+            <DatePicker v-else type="date" placeholder="Discharge Date" v-model="overdueChargeForm.invoice_containers_edi_discharge_date" format="dd/MM/yyyy" @on-change="dischargeDateChange"></DatePicker>
+            <Tag type="dot">ATA {{overdueChargeForm.invoice_vessel_ata}}</Tag>
           </FormItem>
           <FormItem label="Return Date">
             <DatePicker type="date" placeholder="Return Date" v-model="overdueChargeForm.invoice_containers_empty_return_date" format="dd/MM/yyyy" @on-change="returnDateChange"></DatePicker>
@@ -166,6 +174,12 @@
               <Option v-for="item in customer.options" :value="item.id" :key="item.id">{{item.text}}</Option>
             </Select>
           </FormItem>
+          <FormItem label="TOTAL DEMURRAGE" style="margin-bottom: 0px;">
+            <Input v-model="invoiceForm.totalDemurrage" disabled></Input>
+          </FormItem>
+          <FormItem label="DEDUCTION" style="margin-bottom: 0px;">
+            <Input-number v-model="invoiceForm.deduction" :max="invoiceForm.totalDemurrage" :min="0"></Input-number>
+          </FormItem>
         </Form>
         <div slot="footer">
           <Button type="text" size="large" @click="modal.reInvoiceModal = false">Cancel</Button>
@@ -188,14 +202,15 @@
       </Modal>
       <Modal v-model="modal.invoiceTimelineModal" :title="invoiceTimelineTitle">
         <Timeline>
-          <TimelineItem v-for="(item, index) in containerInvoiceDetail" v-bind:key="item.overdue_invoice_containers_id" v-if="index === 0" color="green">
+          <TimelineItem v-for="(item, index) in containerInvoiceDetail" v-bind:key="index" v-if="index === 0" color="green">
             <i class="fa fa-trophy" slot="dot"></i>
             <p class="timeline-content">Discharge Date: {{item.overdue_invoice_containers_overdue_discharge_date}}</p>
             <p class="timeline-content">Return Date: {{item.overdue_invoice_containers_return_date}}</p>
             <p class="timeline-content">Overdue Days: {{item.overdue_invoice_containers_overdue_days}} Days</p>
             <p class="timeline-content">Overdue Amount: {{item.overdue_invoice_containers_overdue_amount}} USD</p>
+            <p class="timeline-content">Deduction: {{item.overdue_invoice_containers_overdue_deduction}} USD</p>
           </TimelineItem>
-          <TimelineItem v-for="(item, index) in containerInvoiceDetail" v-bind:key="item.overdue_invoice_containers_id">
+          <TimelineItem v-for="item in containerInvoiceDetail" v-bind:key="item.overdue_invoice_containers_id">
               <p class="timeline-time">{{item.invoice_created_at}}</p>
               <p class="timeline-content">{{item.user_name}}</p>
               <p class="timeline-content">Free: {{item.overdue_invoice_containers_overdue_free_days}} Days</p>
@@ -203,6 +218,7 @@
               <p class="timeline-content">Return Date: {{item.overdue_invoice_containers_return_date}}</p>
               <p class="timeline-content">Overdue Days: {{item.overdue_invoice_containers_overdue_increase_days}} Days</p>
               <p class="timeline-content">Overdue Amount: {{item.overdue_invoice_containers_overdue_invoice_amount}} USD</p>
+              <p class="timeline-content">Deduction: {{item.overdue_invoice_containers_overdue_deduction}} USD</p>
               <p class="timeline-content">Receipt: {{item.overdue_invoice_containers_receipt_date}}</p>
           </TimelineItem>
         </Timeline>
@@ -274,7 +290,7 @@ export default {
             },
             {
               title: 'Discharge Date',
-              key: 'invoice_vessel_ata',
+              slot: 'invoice_discharge_date',
               width: 140,
               align: 'center'
             },
@@ -303,6 +319,12 @@ export default {
               align: 'center'
             },
             {
+              title: 'Free Days',
+              key: 'invoice_containers_empty_return_overdue_free_days',
+              width: 120,
+              align: 'center',
+            },
+            {
               title: 'OVERDUE CALCULATION',
               align: 'center',
               children: [
@@ -311,12 +333,6 @@ export default {
                   slot: 'invoice_containers_empty_return_date',
                   align: 'center',
                   width: 120,
-                },
-                {
-                  title: 'Free Days',
-                  key: 'invoice_containers_empty_return_overdue_free_days',
-                  align: 'center',
-                  width: 100,
                 },
                 {
                   title: 'Overdue Days',
@@ -545,50 +561,73 @@ export default {
       this.resetChageRuleForm()
       this.overdueChargeFormOld = Object.assign({}, row)
       this.overdueChargeForm = Object.assign({}, row) // copy obj
+      this.overdueChargeForm.invoice_containers_edi_discharge_date_disabled = this.overdueChargeForm.invoice_containers_edi_discharge_date
       this.returnOverdueDaysDisabled = true
       this.modal.calculationModal = true
     },
+    dischargeDateChange: async function(date) {
+      this.overdueChargeForm.invoice_containers_edi_discharge_date = date
+      if(this.overdueChargeForm.invoice_containers_empty_return_date) {
+        await this.calculationDiff()
+      }else {
+        this.emptySubmitDisabled = false
+      }
+    },
     returnDateChange: async function(date) {
-      let diff = moment(date, "DD/MM/YYYY").diff(moment(this.overdueChargeForm.invoice_vessel_ata, "DD/MM/YYYY"), 'days')
-      if(diff >= 0) {
-        try {
-          let param = {
-            invoice_vessel_ata: this.overdueChargeForm.invoice_vessel_ata,
-            return_date: date,
-            invoice_masterbi_cargo_type: this.overdueChargeForm.invoice_masterbi_cargo_type,
-            invoice_masterbi_destination: this.overdueChargeForm.invoice_masterbi_destination,
-            invoice_containers_bl: this.overdueChargeForm.invoice_containers_bl,
-            invoice_containers_size: this.overdueChargeForm.invoice_containers_size,
-            invoice_containers_empty_return_overdue_free_days: this.overdueChargeForm.invoice_containers_empty_return_overdue_free_days
+      this.overdueChargeForm.invoice_containers_empty_return_date = date
+      await this.calculationDiff()
+    },
+    calculationDiff: async function() {
+      let discharge_date = this.overdueChargeForm.invoice_vessel_ata
+      if(this.overdueChargeForm.invoice_containers_edi_discharge_date) {
+        if(typeof this.overdueChargeForm.invoice_containers_edi_discharge_date === 'object') {
+          discharge_date = moment(this.overdueChargeForm.invoice_containers_edi_discharge_date).local().format('DD/MM/YYYY')
+        } else {
+          discharge_date = this.overdueChargeForm.invoice_containers_edi_discharge_date
+        }
+      }
+      let return_date = this.overdueChargeForm.invoice_containers_empty_return_date
+      if(discharge_date && return_date) {
+        let diff = moment(return_date, "DD/MM/YYYY").diff(moment(discharge_date, "DD/MM/YYYY"), 'days')
+        if(diff >= 0) {
+          try {
+            let param = {
+              discharge_date: discharge_date,
+              return_date: return_date,
+              invoice_masterbi_cargo_type: this.overdueChargeForm.invoice_masterbi_cargo_type,
+              invoice_masterbi_destination: this.overdueChargeForm.invoice_masterbi_destination,
+              invoice_containers_bl: this.overdueChargeForm.invoice_containers_bl,
+              invoice_containers_size: this.overdueChargeForm.invoice_containers_size,
+              invoice_containers_empty_return_overdue_free_days: this.overdueChargeForm.invoice_containers_empty_return_overdue_free_days
+            }
+            let response = await this.$http.post(apiUrl + 'calculation', param)
+            this.$nextTick(function() {
+              this.overdueChargeForm.invoice_containers_empty_return_diff_days = response.data.info.diff_days
+              this.overdueChargeForm.invoice_containers_empty_return_overdue_days = response.data.info.overdue_days
+              this.overdueChargeForm.invoice_containers_empty_return_overdue_amount = response.data.info.overdue_amount
+              this.emptySubmitDisabled = false
+              this.$forceUpdate()
+            })
+          } catch (error) {
+            this.ladenSubmitDisabled = true
+            this.emptySubmitDisabled = true
+            this.$commonact.fault(error)
           }
-          let response = await this.$http.post(apiUrl + 'calculation', param)
-          this.overdueChargeForm.invoice_containers_empty_return_date = date
-          this.overdueChargeForm.invoice_containers_empty_return_diff_days = response.data.info.diff_days
-          this.overdueChargeForm.invoice_containers_empty_return_overdue_days = response.data.info.overdue_days
-          this.overdueChargeForm.invoice_containers_empty_return_overdue_amount = response.data.info.overdue_amount
-          this.emptySubmitDisabled = false
-        } catch (error) {
+        } else {
           this.ladenSubmitDisabled = true
           this.emptySubmitDisabled = true
-          this.$commonact.fault(error)
+          return this.$Message.error('return must after discharge date')
         }
-      } else {
-        this.ladenSubmitDisabled = true
-        this.emptySubmitDisabled = true
-        return this.$Message.error('return must after discharge date')
       }
     },
-    ladenSubmitAct: async function() {
-      try {
-        await this.$http.post(apiUrl + 'ladenReleaseSave', this.overdueChargeForm)
-        this.modal.calculationModal = false
-        this.getTableData()
-      } catch (error) {
-        this.$commonact.fault(error)
-      }
-    },
+
     emptySubmitAct: async function() {
       try {
+        if(this.overdueChargeForm.invoice_containers_edi_discharge_date) {
+          if(typeof this.overdueChargeForm.invoice_containers_edi_discharge_date === 'object') {
+            this.overdueChargeForm.invoice_containers_edi_discharge_date = moment(this.overdueChargeForm.invoice_containers_edi_discharge_date).local().format('DD/MM/YYYY')
+          }
+        }
         await this.$http.post(apiUrl + 'emptyReturnSave', this.overdueChargeForm)
         this.modal.calculationModal = false
         this.getTableData()
@@ -631,7 +670,7 @@ export default {
       try {
         this.checkPassword = ''
         this.modal.checkPasswordModal = true
-        this.checkPasswordType = 'emptyReInvoice'
+        this.checkPasswordType = 'demurrageReinvoice'
       } catch (error) {
         this.$commonact.fault(error)
       }
@@ -707,7 +746,7 @@ export default {
       try {
         this.checkPassword = ''
         this.modal.checkPasswordModal = true
-        this.checkPasswordType = 'returnOverdueDaysEdit'
+        this.checkPasswordType = 'calculationEdit'
       } catch (error) {
         this.$commonact.fault(error)
       }
@@ -717,13 +756,18 @@ export default {
         if(!this.checkPassword) {
           return this.$Message.error('Please enter right password')
         }
-        await this.$http.post(apiUrl + 'checkPassword', { check_password: common.md52(this.checkPassword)})
+        let param = {
+          page: 'Import Overdue Invoice Admin',
+          action: this.checkPasswordType,
+          checkPassword: common.md52(this.checkPassword)
+        }
+        await this.$http.post(apiUrl + 'checkPassword', param)
         this.modal.checkPasswordModal = false
-        if(this.checkPasswordType === 'returnOverdueDaysEdit') {
+        if(this.checkPasswordType === 'calculationEdit') {
           this.returnOverdueDaysDisabled = false
           this.emptySubmitDisabled = false
           this.ladenSubmitDisabled = false
-        } else if(this.checkPasswordType === 'emptyReInvoice'){
+        } else if(this.checkPasswordType === 'demurrageReinvoice'){
           this.actemptyReInvoiceModal()
         }
       } catch (error) {

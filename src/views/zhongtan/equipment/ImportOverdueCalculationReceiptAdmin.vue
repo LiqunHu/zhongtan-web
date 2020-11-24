@@ -89,6 +89,12 @@
             </template>
           </Poptip>
         </template>
+        <template slot-scope="{ row, index }" slot="invoice_discharge_date">
+          {{row.invoice_containers_edi_discharge_date}}
+          <Row class="right-bottom-title">
+            <span>ATA: {{row.invoice_vessel_ata}}</span>
+          </Row>
+        </template>
         <template slot-scope="{ row, index }" slot="invoice_containers_size">
             {{row.invoice_containers_size}} [
             <span v-for="item in pagePara.CONTAINER_SIZE" v-if="item.container_size_code === row.invoice_containers_size">{{item.container_size_name}}</span> ]
@@ -174,7 +180,7 @@ export default {
             },
             {
               title: 'Discharge Date',
-              key: 'invoice_vessel_ata',
+              slot: 'invoice_discharge_date',
               width: 140,
               align: 'center'
             },
@@ -428,3 +434,10 @@ export default {
   }
 }
 </script>
+<style scoped>
+.right-bottom-title {
+  text-align: right;
+  font-size: 12px;
+  color: #9ea7b4;
+}
+</style>
