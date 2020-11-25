@@ -519,6 +519,8 @@ export default {
     bookingLoadModalAct: async function() {
       this.workPara = {}
       this.action = 'add'
+      this.$refs.upload.fileList = []
+      this.files.fileList = []
       this.modal.bookingModal = true
     },
     handleSuccess(res, file, fileList) {
@@ -547,7 +549,7 @@ export default {
         await this.$http.post(apiUrl + 'uploadBooking', this.workPara)
         this.$Message.success('submit success')
         this.modal.bookingModal = false
-        this.searchTableAct()
+        this.searchDataAct()
       } catch (error) {
         this.$commonact.fault(error)
       }

@@ -108,6 +108,12 @@
             </div>
           </Tooltip>
         </template>
+        <template slot-scope="{ row, index }" slot="invoice_discharge_date">
+          {{row.invoice_containers_edi_discharge_date}}
+          <Row class="right-bottom-title">
+            <span>ATA: {{row.invoice_vessel_ata}}</span>
+          </Row>
+        </template>
         <template slot-scope="{ row, index }" slot="invoice_data">
           <Poptip trigger="hover" placement="right" width="400">
             {{row.invoice_containers_empty_return_overdue_amount_invoice}}
@@ -121,7 +127,7 @@
                       </tr>
                   </thead>
                   <tbody>
-                      <tr v-for="item in row.invoice_data" :key="item">
+                      <tr v-for="(item, index1) in row.invoice_data" :key="index1">
                           <td style="width: 150px; text-align: center;">{{item.invoice_no}}</td>
                           <td style="width: 100px; text-align: center;">{{item.invoice_amount}}</td>
                           <td style="width: 150px; text-align: center;">{{item.invoice_date}}</td>
@@ -143,7 +149,7 @@
                       </tr>
                   </thead>
                   <tbody>
-                      <tr v-for="item in row.receipt_data" :key="item">
+                      <tr v-for="(item, index1) in row.receipt_data" :key="index1">
                         <td style="width: 250px; text-align: center;">{{item.receipt_no}}</td>
                         <td style="width: 150px; text-align: center;">{{item.receipt_date}}</td>
                       </tr>
@@ -203,7 +209,7 @@ export default {
             },
             {
               title: 'Discharge Date',
-              key: 'invoice_vessel_ata',
+              slot: 'invoice_discharge_date',
               width: 140,
               align: 'center'
             },
@@ -342,3 +348,10 @@ export default {
   }
 }
 </script>
+<style scoped>
+.right-bottom-title {
+  text-align: right;
+  font-size: 12px;
+  color: #9ea7b4;
+}
+</style>

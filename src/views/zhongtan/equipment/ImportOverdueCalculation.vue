@@ -123,8 +123,7 @@
       <Modal v-model="modal.calculationModal" title="Overdue Calculation" width="640">
         <Form ref="overdueChargeForm" :model="overdueChargeForm" :label-width="150" style="padding-right: 80px;">
           <FormItem label="Discharge Date">
-            <DatePicker v-if="overdueChargeForm.invoice_containers_edi_discharge_date_disabled" type="date" placeholder="Discharge Date" v-model="overdueChargeForm.invoice_containers_edi_discharge_date" format="dd/MM/yyyy" @on-change="dischargeDateChange" :disabled ="returnOverdueDaysDisabled"></DatePicker>
-            <DatePicker v-else type="date" placeholder="Discharge Date" v-model="overdueChargeForm.invoice_containers_edi_discharge_date" format="dd/MM/yyyy" @on-change="dischargeDateChange"></DatePicker>
+            <DatePicker type="date" placeholder="Discharge Date" v-model="overdueChargeForm.invoice_containers_edi_discharge_date" format="dd/MM/yyyy" @on-change="dischargeDateChange" :disabled ="returnOverdueDaysDisabled"></DatePicker>
             <Tag type="dot">ATA {{overdueChargeForm.invoice_vessel_ata}}</Tag>
           </FormItem>
           <FormItem label="Return Date">

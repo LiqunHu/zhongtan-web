@@ -119,6 +119,12 @@
             </div>
           </Tooltip>
         </template>
+        <template slot-scope="{ row, index }" slot="invoice_discharge_date">
+          {{row.invoice_containers_edi_discharge_date}}
+          <Row class="right-bottom-title">
+            <span>ATA: {{row.invoice_vessel_ata}}</span>
+          </Row>
+        </template>
       </Table>
       <Page class="m-t-10" :total="table.containerTable.total" show-sizer show-total :page-size="table.containerTable.limit" @on-change="getTableData" @on-page-size-change="resetTableSizer"/>
     </panel>
@@ -182,7 +188,7 @@ export default {
             },
             {
               title: 'Discharge Date',
-              key: 'invoice_vessel_ata',
+              slot: 'invoice_discharge_date',
               width: 130,
               align: 'center'
             },

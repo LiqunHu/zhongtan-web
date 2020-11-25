@@ -106,7 +106,8 @@
           </Row>
         </template>
         <template slot-scope="{ row, index }" slot="invoice_containers_actually_return_date">
-          <span style="color: red;" v-if="row.invoice_containers_empty_return_date && row.invoice_containers_actually_return_date && row.invoice_containers_empty_return_date !== row.invoice_containers_actually_return_date"> {{row.invoice_containers_actually_return_date}} </span>
+          <span style="color: #f59c1a;" v-if="row.invoice_containers_edi_read && row.invoice_containers_edi_read !== '0'"> {{row.invoice_containers_actually_return_date}} </span>
+          <span style="color: red;" v-else-if="row.invoice_containers_empty_return_date && row.invoice_containers_actually_return_date && row.invoice_containers_empty_return_date !== row.invoice_containers_actually_return_date"> {{row.invoice_containers_actually_return_date}} </span>
           <span v-else>{{row.invoice_containers_actually_return_date}}</span>
         </template>
         <template slot-scope="{ row, index }" slot="invoice_containers_actually_return_overdue_days">
@@ -141,8 +142,7 @@
       <Modal v-model="modal.calculationModal" title="Overdue Calculation" width="640">
         <Form ref="overdueChargeForm" :model="overdueChargeForm" :label-width="150" style="padding-right: 80px;">
           <FormItem label="Discharge Date">
-            <DatePicker v-if="overdueChargeForm.invoice_containers_edi_discharge_date_disabled" type="date" placeholder="Discharge Date" v-model="overdueChargeForm.invoice_containers_edi_discharge_date" format="dd/MM/yyyy" @on-change="dischargeDateChange" :disabled ="returnOverdueDaysDisabled"></DatePicker>
-            <DatePicker v-else type="date" placeholder="Discharge Date" v-model="overdueChargeForm.invoice_containers_edi_discharge_date" format="dd/MM/yyyy" @on-change="dischargeDateChange"></DatePicker>
+            <DatePicker type="date" placeholder="Discharge Date" v-model="overdueChargeForm.invoice_containers_edi_discharge_date" format="dd/MM/yyyy" @on-change="dischargeDateChange" :disabled ="returnOverdueDaysDisabled"></DatePicker>
             <Tag type="dot">ATA {{overdueChargeForm.invoice_vessel_ata}}</Tag>
           </FormItem>
           <FormItem label="Return Date">
