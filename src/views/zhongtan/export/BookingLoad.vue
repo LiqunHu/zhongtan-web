@@ -88,6 +88,14 @@
                         <i class="fa fa-money-bill-alt"></i>
                       </a>
                     </Tooltip>
+                    <Tooltip content="EDIT">
+                      <a v-if="row.export_masterbl_empty_release_date" href="#" class="btn btn-primary btn-icon btn-sm" v-on:click="bookingEditCheckModalAct(row)">
+                        <i class="fa fa-edit"></i>
+                      </a>
+                      <a v-else href="#" class="btn btn-primary btn-icon btn-sm" v-on:click="bookingEditModalAct(row)">
+                        <i class="fa fa-edit"></i>
+                      </a>
+                    </Tooltip>
                   </template>
                 </Table>
                 <Page class="m-t-10" :total="blTable.total" :page-size="blTable.limit" @on-change="searchBlAct" />
@@ -197,6 +205,24 @@
         <Button type="primary" size="large" @click="submitEmptyReleaseAct">Submit</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.bookingEditModal" title="BOOKING EDIT" width="640">
+      <Form ref="bookingEditForm" :model="bookingEditForm" :rules="bookingEditFormRule" :label-width="128">
+        <FormItem label="FORWARDER" prop="export_masterbl_empty_release_agent">
+          <Select v-model="bookingEditForm.export_masterbl_empty_release_agent" filterable :remote-method="remoteEmptyReleaseAgent">
+            <Option v-for="(item, index) in emptyReleaseAgent" :value="item.user_id" :key="index" :label="item.user_name">
+              <span>{{item.user_name}}</span>
+              <Tag color="success" v-if="item.user_customer_type === '1'" style="float: right;">AGEN</Tag>
+              <Tag color="warning" v-if="item.user_customer_type === '2'" style="float: right;">CNEE</Tag>
+              <Tag color="error" v-if="item.user_blacklist === '1'" style="float: right;">BLACK</Tag>
+            </Option>
+          </Select>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.bookingEditModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="submitBookingAct">Submit</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -209,7 +235,7 @@ export default {
   name: 'BookingLoadControl',
   data: function() {
     return {
-      modal: { bookingModal: false, checkPasswordModal: false, emptyReleaseModal: false},
+      modal: { bookingModal: false, checkPasswordModal: false, emptyReleaseModal: false, bookingEditModal: false},
       headers: common.uploadHeaders(),
       vesselHeight: common.getTableHeight(),
       search_data: {
@@ -233,7 +259,7 @@ export default {
             width: 220
           },
           {
-            title: 'EMPTY RELEASE',
+            title: 'ACT',
             slot: 'empty_release',
             width: 200
           },
@@ -347,11 +373,15 @@ export default {
         export_masterbl_empty_release_agent: [{required: true,  message: 'The empty release agent cannot be empty', trigger: 'blur'}],
         export_masterbl_empty_release_depot: [{required: true, message: 'The empty release depot cannot be empty', trigger: 'blur'}]
       },
+      bookingEditFormRule: {
+        export_masterbl_empty_release_agent: [{required: true,  message: 'The empty release agent cannot be empty', trigger: 'blur'}]
+      },
       emptyReleaseQuantitys: [],
       emptyReleaseAgent: [],
       emptyReleaseDepot: [],
       checkPassword: '',
-      checkPasswordType: ''
+      checkPasswordType: '',
+      bookingEditForm: {}
     }
   },
   created() {
@@ -573,6 +603,8 @@ export default {
             this.doVesselDeleteAct()
           } else if (this.checkPasswordType === 'emptyRelease') {
             this.emptyReleaseModalAct(this.emptyReleaseForm)
+          } else if (this.checkPasswordType === 'bookingEdit') {
+            this.bookingEditModalAct(this.bookingEditForm)
           } 
         } catch (error) {
           this.$commonact.fault(error)
@@ -642,6 +674,34 @@ export default {
             this.$commonact.fault(error)
           }
           this.modal.emptyReleaseModal = false
+        }
+      })
+    },
+    bookingEditCheckModalAct: async function(item) {
+      this.$nextTick(function() {
+        this.bookingEditForm = JSON.parse(JSON.stringify(item))
+        this.checkPassword = ''
+        this.checkPasswordType = 'bookingEdit'
+        this.modal.checkPasswordModal = true
+      })
+    },
+    bookingEditModalAct: async function(item) {
+      this.bookingEditForm = JSON.parse(JSON.stringify(item))
+      this.modal.bookingEditModal = true
+    },
+    submitBookingAct: async function(item) {
+      this.$refs['bookingEditForm'].validate(async valid => {
+        if (valid) {
+          try {
+            let param = {
+              ...this.bookingEditForm
+            }
+            await this.$http.post(apiUrl + 'bookingDataSave', param)
+            this.searchDataAct()
+          }catch (error) {
+            this.$commonact.fault(error)
+          }
+          this.modal.bookingEditModal = false
         }
       })
     }
