@@ -187,6 +187,20 @@
             <Option v-for="(item, index) in emptyReleaseDepot" :value="item.edi_depot_name" :key="index">{{ item.edi_depot_name }}</Option>
           </Select>
         </FormItem>
+        <FormItem label="Agent's Staff">
+          <Row :gutter="16">
+            <Col span="12">Name</Col>
+            <Col span="10">ID</Col>
+          </Row>
+          <Row :gutter="16" v-for="(item, index) in emptyReleaseAgentStaff" :key="index">
+            <Col span="12">
+              <Input v-model="item.staff_name" placeholder="STAFF NAME"/>
+            </Col>
+            <Col span="12">
+              <Input v-model="item.staff_id" placeholder="STAFF ID"/>
+            </Col>
+          </Row>
+        </FormItem>
         <FormItem label="Quantity">
           <Row>
             <Col v-for="(item, index) in emptyReleaseQuantitys" span="12" :key="index">
@@ -379,6 +393,7 @@ export default {
       emptyReleaseQuantitys: [],
       emptyReleaseAgent: [],
       emptyReleaseDepot: [],
+      emptyReleaseAgentStaff: [],
       checkPassword: '',
       checkPasswordType: '',
       bookingEditForm: {}
@@ -624,6 +639,7 @@ export default {
         this.emptyReleaseQuantitys =  data.quantitys ? JSON.parse(JSON.stringify(data.quantitys)) : []
         this.emptyReleaseAgent = data.agents ? JSON.parse(JSON.stringify(data.agents)) : []
         this.emptyReleaseDepot = data.depots ? JSON.parse(JSON.stringify(data.depots)) : []
+        this.emptyReleaseAgentStaff = data.agent_staff ? JSON.parse(JSON.stringify(data.agent_staff)) : [{staff_name: '', staff_id: ''}, {staff_name: '', staff_id: ''}]
         this.modal.emptyReleaseModal = true
       })
     },
@@ -666,6 +682,7 @@ export default {
             }
             let param = {
               ...this.emptyReleaseForm,
+              agentStaff: this.emptyReleaseAgentStaff,
               quantitys: this.emptyReleaseQuantitys
             }
             await this.$http.post(apiUrl + 'emptyRelease', param)
