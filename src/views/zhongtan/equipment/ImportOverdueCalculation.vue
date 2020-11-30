@@ -103,7 +103,10 @@
           </Row>
         </template>
         <template slot-scope="{ row, index }" slot="empty_overdue_calculation">
-          <a href="#" class="btn btn-danger btn-icon btn-sm" title="UNINVOICE" v-if="row.invoice_containers_empty_return_edit_flg === '1' && row.invoice_containers_type!=='S'" @click.prevent="emptyOverdueCalculationModal(row)">
+          <a href="#" class="btn btn-success btn-icon btn-sm" title="RECEIPT" v-if="row.invoice_containers_empty_return_overdue_amount_receipt && row.invoice_containers_actually_return_overdue_amount && row.invoice_containers_empty_return_overdue_amount_receipt === row.invoice_containers_actually_return_overdue_amount">
+            <i class="fa fa-calculator"></i>
+          </a>
+          <a href="#" class="btn btn-danger btn-icon btn-sm" title="UNINVOICE" v-else-if="row.invoice_containers_empty_return_edit_flg === '1' && row.invoice_containers_type!=='S'" @click.prevent="emptyOverdueCalculationModal(row)">
             <i class="fa fa-calculator"></i>
           </a>
           <a href="#" class="btn btn-primary btn-icon btn-sm" v-else-if="row.invoice_containers_type!=='S'" @click.prevent="emptyOverdueCalculationModal(row)">
@@ -480,7 +483,10 @@ export default {
         this.table.containerTable.data = JSON.parse(JSON.stringify(data.rows))
         if(this.table.containerTable.data) {
           for(let d of this.table.containerTable.data) {
-            if((d.invoice_containers_empty_return_receipt_date && d.invoice_containers_empty_return_overdue_amount && parseInt(d.invoice_containers_empty_return_overdue_amount) === 0) 
+            if((d.invoice_containers_empty_return_overdue_amount_receipt && d.invoice_containers_actually_return_overdue_amount && parseInt(d.invoice_containers_empty_return_overdue_amount_receipt) === parseInt(d.invoice_containers_actually_return_overdue_amount))
+            || (d.invoice_containers_empty_return_overdue_amount_receipt && d.invoice_containers_empty_return_overdue_amount && parseInt(d.invoice_containers_empty_return_overdue_amount_receipt) === parseInt(d.invoice_containers_empty_return_overdue_amount))) {
+              d._disabled = true
+            } else if((d.invoice_containers_empty_return_receipt_date && d.invoice_containers_empty_return_overdue_amount && parseInt(d.invoice_containers_empty_return_overdue_amount) === 0) 
                 || (d.invoice_containers_empty_return_date && d.invoice_containers_empty_return_overdue_amount && parseInt(d.invoice_containers_empty_return_overdue_amount) > 0)) {
               d._disabled = false
             } else {

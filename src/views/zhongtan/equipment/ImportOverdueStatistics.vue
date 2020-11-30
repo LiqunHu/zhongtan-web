@@ -67,6 +67,13 @@
         </div>
       </template>
       <Table stripe size="small" ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data" :height="table.containerTable.height" :border="table.containerTable.data && table.containerTable.data.length > 0">
+        <template slot-scope="{ row, index }" slot="invoice_containers_no">
+          {{row.invoice_containers_no}}<font color="#1890ff" style="margin-left:10px;" v-if="row.invoice_containers_type==='S'">SOC</font>
+        </template>
+        <template slot-scope="{ row, index }" slot="invoice_masterbi_demurrage_party">
+          <font color="red" style="font-weight: bold;" v-if="row.invoice_containers_type==='S'">SOC</font>
+          <font v-else>{{row.invoice_masterbi_demurrage_party}}</font>
+        </template>
         <template slot-scope="{ row, index }" slot="invoice_containers_empty_return_date">
           <span style="color: red;" v-if="row.invoice_containers_empty_return_date && row.invoice_containers_actually_return_date && row.invoice_containers_empty_return_date !== row.invoice_containers_actually_return_date"> {{row.invoice_containers_actually_return_date}} </span>
           <span v-else>{{row.invoice_containers_actually_return_date}}</span>
@@ -146,8 +153,8 @@ export default {
           columns: [
             {
               title: 'Container#',
-              key: 'invoice_containers_no',
-              width: 140,
+              slot: 'invoice_containers_no',
+              width: 160,
               align: 'center'
             },
             {
@@ -230,7 +237,7 @@ export default {
             },
             {
               title: 'Demurrage party',
-              key: 'invoice_masterbi_demurrage_party',
+              slot: 'invoice_masterbi_demurrage_party',
               width: 260,
               align: 'center'
             },

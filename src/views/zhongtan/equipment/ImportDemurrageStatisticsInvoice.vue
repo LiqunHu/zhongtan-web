@@ -13,7 +13,7 @@
       <small></small>
     </h1>
     <!-- end page-header -->
-    <panel title="Demurrage Statistics">
+    <panel title="Demurrage Invoice Statistics">
       <template slot="beforeBody">
         <div class="panel-toolbar">
           <div class="form-inline">
