@@ -125,7 +125,7 @@
             :on-format-error="handleFormatError"
             :on-exceeded-size="handleMaxSize"
             type="drag"
-            action="/api/zhongtan/import/ImportWork/upload"
+            action="/api/zhongtan/export/BookingLoad/upload"
             style="display: inline-block;width:58px;"
           >
             <div style="width: 58px;height:58px;line-height: 58px;">

@@ -211,6 +211,9 @@
               <Option v-for="item in customer.options" :value="item.id" :key="item.id">{{item.text}}</Option>
             </Select>
           </FormItem>
+          <FormItem label="TOTAL DEMURRAGE" style="margin-bottom: 0px;">
+            <Input v-model="invoiceForm.totalDemurrage" disabled></Input>
+          </FormItem>
         </Form>
         <div slot="footer">
           <Button type="text" size="large" @click="modal.invoiceModal = false">Cancel</Button>
@@ -818,6 +821,7 @@ export default {
     emptyInvoiceModal: async function() {
       let selection = this.$refs.containerTable.getSelection()
       let invoice_customer_id = ''
+      let totalDemurrage = 0
       if(selection && selection.length > 0) {
         for(let d of selection) {
           if(d.customerINFO && d.customerINFO.length > 0) {
@@ -828,10 +832,17 @@ export default {
             break
           }
         }
+        try {
+          let response = await this.$http.post(apiUrl + 'getInvoiceSelection', {action: 'invoice', selectAll: this.tableSelectAll, selection: selection, invoicePara: this.invoiceForm})
+          totalDemurrage = response.data.info.totalDemurrage
+        } catch (error) {
+          this.$commonact.fault(error)
+        }
       }
       this.$nextTick(function() {
         this.invoiceForm.invoice_customer_id = invoice_customer_id
       })
+      this.invoiceForm.totalDemurrage = totalDemurrage
       this.modal.invoiceModal = true
     },
     emptyReInvoiceModal: async function() {
@@ -849,11 +860,6 @@ export default {
       let totalDemurrage = 0
       if(selection && selection.length > 0) {
         for(let d of selection) {
-          if(d.invoice_containers_empty_return_overdue_amount) {
-            totalDemurrage += parseInt(d.invoice_containers_empty_return_overdue_amount)
-          }
-        }
-        for(let d of selection) {
           if(d.customerINFO && d.customerINFO.length > 0) {
             this.customer.loading = true
             this.customer.options = JSON.parse(JSON.stringify(d.customerINFO))
@@ -861,6 +867,12 @@ export default {
             invoice_customer_id = d.invoice_containers_customer_id
             break
           }
+        }
+        try {
+          let response = await this.$http.post(apiUrl + 'getInvoiceSelection', {action: 'reinvoice', selectAll: this.tableSelectAll, selection: selection, invoicePara: this.invoiceForm})
+          totalDemurrage = response.data.info.totalDemurrage
+        } catch (error) {
+          this.$commonact.fault(error)
         }
       }
       this.$nextTick(function() {

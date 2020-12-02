@@ -45,6 +45,8 @@ const routes = [
   resolve) },
   { path: '/admin/zhongtan/fee/CustomerFixedReceipt', component: resolve => require(['@/views/zhongtan/fee/CustomerFixedReceipt'], 
   resolve) },
+  { path: '/admin/zhongtan/fee/ExportFeeData', component: resolve => require(['@/views/zhongtan/fee/ExportFeeData'], 
+  resolve) },
   { path: '/admin/zhongtan/configuration/IcdConfig', component: resolve => require(['@/views/zhongtan/configuration/IcdConfig'], resolve) },
   { path: '/admin/zhongtan/configuration/ContainerSizeTypeConfig', component: resolve => require(['@/views/zhongtan/configuration/ContainerSizeTypeConfig'], resolve) },
   { path: '/admin/zhongtan/configuration/DischargePortConfig', component: resolve => require(['@/views/zhongtan/configuration/DischargePortConfig'], resolve) },
