@@ -349,7 +349,7 @@ export default {
           },
           {
             title: 'Container No',
-            slot: 'export_container_no',
+            key: 'export_container_no',
             width: 200
           },
           {
@@ -440,12 +440,15 @@ export default {
           this.$commonact.fault(error)
       }
     },
-    searchBlAct: async function() {
+    searchBlAct: async function(index) {
       try {
+        if (index) {
+          this.blTable.offset = (index - 1) * this.blTable.limit
+        }
         let searchPara = {
             ...this.search_data,
-            limit: 10,
-            offset: 0
+            limit: this.blTable.limit,
+            offset: this.blTable.offset
         }
         let response = await this.$http.post(apiUrl + 'searchBl', searchPara)
         this.$nextTick(function() {
@@ -458,12 +461,15 @@ export default {
           this.$commonact.fault(error)
       }
     },
-    searchContainerAct: async function() {
+    searchContainerAct: async function(index) {
       try {
+        if (index) {
+          this.containerTable.offset = (index - 1) * this.containerTable.limit
+        }
         let searchPara = {
             ...this.search_data,
-            limit: 10,
-            offset: 0
+            limit: this.containerTable.limit,
+            offset: this.containerTable.offset
         }
         let response = await this.$http.post(apiUrl + 'searchContainer', searchPara)
         this.$nextTick(function() {

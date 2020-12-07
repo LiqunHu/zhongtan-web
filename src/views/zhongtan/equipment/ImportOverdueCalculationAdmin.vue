@@ -69,7 +69,7 @@
           </Poptip>
         </template>
         <template slot-scope="{ row, index }" slot="invoice_containers_no">
-          {{row.invoice_containers_no}}<font color="#1890ff" style="margin-left:10px;" v-if="row.invoice_containers_type==='S'">SOC</font>
+          <i style="color: #FF9900; margin-right:10px;" class="fa fa-money-bill-alt" v-if="row.invoice_containers_empty_return_overdue_deduction && row.invoice_containers_empty_return_overdue_deduction > 0"></i>{{row.invoice_containers_no}}<font color="#1890ff" style="margin-left:10px;" v-if="row.invoice_containers_type==='S'">SOC</font>
         </template>
         <template slot-scope="{ row, index }" slot="invoice_discharge_date">
           {{row.invoice_containers_edi_discharge_date}}
