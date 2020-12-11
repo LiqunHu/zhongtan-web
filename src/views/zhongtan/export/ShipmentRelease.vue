@@ -40,7 +40,10 @@
           </div>
           <div slot="right">
             <Card>
-              <p slot="title">#M B/L No. {{bookingShipment.export_masterbl_bl}}</p>
+              <div slot="title">
+                #M B/L No. {{bookingShipment.export_masterbl_bl}}
+                <Tag color="primary">{{bookingShipment.export_masterbl_cargo_type}}</Tag>
+              </div>
               <Button slot="extra" size="small" type="primary">详细信息</Button>
               <Button slot="extra" size="small" style="margin-left: 7px;">操作历史</Button>
               <Row>
@@ -51,13 +54,13 @@
             </Card>
             <Card>
               <Button slot="title" size="small" type="info" icon="ios-settings-outline" v-on:click="saveShipmentAct">SAVE</Button>
-              <Button slot="title" size="small" type="primary" icon="ios-send-outline" style="margin-left: 7px;">SUBMIT</Button>
-              <Button slot="title" size="small" type="error" icon="ios-undo-outline" style="margin-left: 7px;">UNDO</Button>
-              <Button slot="title" size="small" type="success" icon="ios-paper-outline" style="margin-left: 7px;">INVOICE</Button>
+              <Button slot="title" size="small" type="primary" icon="ios-send-outline" style="margin-left: 7px;" v-on:click="submitShipmentAct" :disabled="submitDisabled">SUBMIT</Button>
+              <Button slot="title" size="small" type="error" icon="ios-undo-outline" style="margin-left: 7px;" v-on:click="undoShipmentAct" :disabled="undoDisabled">UNDO</Button>
+              <Button slot="title" size="small" type="success" icon="ios-paper-outline" style="margin-left: 7px;" v-on:click="invoiceShipmentAct" :disabled="invoiceDisabled">INVOICE</Button>
               <Row slot="extra" style="width: 400px;">
-                <Col span="8">应收</Col>
-                <Col span="8">应付</Col>
-                <Col span="8">毛利</Col>
+                <Col span="8">应收  {{bookingShipment.totalReceivable}}</Col>
+                <Col span="8">应付  {{bookingShipment.totalPayable}}</Col>
+                <Col span="8">毛利  {{bookingShipment.grossProfit}}</Col>
               </Row>
               <div ref="shipmentLayout">
                 <Split v-model="splitShipment" mode="vertical" @on-move-end="shipmentSplitMoveAct">
@@ -65,34 +68,48 @@
                     <Row style="margin-bottom: 10px;">
                       <Col span="24">
                         RECEIVABLE
-                        <Button size="small" type="primary" icon="ios-add" v-on:click="addReceivableAct"></Button>
-                        <Button size="small" type="error" style="margin-left: 7px;" icon="ios-remove" :disabled="receivableTable.removeDisabled" v-on:click="removeReceivableAct"></Button>
+                        <Button size="small" type="primary" icon="ios-add" title="ADD RECEIVABLE" v-on:click="addReceivableAct">ADD</Button>
+                        <Button size="small" type="error" style="margin-left: 7px;" icon="ios-remove" title="REMOVE RECEIVABLE" :disabled="receivableTable.removeDisabled" v-on:click="removeReceivableAct">REMOVE</Button>
+                        <Button size="small" type="warning" style="margin-left: 7px;" icon="ios-add" title="SUPPLEMENT RECEIVABLE" v-on:click="addSupplementReceivableAct">SUPPLEMENT</Button>
                       </Col>
                     </Row>
                     <Row>
                       <Col span="24">
-                        <Table ref="receivableTable" :border="receivableTable.data.length > 0" highlight-row :columns="receivableTable.columns" :data="receivableTable.data" :height="receivableTable.height" @on-selection-change="selectReceivableAct">
+                        <Table ref="receivableTable" :border="receivableTable.data.length > 0" highlight-row :columns="receivableTable.columns" :data="receivableTable.data" :height="receivableTable.height" @on-selection-change="selectReceivableAct" :span-method="handleReceivableSpan">
                           <template slot-scope="{ row, index }" slot="shipment_status">
-                            <Select v-model="receivableTable.data[index].shipment_fee_status" disabled>
-                              <Option v-for="item in pagePara.FEE_STATUS" :value="item.id" :key="item.id">{{ item.text }}</Option>
-                            </Select>
+                            <Tag color="default" v-if="receivableTable.data[index].shipment_fee_status === 'NE'">NEW</Tag>
+                            <Tag color="primary" v-else-if="receivableTable.data[index].shipment_fee_status === 'SA'">SAVE</Tag>
+                            <Tag color="primary" v-else-if="receivableTable.data[index].shipment_fee_status === 'SU'">SUBMIT</Tag>
+                            <Tag color="success" v-else-if="receivableTable.data[index].shipment_fee_status === 'AP'">APPROVE</Tag>
+                            <Tag color="error" v-else-if="receivableTable.data[index].shipment_fee_status === 'DE'">DECLINE</Tag>
+                            <Tag color="error" v-else-if="receivableTable.data[index].shipment_fee_status === 'UN'">UNDO</Tag>
+                            <Tag color="success" v-else-if="receivableTable.data[index].shipment_fee_status === 'IN'">INVOICE</Tag>
+                            <Tag color="success" v-else-if="receivableTable.data[index].shipment_fee_status === 'RE'">RECEIPT</Tag>
+                          </template>
+                          <template slot-scope="{ row, index }" slot="invoce_file">
+                            <a :href="row.uploadfile_url" class="btn btn-primary btn-icon btn-sm" target="_blank" v-if="row.uploadfile_url">
+                              <i class="fa fa-download"></i>
+                            </a>
                           </template>
                           <template slot-scope="{ row, index }" slot="shipment_party">
-                            <Select v-model="receivableTable.data[index].shipment_fee_party" transfer filterable>
+                            <Select v-model="receivableTable.data[index].shipment_fee_party" transfer filterable  :disabled="receivableTable.data[index].party_disabled">
                               <Option v-for="item in pagePara.CUSTOMER" :value="item.user_id" :key="item.user_id">{{ item.user_name }}</Option>
                             </Select>
                           </template>
                           <template slot-scope="{ row, index }" slot="shipment_fee">
-                            <Select v-model="receivableTable.data[index].fee_data_code" v-if="receivableTable.data[index].fee_data_fixed ==='1'" disabled>
+                            <Select v-model="receivableTable.data[index].fee_data_code" v-if="receivableTable.data[index].shipment_fee_supplement ==='1'" transfer :disabled="receivableTable.data[index].fee_disabled">
+                              <Option v-for="item in pagePara.ALL_RECEIVABLE_FEE" :value="item.fee_data_code" :key="item.fee_data_code">{{ item.fee_data_code }} - {{ item.fee_data_name }}</Option>
+                            </Select>
+                            <Select v-model="receivableTable.data[index].fee_data_code" v-else-if="receivableTable.data[index].fee_data_fixed ==='1'" disabled>
                               <Option v-for="item in pagePara.FIXED_RECEIVABLE_FEE" :value="item.fee_data_code" :key="item.fee_data_code">{{ item.fee_data_code }} - {{ item.fee_data_name }}</Option>
                             </Select>
-                            <Select v-model="receivableTable.data[index].fee_data_code" v-else transfer :disabled="!(receivableTable.data[index].shipment_fee_status === 'NE' || receivableTable.data[index].shipment_fee_status === 'SA')" @on-change="changeShipmentFeeAct(index, 'R')">
+                            <Select v-model="receivableTable.data[index].fee_data_code" v-else transfer :disabled="receivableTable.data[index].fee_disabled" @on-change="changeShipmentFeeAct(index, 'R')">
                               <Option v-for="item in pagePara.OTHER_RECEIVABLE_FEE" :value="item.fee_data_code" :key="item.fee_data_code">{{ item.fee_data_code }} - {{ item.fee_data_name }}</Option>
                             </Select>
                           </template>
                           <template slot-scope="{ row, index }" slot="shipment_fee_amount">
-                            <Input v-model="receivableTable.data[index].shipment_fee_amount" :disabled="receivableTable.data[index].shipment_fee_fixed_amount ==='1'">
-                              <Select v-model="receivableTable.data[index].shipment_fee_currency" slot="append" transfer style="width: 100px" :disabled="receivableTable.data[index].shipment_fee_fixed_amount ==='1'">
+                            <Input v-model="receivableTable.data[index].shipment_fee_amount" :disabled="receivableTable.data[index].amount_disabled">
+                              <Select v-model="receivableTable.data[index].shipment_fee_currency" slot="append" transfer style="width: 100px" :disabled="receivableTable.data[index].currency_disabled">
                                 <Option v-for="item in pagePara.FEE_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
                               </Select>
                             </Input>
@@ -105,34 +122,43 @@
                     <Row style="margin-bottom: 10px;">
                       <Col span="24">
                         PAYABLE
-                        <Button size="small" type="primary" icon="ios-add" v-on:click="addPayableAct"></Button>
-                        <Button size="small" type="error" style="margin-left: 7px;" icon="ios-remove" :disabled="payableTable.removeDisabled" v-on:click="removePayableAct"></Button>
+                        <Button size="small" type="primary" icon="ios-add" title="ADD PAYABLE" v-on:click="addPayableAct">ADD</Button>
+                        <Button size="small" type="error" style="margin-left: 7px;" icon="ios-remove" title="REMOVE PAYABLE" :disabled="payableTable.removeDisabled" v-on:click="removePayableAct">REMOVE</Button>
+                        <Button size="small" type="warning" style="margin-left: 7px;" icon="ios-add" title="SUPPLEMENT PAYABLE" v-on:click="addSupplementPayableAct">SUPPLEMENT</Button>
                       </Col>
                     </Row>
                     <Row>
                       <Col span="24">
                         <Table ref="payableTable" :border="payableTable.data.length > 0" highlight-row :columns="payableTable.columns" :data="payableTable.data" :height="payableTable.height" @on-selection-change="selectPayableAct">
                           <template slot-scope="{ row, index }" slot="shipment_status">
-                            <Select v-model="payableTable.data[index].shipment_fee_status" disabled>
-                              <Option v-for="item in pagePara.FEE_STATUS" :value="item.id" :key="item.id">{{ item.text }}</Option>
-                            </Select>
+                            <Tag color="default" v-if="payableTable.data[index].shipment_fee_status === 'NE'">NEW</Tag>
+                            <Tag color="primary" v-else-if="payableTable.data[index].shipment_fee_status === 'SA'">SAVE</Tag>
+                            <Tag color="primary" v-else-if="payableTable.data[index].shipment_fee_status === 'SU'">SUBMIT</Tag>
+                            <Tag color="success" v-else-if="payableTable.data[index].shipment_fee_status === 'AP'">APPROVE</Tag>
+                            <Tag color="error" v-else-if="payableTable.data[index].shipment_fee_status === 'DE'">DECLINE</Tag>
+                            <Tag color="error" v-else-if="payableTable.data[index].shipment_fee_status === 'UN'">UNDO</Tag>
+                            <Tag color="success" v-else-if="payableTable.data[index].shipment_fee_status === 'IN'">INVOICE</Tag>
+                            <Tag color="success" v-else-if="payableTable.data[index].shipment_fee_status === 'RE'">RECEIPT</Tag>
                           </template>
                           <template slot-scope="{ row, index }" slot="shipment_party">
-                            <Select v-model="payableTable.data[index].shipment_fee_party" transfer filterable>
+                            <Select v-model="payableTable.data[index].shipment_fee_party" transfer filterable :disabled="payableTable.data[index].party_disabled">
                               <Option v-for="item in pagePara.CUSTOMER" :value="item.user_id" :key="item.user_id">{{ item.user_name }}</Option>
                             </Select>
                           </template>
                           <template slot-scope="{ row, index }" slot="shipment_fee">
+                            <Select v-model="payableTable.data[index].fee_data_code" v-if="payableTable.data[index].shipment_fee_supplement ==='1'" transfer :disabled="payableTable.data[index].fee_disabled">
+                              <Option v-for="item in pagePara.ALL_PAYABLE_FEE" :value="item.fee_data_code" :key="item.fee_data_code">{{ item.fee_data_code }} - {{ item.fee_data_name }}</Option>
+                            </Select>
                             <Select v-model="payableTable.data[index].fee_data_code" v-if="payableTable.data[index].fee_data_fixed ==='1'" disabled>
                               <Option v-for="item in pagePara.FIXED_PAYABLE_FEE" :value="item.fee_data_code" :key="item.fee_data_code">{{ item.fee_data_code }} - {{ item.fee_data_name }}</Option>
                             </Select>
-                            <Select v-model="payableTable.data[index].fee_data_code" v-else transfer :disabled="!(payableTable.data[index].shipment_fee_status === 'NE' || payableTable.data[index].shipment_fee_status === 'SA')" @on-change="changeShipmentFeeAct(index, 'P')">
+                            <Select v-model="payableTable.data[index].fee_data_code" v-else transfer :disabled="payableTable.data[index].fee_disabled" @on-change="changeShipmentFeeAct(index, 'P')">
                               <Option v-for="item in pagePara.OTHER_PAYABLE_FEE" :value="item.fee_data_code" :key="item.fee_data_code">{{ item.fee_data_code }} - {{ item.fee_data_name }}</Option>
                             </Select>
                           </template>
                           <template slot-scope="{ row, index }" slot="shipment_fee_amount">
-                            <Input v-model="payableTable.data[index].shipment_fee_amount" :disabled="payableTable.data[index].shipment_fee_fixed_amount ==='1'">
-                              <Select v-model="payableTable.data[index].shipment_fee_currency" slot="append" transfer style="width: 100px" :disabled="payableTable.data[index].shipment_fee_fixed_amount ==='1'">
+                            <Input v-model="payableTable.data[index].shipment_fee_amount" :disabled="payableTable.data[index].amount_disabled">
+                              <Select v-model="payableTable.data[index].shipment_fee_currency" slot="append" transfer style="width: 100px" :disabled="payableTable.data[index].currency_disabled">
                                 <Option v-for="item in pagePara.FEE_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
                               </Select>
                             </Input>
@@ -182,7 +208,7 @@ export default {
       splitShipment: 0.6,
       pagePara: {},
       searchData: {
-        bookingNo: 'COSU6284547100,COSU6284482210,COSU6284306800,COSU6276797090'
+        bookingNo: ''
       },
       bookingTable: {
         columns:[
@@ -207,6 +233,9 @@ export default {
       bookingShipment: {
         vessel: {}
       },
+      submitDisabled: true,
+      undoDisabled: true,
+      invoiceDisabled: true,
       shipmentAddIndex: 0,
       receivableTable: {
         columns:[
@@ -225,6 +254,12 @@ export default {
             align: 'center',
             width: 120,
             slot: 'shipment_status',
+          },
+          {
+            title: 'Invoice',
+            align: 'center',
+            width: 100,
+            slot: 'invoce_file'
           },
           {
             title: 'Party',
@@ -321,13 +356,46 @@ export default {
       await this.getBookingShipmentAct(row.export_masterbl_id)
     },
     getBookingShipmentAct: async function(export_masterbl_id) {
+      this.invoiceDisabled = true
       let param = {
         export_masterbl_id: export_masterbl_id
       }
       let response = await this.$http.post(apiUrl + 'getBookingShipment', param)
       this.bookingShipment = response.data.info
       this.receivableTable.data = this.bookingShipment.shipment_receivable
+      if(this.receivableTable.data && this.receivableTable.data.length > 0) {
+        let invoiceStatus = ['AP']
+        for(let d of this.receivableTable.data) {
+          if(invoiceStatus.indexOf(d.shipment_fee_status) >= 0) {
+            this.invoiceDisabled = false
+          }
+        }
+      }
       this.payableTable.data = this.bookingShipment.shipment_payable
+    },
+    handleReceivableSpan: function({row, column, rowIndex, columnIndex}) {
+      if(column.title === 'Invoice') {
+        return this.getReceivableLayout(row, rowIndex, columnIndex)
+      }
+    },
+    getReceivableLayout: function(row, rowIndex, columnIndex) {
+      let rowspan = 0
+      let colspan = 1
+      let tableData = this.receivableTable.data
+      for(let d of tableData) {
+        if(d.shipment_fee_invoice_id === row.shipment_fee_invoice_id) {
+          rowspan++
+        }
+      }
+      if(rowspan > 1) {
+        if(rowIndex > 0 && tableData[rowIndex - 1].shipment_fee_invoice_id === row.shipment_fee_invoice_id) {
+          return [0, 0]
+        } else {
+          return [rowspan, colspan]
+        }
+      } else {
+        return [1, 1]
+      }
     },
     shipmentSplitMoveAct: async function() {
       this.receivableTable.height = (this.fullHeight - 200) * this.splitShipment - 40
@@ -343,7 +411,12 @@ export default {
         fee_data_fixed: '0',
         shipment_fee_fixed_amount: '0',
         shipment_fee_amount: '',
-        shipment_fee_currency: 'USD'
+        shipment_fee_currency: 'USD',
+        shipment_fee_supplement: '0',
+        party_disabled: false,
+        fee_disabled: false,
+        amount_disabled: false,
+        currency_disabled: false,
       })
     },
     addPayableAct: async function() {
@@ -356,7 +429,48 @@ export default {
         fee_data_fixed: '0',
         shipment_fee_fixed_amount: '0',
         shipment_fee_amount: '',
-        shipment_fee_currency: 'USD'
+        shipment_fee_currency: 'USD',
+        shipment_fee_supplement: '0',
+        party_disabled: false,
+        fee_disabled: false,
+        amount_disabled: false,
+        currency_disabled: false,
+      })
+    },
+    addSupplementReceivableAct: async function() {
+      this.receivableTable.data.push({
+        shipment_fee_id: 'N' + (this.shipmentAddIndex++),
+        fee_data_code: '',
+        shipment_fee_type: 'R',
+        shipment_fee_party: '',
+        shipment_fee_status: 'NE',
+        fee_data_fixed: '0',
+        shipment_fee_fixed_amount: '0',
+        shipment_fee_amount: '',
+        shipment_fee_currency: 'USD',
+        shipment_fee_supplement: '1',
+        party_disabled: false,
+        fee_disabled: false,
+        amount_disabled: false,
+        currency_disabled: false,
+      })
+    },
+    addSupplementPayableAct: async function() {
+      this.payableTable.data.push({
+        shipment_fee_id: 'N' + (this.shipmentAddIndex++),
+        fee_data_code: '',
+        shipment_fee_type: 'P',
+        shipment_fee_party: '',
+        shipment_fee_status: 'NE',
+        fee_data_fixed: '0',
+        shipment_fee_fixed_amount: '0',
+        shipment_fee_amount: '',
+        shipment_fee_currency: 'USD',
+        shipment_fee_supplement: '1',
+        party_disabled: false,
+        fee_disabled: false,
+        amount_disabled: false,
+        currency_disabled: false,
       })
     },
     removeReceivableAct: async function() {
@@ -387,28 +501,66 @@ export default {
     },
     selectReceivableAct: async function(selection) {
       if(selection && selection.length > 0) {
+        let submitStatus = ['SA', 'DE', 'UN'] 
+        let undoStatus = ['SU']
         this.receivableTable.removeDisabled = false
+        this.submitDisabled = false
+        this.undoDisabled = false
         for(let s of selection) {
           if(s.fee_data_fixed === '1') {
             this.receivableTable.removeDisabled = true
             break
           }
         }
+        for(let s of selection) {
+          if(submitStatus.indexOf(s.shipment_fee_status) < 0 || !s.fee_data_code 
+              || !s.shipment_fee_party || !s.shipment_fee_amount || parseInt(s.shipment_fee_amount) === 0) {
+            this.submitDisabled = true
+            break
+          }
+        }
+        for(let s of selection) {
+          if(undoStatus.indexOf(s.shipment_fee_status) < 0) {
+            this.undoDisabled = true
+            break
+          }
+        }
       } else {
         this.receivableTable.removeDisabled = true
+        this.submitDisabled = true
+        this.undoDisabled = true
       }
     },
     selectPayableAct: async function(selection) {
       if(selection && selection.length > 0) {
+        let submitStatus = ['SA', 'DE', 'UN'] 
+        let undoStatus = ['SU']
         this.payableTable.removeDisabled = false
+        this.submitDisabled = false
+        this.undoDisabled = false
         for(let s of selection) {
           if(s.fee_data_fixed === '1') {
             this.payableTable.removeDisabled = true
             break
           }
         }
+        for(let s of selection) {
+          if(submitStatus.indexOf(s.shipment_fee_status) < 0 || !s.fee_data_code 
+              || !s.shipment_fee_party || !s.shipment_fee_amount || parseInt(s.shipment_fee_amount) === 0) {
+            this.submitDisabled = true
+            break
+          }
+        }
+        for(let s of selection) {
+          if(undoStatus.indexOf(s.shipment_fee_status) < 0) {
+            this.undoDisabled = true
+            break
+          }
+        }
       } else {
         this.payableTable.removeDisabled = true
+        this.submitDisabled = true
+        this.undoDisabled = true
       }
     },
     changeShipmentFeeAct: async function(index, type) {
@@ -423,10 +575,18 @@ export default {
         this.receivableTable.data[index].shipment_fee_amount = fee_data.fee_amount
         this.receivableTable.data[index].shipment_fee_currency = fee_data.fee_currency
         this.receivableTable.data[index].shipment_fee_fixed_amount = fee_data.fee_amount_fixed
+        this.receivableTable.data[index].party_disabled = fee_data.party_disabled
+        this.receivableTable.data[index].fee_disabled = fee_data.fee_disabled
+        this.receivableTable.data[index].amount_disabled = fee_data.amount_disabled
+        this.receivableTable.data[index].currency_disabled = fee_data.currency_disabled
       } else {
         this.payableTable.data[index].shipment_fee_amount = fee_data.fee_amount
         this.payableTable.data[index].shipment_fee_currency = fee_data.fee_currency
         this.payableTable.data[index].shipment_fee_fixed_amount = fee_data.fee_amount_fixed
+        this.payableTable.data[index].party_disabled = fee_data.party_disabled
+        this.payableTable.data[index].fee_disabled = fee_data.fee_disabled
+        this.payableTable.data[index].amount_disabled = fee_data.amount_disabled
+        this.payableTable.data[index].currency_disabled = fee_data.currency_disabled
       }
     },
     saveShipmentAct: async function() {
@@ -436,6 +596,31 @@ export default {
         shipment_payable: this.payableTable.data,
       }
       await this.$http.post(apiUrl + 'saveShipment', param)
+      await this.getBookingShipmentAct(this.bookingShipment.export_masterbl_id)
+    },
+    submitShipmentAct: async function() {
+      let param = {
+        export_masterbl_id: this.bookingShipment.export_masterbl_id,
+        shipment_receivable: this.$refs.receivableTable.getSelection(),
+        shipment_payable: this.$refs.payableTable.getSelection(),
+      }
+      await this.$http.post(apiUrl + 'submitShipment', param)
+      await this.getBookingShipmentAct(this.bookingShipment.export_masterbl_id)
+    },
+    undoShipmentAct: async function() {
+      let param = {
+        export_masterbl_id: this.bookingShipment.export_masterbl_id,
+        shipment_receivable: this.$refs.receivableTable.getSelection(),
+        shipment_payable: this.$refs.payableTable.getSelection(),
+      }
+      await this.$http.post(apiUrl + 'undoShipment', param)
+      await this.getBookingShipmentAct(this.bookingShipment.export_masterbl_id)
+    },
+    invoiceShipmentAct: async function() {
+      let param = {
+        export_masterbl_id: this.bookingShipment.export_masterbl_id,
+      }
+      await this.$http.post(apiUrl + 'invoiceShipment', param)
       await this.getBookingShipmentAct(this.bookingShipment.export_masterbl_id)
     },
     checkPasswordCancel: async function() {

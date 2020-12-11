@@ -34,13 +34,16 @@
             </div>
         </template>
         <Table stripe size="small" ref="checkTable" :columns="table.checkTable.columns" :data="table.checkTable.data" :height="table.checkTable.height">
+            <template slot-scope="{ row, index }" slot="fee_data_transit">
+                <Tag color="error" v-if="row.fee_data_transit === '1'">TRANSIT $0</Tag>
+            </template>
             <template slot-scope="{ row, index }" slot="fee_data_config">
                 <Tag color="success" v-if="row.fee_data_receivable && row.fee_data_receivable === '1'">
                     Receivable
                     <span v-if="row.fee_data_receivable_fixed === '1'">/Fixed</span>
                     <span v-if="row.fee_data_receivable_amount">/{{row.fee_data_receivable_amount}}{{row.fee_data_receivable_amount_currency}}</span>
                 </Tag><br/>
-                <Tag color="warning" v-if="row.fee_data_payable && row.fee_data_payable === '1'">
+                <Tag color="primary" v-if="row.fee_data_payable && row.fee_data_payable === '1'">
                     Payable
                     <span v-if="row.fee_data_payable_fixed === '1'">/Fixed</span>
                     <span v-if="row.fee_data_payable_amount">/{{row.fee_data_payable_amount}}{{row.fee_data_payable_amount_currency}}</span>
@@ -65,15 +68,23 @@
             <FormItem label="Name" prop="fee_data_name">
                 <Input v-model="feeForm.fee_data_name" placeholder="Enter Fee Name"/>
             </FormItem>
+            <FormItem label="TRANSIT" prop="fee_data_transit">
+                <Checkbox v-model="feeForm.fee_data_transit" true-value="1" false-value="0">TRANSIT</Checkbox><font style="color: red;">* Selected, Receivable/Payable will be $0.</font>
+            </FormItem>
             <FormItem label="Type" prop="fee_data_type">
                 <RadioGroup v-model="feeForm.fee_data_type" >
                     <Radio v-for="item in pagePara.FEE_TYPE" v-bind:key="item.id" :label="item.id" style="margin-right: 50px;" :disabled ="dialogStatus === 'update'">{{item.text}}</Radio>
                 </RadioGroup>
             </FormItem>
-            <FormItem label="Size&Type" prop="fee_data_container_size" v-if="feeForm.fee_data_type === 'CON'">
-                <Select v-model="feeForm.fee_data_container_size" filterable :disabled ="dialogStatus === 'update'">
-                    <Option v-for="item in pagePara.CONTAINER_SIZE" :value="item.container_size_code" :key="item.container_size_code">{{item.container_size_code}}[{{item.container_size_name}}]</Option>
-                </Select>
+            <FormItem label="Size&Type" prop="fee_data_container_size_create" v-if="feeForm.fee_data_type === 'CON' && dialogStatus === 'create'">
+                <CheckboxGroup v-model="feeForm.fee_data_container_size_create">
+                    <Checkbox v-for="item in pagePara.CONTAINER_SIZE" :label="item.container_size_code" :key="item.container_size_code">{{item.container_size_code}}[{{item.container_size_name}}]</Checkbox>
+                </CheckboxGroup>
+            </FormItem>
+            <FormItem label="Size&Type" prop="fee_data_container_size" v-if="feeForm.fee_data_type === 'CON' && dialogStatus === 'update'">
+                <CheckboxGroup v-model="feeForm.fee_data_container_size">
+                    <Checkbox v-for="item in pagePara.CONTAINER_SIZE" :label="item.container_size_code" :key="item.container_size_code" disabled v-if="item.container_size_code === feeForm.fee_data_container_size">{{item.container_size_code}}[{{item.container_size_name}}]</Checkbox>
+                </CheckboxGroup>
             </FormItem>
             <FormItem label="Config">
                <Row :gutter="16">
@@ -152,6 +163,10 @@ export default {
                     key: 'fee_data_container_size',
                 },
                 {
+                    title: 'Transit',
+                    slot: 'fee_data_transit',
+                },
+                {
                     title: 'Config',
                     slot: 'fee_data_config',
                 },
@@ -184,7 +199,9 @@ export default {
             fee_data_id: '',
             fee_data_code: '',
             fee_data_name: '',
+            fee_data_transit: '0',
             fee_data_type: 'BL',
+            fee_data_container_size_create: [],
             fee_data_container_size: '',
             fee_data_receivable: '0',
             fee_data_receivable_fixed: '0',
@@ -204,6 +221,9 @@ export default {
             ],
             fee_data_type: [
                 { required: true, message: 'The type cannot be empty', trigger: 'blur' }
+            ],
+            fee_data_container_size_create: [
+                { required: true, type: 'array', message: 'The container size cannot be empty', trigger: 'change' }
             ],
             fee_data_container_size: [
                 { required: true, message: 'The container size cannot be empty', trigger: 'blur' }
@@ -259,7 +279,9 @@ export default {
             fee_data_id: '',
             fee_data_code: '',
             fee_data_name: '',
+            fee_data_transit: '0',
             fee_data_type: 'BL',
+            fee_data_container_size_create: [],
             fee_data_container_size: '',
             fee_data_receivable: '0',
             fee_data_receivable_fixed: '0',

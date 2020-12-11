@@ -35,17 +35,79 @@
           </div>
         </div>
       </template>
-      <Table stripe size="small" ref="checkTable" :columns="table.checkTable.columns" :data="table.checkTable.data" :height="table.checkTable.height">
+      <Table stripe size="small" ref="checkTable" highlight-row	:columns="table.checkTable.columns" :data="table.checkTable.data" :height="table.checkTable.height" @on-row-click="clickCheckTable">
+        <template slot-scope="{ row, index }" slot="release_party">
+          <p v-if="row.export_verification_api_name === 'EMPTY RELEASE'">
+            {{row.empty_release_party}}
+          </p>
+        </template>
         <template slot-scope="{ row, index }" slot="action">
-          <a v-if = "row.export_verification_state == 'PM'" href="#" class="btn btn-primary btn-icon btn-sm" @click="approve(row)">
+          <a v-if = "row.export_verification_state == 'PM'" href="#" class="btn btn-primary btn-icon btn-sm" @click.stop="approve(row)">
             <i class="fa fa-check"></i>
           </a>
-          <a v-if = "row.export_verification_state == 'PM'" href="#" class="btn btn-danger btn-icon btn-sm" @click="decline(row)">
+          <a v-if = "row.export_verification_state == 'PM'" href="#" class="btn btn-danger btn-icon btn-sm" @click.stop="decline(row)">
             <i class="fa fa-times"></i>
           </a>
         </template>
       </Table>
       <Page class="m-t-10" :total="table.checkTable.total" :page-size="table.checkTable.limit" @on-change="getTableData" />
+      <Drawer :closable="false" width="50%" inner v-model="verificationDetailModal">
+        <div style="padding-top: 40px;">
+          <Card>
+            <div slot="title">
+              #M B/L No. {{verificationDetail.export_masterbl_bl}}
+              <Tag color="primary">{{verificationDetail.export_masterbl_cargo_type}}</Tag>
+            </div>
+            <div slot="extra">
+              <Tag color="success">RECEIVABLE: ${{verificationDetail.shipment_receivable}}</Tag>
+              <Tag color="warning">PAYABLE: ${{verificationDetail.shipment_payable}}</Tag>
+            </div>
+            <Row>
+              <Col span="4"><font style="color:#17233D; font-size: 16px;">Vessel: </font>{{verificationDetail.export_vessel_name}}</Col>
+              <Col span="4"><font style="color:#17233D; font-size: 16px;">Voyage: </font>{{verificationDetail.export_vessel_voyage}}</Col>
+              <Col span="4"><font style="color:#17233D; font-size: 16px;">Size/Type: </font>{{verificationDetail.shipment_size_type}}</Col>
+            </Row>
+          </Card>
+          <Card>
+            <p slot="title">RECEIVABLE</p>
+            <Table ref="receivableTable" :columns="table.receivableTable.columns" :data="verificationDetail.verification_shipment.receiveable" v-if="verificationDetail && verificationDetail.verification_shipment && verificationDetail.verification_shipment.receiveable">
+              <template slot-scope="{ row, index }" slot="shipment_fee_status_now">
+                <Tag color="default" v-if="row.shipment_fee_status === 'NE'">NEW</Tag>
+                <Tag color="primary" v-else-if="row.shipment_fee_status === 'SA'">SAVE</Tag>
+                <Tag color="primary" v-else-if="row.shipment_fee_status === 'SU'">SUBMIT</Tag>
+                <Tag color="success" v-else-if="row.shipment_fee_status === 'AP'">APPROVE</Tag>
+                <Tag color="error" v-else-if="row.shipment_fee_status === 'DE'">DECLINE</Tag>
+                <Tag color="error" v-else-if="row.shipment_fee_status === 'UN'">UNDO</Tag>
+                <Tag color="success" v-else-if="row.shipment_fee_status === 'IN'">INVOICE</Tag>
+                <Tag color="success" v-else-if="row.shipment_fee_status === 'RE'">RECEIPT</Tag>
+              </template>
+              <template slot-scope="{ row, index }" slot="shipment_fee">
+                {{row.fee_data_code}}-{{row.fee_data_name}}
+              </template>
+            </Table>
+            <p v-else>No Receivable List</p>
+          </Card>
+          <Card style="margin-top:10px;">
+            <p slot="title">PAYABLE</p>
+            <Table ref="receivableTable" :columns="table.payableTable.columns" :data="verificationDetail.verification_shipment.payable" v-if="verificationDetail && verificationDetail.verification_shipment && verificationDetail.verification_shipment.payable">
+              <template slot-scope="{ row, index }" slot="shipment_fee_status_now">
+                <Tag color="default" v-if="row.shipment_fee_status === 'NE'">NEW</Tag>
+                <Tag color="primary" v-else-if="row.shipment_fee_status === 'SA'">SAVE</Tag>
+                <Tag color="primary" v-else-if="row.shipment_fee_status === 'SU'">SUBMIT</Tag>
+                <Tag color="success" v-else-if="row.shipment_fee_status === 'AP'">APPROVE</Tag>
+                <Tag color="error" v-else-if="row.shipment_fee_status === 'DE'">DECLINE</Tag>
+                <Tag color="error" v-else-if="row.shipment_fee_status === 'UN'">UNDO</Tag>
+                <Tag color="success" v-else-if="row.shipment_fee_status === 'IN'">INVOICE</Tag>
+                <Tag color="success" v-else-if="row.shipment_fee_status === 'RE'">RECEIPT</Tag>
+              </template>
+              <template slot-scope="{ row, index }" slot="shipment_fee">
+                {{row.fee_data_code}}-{{row.fee_data_name}}
+              </template>
+            </Table>
+            <p v-else>No Payable List</p>
+          </Card>
+        </div>
+      </Drawer>
     </panel>
   </div>
 </template>
@@ -67,8 +129,14 @@ export default {
               width: 150
             },
             {
-              title: 'Empty Release Party',
-              key: 'empty_release_party',
+              title: 'Cargo Type',
+              key: 'export_masterbl_cargo_type',
+              width: 150
+            },
+            {
+              title: 'Release Party',
+              slot: 'release_party',
+              width: 300
             },
             {
               title: 'Action',
@@ -97,12 +165,24 @@ export default {
               width: 150
             },
             {
+              title: 'RECEIVABLE',
+              key: 'export_verification_shipment_receivable',
+              width: 150
+            },
+            {
+              title: 'PAYABLE',
+              key: 'export_verification_shipment_payable',
+              width: 150
+            },
+            {
               title: 'Create By',
               key: 'apply_user',
+              width: 200
             },
             {
               title: 'Create At',
               key: 'created_at',
+              width: 200
             }
           ],
           data: [],
@@ -110,6 +190,80 @@ export default {
           limit: 10,
           offset: 0,
           total: 0
+        },
+        receivableTable: {
+          columns:[
+            {
+              type: 'index',
+              width: 60,
+              align: 'center'
+            },
+            {
+              title: 'Status',
+              align: 'center',
+              slot: 'shipment_fee_status_now',
+            },
+            {
+              title: 'Party',
+              align: 'center',
+              key: 'shipment_party',
+            },
+            {
+              title: 'Fee',
+              align: 'center',
+              slot: 'shipment_fee',
+            },
+            {
+              title: 'Fee Amount',
+              align: 'center',
+              key: 'shipment_fee_amount',
+            },
+            {
+              title: 'Submit',
+              align: 'center',
+              key: 'submit_user',
+            }
+          ],
+          data: [],
+          removeDisabled: true,
+          height: 0
+        },
+        payableTable: {
+          columns:[
+            {
+              type: 'index',
+              width: 60,
+              align: 'center'
+            },
+            {
+              title: 'Status',
+              align: 'center',
+              slot: 'shipment_fee_status_now',
+            },
+            {
+              title: 'Party',
+              align: 'center',
+              key: 'shipment_party',
+            },
+            {
+              title: 'Fee',
+              align: 'center',
+              slot: 'shipment_fee',
+            },
+            {
+              title: 'Fee Amount',
+              align: 'center',
+              key: 'shipment_fee_amount',
+            },
+            {
+              title: 'Submit',
+              align: 'center',
+              key: 'submit_user',
+            }
+          ],
+          data: [],
+          removeDisabled: true,
+          height: 0
         }
       },
       pagePara: {},
@@ -121,7 +275,9 @@ export default {
       modal: { invoiceDetail: false, verificationTimeline: false},
       workPara: {},
       verificationTitle: '',
-      timelinePara: []
+      timelinePara: [],
+      verificationDetailModal: false,
+      verificationDetail: {}
     }
   },
   created() {
@@ -184,6 +340,15 @@ export default {
         this.getTableData()
       } catch (error) {
         this.$commonact.fault(error)
+      }
+    },
+    clickCheckTable: async function(row) {
+      if(row.export_verification_api_name === 'SHIPMENT RELEASE') {
+        let response = await this.$http.post(apiUrl + 'verificationDetail', row)
+        this.verificationDetail = response.data.info
+        if(this.verificationDetail) {
+          this.verificationDetailModal = true
+        }
       }
     }
   }

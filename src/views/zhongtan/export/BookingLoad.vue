@@ -220,7 +220,7 @@
       </div>
     </Modal>
     <Modal v-model="modal.bookingEditModal" title="BOOKING EDIT" width="640">
-      <Form ref="bookingEditForm" :model="bookingEditForm" :rules="bookingEditFormRule" :label-width="128">
+      <Form ref="bookingEditForm" :model="bookingEditForm" :label-width="128">
         <FormItem label="FORWARDER" prop="export_masterbl_empty_release_agent">
           <Select v-model="bookingEditForm.export_masterbl_empty_release_agent" filterable :remote-method="remoteEmptyReleaseAgent">
             <Option v-for="(item, index) in emptyReleaseAgent" :value="item.user_id" :key="index" :label="item.user_name">
@@ -230,6 +230,12 @@
               <Tag color="error" v-if="item.user_blacklist === '1'" style="float: right;">BLACK</Tag>
             </Option>
           </Select>
+        </FormItem>
+        <FormItem label="CARGO TYPE" prop="export_masterbl_cargo_type">
+          <RadioGroup v-model="bookingEditForm.export_masterbl_cargo_type">
+            <Radio label="TRANSIT"></Radio>
+            <Radio label="LOCAL"></Radio>
+          </RadioGroup>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -280,6 +286,11 @@ export default {
           {
             title: 'CSO/AGREEMENT NUMBER',
             key: 'export_masterbl_cso_number',
+            width: 220
+          },
+          {
+            title: 'CARGO TYPE',
+            key: 'export_masterbl_cargo_type',
             width: 220
           },
           {
@@ -386,9 +397,6 @@ export default {
       emptyReleaseFormRule: {
         export_masterbl_empty_release_agent: [{required: true,  message: 'The empty release agent cannot be empty', trigger: 'blur'}],
         export_masterbl_empty_release_depot: [{required: true, message: 'The empty release depot cannot be empty', trigger: 'blur'}]
-      },
-      bookingEditFormRule: {
-        export_masterbl_empty_release_agent: [{required: true,  message: 'The empty release agent cannot be empty', trigger: 'blur'}]
       },
       emptyReleaseQuantitys: [],
       emptyReleaseAgent: [],
