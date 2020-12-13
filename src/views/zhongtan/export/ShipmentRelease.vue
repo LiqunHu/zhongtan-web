@@ -633,7 +633,7 @@ export default {
       if (this.checkPassword) {
         try {
           let param = {
-            page: 'BookingLoad',
+            page: 'Shipment Release',
             action: this.checkPasswordType,
             checkPassword: common.md52(this.checkPassword)
           }
