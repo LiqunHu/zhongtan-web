@@ -149,7 +149,7 @@
                             <Select v-model="payableTable.data[index].fee_data_code" v-if="payableTable.data[index].shipment_fee_supplement ==='1'" transfer :disabled="payableTable.data[index].fee_disabled">
                               <Option v-for="item in pagePara.ALL_PAYABLE_FEE" :value="item.fee_data_code" :key="item.fee_data_code">{{ item.fee_data_code }} - {{ item.fee_data_name }}</Option>
                             </Select>
-                            <Select v-model="payableTable.data[index].fee_data_code" v-if="payableTable.data[index].fee_data_fixed ==='1'" disabled>
+                            <Select v-model="payableTable.data[index].fee_data_code" v-else-if="payableTable.data[index].fee_data_fixed ==='1'" disabled>
                               <Option v-for="item in pagePara.FIXED_PAYABLE_FEE" :value="item.fee_data_code" :key="item.fee_data_code">{{ item.fee_data_code }} - {{ item.fee_data_name }}</Option>
                             </Select>
                             <Select v-model="payableTable.data[index].fee_data_code" v-else transfer :disabled="payableTable.data[index].fee_disabled" @on-change="changeShipmentFeeAct(index, 'P')">
