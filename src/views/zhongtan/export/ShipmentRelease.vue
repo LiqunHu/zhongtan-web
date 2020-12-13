@@ -264,6 +264,7 @@ export default {
           {
             title: 'Party',
             align: 'center',
+            width: 300,
             slot: 'shipment_party',
           },
           {
@@ -277,6 +278,18 @@ export default {
             align: 'center',
             width: 280,
             slot: 'shipment_fee_amount',
+          },
+          {
+            title: 'Submit By',
+            align: 'center',
+            width: 140,
+            key: 'shipment_fee_submit_by_user',
+          },
+          {
+            title: 'Submit At',
+            align: 'center',
+            width: 180,
+            key: 'shipment_fee_submit_at',
           }
         ],
         data: [],
@@ -304,6 +317,7 @@ export default {
           {
             title: 'Party',
             align: 'center',
+            width: 400,
             slot: 'shipment_party',
           },
           {
@@ -317,6 +331,18 @@ export default {
             align: 'center',
             width: 280,
             slot: 'shipment_fee_amount',
+          },
+          {
+            title: 'Submit By',
+            align: 'center',
+            width: 140,
+            key: 'shipment_fee_submit_by_user',
+          },
+          {
+            title: 'Submit At',
+            align: 'center',
+            width: 180,
+            key: 'shipment_fee_submit_at',
           }
         ],
         data: [],
@@ -382,20 +408,31 @@ export default {
       let rowspan = 0
       let colspan = 1
       let tableData = this.receivableTable.data
-      for(let d of tableData) {
-        if(d.shipment_fee_invoice_id === row.shipment_fee_invoice_id) {
+      // for(let d of tableData) {
+      //   if(d.shipment_fee_invoice_id === row.shipment_fee_invoice_id) {
+      //     rowspan++
+      //   }
+      // }
+      for(let i = 0; i < tableData.length; i++) {
+        if(tableData[i].shipment_fee_invoice_id === row.shipment_fee_invoice_id) {
           rowspan++
         }
+        if(i >= rowIndex && i < tableData.length - 1 && tableData[i + 1].shipment_fee_invoice_id !== row.shipment_fee_invoice_id) {
+          break
+        }
       }
+      let span = []
       if(rowspan > 1) {
         if(rowIndex > 0 && tableData[rowIndex - 1].shipment_fee_invoice_id === row.shipment_fee_invoice_id) {
-          return [0, 0]
+          span = [0, 0]
         } else {
-          return [rowspan, colspan]
+          span = [rowspan, colspan]
         }
       } else {
-        return [1, 1]
+        span = [1, 1]
       }
+      console.log(rowIndex, span)
+      return span
     },
     shipmentSplitMoveAct: async function() {
       this.receivableTable.height = (this.fullHeight - 200) * this.splitShipment - 40
@@ -420,21 +457,10 @@ export default {
       })
     },
     addPayableAct: async function() {
-      this.payableTable.data.push({
-        shipment_fee_id: 'N' + (this.shipmentAddIndex++),
-        fee_data_code: '',
-        shipment_fee_type: 'P',
-        shipment_fee_party: '',
-        shipment_fee_status: 'NE',
-        fee_data_fixed: '0',
-        shipment_fee_fixed_amount: '0',
-        shipment_fee_amount: '',
-        shipment_fee_currency: 'USD',
-        shipment_fee_supplement: '0',
-        party_disabled: false,
-        fee_disabled: false,
-        amount_disabled: false,
-        currency_disabled: false,
+      this.$nextTick(function() {
+        this.checkPassword = ''
+        this.checkPasswordType = 'addPayable'
+        this.modal.checkPasswordModal = true
       })
     },
     addSupplementReceivableAct: async function() {
@@ -456,21 +482,10 @@ export default {
       })
     },
     addSupplementPayableAct: async function() {
-      this.payableTable.data.push({
-        shipment_fee_id: 'N' + (this.shipmentAddIndex++),
-        fee_data_code: '',
-        shipment_fee_type: 'P',
-        shipment_fee_party: '',
-        shipment_fee_status: 'NE',
-        fee_data_fixed: '0',
-        shipment_fee_fixed_amount: '0',
-        shipment_fee_amount: '',
-        shipment_fee_currency: 'USD',
-        shipment_fee_supplement: '1',
-        party_disabled: false,
-        fee_disabled: false,
-        amount_disabled: false,
-        currency_disabled: false,
+      this.$nextTick(function() {
+        this.checkPassword = ''
+        this.checkPasswordType = 'addSupplementPayable'
+        this.modal.checkPasswordModal = true
       })
     },
     removeReceivableAct: async function() {
@@ -487,17 +502,11 @@ export default {
       this.receivableTable.removeDisabled = true
     },
     removePayableAct: async function() {
-      let selection = this.$refs.payableTable.getSelection()
-      if(selection && selection.length > 0) {
-        for(let s of selection) {
-          for(let i = 0; i < this.payableTable.data.length; i++) {
-            if(s.shipment_fee_id === this.payableTable.data[i].shipment_fee_id) {
-              this.payableTable.data.splice(i, 1)
-            }
-          }
-        }
-      }
-      this.payableTable.removeDisabled = true
+      this.$nextTick(function() {
+        this.checkPassword = ''
+        this.checkPasswordType = 'removePayable'
+        this.modal.checkPasswordModal = true
+      })
     },
     selectReceivableAct: async function(selection) {
       if(selection && selection.length > 0) {
@@ -636,6 +645,53 @@ export default {
           }
           await this.$http.post(apiUrl + 'checkPassword', param)
           this.modal.checkPasswordModal = false
+          if (this.checkPasswordType === 'addPayable') {
+            this.payableTable.data.push({
+              shipment_fee_id: 'N' + (this.shipmentAddIndex++),
+              fee_data_code: '',
+              shipment_fee_type: 'P',
+              shipment_fee_party: '',
+              shipment_fee_status: 'NE',
+              fee_data_fixed: '0',
+              shipment_fee_fixed_amount: '0',
+              shipment_fee_amount: '',
+              shipment_fee_currency: 'USD',
+              shipment_fee_supplement: '0',
+              party_disabled: false,
+              fee_disabled: false,
+              amount_disabled: false,
+              currency_disabled: false,
+            })
+          } else if (this.checkPasswordType === 'addSupplementPayable') {
+            this.payableTable.data.push({
+              shipment_fee_id: 'N' + (this.shipmentAddIndex++),
+              fee_data_code: '',
+              shipment_fee_type: 'P',
+              shipment_fee_party: '',
+              shipment_fee_status: 'NE',
+              fee_data_fixed: '0',
+              shipment_fee_fixed_amount: '0',
+              shipment_fee_amount: '',
+              shipment_fee_currency: 'USD',
+              shipment_fee_supplement: '1',
+              party_disabled: false,
+              fee_disabled: false,
+              amount_disabled: false,
+              currency_disabled: false,
+            })
+          } else if (this.checkPasswordType === 'removePayable') {
+            let selection = this.$refs.payableTable.getSelection()
+            if(selection && selection.length > 0) {
+              for(let s of selection) {
+                for(let i = 0; i < this.payableTable.data.length; i++) {
+                  if(s.shipment_fee_id === this.payableTable.data[i].shipment_fee_id) {
+                    this.payableTable.data.splice(i, 1)
+                  }
+                }
+              }
+            }
+            this.payableTable.removeDisabled = true
+          }
         } catch (error) {
           this.$commonact.fault(error)
         }

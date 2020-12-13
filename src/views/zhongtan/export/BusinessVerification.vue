@@ -3,13 +3,13 @@
     <!-- begin breadcrumb -->
     <ol class="breadcrumb pull-right">
       <li class="breadcrumb-item active">
-        <a href="javascript:;">Commercial Verification</a>
+        <a href="javascript:;">Business Verification</a>
       </li>
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
     <h1 class="page-header">
-      Commercial Verification
+      Business Verification
     </h1>
     <!-- end page-header -->
     <panel title="Commercial Verification">
@@ -36,6 +36,11 @@
         </div>
       </template>
       <Table stripe size="small" ref="checkTable" highlight-row	:columns="table.checkTable.columns" :data="table.checkTable.data" :height="table.checkTable.height" @on-row-click="clickCheckTable">
+        <template slot-scope="{ row, index }" slot="release_party">
+          <p v-if="row.export_verification_api_name === 'EMPTY RELEASE'">
+            {{row.empty_release_party}}
+          </p>
+        </template>
         <template slot-scope="{ row, index }" slot="action">
           <a v-if = "row.export_verification_state == 'PM'" href="#" class="btn btn-primary btn-icon btn-sm" @click.stop="approve(row)">
             <i class="fa fa-check"></i>
@@ -67,58 +72,17 @@
             <p slot="title">RECEIVABLE</p>
             <Table ref="receivableTable" :columns="table.receivableTable.columns" :data="verificationDetail.verification_shipment.receiveable" v-if="verificationDetail && verificationDetail.verification_shipment && verificationDetail.verification_shipment.receiveable">
               <template slot-scope="{ row, index }" slot="shipment_fee_status_now">
-                <div v-if="row.this_submit_fee ==='1'">
-                  <Tag color="default" v-if="row.shipment_fee_status_now === 'NE'">NEW</Tag>
-                  <Tag color="primary" v-else-if="row.shipment_fee_status_now === 'SA'">SAVE</Tag>
-                  <Tag color="primary" v-else-if="row.shipment_fee_status_now === 'SU'">SUBMIT</Tag>
-                  <Tag color="success" v-else-if="row.shipment_fee_status_now === 'AP'">APPROVE</Tag>
-                  <Tag color="error" v-else-if="row.shipment_fee_status_now === 'DE'">DECLINE</Tag>
-                  <Tag color="error" v-else-if="row.shipment_fee_status_now === 'UN'">UNDO</Tag>
-                  <Tag color="success" v-else-if="row.shipment_fee_status_now === 'IN'">INVOICE</Tag>
-                  <Tag color="success" v-else-if="row.shipment_fee_status_now === 'RE'">RECEIPT</Tag>
-                </div>
-                <div v-else>
-                  <Tag color="default" v-if="row.shipment_fee_status_now === 'NE'">NEW</Tag>
-                  <Tag color="default" v-else-if="row.shipment_fee_status_now === 'SA'">SAVE</Tag>
-                  <Tag color="default" v-else-if="row.shipment_fee_status_now === 'SU'">SUBMIT</Tag>
-                  <Tag color="default" v-else-if="row.shipment_fee_status_now === 'AP'">APPROVE</Tag>
-                  <Tag color="default" v-else-if="row.shipment_fee_status_now === 'DE'">DECLINE</Tag>
-                  <Tag color="default" v-else-if="row.shipment_fee_status_now === 'UN'">UNDO</Tag>
-                  <Tag color="default" v-else-if="row.shipment_fee_status_now === 'IN'">INVOICE</Tag>
-                  <Tag color="default" v-else-if="row.shipment_fee_status_now === 'RE'">RECEIPT</Tag>
-                </div>
-              </template>
-              <template slot-scope="{ row, index }" slot="shipment_party">
-                <div v-if="row.this_submit_fee ==='1'">
-                  {{row.shipment_party}}
-                </div>
-                <div v-else style="color:#ccc;">
-                  {{row.shipment_party}}
-                </div>
+                <Tag color="default" v-if="row.shipment_fee_status === 'NE'">NEW</Tag>
+                <Tag color="primary" v-else-if="row.shipment_fee_status === 'SA'">SAVE</Tag>
+                <Tag color="primary" v-else-if="row.shipment_fee_status === 'SU'">SUBMIT</Tag>
+                <Tag color="success" v-else-if="row.shipment_fee_status === 'AP'">APPROVE</Tag>
+                <Tag color="error" v-else-if="row.shipment_fee_status === 'DE'">DECLINE</Tag>
+                <Tag color="error" v-else-if="row.shipment_fee_status === 'UN'">UNDO</Tag>
+                <Tag color="success" v-else-if="row.shipment_fee_status === 'IN'">INVOICE</Tag>
+                <Tag color="success" v-else-if="row.shipment_fee_status === 'RE'">RECEIPT</Tag>
               </template>
               <template slot-scope="{ row, index }" slot="shipment_fee">
-                <div v-if="row.this_submit_fee ==='1'">
-                  {{row.fee_data_code}}-{{row.fee_data_name}}
-                </div>
-                <div v-else style="color:#ccc;">
-                  {{row.fee_data_code}}-{{row.fee_data_name}}
-                </div>
-              </template>
-              <template slot-scope="{ row, index }" slot="shipment_fee_amount">
-                <div v-if="row.this_submit_fee ==='1'">
-                  {{row.shipment_fee_amount}}
-                </div>
-                <div v-else style="color:#ccc;">
-                  {{row.shipment_fee_amount}}
-                </div>
-              </template>
-              <template slot-scope="{ row, index }" slot="submit_user">
-                <div v-if="row.this_submit_fee ==='1'">
-                  {{row.submit_user}}
-                </div>
-                <div v-else style="color:#ccc;">
-                  {{row.submit_user}}
-                </div>
+                {{row.fee_data_code}}-{{row.fee_data_name}}
               </template>
             </Table>
             <p v-else>No Receivable List</p>
@@ -127,58 +91,17 @@
             <p slot="title">PAYABLE</p>
             <Table ref="payableTable" :columns="table.payableTable.columns" :data="verificationDetail.verification_shipment.payable" v-if="verificationDetail && verificationDetail.verification_shipment && verificationDetail.verification_shipment.payable">
               <template slot-scope="{ row, index }" slot="shipment_fee_status_now">
-                <div v-if="row.this_submit_fee ==='1'">
-                  <Tag color="default" v-if="row.shipment_fee_status_now === 'NE'">NEW</Tag>
-                  <Tag color="primary" v-else-if="row.shipment_fee_status_now === 'SA'">SAVE</Tag>
-                  <Tag color="primary" v-else-if="row.shipment_fee_status_now === 'SU'">SUBMIT</Tag>
-                  <Tag color="success" v-else-if="row.shipment_fee_status_now === 'AP'">APPROVE</Tag>
-                  <Tag color="error" v-else-if="row.shipment_fee_status_now === 'DE'">DECLINE</Tag>
-                  <Tag color="error" v-else-if="row.shipment_fee_status_now === 'UN'">UNDO</Tag>
-                  <Tag color="success" v-else-if="row.shipment_fee_status_now === 'IN'">INVOICE</Tag>
-                  <Tag color="success" v-else-if="row.shipment_fee_status_now === 'RE'">RECEIPT</Tag>
-                </div>
-                <div v-else>
-                  <Tag color="default" v-if="row.shipment_fee_status_now === 'NE'">NEW</Tag>
-                  <Tag color="default" v-else-if="row.shipment_fee_status_now === 'SA'">SAVE</Tag>
-                  <Tag color="default" v-else-if="row.shipment_fee_status_now === 'SU'">SUBMIT</Tag>
-                  <Tag color="default" v-else-if="row.shipment_fee_status_now === 'AP'">APPROVE</Tag>
-                  <Tag color="default" v-else-if="row.shipment_fee_status_now === 'DE'">DECLINE</Tag>
-                  <Tag color="default" v-else-if="row.shipment_fee_status_now === 'UN'">UNDO</Tag>
-                  <Tag color="default" v-else-if="row.shipment_fee_status_now === 'IN'">INVOICE</Tag>
-                  <Tag color="default" v-else-if="row.shipment_fee_status_now === 'RE'">RECEIPT</Tag>
-                </div>
-              </template>
-              <template slot-scope="{ row, index }" slot="shipment_party">
-                <div v-if="row.this_submit_fee ==='1'">
-                  {{row.shipment_party}}
-                </div>
-                <div v-else style="color:#ccc;">
-                  {{row.shipment_party}}
-                </div>
+                <Tag color="default" v-if="row.shipment_fee_status === 'NE'">NEW</Tag>
+                <Tag color="primary" v-else-if="row.shipment_fee_status === 'SA'">SAVE</Tag>
+                <Tag color="primary" v-else-if="row.shipment_fee_status === 'SU'">SUBMIT</Tag>
+                <Tag color="success" v-else-if="row.shipment_fee_status === 'AP'">APPROVE</Tag>
+                <Tag color="error" v-else-if="row.shipment_fee_status === 'DE'">DECLINE</Tag>
+                <Tag color="error" v-else-if="row.shipment_fee_status === 'UN'">UNDO</Tag>
+                <Tag color="success" v-else-if="row.shipment_fee_status === 'IN'">INVOICE</Tag>
+                <Tag color="success" v-else-if="row.shipment_fee_status === 'RE'">RECEIPT</Tag>
               </template>
               <template slot-scope="{ row, index }" slot="shipment_fee">
-                <div v-if="row.this_submit_fee ==='1'">
-                  {{row.fee_data_code}}-{{row.fee_data_name}}
-                </div>
-                <div v-else style="color:#ccc;">
-                  {{row.fee_data_code}}-{{row.fee_data_name}}
-                </div>
-              </template>
-              <template slot-scope="{ row, index }" slot="shipment_fee_amount">
-                <div v-if="row.this_submit_fee ==='1'">
-                  {{row.shipment_fee_amount}}
-                </div>
-                <div v-else style="color:#ccc;">
-                  {{row.shipment_fee_amount}}
-                </div>
-              </template>
-              <template slot-scope="{ row, index }" slot="submit_user">
-                <div v-if="row.this_submit_fee ==='1'">
-                  {{row.submit_user}}
-                </div>
-                <div v-else style="color:#ccc;">
-                  {{row.submit_user}}
-                </div>
+                {{row.fee_data_code}}-{{row.fee_data_name}}
               </template>
             </Table>
             <p v-else>No Payable List</p>
@@ -192,7 +115,7 @@
 import PageOptions from '../../../config/PageOptions.vue'
 const moment = require('moment')
 const common = require('@/lib/common')
-const apiUrl = '/api/zhongtan/export/CommercialVerification/'
+const apiUrl = '/api/zhongtan/export/BusinessVerification/'
 
 export default {
   data: function() {
@@ -211,6 +134,11 @@ export default {
               width: 150
             },
             {
+              title: 'Release Party',
+              slot: 'release_party',
+              width: 300
+            },
+            {
               title: 'Action',
               slot: 'action',
               width: 150
@@ -225,6 +153,16 @@ export default {
               key: 'export_verification_state',
               render: common.selectRender(this, 'RELEASE_STATE'),
               width: 200
+            },
+            {
+              title: 'DEPOT',
+              key: 'export_verification_depot',
+              width: 150
+            },
+            {
+              title: 'QTY',
+              key: 'export_verification_quantity',
+              width: 150
             },
             {
               title: 'RECEIVABLE',
@@ -268,7 +206,7 @@ export default {
             {
               title: 'Party',
               align: 'center',
-              slot: 'shipment_party',
+              key: 'shipment_party',
             },
             {
               title: 'Fee',
@@ -278,12 +216,12 @@ export default {
             {
               title: 'Fee Amount',
               align: 'center',
-              slot: 'shipment_fee_amount',
+              key: 'shipment_fee_amount',
             },
             {
               title: 'Submit',
               align: 'center',
-              slot: 'submit_user',
+              key: 'submit_user',
             }
           ],
           data: [],
@@ -305,7 +243,7 @@ export default {
             {
               title: 'Party',
               align: 'center',
-              slot: 'shipment_party',
+              key: 'shipment_party',
             },
             {
               title: 'Fee',
@@ -315,12 +253,12 @@ export default {
             {
               title: 'Fee Amount',
               align: 'center',
-              slot: 'shipment_fee_amount',
+              key: 'shipment_fee_amount',
             },
             {
               title: 'Submit',
               align: 'center',
-              slot: 'submit_user',
+              key: 'submit_user',
             }
           ],
           data: [],
@@ -420,5 +358,8 @@ export default {
 .timeline-time{
   font-size: 14px;
   font-weight: bold;
+}
+.timeline-content{
+  padding-left: 5px;
 }
 </style>
