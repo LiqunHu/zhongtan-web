@@ -408,11 +408,6 @@ export default {
       let rowspan = 0
       let colspan = 1
       let tableData = this.receivableTable.data
-      // for(let d of tableData) {
-      //   if(d.shipment_fee_invoice_id === row.shipment_fee_invoice_id) {
-      //     rowspan++
-      //   }
-      // }
       for(let i = 0; i < tableData.length; i++) {
         if(tableData[i].shipment_fee_invoice_id === row.shipment_fee_invoice_id) {
           rowspan++
@@ -431,7 +426,6 @@ export default {
       } else {
         span = [1, 1]
       }
-      console.log(rowIndex, span)
       return span
     },
     shipmentSplitMoveAct: async function() {
