@@ -31,6 +31,7 @@ const routes = [
   { path: '/admin/zhongtan/export/BookingLoad', component: resolve => require(['@/views/zhongtan/export/BookingLoad'], resolve) },
   { path: '/admin/zhongtan/export/CommercialVerification', component: resolve => require(['@/views/zhongtan/export/CommercialVerification'], resolve) },
   { path: '/admin/zhongtan/export/BusinessVerification', component: resolve => require(['@/views/zhongtan/export/BusinessVerification'], resolve) },
+  { path: '/admin/zhongtan/export/ShipmentProforma', component: resolve => require(['@/views/zhongtan/export/ShipmentProforma'], resolve) },
   { path: '/admin/zhongtan/export/ShipmentRelease', component: resolve => require(['@/views/zhongtan/export/ShipmentRelease'], resolve) },
   { path: '/admin/zhongtan/export/ShipmentReceipt', component: resolve => require(['@/views/zhongtan/export/ShipmentReceipt'], resolve) },
   { path: '/admin/zhongtan/import/ImportWork', component: resolve => require(['@/views/zhongtan/import/ImportWork'], resolve) },
