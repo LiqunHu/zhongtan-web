@@ -92,18 +92,18 @@
                             </a>
                           </template>
                           <template slot-scope="{ row, index }" slot="shipment_party">
-                            <Select v-model="receivableTable.data[index].shipment_fee_party" transfer filterable  :disabled="receivableTable.data[index].party_disabled">
+                            <Select v-model="receivableTable.data[index].shipment_fee_party" clearable transfer filterable  :disabled="receivableTable.data[index].party_disabled">
                               <Option v-for="item in pagePara.CUSTOMER" :value="item.user_id" :key="item.user_id">{{ item.user_name }}</Option>
                             </Select>
                           </template>
                           <template slot-scope="{ row, index }" slot="shipment_fee">
-                            <Select v-model="receivableTable.data[index].fee_data_code" v-if="receivableTable.data[index].shipment_fee_supplement ==='1'" transfer :disabled="receivableTable.data[index].fee_disabled">
+                            <Select v-model="receivableTable.data[index].fee_data_code" v-if="receivableTable.data[index].shipment_fee_supplement ==='1'" transfer filterable :disabled="receivableTable.data[index].fee_disabled">
                               <Option v-for="item in pagePara.ALL_RECEIVABLE_FEE" :value="item.fee_data_code" :key="item.fee_data_code">{{ item.fee_data_code }} - {{ item.fee_data_name }}</Option>
                             </Select>
                             <Select v-model="receivableTable.data[index].fee_data_code" v-else-if="receivableTable.data[index].fee_data_fixed ==='1'" disabled>
                               <Option v-for="item in pagePara.FIXED_RECEIVABLE_FEE" :value="item.fee_data_code" :key="item.fee_data_code">{{ item.fee_data_code }} - {{ item.fee_data_name }}</Option>
                             </Select>
-                            <Select v-model="receivableTable.data[index].fee_data_code" v-else transfer :disabled="receivableTable.data[index].fee_disabled" @on-change="changeShipmentFeeAct(index, 'R')">
+                            <Select v-model="receivableTable.data[index].fee_data_code" v-else transfer filterable :disabled="receivableTable.data[index].fee_disabled" @on-change="changeShipmentFeeAct(index, 'R')">
                               <Option v-for="item in pagePara.OTHER_RECEIVABLE_FEE" :value="item.fee_data_code" :key="item.fee_data_code">{{ item.fee_data_code }} - {{ item.fee_data_name }}</Option>
                             </Select>
                           </template>
@@ -141,18 +141,18 @@
                             <Tag color="success" v-else-if="payableTable.data[index].shipment_fee_status === 'RE'">RECEIPT</Tag>
                           </template>
                           <template slot-scope="{ row, index }" slot="shipment_party">
-                            <Select v-model="payableTable.data[index].shipment_fee_party" transfer filterable :disabled="payableTable.data[index].party_disabled">
+                            <Select v-model="payableTable.data[index].shipment_fee_party" clearable transfer filterable :disabled="payableTable.data[index].party_disabled">
                               <Option v-for="item in pagePara.CUSTOMER" :value="item.user_id" :key="item.user_id">{{ item.user_name }}</Option>
                             </Select>
                           </template>
                           <template slot-scope="{ row, index }" slot="shipment_fee">
-                            <Select v-model="payableTable.data[index].fee_data_code" v-if="payableTable.data[index].shipment_fee_supplement ==='1'" transfer :disabled="payableTable.data[index].fee_disabled">
+                            <Select v-model="payableTable.data[index].fee_data_code" v-if="payableTable.data[index].shipment_fee_supplement ==='1'" transfer filterable :disabled="payableTable.data[index].fee_disabled">
                               <Option v-for="item in pagePara.ALL_PAYABLE_FEE" :value="item.fee_data_code" :key="item.fee_data_code">{{ item.fee_data_code }} - {{ item.fee_data_name }}</Option>
                             </Select>
                             <Select v-model="payableTable.data[index].fee_data_code" v-else-if="payableTable.data[index].fee_data_fixed ==='1'" disabled>
                               <Option v-for="item in pagePara.FIXED_PAYABLE_FEE" :value="item.fee_data_code" :key="item.fee_data_code">{{ item.fee_data_code }} - {{ item.fee_data_name }}</Option>
                             </Select>
-                            <Select v-model="payableTable.data[index].fee_data_code" v-else transfer :disabled="payableTable.data[index].fee_disabled" @on-change="changeShipmentFeeAct(index, 'P')">
+                            <Select v-model="payableTable.data[index].fee_data_code" v-else transfer filterable :disabled="payableTable.data[index].fee_disabled" @on-change="changeShipmentFeeAct(index, 'P')">
                               <Option v-for="item in pagePara.OTHER_PAYABLE_FEE" :value="item.fee_data_code" :key="item.fee_data_code">{{ item.fee_data_code }} - {{ item.fee_data_name }}</Option>
                             </Select>
                           </template>

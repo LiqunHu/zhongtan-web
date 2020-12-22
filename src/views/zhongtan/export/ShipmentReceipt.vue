@@ -31,7 +31,7 @@
               </button>
             </div>
             <div class="form-group m-r-3">
-              <!-- <button type="button" class="btn btn-info" @click="bookingLoadModalAct">Load</button> -->
+              <button type="button" class="btn btn-info" @click="exportCollectModalAct"><i class="fa fa-download" style="padding-right:7px;"></i>Collect</button>
             </div>
           </div>
         </div>
@@ -140,6 +140,40 @@
         <Button type="primary" size="large" @click="receiptAct" >Submit</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.collectModal" title="Download Receipt Collect" width="600" :mask-closable="false">
+      <Form :model="collectForm" :label-width="120">
+        <Row>
+          <Col>
+            <FormItem label="Ship Co." prop="carrier">
+              <Select v-model="collectForm.carrier">
+                <Option v-for="item in pagePara.RECEIPT_TYPE_INFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+              </Select>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <FormItem label="Party" prop="party">
+              <Select v-model="collectForm.receipt_party" transfer filterable>
+                <Option v-for="item in pagePara.CUSTOMER" :value="item.user_id" :key="item.user_id">{{ item.user_name }}</Option>
+              </Select>
+            </FormItem>
+          </Col>
+        </Row>
+        
+        <Row>
+          <Col>
+            <FormItem label="Receipt Data" prop="collect_date">
+              <DatePicker type="daterange" v-model="collectForm.collect_date" placeholder="Date" @on-change="collectData"></DatePicker>
+            </FormItem>
+          </Col>
+        </Row>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.collectModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="exportCollectAct">Submit</Button>
+      </div>
+    </Modal>
     <Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :mask-closable="false">
       <Form :label-width="120">
           <FormItem v-show="false">
@@ -167,7 +201,7 @@ export default {
   name: 'BookingLoadControl',
   data: function() {
     return {
-      modal: { receiptModal: false, checkPasswordModal: false},
+      modal: { receiptModal: false, checkPasswordModal: false, collectModal: false },
       headers: common.uploadHeaders(),
       vesselHeight: common.getTableHeight(),
       pagePara: {},
@@ -348,7 +382,19 @@ export default {
       checkPassword: '',
       checkPasswordType: '',
       bookingEditForm: {},
-      receiptForm: {}
+      receiptForm: {
+        file_id: '',
+        shipment_receipt_party_name: '',
+        shipment_receipt_amount: '',
+        shipment_receipt_check_cash: 'TRANSFER',
+        shipment_receipt_check_no: '',
+        shipment_receipt_bank_reference_no: ''
+      },
+      collectForm: {
+        carrier: '',
+        receipt_party: '',
+        collect_date: ''
+      }
     }
   },
   created() {
@@ -493,6 +539,35 @@ export default {
         this.$Message.success('Receipt Success')
         this.modal.receiptModal = false
         this.searchTableAct()
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
+    collectData: function(e) {
+      this.collectForm.collect_date = JSON.parse(JSON.stringify(e))
+    },
+    exportCollectModalAct: async function() {
+      this.collectForm = {
+        carrier: '',
+        receipt_party: '',
+        collect_date: ''
+      }
+      this.modal.collectModal = true
+    },
+    exportCollectAct: async function() {
+      try {
+        let response = await this.$http.request({url: apiUrl + 'exportCollect', method: 'post', data: this.collectForm, responseType: 'blob'})
+        let blob = response.data
+        let reader = new FileReader()
+        reader.readAsDataURL(blob)
+        reader.onload = e => {
+          let a = document.createElement('a')
+          a.download = 'Shipment Receipt Report.xlsx'
+          a.href = e.target.result
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+        }
       } catch (error) {
         this.$commonact.fault(error)
       }
