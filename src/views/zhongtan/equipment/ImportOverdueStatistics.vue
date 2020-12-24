@@ -78,7 +78,7 @@
           <span style="color: red;" v-if="row.invoice_containers_empty_return_date && row.invoice_containers_actually_return_date && row.invoice_containers_empty_return_date !== row.invoice_containers_actually_return_date"> {{row.invoice_containers_actually_return_date}} </span>
           <span v-else>{{row.invoice_containers_actually_return_date}}</span>
           <Row class="right-bottom-title" v-if="row.invoice_containers_empty_return_date">
-            <span>{{row.invoice_containers_empty_return_date}}</span>
+            <i class="fa fa-calculator" style="margin-right:7px;"></i><span>{{row.invoice_containers_empty_return_date}}</span>
           </Row>
         </template>
         <template slot-scope="{ row, index }" slot="invoice_containers_empty_return_overdue_days">
