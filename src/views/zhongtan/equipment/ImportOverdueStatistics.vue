@@ -89,7 +89,7 @@
           </Row>
         </template>
         <template slot-scope="{ row, index }" slot="invoice_containers_empty_return_overdue_amount">
-          <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_amount && row.invoice_containers_actually_return_overdue_amount && row.invoice_containers_empty_return_overdue_amount !== row.invoice_containers_actually_return_overdue_amount"> {{row.invoice_containers_actually_return_overdue_amount}} </span>
+          <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_amount && row.invoice_containers_actually_return_overdue_amount && row.invoice_containers_empty_return_overdue_amount_receipt && (row.invoice_containers_empty_return_overdue_amount !== row.invoice_containers_actually_return_overdue_amount || row.invoice_containers_empty_return_overdue_amount_receipt != row.invoice_containers_actually_return_overdue_amount)"> {{row.invoice_containers_actually_return_overdue_amount}} </span>
           <span v-else>{{row.invoice_containers_actually_return_overdue_amount}}</span>
           <Row class="right-bottom-title" v-if="row.invoice_containers_empty_return_overdue_amount">
             <i class="fa fa-calculator" style="margin-right:7px;"></i><span>{{row.invoice_containers_empty_return_overdue_amount}}</span>
