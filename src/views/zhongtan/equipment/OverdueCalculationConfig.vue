@@ -18,7 +18,12 @@
             <div class="panel-toolbar">
                 <div class="form-inline">
                     <div class="form-group m-r-2">
-                    <DatePicker type="date" :value="search_data.enabled_date" placeholder="Enabled Date" @on-change="searchDataChange"></DatePicker>
+                        <Select v-model="search_data.overdue_charge_business_type" placeholder = "select business type" style="width:180px">
+                            <Option v-for="item in pagePara.BUSINESS_TYPE" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                        </Select>
+                    </div>
+                    <div class="form-group m-r-2">
+                        <DatePicker type="date" :value="search_data.enabled_date" placeholder="Enabled Date" @on-change="searchDataChange"></DatePicker>
                     </div>
                     <div class="form-group m-r-2">
                         <Select clearable v-model="search_data.overdue_charge_cargo_type" placeholder = "select cargo type" style="width:180px">
@@ -58,6 +63,10 @@
             </div>
         </template>
         <Table stripe size="small" ref="ruleTable" :columns="table.ruleTable.columns" :data="table.ruleTable.data" :height="table.ruleTable.height" :border="table.ruleTable.data && table.ruleTable.data.length > 0">
+            <template slot-scope="{ row, index }" slot="overdue_charge_business_type">
+               <Tag color="primary" v-if="row.overdue_charge_business_type === 'I'">IMPORT</Tag>
+               <Tag color="success" v-if="row.overdue_charge_business_type === 'E'">EXPORT</Tag>
+            </template>
             <template slot-scope="{ row, index }" slot="overdue_charge_container">
                {{row.overdue_charge_container_size}} [
                 <span v-for="item in pagePara.CONTAINER_SIZE" v-if="item.container_size_code === row.overdue_charge_container_size">{{item.container_size_name}}</span> ]
@@ -81,12 +90,22 @@
         <Page class="m-t-10" :total="table.ruleTable.total" :page-size="table.ruleTable.limit" @on-change="getTableData" show-total/>
         <Modal v-model="modal.chargeRuleModal" :title="textMap[modalStatus]" width="600">
             <Form ref="chargeRuleForm" :model="chargeRuleForm" :rules="chargeRules" :label-width="150" style="padding-right: 80px;">
-                <FormItem label="Cargo Type" prop="overdue_charge_cargo_type">
+                <FormItem label="Business Type" prop="overdue_charge_business_type">
+                    <RadioGroup v-model="chargeRuleForm.overdue_charge_business_type" @on-change="changeBusinessType">
+                        <Radio v-for="item in pagePara.BUSINESS_TYPE" v-bind:key="item.id" :label="item.id" style="margin-right: 50px;" :disabled="modalStatus === 'update'">{{item.text}}</Radio>
+                    </RadioGroup>
+                </FormItem>
+                <FormItem label="Cargo Type" prop="overdue_charge_cargo_type" v-if="chargeRuleForm.overdue_charge_business_type ==='I'">
                     <RadioGroup v-model="chargeRuleForm.overdue_charge_cargo_type">
                         <Radio v-for="item in cargoTypeFileter" v-bind:key="item.id" :label="item.id" style="margin-right: 50px;">{{item.text}}</Radio>
                     </RadioGroup>
                 </FormItem>
-                <FormItem label="Discharge Port" prop="overdue_charge_discharge_port_multiple" v-if="modalStatus === 'create'">
+                <FormItem label="Cargo Type" prop="overdue_charge_cargo_type" v-if="chargeRuleForm.overdue_charge_business_type ==='E'">
+                    <RadioGroup v-model="chargeRuleForm.overdue_charge_cargo_type">
+                        <Radio v-for="item in pagePara.EXPORT_CARGO_TYPE" v-bind:key="item.id" :label="item.id" style="margin-right: 50px;">{{item.text}}</Radio>
+                    </RadioGroup>
+                </FormItem>
+                <FormItem label="Discharge Port" prop="overdue_charge_discharge_port_multiple" v-if="modalStatus === 'create' && chargeRuleForm.overdue_charge_business_type ==='I'">
                     <i-select v-model="chargeRuleForm.overdue_charge_discharge_port_multiple" clearable multiple filterable placeholder = "select discharge port">
                         <i-option  v-for="item in pagePara.DISCHARGE_PORT" :value="item.discharge_port_code" :key="item.discharge_port_code" :label="item.discharge_port_code">
                             <span>{{item.discharge_port_code}}</span>
@@ -94,7 +113,7 @@
                         </i-option>
                     </i-select>
                 </FormItem>
-                <FormItem label="Discharge Port" prop="overdue_charge_discharge_port" v-if="modalStatus === 'update'">
+                <FormItem label="Discharge Port" prop="overdue_charge_discharge_port" v-if="modalStatus === 'update' && chargeRuleForm.overdue_charge_business_type ==='I'">
                     <i-select v-model="chargeRuleForm.overdue_charge_discharge_port" clearable filterable placeholder = "select discharge port">
                         <i-option  v-for="item in pagePara.DISCHARGE_PORT" :value="item.discharge_port_code" :key="item.discharge_port_code" :label="item.discharge_port_code">
                             <span>{{item.discharge_port_code}}</span>
@@ -102,7 +121,7 @@
                         </i-option>
                     </i-select>
                 </FormItem>
-                <FormItem label="Cargo Type" prop="overdue_charge_carrier">
+                <FormItem label="Carrier Type" prop="overdue_charge_carrier">
                     <RadioGroup v-model="chargeRuleForm.overdue_charge_carrier">
                         <Radio v-for="item in carrierFileter" v-bind:key="item.id" :label="item.id" style="margin-right: 50px;">{{item.text}}</Radio>
                     </RadioGroup>
@@ -190,6 +209,11 @@ export default {
               align: 'center'
             },
             {
+              title: 'Business type',
+              slot: 'overdue_charge_business_type',
+              align: 'center'
+            },
+            {
               title: 'Cargo type',
               key: 'overdue_charge_cargo_type',
             },
@@ -232,6 +256,7 @@ export default {
         }
       },
       search_data: {
+          overdue_charge_business_type: 'I',
           overdue_charge_cargo_type: '',
           overdue_charge_discharge_port: '',
           overdue_charge_carrier: '',
@@ -240,6 +265,7 @@ export default {
       },
       chargeRuleFormOld: {},
       chargeRuleForm: {
+          overdue_charge_business_type: 'I',
           overdue_charge_rule_id: '',
           overdue_charge_cargo_type: '',
           overdue_charge_discharge_port: '',
@@ -252,35 +278,37 @@ export default {
       },
       overdueChargeFree: false,
       chargeRules: {
-            overdue_charge_cargo_type: [
-                { required: true, message: 'The cargo type cannot be empty', trigger: 'change' }
-                
-            ],
-            overdue_charge_discharge_port: [
-                {required: true, trigger: 'change', message: 'select discharge port'}
-            ],
-            overdue_charge_discharge_port_multiple: [
-                { type: 'array', min: 1, required: true, trigger: 'change', message: 'select discharge port'}
-            ],
-            overdue_charge_carrier: [
-                { required: true, message: 'The carrier cannot be empty', trigger: 'change' }
-            ],
-            overdue_charge_container_size: [
-                {required: true, trigger: 'change', message: 'select container size type'}
-            ],
-            overdue_charge_container_size_multiple: [
-                { type: 'array', min: 1, required: true, trigger: 'change', message: 'select container size type'}
-            ],
-            overdue_charge_min_day: [
-                { required: true, message: 'The min day cannot be empty', trigger: 'blur' },
-                { type: 'number', message: 'The min day must be number', trigger: 'blur' , transform(value) { return Number(value)}}
-            ],
-            overdue_charge_max_day: [
-                { type: 'number', message: 'The min day must be number', trigger: 'blur' , transform(value) { return Number(value)}}
-            ],
-            overdue_charge_amount: [
-                { type: 'number', message: 'The amount must be number', trigger: 'blur' , transform(value) { return Number(value)}}
-            ]
+        overdue_charge_business_type: [
+            { required: true, message: 'The business type cannot be empty', trigger: 'change' }
+        ],
+        overdue_charge_cargo_type: [
+            { required: true, message: 'The cargo type cannot be empty', trigger: 'change' }
+        ],
+        overdue_charge_discharge_port: [
+            {required: true, trigger: 'change', message: 'select discharge port'}
+        ],
+        overdue_charge_discharge_port_multiple: [
+            { type: 'array', min: 1, required: true, trigger: 'change', message: 'select discharge port'}
+        ],
+        overdue_charge_carrier: [
+            { required: true, message: 'The carrier cannot be empty', trigger: 'change' }
+        ],
+        overdue_charge_container_size: [
+            {required: true, trigger: 'change', message: 'select container size type'}
+        ],
+        overdue_charge_container_size_multiple: [
+            { type: 'array', min: 1, required: true, trigger: 'change', message: 'select container size type'}
+        ],
+        overdue_charge_min_day: [
+            { required: true, message: 'The min day cannot be empty', trigger: 'blur' },
+            { type: 'number', message: 'The min day must be number', trigger: 'blur' , transform(value) { return Number(value)}}
+        ],
+        overdue_charge_max_day: [
+            { type: 'number', message: 'The min day must be number', trigger: 'blur' , transform(value) { return Number(value)}}
+        ],
+        overdue_charge_amount: [
+            { type: 'number', message: 'The amount must be number', trigger: 'blur' , transform(value) { return Number(value)}}
+        ]
       }
     }
   },
@@ -324,15 +352,16 @@ export default {
     },
     resetChageRuleForm: function() {
         this.chargeRuleForm = {
-          overdue_charge_rule_id: '',
-          overdue_charge_cargo_type: 'IM',
-          overdue_charge_discharge_port: '',
-          overdue_charge_carrier: 'COSCO',
-          overdue_charge_container_size: '',
-          overdue_charge_min_day: '',
-          overdue_charge_max_day: '',
-          overdue_charge_amount: '',
-          overdue_charge_currency: 'USD'
+            overdue_charge_business_type: 'I',
+            overdue_charge_rule_id: '',
+            overdue_charge_cargo_type: 'IM',
+            overdue_charge_discharge_port: '',
+            overdue_charge_carrier: 'COSCO',
+            overdue_charge_container_size: '',
+            overdue_charge_min_day: '',
+            overdue_charge_max_day: '',
+            overdue_charge_amount: '',
+            overdue_charge_currency: 'USD'
       }
       this.overdueChargeFree = false
     },
@@ -343,6 +372,13 @@ export default {
         this.resetChageRuleForm()
         this.modalStatus = 'create'
         this.modal.chargeRuleModal = true
+    },
+    changeBusinessType: function(e) {
+        if(this.chargeRuleForm.overdue_charge_business_type === 'I') {
+            this.chargeRuleForm.overdue_charge_cargo_type = 'IM'
+        } else if(this.chargeRuleForm.overdue_charge_business_type === 'E') {
+            this.chargeRuleForm.overdue_charge_cargo_type = 'LOCAL'
+        }
     },
     addChageRuleAct: async function() {
         this.$refs['chargeRuleForm'].validate(async valid => {

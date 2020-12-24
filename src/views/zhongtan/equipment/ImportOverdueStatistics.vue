@@ -85,15 +85,21 @@
           <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_days && row.invoice_containers_actually_return_overdue_days && row.invoice_containers_empty_return_overdue_days !== row.invoice_containers_actually_return_overdue_days"> {{row.invoice_containers_actually_return_overdue_days}} </span>
           <span v-else>{{row.invoice_containers_actually_return_overdue_days}}</span>
           <Row class="right-bottom-title" v-if="row.invoice_containers_empty_return_overdue_days">
-            <span>{{row.invoice_containers_empty_return_overdue_days}}</span>
+            <i class="fa fa-calculator" style="margin-right:7px;"></i><span>{{row.invoice_containers_empty_return_overdue_days}}</span>
           </Row>
         </template>
         <template slot-scope="{ row, index }" slot="invoice_containers_empty_return_overdue_amount">
           <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_amount && row.invoice_containers_actually_return_overdue_amount && row.invoice_containers_empty_return_overdue_amount !== row.invoice_containers_actually_return_overdue_amount"> {{row.invoice_containers_actually_return_overdue_amount}} </span>
           <span v-else>{{row.invoice_containers_actually_return_overdue_amount}}</span>
           <Row class="right-bottom-title" v-if="row.invoice_containers_empty_return_overdue_amount">
-            <span>{{row.invoice_containers_empty_return_overdue_amount}}</span>
+            <i class="fa fa-calculator" style="margin-right:7px;"></i><span>{{row.invoice_containers_empty_return_overdue_amount}}</span>
           </Row>
+        </template>
+        <template slot-scope="{ row, index }" slot="invoice_containers_empty_return_overdue_amount_receipt">
+          <Row class="right-bottom-title" v-if="row.invoice_containers_empty_return_overdue_deduction">
+            <i class="fa fa-tag" style="color: red; margin-right:7px;"></i><span style="color: red;">{{row.invoice_containers_empty_return_overdue_deduction}}</span>
+          </Row>
+          {{row.invoice_containers_empty_return_overdue_amount_receipt}}
         </template>
         <template slot-scope="{ row, index }" slot="invoice_containers_size">
             {{row.invoice_containers_size}} [
@@ -231,7 +237,7 @@ export default {
             },
             {
               title: 'Receipt Amount',
-              key: 'invoice_containers_empty_return_overdue_amount_receipt',
+              slot: 'invoice_containers_empty_return_overdue_amount_receipt',
               width: 150,
               align: 'center'
             },
