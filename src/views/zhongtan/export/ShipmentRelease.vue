@@ -44,12 +44,14 @@
                 #M B/L No. {{bookingShipment.export_masterbl_bl}}
                 <Tag color="primary">{{bookingShipment.export_masterbl_cargo_type}}</Tag>
               </div>
-              <Button slot="extra" size="small" type="primary">详细信息</Button>
-              <Button slot="extra" size="small" style="margin-left: 7px;">操作历史</Button>
+              <!-- <Button slot="extra" size="small" type="primary">详细信息</Button> -->
+              <!-- <Button slot="extra" size="small" style="margin-left: 7px;">操作历史</Button> -->
               <Row>
                 <Col span="4"><font style="color:#17233D; font-size: 16px;">Vessel: </font>{{bookingShipment.vessel.export_vessel_name}}</Col>
                 <Col span="4"><font style="color:#17233D; font-size: 16px;">Voyage: </font>{{bookingShipment.vessel.export_vessel_voyage}}</Col>
                 <Col span="4"><font style="color:#17233D; font-size: 16px;">Size/Type: </font>{{bookingShipment.size_type}}</Col>
+                <Col span="4"><font style="color:#17233D; font-size: 16px;">POL: </font>{{bookingShipment.export_masterbl_port_of_load}}</Col>
+                <Col span="4"><font style="color:#17233D; font-size: 16px;">POD: </font>{{bookingShipment.export_masterbl_port_of_discharge}}</Col>
               </Row>
             </Card>
             <Card>
@@ -383,21 +385,33 @@ export default {
     },
     getBookingShipmentAct: async function(export_masterbl_id) {
       this.invoiceDisabled = true
+      this.submitDisabled = true
       let param = {
         export_masterbl_id: export_masterbl_id
       }
       let response = await this.$http.post(apiUrl + 'getBookingShipment', param)
       this.bookingShipment = response.data.info
       this.receivableTable.data = this.bookingShipment.shipment_receivable
+      let submitStatus = ['SA', 'DE', 'UN']
       if(this.receivableTable.data && this.receivableTable.data.length > 0) {
         let invoiceStatus = ['AP']
         for(let d of this.receivableTable.data) {
+          if(submitStatus.indexOf(d.shipment_fee_status) >= 0 && d.shipment_fee_party && d.fee_data_code && d.shipment_fee_amount && d.shipment_fee_currency) {
+            this.submitDisabled = false
+          }
           if(invoiceStatus.indexOf(d.shipment_fee_status) >= 0) {
             this.invoiceDisabled = false
           }
         }
       }
       this.payableTable.data = this.bookingShipment.shipment_payable
+      if(this.payableTable.data && this.payableTable.data.length > 0) {
+        for(let d of this.payableTable.data) {
+          if(submitStatus.indexOf(d.shipment_fee_status) >= 0 && d.shipment_fee_party && d.fee_data_code && d.shipment_fee_amount && d.shipment_fee_currency) {
+            this.submitDisabled = false
+          }
+        }
+      }
     },
     handleReceivableSpan: function({row, column, rowIndex, columnIndex}) {
       if(column.title === 'Invoice') {
@@ -504,21 +518,12 @@ export default {
     },
     selectReceivableAct: async function(selection) {
       if(selection && selection.length > 0) {
-        let submitStatus = ['SA', 'DE', 'UN'] 
         let undoStatus = ['SU']
         this.receivableTable.removeDisabled = false
-        this.submitDisabled = false
         this.undoDisabled = false
         for(let s of selection) {
           if(s.fee_data_fixed === '1') {
             this.receivableTable.removeDisabled = true
-            break
-          }
-        }
-        for(let s of selection) {
-          if(submitStatus.indexOf(s.shipment_fee_status) < 0 || !s.fee_data_code 
-              || !s.shipment_fee_party || !s.shipment_fee_amount || parseInt(s.shipment_fee_amount) === 0) {
-            this.submitDisabled = true
             break
           }
         }
@@ -530,27 +535,17 @@ export default {
         }
       } else {
         this.receivableTable.removeDisabled = true
-        this.submitDisabled = true
         this.undoDisabled = true
       }
     },
     selectPayableAct: async function(selection) {
       if(selection && selection.length > 0) {
-        let submitStatus = ['SA', 'DE', 'UN'] 
         let undoStatus = ['SU']
         this.payableTable.removeDisabled = false
-        this.submitDisabled = false
         this.undoDisabled = false
         for(let s of selection) {
           if(s.fee_data_fixed === '1') {
             this.payableTable.removeDisabled = true
-            break
-          }
-        }
-        for(let s of selection) {
-          if(submitStatus.indexOf(s.shipment_fee_status) < 0 || !s.fee_data_code 
-              || !s.shipment_fee_party || !s.shipment_fee_amount || parseInt(s.shipment_fee_amount) === 0) {
-            this.submitDisabled = true
             break
           }
         }
@@ -562,7 +557,6 @@ export default {
         }
       } else {
         this.payableTable.removeDisabled = true
-        this.submitDisabled = true
         this.undoDisabled = true
       }
     },
@@ -603,9 +597,7 @@ export default {
     },
     submitShipmentAct: async function() {
       let param = {
-        export_masterbl_id: this.bookingShipment.export_masterbl_id,
-        shipment_receivable: this.$refs.receivableTable.getSelection(),
-        shipment_payable: this.$refs.payableTable.getSelection(),
+        export_masterbl_id: this.bookingShipment.export_masterbl_id
       }
       await this.$http.post(apiUrl + 'submitShipment', param)
       await this.getBookingShipmentAct(this.bookingShipment.export_masterbl_id)
