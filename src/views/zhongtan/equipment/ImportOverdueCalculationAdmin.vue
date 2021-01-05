@@ -46,6 +46,7 @@
                 <i class="fa fa-envelope"></i> Storing Order
               </button>
             </div>
+            {{this.tableSelectAll}}
           </div>
         </div>
       </template>
@@ -632,7 +633,18 @@ export default {
       } else {
         this.emptyInvoiceDisabled = true
       }
+      let enabledCount = 0
+      for(let d of this.table.containerTable.data) {
+        if(!d._disabled) {
+          enabledCount++
+        }
+      }
       this.$forceUpdate()
+      if(selection && selection.length === enabledCount) {
+        this.tableSelectAll = true
+      } else {
+        this.tableSelectAll = false
+      }
     },
     resetChageRuleForm: function() {
       this.overdueChargeFormOld = {}
@@ -655,7 +667,7 @@ export default {
       try {
         this.checkPassword = ''
         this.modal.checkPasswordModal = true
-        this.checkPasswordType = 'ediCalculation'
+        this.checkPasswordType = 'IMPORT_DEMURRANGE_EDI_EDIT'
 
         this.calculationType = 'EDI'
         this.$nextTick(() => {
@@ -849,7 +861,7 @@ export default {
       try {
         this.checkPassword = ''
         this.modal.checkPasswordModal = true
-        this.checkPasswordType = 'demurrageReinvoice'
+        this.checkPasswordType = 'IMPORT_DEMURRANGE_RE_INVOICE'
       } catch (error) {
         this.$commonact.fault(error)
       }
@@ -926,7 +938,7 @@ export default {
       try {
         this.checkPassword = ''
         this.modal.checkPasswordModal = true
-        this.checkPasswordType = 'calculationEdit'
+        this.checkPasswordType = 'IMPORT_FREE_DAYS_EDIT'
       } catch (error) {
         this.$commonact.fault(error)
       }
@@ -937,19 +949,18 @@ export default {
           return this.$Message.error('Please enter right password')
         }
         let param = {
-          page: 'Import Overdue Invoice Admin',
           action: this.checkPasswordType,
           checkPassword: common.md52(this.checkPassword)
         }
         await this.$http.post(apiUrl + 'checkPassword', param)
         this.modal.checkPasswordModal = false
-        if(this.checkPasswordType === 'calculationEdit') {
+        if(this.checkPasswordType === 'IMPORT_FREE_DAYS_EDIT') {
           this.returnOverdueDaysDisabled = false
           this.emptySubmitDisabled = false
           this.ladenSubmitDisabled = false
-        } else if(this.checkPasswordType === 'demurrageReinvoice'){
+        } else if(this.checkPasswordType === 'IMPORT_DEMURRANGE_RE_INVOICE'){
           this.actemptyReInvoiceModal()
-        } else if(this.checkPasswordType === 'ediCalculation'){
+        } else if(this.checkPasswordType === 'IMPORT_DEMURRANGE_EDI_EDIT'){
           this.modal.ediCalculationModal = true
         }
       } catch (error) {

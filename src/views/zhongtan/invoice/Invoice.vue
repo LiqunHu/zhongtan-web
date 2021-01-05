@@ -535,7 +535,8 @@
         <FormItem label="Container Size" style="margin-bottom: 0px;" v-if="workPara.invoice_masterbi_vessel_type !== 'Bulk'">
             <span style='white-space:pre;'> {{ workPara.container_size_type }}</span>
         </FormItem>
-        <Checkbox v-model="depositEdit" style="position: absolute; top: 366px; right: 20px;" @on-change="changeDepositEdit">EDIT</Checkbox>
+        <Checkbox v-model="depositEdit" v-if="deposit.depositType=='Container Deposit'" style="position: absolute; top: 366px; right: 20px;" @on-change="changeDepositEdit">EDIT</Checkbox>
+        <Checkbox v-model="invoiceFeeEdit" v-if="deposit.depositType=='Invoice Fee'" style="position: absolute; top: 366px; right: 20px;" @on-change="changeInvoiceFeeEdit">EDIT</Checkbox>
         <Tabs ref="depositTabs" active-key="Container Deposit" @on-click="currentFeeTabChanged">
             <Tab-pane :label="containerDepositFeeLabel" name="Container Deposit" key="Container Deposit" :disabled="workPara.invoice_masterbi_vessel_type === 'Bulk'">
                 <FormItem label="Deposit Amount" prop="invoice_masterbi_deposit" style="margin-bottom: 0px;">
@@ -1073,7 +1074,6 @@
                 checkPasswordType: '',
                 depositEdit: false,
                 changeCustomer: false,
-                doDeliverEdit: false,
                 doDeliverValidToEdit: false,
                 formRules: {
                     invoice_vessel_name: [{
@@ -1274,7 +1274,6 @@
             actDownLoadDoModal: async function(row) {
                 await this.getPara()
                 this.workPara = JSON.parse(JSON.stringify(row))
-                this.doDeliverEdit = false
                 this.delivery.options = JSON.parse(JSON.stringify(this.pagePara.DELIVER))
                 if (row.invoice_masterbi_delivery_to) {
                     const index = this.delivery.options.indexOf(row.invoice_masterbi_delivery_to)
@@ -1373,6 +1372,9 @@
                     } else {
                         this.deposit.depositType = 'Container Deposit'
                         this.$refs.depositTabs.activeKey = 'Container Deposit'
+                        // if(!this.workPara.invoice_masterbi_deposit_date) {
+                        //     this.searchFixedDeposit()
+                        // }
                     }
                     if (this.workPara.invoice_masterbi_deposit_state) {
                         this.containerDepositFeeLabel = h => {
@@ -1398,7 +1400,6 @@
                     } else {
                         this.invoiceFeeLabel = 'Invoice Fee'
                     }
-                    this.searchFixedDeposit()
                 })
                 this.modal.depositModal = true
             },
@@ -1576,21 +1577,23 @@
                 try {
                     let response = await this.$http.post(apiUrl + 'searchFixedDeposit', _.extend(this.workPara, this.deposit))
                     let fixedDeposit = JSON.parse(JSON.stringify(response.data.info))
-                        // container deposit
-                    await this.resetInvoiceDeposit(fixedDeposit)
+                    if (this.deposit.depositType === 'Invoice Fee') {
                         // Invoice Fee - Ocean
-                    await this.resetInvoiceOcean(fixedDeposit)
+                        await this.resetInvoiceOcean(fixedDeposit)
                         // Invoice Fee
-                    await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_bl_amendment')
-                    await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_cod_charge')
-                    await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_transfer')
-                    await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_lolf')
-                    await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_lcl')
-                    await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_amendment')
-                    await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_tasac')
-                    await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_printing')
-                    await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_others')
-
+                        await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_bl_amendment')
+                        await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_cod_charge')
+                        await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_transfer')
+                        await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_lolf')
+                        await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_lcl')
+                        await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_amendment')
+                        await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_tasac')
+                        await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_printing')
+                        await this.resetInvoiceFee(fixedDeposit, 'invoice_masterbi_others')
+                    } else {
+                        // container deposit
+                        await this.resetInvoiceDeposit(fixedDeposit)
+                    }
                     this.workPara.invoice_masterbi_customer_blacklist = fixedDeposit.invoice_masterbi_customer_blacklist
                     this.$forceUpdate()
                 } catch (error) {
@@ -1693,12 +1696,12 @@
                     }
                 }
             },
-            changeDoDeliverEdit: function() {
-                if (!this.doDeliverEdit) {
+            changeInvoiceFeeEdit: function() {
+                if (this.depositEdit) {
                     try {
                         this.modal.checkPasswordModal = true
                         this.checkPassword = ''
-                        this.checkPasswordType = 'doDeliverEdit'
+                        this.checkPasswordType = 'invoiceFeeEdit'
                     } catch (error) {
                         this.$commonact.fault(error)
                     }
@@ -1746,14 +1749,34 @@
                     if (!this.checkPassword) {
                         return this.$Message.error('Please enter right password')
                     }
-                    await this.$http.post(apiUrl + 'checkPassword', {
-                        check_password: common.md52(this.checkPassword)
-                    })
+                    let action = ''
+                    if (this.checkPasswordType === 'depositEdit' || this.checkPasswordType === 'depositModalCheck') {
+                        action = 'IMPORT_DEPOSIT_EDIT'
+                    } else if (this.checkPasswordType === 'invoiceFeeEdit') {
+                        action = 'IMPORT_INVOICE_FEE_EDIT'
+                    } else if (this.checkPasswordType === 'doVesselDelete' || this.checkPasswordType === 'doVesselEdit') {
+                        action = 'IMPORT_VESSEL_EDIT'
+                    } else if (this.checkPasswordType === 'doTableEdit') {
+                        action = 'IMPORT_RELEASE_EDIT'
+                    } else if (this.checkPasswordType === 'doDisabledChange') {
+                        action = 'IMPORT_DO_STATE_EDIT'
+                    } else if (this.checkPasswordType === 'downLoadDoModalCheck' || this.checkPasswordType === 'doDeliverValidToEdit') {
+                        action = 'IMPORT_DO_EDIT'
+                    } else if (this.checkPasswordType === 'doDeleteMasterbl') {
+                        action = 'IMPORT_RELEASE_DELETE'
+                    } else if (this.checkPasswordType === 'containersTypeChange') {
+                        action = 'IMPORT_SOC_EDIT'
+                    } 
+                    let param = {
+                        action: action,
+                        checkPassword: common.md52(this.checkPassword)
+                    }
+                    await this.$http.post(apiUrl + 'checkPassword', param)
                     this.modal.checkPasswordModal = false
                     if (this.checkPasswordType === 'depositEdit') {
                         this.depositEdit = true
-                    } else if (this.checkPasswordType === 'doDeliverEdit') {
-                        this.doDeliverEdit = true
+                    } if (this.checkPasswordType === 'invoiceFeeEdit') {
+                        this.invoiceFeeEdit = true
                     } else if (this.checkPasswordType === 'doVesselDelete') {
                         this.modal.deleteVoyageModal = true
                     } else if (this.checkPasswordType === 'doVesselEdit') {
@@ -1780,7 +1803,7 @@
             cancelCheckPassword: async function() {
                 this.modal.checkPasswordModal = false
                 this.depositEdit = false
-                this.doDeliverEdit = false
+                this.invoiceFeeEdit = false
                 if (this.checkPasswordType === 'doDisabledChange' || this.checkPasswordType === 'containersTypeChange') {
                     this.refreshTableData()
                 }

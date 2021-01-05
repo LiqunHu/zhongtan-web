@@ -138,9 +138,6 @@
               <Select v-model="workPara.invoice_masterbi_delivery_to" filterable clearable allow-create placeholder="Delivery" style="width:400px"  @on-query-change="deliveryCreate">
                 <Option v-for="item in delivery.options" :value="item" :key="item">{{item}}</Option>
               </Select>
-              <!-- <a href="#" @click.prevent="changeDoDeliverEdit" title="Edit">
-                <i class="fa fa-edit"></i>
-              </a> -->
             </FormItem>
           </Col>
         </Row>
@@ -189,7 +186,7 @@
         </FormItem>
       </Form>
       <div slot="footer">
-        <Button type="text" size="large" @click="modal.checkPasswordModal = false; depositEdit = false; doDeliverEdit = false;">Cancel</Button>
+        <Button type="text" size="large" @click="modal.checkPasswordModal = false; depositEdit = false;">Cancel</Button>
         <Button type="primary" size="large" @click="actCheckPassword">Submit</Button>
       </div>
     </Modal>
@@ -540,7 +537,6 @@ export default {
       },
       checkPassword: '',
       checkPasswordType: '',
-      doDeliverEdit: false,
       formRules: {
           invoice_vessel_name: [
               { required: true, message: 'The vessel name cannot be empty', trigger: 'blur' }
@@ -612,7 +608,6 @@ export default {
     },
     actDownLoadDoModal: function(row) {
       this.workPara = JSON.parse(JSON.stringify(row))
-      this.doDeliverEdit = false
       this.delivery.options = JSON.parse(JSON.stringify(this.pagePara.DELIVER))
       if(row.invoice_masterbi_delivery_to) {
         const index = this.delivery.options.indexOf(row.invoice_masterbi_delivery_to)
@@ -674,27 +669,22 @@ export default {
         this.$commonact.fault(error)
       }
     },
-    changeDoDeliverEdit: function() {
-      if(!this.doDeliverEdit) {
-        try {
-          this.modal.checkPasswordModal = true
-          this.checkPassword = ''
-          this.checkPasswordType = 'doDeliverEdit'
-        } catch (error) {
-          this.$commonact.fault(error)
-        }
-      }
-    },
     actCheckPassword: async function() {
       try {
         if(!this.checkPassword) {
           return this.$Message.error('Please enter right password')
         }
-        await this.$http.post(apiUrl + 'checkPassword', { check_password: common.md52(this.checkPassword)})
+        let action = ''
+        if (this.checkPasswordType === 'downLoadDoModalCheck') {
+          action = 'IMPORT_DO_EDIT'
+        } 
+        let param = {
+            action: action,
+            checkPassword: common.md52(this.checkPassword)
+        }
+        await this.$http.post(apiUrl + 'checkPassword', param)
         this.modal.checkPasswordModal = false
-        if(this.checkPasswordType === 'doDeliverEdit') {
-          this.doDeliverEdit = true
-        } else if(this.checkPasswordType === 'downLoadDoModalCheck') {
+        if(this.checkPasswordType === 'downLoadDoModalCheck') {
           this.actDownLoadDoModal(this.workPara)
         }
       } catch (error) {

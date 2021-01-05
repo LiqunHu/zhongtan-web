@@ -51,12 +51,6 @@
         <FormItem label="ACTION" prop="operation_action">
           <Input placeholder="ACTION" v-model="workPara.operation_action" :disabled="action === 'modify'"/>
         </FormItem>
-        <FormItem label="PAGE">
-          <Scroll height="400" v-if="action === 'add'">
-            <Tree :data="pageTree" ref="pageTree" :render="renderPageTreedata"></Tree>
-          </Scroll>
-          <Input v-else v-model="workPara.systemmenu_name" disabled/>
-        </FormItem>
         <FormItem label="PASSWORD" prop="operation_password">
           <Input placeholder="PASSWORD" v-model="workPara.operation_password"/>
         </FormItem>
@@ -88,11 +82,6 @@ export default {
           {
             title: 'DESCRIPTION',
             key: 'operation_desc',
-            align: 'center'
-          },
-          {
-            title: 'PAGE',
-            key: 'systemmenu_name',
             align: 'center'
           },
           {
@@ -174,21 +163,15 @@ export default {
     },
     submitPassword: async function() {
       let param = {
-        ...this.workPara,
-        menuId: this.actNode.systemmenu_id
+        ...this.workPara
       }
       if(this.action === 'add') {
-        if(this.actNode.node_type === '01') {
-          await this.$http.post(apiUrl + 'add', param)
-        } else {
-          return this.$commonact.warning('请选择菜单节点')
-        }
+        await this.$http.post(apiUrl + 'add', param)
       } else {
         await this.$http.post(apiUrl + 'modify', param)
       }
       this.modal.operationPasswordModal = false
       this.getPassordData(1)
-     
     },
     deletePassword: async function(row) {
       await this.$http.post(apiUrl + 'delete', row)

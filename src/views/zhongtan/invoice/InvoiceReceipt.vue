@@ -1095,7 +1095,15 @@ export default {
         if(!this.checkPassword) {
           return this.$Message.error('Please enter right password')
         }
-        await this.$http.post(apiUrl + 'checkPassword', { check_password: common.md52(this.checkPassword)})
+        let action = ''
+        if (this.checkPasswordType === 'receiptEdit') {
+            action = 'IMPORT_RECEIPT_EDIT'
+        }
+        let param = {
+            action: action,
+            checkPassword: common.md52(this.checkPassword)
+        }
+        await this.$http.post(apiUrl + 'checkPassword', param)
         this.modal.checkPasswordModal = false
         if(this.checkPasswordType === 'receiptEdit') {
           this.receiptDisabled = false

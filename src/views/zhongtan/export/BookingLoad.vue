@@ -619,9 +619,16 @@ export default {
     checkPasswordAct: async function() {
       if (this.checkPassword) {
         try {
+          let action = ''
+          if (this.checkPasswordType === 'vesselModify' || this.checkPasswordType === 'vesselDelete') {
+            action = 'EXPORT_VESSEL_EDIT'
+          } else if (this.checkPasswordType === 'emptyRelease') {
+            action = 'EXPORT_EMPORT_RELEASE'
+          } else if (this.checkPasswordType === 'bookingEdit') {
+            action = 'EXPORT_BOOKING_EDIT'
+          } 
           let param = {
-            page: 'BookingLoad',
-            action: this.checkPasswordType,
+            action: action,
             checkPassword: common.md52(this.checkPassword)
           }
           await this.$http.post(apiUrl + 'checkPassword', param)

@@ -499,12 +499,17 @@ export default {
     removeReceivableAct: async function() {
       let selection = this.$refs.receivableTable.getSelection()
       if(selection && selection.length > 0) {
+        let remove_ids = []
         for(let s of selection) {
           for(let i = 0; i < this.receivableTable.data.length; i++) {
             if(s.shipment_fee_id === this.receivableTable.data[i].shipment_fee_id) {
               this.receivableTable.data.splice(i, 1)
             }
           }
+          remove_ids.push(s.shipment_fee_id)
+        }
+        if(remove_ids && remove_ids.length > 0) {
+          await this.$http.post(apiUrl + 'removeShipment', {remove_ids: remove_ids})
         }
       }
       this.receivableTable.removeDisabled = true
@@ -624,9 +629,9 @@ export default {
     checkPasswordAct: async function() {
       if (this.checkPassword) {
         try {
+          let action = 'EXPORT_SHIPMENT_RELEASE'
           let param = {
-            page: 'Shipment Release',
-            action: this.checkPasswordType,
+            action: action,
             checkPassword: common.md52(this.checkPassword)
           }
           await this.$http.post(apiUrl + 'checkPassword', param)
@@ -668,12 +673,17 @@ export default {
           } else if (this.checkPasswordType === 'removePayable') {
             let selection = this.$refs.payableTable.getSelection()
             if(selection && selection.length > 0) {
+              let remove_ids = []
               for(let s of selection) {
                 for(let i = 0; i < this.payableTable.data.length; i++) {
                   if(s.shipment_fee_id === this.payableTable.data[i].shipment_fee_id) {
                     this.payableTable.data.splice(i, 1)
                   }
                 }
+                remove_ids.push(s.shipment_fee_id)
+              }
+              if(remove_ids && remove_ids.length > 0) {
+                await this.$http.post(apiUrl + 'removeShipment', {remove_ids: remove_ids})
               }
             }
             this.payableTable.removeDisabled = true

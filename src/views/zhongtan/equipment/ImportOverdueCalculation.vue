@@ -675,7 +675,7 @@ export default {
       try {
         this.checkPassword = ''
         this.modal.checkPasswordModal = true
-        this.checkPasswordType = 'demurrageReinvoice'
+        this.checkPasswordType = 'IMPORT_DEMURRANGE_RE_INVOICE'
       } catch (error) {
         this.$commonact.fault(error)
       }
@@ -751,7 +751,7 @@ export default {
       try {
         this.checkPassword = ''
         this.modal.checkPasswordModal = true
-        this.checkPasswordType = 'calculationEdit'
+        this.checkPasswordType = 'IMPORT_FREE_DAYS_EDIT'
       } catch (error) {
         this.$commonact.fault(error)
       }
@@ -762,17 +762,16 @@ export default {
           return this.$Message.error('Please enter right password')
         }
         let param = {
-          page: 'Import Overdue Invoice Admin',
           action: this.checkPasswordType,
           checkPassword: common.md52(this.checkPassword)
         }
         await this.$http.post(apiUrl + 'checkPassword', param)
         this.modal.checkPasswordModal = false
-        if(this.checkPasswordType === 'calculationEdit') {
+        if(this.checkPasswordType === 'IMPORT_FREE_DAYS_EDIT') {
           this.returnOverdueDaysDisabled = false
           this.emptySubmitDisabled = false
           this.ladenSubmitDisabled = false
-        } else if(this.checkPasswordType === 'demurrageReinvoice'){
+        } else if(this.checkPasswordType === 'IMPORT_DEMURRANGE_RE_INVOICE'){
           this.actemptyReInvoiceModal()
         }
       } catch (error) {
