@@ -72,7 +72,7 @@
                         RECEIVABLE
                         <Button size="small" type="primary" icon="ios-add" title="ADD RECEIVABLE" v-on:click="addReceivableAct">ADD</Button>
                         <Button size="small" type="error" style="margin-left: 7px;" icon="ios-remove" title="REMOVE RECEIVABLE" :disabled="receivableTable.removeDisabled" v-on:click="removeReceivableAct">REMOVE</Button>
-                        <Button size="small" type="warning" style="margin-left: 7px;" icon="ios-add" title="SUPPLEMENT RECEIVABLE" v-on:click="addSupplementReceivableAct">SUPPLEMENT</Button>
+                        <!-- <Button size="small" type="warning" style="margin-left: 7px;" icon="ios-add" title="SUPPLEMENT RECEIVABLE" v-on:click="addSupplementReceivableAct">SUPPLEMENT</Button> -->
                       </Col>
                     </Row>
                     <Row>
@@ -126,7 +126,7 @@
                         PAYABLE
                         <Button size="small" type="primary" icon="ios-add" title="ADD PAYABLE" v-on:click="addPayableAct">ADD</Button>
                         <Button size="small" type="error" style="margin-left: 7px;" icon="ios-remove" title="REMOVE PAYABLE" :disabled="payableTable.removeDisabled" v-on:click="removePayableAct">REMOVE</Button>
-                        <Button size="small" type="warning" style="margin-left: 7px;" icon="ios-add" title="SUPPLEMENT PAYABLE" v-on:click="addSupplementPayableAct">SUPPLEMENT</Button>
+                        <!-- <Button size="small" type="warning" style="margin-left: 7px;" icon="ios-add" title="SUPPLEMENT PAYABLE" v-on:click="addSupplementPayableAct">SUPPLEMENT</Button> -->
                       </Col>
                     </Row>
                     <Row>
