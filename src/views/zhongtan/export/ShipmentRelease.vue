@@ -12,7 +12,7 @@
       Shipment Release
     </h1>
     <!-- end page-header -->
-    <panel title="Shipment Release" v-resize="resize">
+    <panel title="Shipment Release" v-resize="resizePanel">
       <div ref="displayLayout">
         <Split v-model="splitLeft">
           <div slot="left" style="height: 100%;">
@@ -86,6 +86,7 @@
                             <Tag color="error" v-else-if="receivableTable.data[index].shipment_fee_status === 'UN'">UNDO</Tag>
                             <Tag color="success" v-else-if="receivableTable.data[index].shipment_fee_status === 'IN'">INVOICE</Tag>
                             <Tag color="success" v-else-if="receivableTable.data[index].shipment_fee_status === 'RE'">RECEIPT</Tag>
+                            <Tag color="warning" v-else-if="receivableTable.data[index].shipment_fee_status === 'BA'">BALANCE</Tag>
                           </template>
                           <template slot-scope="{ row, index }" slot="invoce_file">
                             <a :href="row.uploadfile_url" class="btn btn-primary btn-icon btn-sm" target="_blank" v-if="row.uploadfile_url">
@@ -140,6 +141,7 @@
                             <Tag color="error" v-else-if="payableTable.data[index].shipment_fee_status === 'UN'">UNDO</Tag>
                             <Tag color="success" v-else-if="payableTable.data[index].shipment_fee_status === 'IN'">INVOICE</Tag>
                             <Tag color="success" v-else-if="payableTable.data[index].shipment_fee_status === 'RE'">RECEIPT</Tag>
+                            <Tag color="warning" v-else-if="receivableTable.data[index].shipment_fee_status === 'BA'">BALANCE</Tag>
                           </template>
                           <template slot-scope="{ row, index }" slot="shipment_party">
                             <Select v-model="payableTable.data[index].shipment_fee_party" clearable transfer filterable :disabled="payableTable.data[index].party_disabled">
@@ -379,14 +381,20 @@ export default {
   },
   mounted: async function() {
     this.$refs.displayLayout.style.height = this.fullHeight + 'px'
-    this.$refs.shipmentLayout.style.height = (this.fullHeight - 200) + 'px'
-    this.receivableTable.height = (this.fullHeight - 200) * this.splitShipment - 40
-    this.payableTable.height = (this.fullHeight - 200) * (1-this.splitShipment) - 40
+    this.$refs.shipmentLayout.style.height = (this.fullHeight - 140) + 'px'
+    this.receivableTable.height = (this.fullHeight - 140) * this.splitShipment - 40
+    this.payableTable.height = (this.fullHeight - 140) * (1-this.splitShipment) - 40
+    this.resizePanel()
     await this.initAct()
   },
   methods: {
-    resize() {
+    resizePanel() {
       // console.log('##################')
+      // this.fullHeight = document.documentElement.clientHeight - 90
+      // this.$refs.displayLayout.style.height = this.fullHeight + 'px'
+      // this.$refs.shipmentLayout.style.height = (this.fullHeight - 140) + 'px'
+      // this.receivableTable.height = (this.fullHeight - 140) * this.splitShipment - 40
+      // this.payableTable.height = (this.fullHeight - 140) * (1-this.splitShipment) - 40
     },
     initAct: async function() {
       try {
@@ -416,7 +424,7 @@ export default {
       this.bookingShipment = response.data.info
       this.receivableTable.data = this.bookingShipment.shipment_receivable
       let submitStatus = ['SA', 'DE', 'UN']
-      let resetStatus = ['SU', 'AP', 'IN', 'RE']
+      let resetStatus = ['SU', 'AP', 'IN', 'RE', 'BA']
       if(this.receivableTable.data && this.receivableTable.data.length > 0) {
         let invoiceStatus = ['AP']
         for(let d of this.receivableTable.data) {
@@ -524,22 +532,11 @@ export default {
       })
     },
     removeReceivableAct: async function() {
-      let selection = this.$refs.receivableTable.getSelection()
-      if(selection && selection.length > 0) {
-        let remove_ids = []
-        for(let s of selection) {
-          for(let i = 0; i < this.receivableTable.data.length; i++) {
-            if(s.shipment_fee_id === this.receivableTable.data[i].shipment_fee_id) {
-              this.receivableTable.data.splice(i, 1)
-            }
-          }
-          remove_ids.push(s.shipment_fee_id)
-        }
-        if(remove_ids && remove_ids.length > 0) {
-          await this.$http.post(apiUrl + 'removeShipment', {remove_ids: remove_ids})
-        }
-      }
-      this.receivableTable.removeDisabled = true
+      this.$nextTick(function() {
+        this.checkPassword = ''
+        this.checkPasswordType = 'removeReceivable'
+        this.modal.checkPasswordModal = true
+      })
     },
     removePayableAct: async function() {
       this.$nextTick(function() {
@@ -553,12 +550,12 @@ export default {
         let undoStatus = ['SU']
         this.receivableTable.removeDisabled = false
         this.undoDisabled = false
-        for(let s of selection) {
-          if(s.fee_data_fixed === '1') {
-            this.receivableTable.removeDisabled = true
-            break
-          }
-        }
+        // for(let s of selection) {
+        //   if(s.fee_data_fixed === '1') {
+        //     this.receivableTable.removeDisabled = true
+        //     break
+        //   }
+        // }
         for(let s of selection) {
           if(undoStatus.indexOf(s.shipment_fee_status) < 0) {
             this.undoDisabled = true
@@ -575,12 +572,12 @@ export default {
         let undoStatus = ['SU']
         this.payableTable.removeDisabled = false
         this.undoDisabled = false
-        for(let s of selection) {
-          if(s.fee_data_fixed === '1') {
-            this.payableTable.removeDisabled = true
-            break
-          }
-        }
+        // for(let s of selection) {
+        //   if(s.fee_data_fixed === '1') {
+        //     this.payableTable.removeDisabled = true
+        //     break
+        //   }
+        // }
         for(let s of selection) {
           if(undoStatus.indexOf(s.shipment_fee_status) < 0) {
             this.undoDisabled = true
@@ -710,11 +707,6 @@ export default {
             if(selection && selection.length > 0) {
               let remove_ids = []
               for(let s of selection) {
-                for(let i = 0; i < this.payableTable.data.length; i++) {
-                  if(s.shipment_fee_id === this.payableTable.data[i].shipment_fee_id) {
-                    this.payableTable.data.splice(i, 1)
-                  }
-                }
                 remove_ids.push(s.shipment_fee_id)
               }
               if(remove_ids && remove_ids.length > 0) {
@@ -722,6 +714,20 @@ export default {
               }
             }
             this.payableTable.removeDisabled = true
+            await this.getBookingShipmentAct(this.bookingShipment.export_masterbl_id)
+          } else if(this.checkPasswordType === 'removeReceivable') {
+            let selection = this.$refs.receivableTable.getSelection()
+            if(selection && selection.length > 0) {
+              let remove_ids = []
+              for(let s of selection) {
+                remove_ids.push(s.shipment_fee_id)
+              }
+              if(remove_ids && remove_ids.length > 0) {
+                await this.$http.post(apiUrl + 'removeShipment', {remove_ids: remove_ids})
+              }
+            }
+            this.receivableTable.removeDisabled = true
+            await this.getBookingShipmentAct(this.bookingShipment.export_masterbl_id)
           } else if(this.checkPasswordType === 'resetShipment') {
             let param = {
               export_masterbl_id: this.bookingShipment.export_masterbl_id,
