@@ -12,7 +12,7 @@
       Shipment Release
     </h1>
     <!-- end page-header -->
-    <panel title="Shipment Release">
+    <panel title="Shipment Release" v-resize="resize">
       <div ref="displayLayout">
         <Split v-model="splitLeft">
           <div slot="left" style="height: 100%;">
@@ -40,16 +40,14 @@
           </div>
           <div slot="right">
             <Card>
-              <div slot="title">
-                #M B/L No. {{bookingShipment.export_masterbl_bl}}
-                <Tag color="primary">{{bookingShipment.export_masterbl_cargo_type}}</Tag>
-              </div>
-              <!-- <Button slot="extra" size="small" type="primary">详细信息</Button> -->
-              <!-- <Button slot="extra" size="small" style="margin-left: 7px;">操作历史</Button> -->
               <Row>
+                <Col span="6">
+                  #M B/L No. {{bookingShipment.export_masterbl_bl}}
+                  <Tag color="primary">{{bookingShipment.export_masterbl_cargo_type}}</Tag>
+                </Col>
                 <Col span="4"><font style="color:#17233D; font-size: 16px;">Vessel: </font>{{bookingShipment.vessel.export_vessel_name}}</Col>
-                <Col span="4"><font style="color:#17233D; font-size: 16px;">Voyage: </font>{{bookingShipment.vessel.export_vessel_voyage}}</Col>
-                <Col span="4"><font style="color:#17233D; font-size: 16px;">Size/Type: </font>{{bookingShipment.size_type}}</Col>
+                <Col span="3"><font style="color:#17233D; font-size: 16px;">Voyage: </font>{{bookingShipment.vessel.export_vessel_voyage}}</Col>
+                <Col span="3"><font style="color:#17233D; font-size: 16px;">Size/Type: </font>{{bookingShipment.size_type}}</Col>
                 <Col span="4"><font style="color:#17233D; font-size: 16px;">POL: </font>{{bookingShipment.export_masterbl_port_of_load}}</Col>
                 <Col span="4"><font style="color:#17233D; font-size: 16px;">POD: </font>{{bookingShipment.export_masterbl_port_of_discharge}}</Col>
               </Row>
@@ -59,6 +57,7 @@
               <Button slot="title" size="small" type="primary" icon="ios-send-outline" style="margin-left: 7px;" v-on:click="submitShipmentAct" :disabled="submitDisabled">SUBMIT</Button>
               <Button slot="title" size="small" type="error" icon="ios-undo-outline" style="margin-left: 7px;" v-on:click="undoShipmentAct" :disabled="undoDisabled">UNDO</Button>
               <Button slot="title" size="small" type="success" icon="ios-paper-outline" style="margin-left: 7px;" v-on:click="invoiceShipmentAct" :disabled="invoiceDisabled">INVOICE</Button>
+              <Button slot="title" size="small" type="success" icon="ios-paper-outline" style="margin-left: 7px;" v-on:click="resetShipmentAct" :disabled="resetDisabled">RESET</Button>
               <Row slot="extra" style="width: 400px;">
                 <Col span="8">应收  {{bookingShipment.totalReceivable}}</Col>
                 <Col span="8">应付  {{bookingShipment.totalPayable}}</Col>
@@ -238,6 +237,7 @@ export default {
       submitDisabled: true,
       undoDisabled: true,
       invoiceDisabled: true,
+      resetDisabled: true,
       shipmentAddIndex: 0,
       receivableTable: {
         columns:[
@@ -355,6 +355,25 @@ export default {
       checkPasswordType: ''
     }
   },
+  directives: {  // 使用局部注册指令的方式
+    resize: { // 指令的名称
+      bind(el, binding) { // el为绑定的元素，binding为绑定给指令的对象
+        let width = '', height = ''
+        function isReize() {
+          const style = document.defaultView.getComputedStyle(el)
+          if (width !== style.width || height !== style.height) {
+            binding.value()  // 关键
+          }
+          width = style.width
+          height = style.height
+        }
+        el.__vueSetInterval__ = setInterval(isReize, 300)
+      },
+      unbind(el) {
+        clearInterval(el.__vueSetInterval__)
+      }
+    }
+  },
   created() {
     PageOptions.pageEmpty = false
   },
@@ -366,6 +385,9 @@ export default {
     await this.initAct()
   },
   methods: {
+    resize() {
+      // console.log('##################')
+    },
     initAct: async function() {
       try {
         let response = await this.$http.post(apiUrl + 'init', {})
@@ -386,6 +408,7 @@ export default {
     getBookingShipmentAct: async function(export_masterbl_id) {
       this.invoiceDisabled = true
       this.submitDisabled = true
+      this.resetDisabled = true
       let param = {
         export_masterbl_id: export_masterbl_id
       }
@@ -393,6 +416,7 @@ export default {
       this.bookingShipment = response.data.info
       this.receivableTable.data = this.bookingShipment.shipment_receivable
       let submitStatus = ['SA', 'DE', 'UN']
+      let resetStatus = ['SU', 'AP', 'IN', 'RE']
       if(this.receivableTable.data && this.receivableTable.data.length > 0) {
         let invoiceStatus = ['AP']
         for(let d of this.receivableTable.data) {
@@ -401,6 +425,9 @@ export default {
           }
           if(invoiceStatus.indexOf(d.shipment_fee_status) >= 0) {
             this.invoiceDisabled = false
+          }
+          if(resetStatus.indexOf(d.shipment_fee_status) >= 0) {
+            this.resetDisabled = false
           }
         }
       }
@@ -623,6 +650,14 @@ export default {
       await this.$http.post(apiUrl + 'invoiceShipment', param)
       await this.getBookingShipmentAct(this.bookingShipment.export_masterbl_id)
     },
+    resetShipmentAct: async function(){
+      
+      this.$nextTick(function() {
+        this.checkPassword = ''
+        this.checkPasswordType = 'resetShipment'
+        this.modal.checkPasswordModal = true
+      })
+    },
     checkPasswordCancel: async function() {
       this.modal.checkPasswordModal = false
     },
@@ -687,6 +722,12 @@ export default {
               }
             }
             this.payableTable.removeDisabled = true
+          } else if(this.checkPasswordType === 'resetShipment') {
+            let param = {
+              export_masterbl_id: this.bookingShipment.export_masterbl_id,
+            }
+            await this.$http.post(apiUrl + 'resetShipment', param)
+            await this.getBookingShipmentAct(this.bookingShipment.export_masterbl_id)
           }
         } catch (error) {
           this.$commonact.fault(error)

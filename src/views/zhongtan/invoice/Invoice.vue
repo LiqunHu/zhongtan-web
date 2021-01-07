@@ -1425,6 +1425,9 @@
             },
             currentFeeTabChanged: function(name) {
                 this.deposit.depositType = name
+                if(this.workPara.invoice_masterbi_customer_id) {
+                    this.searchFixedDeposit()
+                }
             },
             depositDo: async function(depositType) {
                 try {
