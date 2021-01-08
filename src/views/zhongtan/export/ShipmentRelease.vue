@@ -12,7 +12,7 @@
       Shipment Release
     </h1>
     <!-- end page-header -->
-    <panel title="Shipment Release" v-resize="resizePanel">
+    <panel ref="shipmentPanel" title="Shipment Release" v-resize="resizePanel">
       <div ref="displayLayout">
         <Split v-model="splitLeft">
           <div slot="left" style="height: 100%;">
@@ -205,7 +205,7 @@ export default {
     return {
       modal: { checkPasswordModal: false},
       headers: common.uploadHeaders(),
-      fullHeight: document.documentElement.clientHeight - 230,
+      fullHeight: '',
       splitLeft: '240',
       splitBooking: '156',
       splitShipment: 0.6,
@@ -380,21 +380,25 @@ export default {
     PageOptions.pageEmpty = false
   },
   mounted: async function() {
-    this.$refs.displayLayout.style.height = this.fullHeight + 'px'
-    this.$refs.shipmentLayout.style.height = (this.fullHeight - 140) + 'px'
-    this.receivableTable.height = (this.fullHeight - 140) * this.splitShipment - 40
-    this.payableTable.height = (this.fullHeight - 140) * (1-this.splitShipment) - 40
+    
     this.resizePanel()
     await this.initAct()
   },
   methods: {
     resizePanel() {
-      // console.log('##################')
-      // this.fullHeight = document.documentElement.clientHeight - 90
-      // this.$refs.displayLayout.style.height = this.fullHeight + 'px'
-      // this.$refs.shipmentLayout.style.height = (this.fullHeight - 140) + 'px'
-      // this.receivableTable.height = (this.fullHeight - 140) * this.splitShipment - 40
-      // this.payableTable.height = (this.fullHeight - 140) * (1-this.splitShipment) - 40
+      if(this.$refs.shipmentPanel.expand) {
+        this.fullHeight = document.documentElement.clientHeight - 90
+        this.$refs.displayLayout.style.height = this.fullHeight + 'px'
+        this.$refs.shipmentLayout.style.height = (this.fullHeight - 140) + 'px'
+        this.receivableTable.height = (this.fullHeight - 140) * this.splitShipment - 40
+        this.payableTable.height = (this.fullHeight - 140) * (1-this.splitShipment) - 40
+      } else {
+        this.fullHeight = document.documentElement.clientHeight - 230
+        this.$refs.displayLayout.style.height = this.fullHeight + 'px'
+        this.$refs.shipmentLayout.style.height = (this.fullHeight - 140) + 'px'
+        this.receivableTable.height = (this.fullHeight - 140) * this.splitShipment - 40
+        this.payableTable.height = (this.fullHeight - 140) * (1-this.splitShipment) - 40
+      }
     },
     initAct: async function() {
       try {

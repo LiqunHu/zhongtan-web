@@ -553,81 +553,81 @@
             </Tab-pane>
             <Tab-pane :label="invoiceFeeLabel" name="Invoice Fee" key="Invoice Fee">
                 <FormItem label="Ocean Freight" prop="invoice_masterbi_of" style="margin-bottom: 0px;">
-                    <Input placeholder="Ocean Freight Fee" v-model="workPara.invoice_masterbi_of" :disabled="!!workPara.invoice_masterbi_of_disabled && !depositEdit">
+                    <Input placeholder="Ocean Freight Fee" v-model="workPara.invoice_masterbi_of" :disabled="!!workPara.invoice_masterbi_of_disabled && !invoiceFeeEdit">
                     <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_of_necessary" :disabled="workPara.invoice_masterbi_of_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_of')">Fixed</Checkbox>
-                    <Select slot="append" v-model="workPara.invoice_masterbi_of_currency" style="width: 80px" :disabled="!!workPara.invoice_masterbi_of_currency_disabled && !depositEdit">
+                    <Select slot="append" v-model="workPara.invoice_masterbi_of_currency" style="width: 80px" :disabled="!!workPara.invoice_masterbi_of_currency_disabled && !invoiceFeeEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
                 </Select>
                     </Input>
                 </FormItem>
                 <FormItem label="B/L amendment" prop="invoice_masterbi_bl_amendment" style="margin-bottom: 0px;">
-                    <Input placeholder="B/L amendment" v-model="workPara.invoice_masterbi_bl_amendment" :disabled="!!workPara.invoice_masterbi_bl_amendment_disabled && !depositEdit">
+                    <Input placeholder="B/L amendment" v-model="workPara.invoice_masterbi_bl_amendment" :disabled="!!workPara.invoice_masterbi_bl_amendment_disabled && !invoiceFeeEdit">
                     <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_bl_amendment_necessary" :disabled="workPara.invoice_masterbi_bl_amendment_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_bl_amendment')">Fixed</Checkbox>
-                    <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !depositEdit">
+                    <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !invoiceFeeEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
                 </Select>
                     </Input>
                 </FormItem>
                 <FormItem label="COD Charge" prop="invoice_masterbi_cod_charge" style="margin-bottom: 0px;">
-                    <Input placeholder="COD Charge" v-model="workPara.invoice_masterbi_cod_charge" :disabled="!!workPara.invoice_masterbi_cod_charge_disabled && !depositEdit">
+                    <Input placeholder="COD Charge" v-model="workPara.invoice_masterbi_cod_charge" :disabled="!!workPara.invoice_masterbi_cod_charge_disabled && !invoiceFeeEdit">
                     <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_cod_charge_necessary" :disabled="workPara.invoice_masterbi_cod_charge_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_cod_charge')">Fixed</Checkbox>
-                    <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !depositEdit">
+                    <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !invoiceFeeEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
                 </Select>
                     </Input>
                 </FormItem>
                 <FormItem label="Container Transfer" prop="invoice_masterbi_transfer" style="margin-bottom: 0px;">
-                    <Input placeholder="Container Transfer" v-model="workPara.invoice_masterbi_transfer" :disabled="!!workPara.invoice_masterbi_transfer_disabled && !depositEdit">
+                    <Input placeholder="Container Transfer" v-model="workPara.invoice_masterbi_transfer" :disabled="!!workPara.invoice_masterbi_transfer_disabled && !invoiceFeeEdit">
                     <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_transfer_necessary" :disabled="workPara.invoice_masterbi_transfer_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_transfer')">Fixed</Checkbox>
-                    <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !depositEdit">
+                    <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !invoiceFeeEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
                 </Select>
                     </Input>
                 </FormItem>
                 <FormItem label="Lift On Lift Off" prop="invoice_masterbi_lolf" style="margin-bottom: 0px;">
-                    <Input placeholder="Lift On Lift Off" v-model="workPara.invoice_masterbi_lolf" :disabled="!!workPara.invoice_masterbi_lolf_disabled && !depositEdit">
+                    <Input placeholder="Lift On Lift Off" v-model="workPara.invoice_masterbi_lolf" :disabled="!!workPara.invoice_masterbi_lolf_disabled && !invoiceFeeEdit">
                     <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_lolf_necessary" :disabled="workPara.invoice_masterbi_lolf_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_lolf')">Fixed</Checkbox>
-                    <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !depositEdit">
+                    <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !invoiceFeeEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
                 </Select>
                     </Input>
                 </FormItem>
                 <FormItem label="LCL" prop="invoice_masterbi_lcl" style="margin-bottom: 0px;">
-                    <Input placeholder="LCL" v-model="workPara.invoice_masterbi_lcl" :disabled="!!workPara.invoice_masterbi_lcl_disabled && depositEdit">
+                    <Input placeholder="LCL" v-model="workPara.invoice_masterbi_lcl" :disabled="!!workPara.invoice_masterbi_lcl_disabled && invoiceFeeEdit">
                     <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_lcl_necessary" :disabled="workPara.invoice_masterbi_lcl_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_lcl')">Fixed</Checkbox>
-                    <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !depositEdit">
+                    <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !invoiceFeeEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
                 </Select>
                     </Input>
                 </FormItem>
                 <FormItem label="Amendment" prop="invoice_masterbi_amendment" style="margin-bottom: 0px;">
-                    <Input placeholder="Amendment" v-model="workPara.invoice_masterbi_amendment" :disabled="!!workPara.invoice_masterbi_amendment_disabled && !depositEdit">
+                    <Input placeholder="Amendment" v-model="workPara.invoice_masterbi_amendment" :disabled="!!workPara.invoice_masterbi_amendment_disabled && !invoiceFeeEdit">
                     <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_amendment_necessary" :disabled="workPara.invoice_masterbi_amendment_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_amendment')">Fixed</Checkbox>
-                    <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !depositEdit">
+                    <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !invoiceFeeEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
                 </Select>
                     </Input>
                 </FormItem>
                 <FormItem label="Tasac" prop="invoice_masterbi_tasac" style="margin-bottom: 0px;">
-                    <Input placeholder="Tasac" v-model="workPara.invoice_masterbi_tasac" :disabled="!!workPara.invoice_masterbi_tasac_disabled && !depositEdit">
+                    <Input placeholder="Tasac" v-model="workPara.invoice_masterbi_tasac" :disabled="!!workPara.invoice_masterbi_tasac_disabled && !invoiceFeeEdit">
                     <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_tasac_necessary" :disabled="workPara.invoice_masterbi_tasac_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_tasac')">Fixed</Checkbox>
-                    <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !depositEdit">
+                    <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !invoiceFeeEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
                 </Select>
                     </Input>
                 </FormItem>
                 <FormItem label="Bill Pringting" prop="invoice_masterbi_printing" style="margin-bottom: 0px;">
-                    <Input placeholder="Bill Pringting" v-model="workPara.invoice_masterbi_printing" :disabled="!!workPara.invoice_masterbi_printing_disabled && !depositEdit">
+                    <Input placeholder="Bill Pringting" v-model="workPara.invoice_masterbi_printing" :disabled="!!workPara.invoice_masterbi_printing_disabled && !invoiceFeeEdit">
                     <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_printing_necessary" :disabled="workPara.invoice_masterbi_printing_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_printing')">Fixed</Checkbox>
-                    <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !depositEdit">
+                    <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !invoiceFeeEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
                 </Select>
                     </Input>
                 </FormItem>
                 <FormItem label="Others" prop="invoice_masterbi_others" style="margin-bottom: 0px;">
-                    <Input placeholder="Others" v-model="workPara.invoice_masterbi_others" :disabled="!!workPara.invoice_masterbi_others_disabled && !depositEdit">
+                    <Input placeholder="Others" v-model="workPara.invoice_masterbi_others" :disabled="!!workPara.invoice_masterbi_others_disabled && !invoiceFeeEdit">
                     <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_others_necessary" :disabled="workPara.invoice_masterbi_others_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_others')">Fixed</Checkbox>
-                    <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !depositEdit">
+                    <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !invoiceFeeEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
                 </Select>
                     </Input>
@@ -641,7 +641,7 @@
     <div slot="footer">
         <Button type="text" size="large" @click="modal.depositModal=false">Cancel</Button>
         <Button type="primary" size="large" @click="depositDo" v-if="deposit.depositType=='Container Deposit'" :disabled="!depositEdit && (workPara.invoice_masterbi_customer_blacklist || (workPara.invoice_masterbi_deposit_fixed == '1' && !!workPara.invoice_masterbi_deposit_release_date)) && !changeCustomer">Submit</Button>
-        <Button type="primary" size="large" @click="depositDo" v-if="deposit.depositType=='Invoice Fee'" :disabled="!depositEdit && workPara.invoice_masterbi_customer_blacklist && !changeCustomer">Submit</Button>
+        <Button type="primary" size="large" @click="depositDo" v-if="deposit.depositType=='Invoice Fee'" :disabled="!invoiceFeeEdit && workPara.invoice_masterbi_customer_blacklist && !changeCustomer">Submit</Button>
     </div>
 </Modal>
 <Modal v-model="modal.deleteVoyageModal" title="Delete Voyage" width="600" :mask-closable="false">
@@ -1073,6 +1073,7 @@
                 checkPassword: '',
                 checkPasswordType: '',
                 depositEdit: false,
+                invoiceFeeEdit: false,
                 changeCustomer: false,
                 doDeliverValidToEdit: false,
                 formRules: {
@@ -1329,6 +1330,27 @@
             },
             downloadDo: async function() {
                 try {
+                    let response = await this.$http.post(apiUrl + 'deliveryCheck', this.workPara)
+                    let retData = response.data.info
+                    if(retData.result) {
+                        this.downloadDoAct()
+                    } else {
+                        this.$commonact.confirm(retData.message, async() => {
+                            try {
+                                this.checkPassword = ''
+                                this.modal.checkPasswordModal = true
+                                this.checkPasswordType = 'downLoadDoDeliveryCheck'
+                            } catch (error) {
+                                this.$commonact.fault(error)
+                            }
+                        })
+                    }
+                } catch (error) {
+                    this.$commonact.fault(error)
+                }
+            },
+            downloadDoAct: async function() {
+                 try {
                     let response = await this.$http.post(apiUrl + 'downloadDo', this.workPara)
                     printJS(response.data.info.url)
                     this.$Message.success('do success')
@@ -1424,6 +1446,8 @@
                 }
             },
             currentFeeTabChanged: function(name) {
+                this.depositEdit = false
+                this.invoiceFeeEdit = false
                 this.deposit.depositType = name
                 if(this.workPara.invoice_masterbi_customer_id) {
                     this.searchFixedDeposit()
@@ -1700,7 +1724,7 @@
                 }
             },
             changeInvoiceFeeEdit: function() {
-                if (this.depositEdit) {
+                if (this.invoiceFeeEdit) {
                     try {
                         this.modal.checkPasswordModal = true
                         this.checkPassword = ''
@@ -1763,7 +1787,8 @@
                         action = 'IMPORT_RELEASE_EDIT'
                     } else if (this.checkPasswordType === 'doDisabledChange') {
                         action = 'IMPORT_DO_STATE_EDIT'
-                    } else if (this.checkPasswordType === 'downLoadDoModalCheck' || this.checkPasswordType === 'doDeliverValidToEdit') {
+                    } else if (this.checkPasswordType === 'downLoadDoModalCheck' || this.checkPasswordType === 'doDeliverValidToEdit' 
+                                || this.checkPasswordType === 'downLoadDoDeliveryCheck') {
                         action = 'IMPORT_DO_EDIT'
                     } else if (this.checkPasswordType === 'doDeleteMasterbl') {
                         action = 'IMPORT_RELEASE_DELETE'
@@ -1798,6 +1823,8 @@
                         this.deleteMasterblAct(this.workPara)
                     } else if (this.checkPasswordType === 'containersTypeChange') {
                         this.changeContainersTypeAct(this.workPara)
+                    } else if (this.checkPasswordType === 'downLoadDoDeliveryCheck') {
+                        this.downloadDoAct()
                     } 
                 } catch (error) {
                     this.$commonact.fault(error)
