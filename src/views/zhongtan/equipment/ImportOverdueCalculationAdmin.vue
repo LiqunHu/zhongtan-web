@@ -46,7 +46,6 @@
                 <i class="fa fa-envelope"></i> Storing Order
               </button>
             </div>
-            {{this.tableSelectAll}}
           </div>
         </div>
       </template>

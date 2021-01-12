@@ -33,6 +33,9 @@
             <div class="form-group m-r-3">
               <button type="button" class="btn btn-info" @click="bookingLoadModalAct">Load</button>
             </div>
+            <div class="form-group m-r-3">
+              <button type="button" class="btn btn-info" @click="bookingImportModalAct" title="import freight amount">Import</button>
+            </div>
           </div>
         </div>
       </template>
@@ -83,7 +86,7 @@
                     </Tooltip>
                   </template>
                 </Table>
-                <Page class="m-t-10" :total="blTable.total" :page-size="blTable.limit" @on-change="searchBlAct" />
+                <Page class="m-t-10" :current="blTable.current" :total="blTable.total" :page-size="blTable.limit" @on-change="searchBlAct" />
               </TabPane>
               <TabPane label="Containers">
                 <Table stripe size="small" ref="containerTable" :columns="containerTable.columns" :data="containerTable.data" :height="containerTable.height">
@@ -97,7 +100,7 @@
                     {{row.export_container_cargo_volumn}} {{row.export_container_cargo_volumn_unit}}
                   </template>
                 </Table>
-                <Page class="m-t-10" :total="containerTable.total" :page-size="containerTable.limit" @on-change="searchContainerAct" />
+                <Page class="m-t-10" :current="containerTable.current" :total="containerTable.total" :page-size="containerTable.limit" @on-change="searchContainerAct" />
               </TabPane>
           </Tabs>
           </Col>
@@ -131,6 +134,36 @@
       <div slot="footer">
         <Button type="text" size="large" @click="modal.bookingModal=false">Cancel</Button>
         <Button type="primary" size="large" @click="bookingData">Submit</Button>
+      </div>
+    </Modal>
+    <Modal v-model="modal.importModal" title="Import Freight">
+      <Form :model="workPara" :label-width="100">
+        <FormItem label="Files">
+          <div v-for="f in files.fileList" v-bind:key="f.name" class="upload-list">
+            <Icon type="ios-document" size="60" />
+          </div>
+          <Upload
+            ref="upload"
+            :headers="headers"
+            :show-upload-list="false"
+            :on-success="handleSuccess"
+            :format="['xlsx', 'xls', 'XLSX', 'XLS']"
+            :max-size="4096"
+            :on-format-error="handleFormatError"
+            :on-exceeded-size="handleMaxSize"
+            type="drag"
+            action="/api/zhongtan/export/BookingLoad/upload"
+            style="display: inline-block;width:58px;"
+          >
+            <div style="width: 58px;height:58px;line-height: 58px;">
+              <Icon type="md-add" size="20"></Icon>
+            </div>
+          </Upload>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.bookingModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="importFreightData">Submit</Button>
       </div>
     </Modal>
     <Modal v-model="modal.vesselModal" title="Vessel">
@@ -200,7 +233,7 @@ export default {
   name: 'ShipmentProformaControl',
   data: function() {
     return {
-      modal: { bookingModal: false, checkPasswordModal: false, emptyReleaseModal: false, bookingEditModal: false},
+      modal: { bookingModal: false, importModal: false, checkPasswordModal: false, emptyReleaseModal: false, bookingEditModal: false},
       headers: common.uploadHeaders(),
       vesselHeight: common.getTableHeight(),
       search_data: {
@@ -347,6 +380,7 @@ export default {
         height: common.getTableHeight() - 90,
         data: [],
         unchanged:[],
+        current: 1,
         limit: 10,
         offset: 0,
         total: 0
@@ -416,6 +450,7 @@ export default {
     searchBlAct: async function(index) {
       try {
         if (index) {
+          this.blTable.current = index
           this.blTable.offset = (index - 1) * this.blTable.limit
         }
         let searchPara = {
@@ -437,6 +472,7 @@ export default {
     searchContainerAct: async function(index) {
       try {
         if (index) {
+          this.containerTable.current = index
           this.containerTable.offset = (index - 1) * this.containerTable.limit
         }
         let searchPara = {
@@ -467,7 +503,7 @@ export default {
             if(v.export_vessel_id === item.export_vessel_id) {
               v.active = true
               this.search_data.export_vessel_id = v.export_vessel_id
-              this.searchTableAct()
+              this.searchTableAct(1)
             } else {
               v.active = false
             }
@@ -533,11 +569,11 @@ export default {
       }
       this.searchTableAct()
     },
-    searchTableAct: function() {
+    searchTableAct: function(index) {
       if(this.currentTab === 0) {
-        this.searchBlAct()
+        this.searchBlAct(index)
       } else {
-        this.searchContainerAct()
+        this.searchContainerAct(index)
       }
     },
     bookingLoadModalAct: async function() {
@@ -574,6 +610,26 @@ export default {
         this.$Message.success('submit success')
         this.modal.bookingModal = false
         this.searchDataAct()
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
+    bookingImportModalAct: async function() {
+      this.workPara = {}
+      this.action = 'import'
+      this.$refs.upload.fileList = []
+      this.files.fileList = []
+      this.modal.importModal = true
+    },
+    importFreightData: async function() {
+      try {
+        if (this.files.fileList.length < 1) {
+          return this.$Message.error('Please upload pdf file')
+        }
+        this.workPara.upload_files = this.files.fileList
+        await this.$http.post(apiUrl + 'importFreight', this.workPara)
+        this.$Message.success('import success')
+        this.modal.importModal = false
       } catch (error) {
         this.$commonact.fault(error)
       }
