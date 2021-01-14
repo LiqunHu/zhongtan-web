@@ -69,6 +69,7 @@ const routes = [
   { path: '/admin/zhongtan/equipment/ContainerMNRLedgerInvoice', component: resolve => require(['@/views/zhongtan/equipment/ContainerMNRLedgerInvoice'], resolve) },
   { path: '/admin/zhongtan/equipment/ContainerMNRLedgerReceipt', component: resolve => require(['@/views/zhongtan/equipment/ContainerMNRLedgerReceipt'], resolve) },
   { path: '/admin/zhongtan/equipment/ContainerMNRLedgerStatistics', component: resolve => require(['@/views/zhongtan/equipment/ContainerMNRLedgerStatistics'], resolve) },
+  { path: '/admin/zhongtan/equipment/ExportDemurrageInvoiceAdmin', component: resolve => require(['@/views/zhongtan/equipment/ExportDemurrageInvoiceAdmin'], resolve) },
 ]
 
 export default routes

@@ -9,35 +9,35 @@
     <!-- end breadcrumb -->
     <!-- begin page-header -->
     <h1 class="page-header">
-      Import Overdue Calculation
+      Export Demurrage Invoice
       <small></small>
     </h1>
     <!-- end page-header -->
-    <panel title="Import Overdue Calculation">
+    <panel title="Export Demurrage Invoice">
       <template slot="beforeBody">
         <div class="panel-toolbar">
           <div class="form-inline">
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.invoice_vessel_name" placeholder="Vessel Name" style="width: 200px" />
+              <input type="text" class="form-control" v-model="search_data.export_vessel_name" placeholder="Vessel Name" style="width: 200px" />
             </div>
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.invoice_containers_bl" placeholder="#M B/L No" style="width: 200px" />
+              <input type="text" class="form-control" v-model="search_data.export_container_bl" placeholder="#M B/L No" style="width: 200px" />
             </div>
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.invoice_containers_no" placeholder="Container No" style="width: 200px" />
+              <input type="text" class="form-control" v-model="search_data.export_container_no" placeholder="Container No" style="width: 200px" />
             </div>
             <div class="form-group m-r-10">
-              <button type="button" class="btn btn-info" @click="getTableData">
+              <button type="button" class="btn btn-info" @click="getTableData(1)">
                 <i class="fa fa-search"></i> Search
               </button>
             </div>
             <div class="form-group m-r-10">
-              <button type="button" class="btn btn-success" @click="emptyInvoiceModal" :disabled="emptyInvoiceDisabled">
+              <button type="button" class="btn btn-success" @click="demurrageInvoiceModal" :disabled="emptyInvoiceDisabled">
                 <i class="fa fa-money-bill-alt"></i> Invoice
               </button>
             </div>
             <div class="form-group m-r-10">
-              <button type="button" class="btn btn-warning" @click="emptyReInvoiceModal" :disabled="emptyInvoiceDisabled">
+              <button type="button" class="btn btn-warning" @click="demurrageReInvoiceModal" :disabled="emptyInvoiceDisabled">
                 <i class="fa fa-money-bill-alt"></i> RE Invoice
               </button>
             </div>
@@ -68,28 +68,27 @@
             </template>
           </Poptip>
         </template>
-        <template slot-scope="{ row, index }" slot="invoice_containers_no">
-          <i style="color: #FF9900; margin-right:10px;" class="fa fa-money-bill-alt" v-if="row.invoice_containers_empty_return_overdue_deduction && row.invoice_containers_empty_return_overdue_deduction > 0"></i>{{row.invoice_containers_no}}<font color="#1890ff" style="margin-left:10px;" v-if="row.invoice_containers_type==='S'">SOC</font>
+        <template slot-scope="{ row, index }" slot="export_container_no">
+          <i style="color: #FF9900; margin-right:10px;" class="fa fa-money-bill-alt" v-if="row.export_container_cal_demurrage_deduction && row.export_container_cal_demurrage_deduction > 0"></i>{{row.export_container_no}}<font color="#1890ff" style="margin-left:10px;" v-if="row.export_container_soc_type==='S'">SOC</font>
         </template>
-        <template slot-scope="{ row, index }" slot="invoice_discharge_date">
-          {{row.invoice_containers_edi_discharge_date}}
+         <template slot-scope="{ row, index }" slot="export_container_size_type">
+            {{row.export_container_size_type}} [
+            <span v-for="(item, index) in pagePara.CONTAINER_SIZE" :key="index" v-if="item.container_size_code === row.export_container_size_type">{{item.container_size_name}}</span> ]
+        </template>
+        <template slot-scope="{ row, index }" slot="export_container_edi_loading_date">
+          {{row.export_container_edi_loading_date}}
           <Row class="right-bottom-title">
-            <span>ATA: {{row.invoice_vessel_ata}}</span>
+            <span>ETD: {{row.export_vessel_etd}}</span>
           </Row>
         </template>
-        <template slot-scope="{ row, index }" slot="invoice_containers_size">
-            {{row.invoice_containers_size}} [
-            <span v-for="(item, index) in pagePara.CONTAINER_SIZE" :key="index" v-if="item.container_size_code === row.invoice_containers_size">{{item.container_size_name}}</span> ]
-        </template>
-        <template slot-scope="{ row, index }" slot="invoice_containers_empty_return_date">
-          <span style="color: red;" v-if="row.invoice_containers_empty_return_date && row.invoice_containers_actually_return_date && row.invoice_containers_empty_return_date !== row.invoice_containers_actually_return_date"> {{row.invoice_containers_empty_return_date}} </span>
-          <span style="color: #ff9900;" v-else-if="row.invoice_containers_empty_return_date_receipt">{{row.invoice_containers_empty_return_date}}</span>
-          <span v-else>{{row.invoice_containers_empty_return_date}}</span>
-          <Row class="right-bottom-title" v-if="row.invoice_containers_empty_return_date_receipt">
-            <span>{{row.invoice_containers_empty_return_date_receipt}}</span>
+        <template slot-scope="{ row, index }" slot="export_container_edi_depot_gate_out_date">
+          <span style="color: #ff9900;" v-if="row.export_container_cal_receipt_date">{{row.export_container_edi_depot_gate_out_date}}</span>
+          <span v-else>{{row.export_container_edi_depot_gate_out_date}}</span>
+          <Row class="right-bottom-title" v-if="row.export_container_cal_receipt_date">
+            <span>{{row.export_container_cal_receipt_date}}</span>
           </Row>
         </template>
-        <template slot-scope="{ row, index }" slot="invoice_containers_empty_return_overdue_days">
+        <template slot-scope="{ row, index }" slot="export_container_cal_demurrage_days">
           <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_days && row.invoice_containers_actually_return_overdue_days && row.invoice_containers_empty_return_overdue_days !== row.invoice_containers_actually_return_overdue_days"> {{row.invoice_containers_empty_return_overdue_days}} </span>
           <span style="color: #ff9900;" v-else-if="row.invoice_containers_empty_return_overdue_days_receipt">{{row.invoice_containers_empty_return_overdue_days}}</span>
           <span v-else>{{row.invoice_containers_empty_return_overdue_days}}</span>
@@ -97,7 +96,7 @@
             <span>{{row.invoice_containers_empty_return_overdue_days_receipt}}</span>
           </Row>
         </template>
-        <template slot-scope="{ row, index }" slot="invoice_containers_empty_return_overdue_amount">
+        <template slot-scope="{ row, index }" slot="export_container_cal_demurrage_amount">
           <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_amount && row.invoice_containers_actually_return_overdue_amount && row.invoice_containers_empty_return_overdue_amount !== row.invoice_containers_actually_return_overdue_amount"> {{row.invoice_containers_empty_return_overdue_amount}} </span>
           <span style="color: #ff9900;" v-else-if="row.invoice_containers_empty_return_overdue_amount_receipt">{{row.invoice_containers_empty_return_overdue_amount}}</span>
           <span v-else>{{row.invoice_containers_empty_return_overdue_amount}}</span>
@@ -105,20 +104,16 @@
             <span>{{row.invoice_containers_empty_return_overdue_amount_receipt}}</span>
           </Row>
         </template>
-        <template slot-scope="{ row, index }" slot="invoice_containers_actually_return_date">
-          <span style="color: #f59c1a;" v-if="row.invoice_containers_edi_read && row.invoice_containers_edi_read !== '0'"> {{row.invoice_containers_actually_return_date}} </span>
-          <span style="color: red;" v-else-if="row.invoice_containers_empty_return_date && row.invoice_containers_actually_return_date && row.invoice_containers_empty_return_date !== row.invoice_containers_actually_return_date"> {{row.invoice_containers_actually_return_date}} </span>
-          <span v-else>{{row.invoice_containers_actually_return_date}}</span>
+        <template slot-scope="{ row, index }" slot="export_container_cal_demurrage_days">
+          <span>{{row.export_container_cal_demurrage_days}}</span>
         </template>
-        <template slot-scope="{ row, index }" slot="invoice_containers_actually_return_overdue_days">
-          <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_days && row.invoice_containers_actually_return_overdue_days && row.invoice_containers_empty_return_overdue_days !== row.invoice_containers_actually_return_overdue_days"> {{row.invoice_containers_actually_return_overdue_days}} </span>
-          <span v-else>{{row.invoice_containers_actually_return_overdue_days}}</span>
+        <template slot-scope="{ row, index }" slot="export_container_cal_demurrage_amount">
+          <span>{{row.export_container_cal_demurrage_amount}}</span>
         </template>
-        <template slot-scope="{ row, index }" slot="invoice_containers_actually_return_overdue_amount">
-          <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_amount && row.invoice_containers_actually_return_overdue_amount && row.invoice_containers_empty_return_overdue_amount !== row.invoice_containers_actually_return_overdue_amount"> {{row.invoice_containers_actually_return_overdue_amount}} </span>
-          <span v-else>{{row.invoice_containers_actually_return_overdue_amount}}</span>
+        <template slot-scope="{ row, index }" slot="export_container_cal_demurrage_deduction">
+          <span>{{row.export_container_cal_demurrage_deduction}}</span>
         </template>
-        <template slot-scope="{ row, index }" slot="empty_overdue_calculation">
+        <template slot-scope="{ row, index }" slot="cal_demurrage">
           <a href="#" class="btn btn-success btn-icon btn-sm" title="RECEIPT" v-if="row.invoice_containers_empty_return_overdue_amount_receipt && row.invoice_containers_actually_return_overdue_amount && row.invoice_containers_empty_return_overdue_amount_receipt === row.invoice_containers_actually_return_overdue_amount">
             <i class="fa fa-calculator"></i>
           </a>
@@ -132,37 +127,29 @@
             <Icon type="md-options" />
           </a>
         </template>
-        <template slot-scope="{ row, index }" slot="actually_return_act">
-          <a href="#" class="btn btn-warning btn-icon btn-sm" @click.prevent="ediCalculationModalAct(row)">
-            <i class="fa fa-calculator"></i>
-          </a>
-          <a v-if="row.invoice_containers_actually_return_date" href="#" class="btn btn-success btn-icon btn-sm" @click="actuallyOverdueCopyAct(row)">
-            <i class="fa fa-copy"></i>
-          </a>
-        </template>
       </Table>
-      <Page class="m-t-10" :total="table.containerTable.total" show-sizer show-total :page-size="table.containerTable.limit" @on-change="getTableData" @on-page-size-change="resetTableSizer"/>
-      <Modal v-model="modal.calculationModal" title="Overdue Calculation" width="640">
+      <Page class="m-t-10" :current="table.containerTable.current" :total="table.containerTable.total" show-sizer show-total :page-size="table.containerTable.limit" @on-change="getTableData" @on-page-size-change="resetTableSizer"/>
+      <Modal v-model="modal.calculationModal" title="Demurrage Calculation" width="640">
         <Form ref="overdueChargeForm" :model="overdueChargeForm" :label-width="150" style="padding-right: 80px;">
-          <FormItem label="Discharge Date">
-            <DatePicker type="date" placeholder="Discharge Date" v-model="overdueChargeForm.invoice_containers_edi_discharge_date" format="dd/MM/yyyy" @on-change="dischargeDateChange" disabled></DatePicker>
-            <Tag type="dot">ATA {{overdueChargeForm.invoice_vessel_ata}}</Tag>
+          <FormItem label="Gate Out">
+            <DatePicker type="date" placeholder="Gate Out Date" v-model="overdueChargeForm.export_container_edi_depot_gate_out_date" format="dd/MM/yyyy" @on-change="gateOutDateChange" :disabled="overdueChargeForm.export_container_edi_depot_gate_out_date_disabled"></DatePicker>
+            <Tag type="dot" v-if="overdueChargeForm.demurrage_invoice_containers_diff_days">Diff {{overdueChargeForm.demurrage_invoice_containers_diff_days}} Days</Tag>
           </FormItem>
-          <FormItem label="Return Date">
-            <DatePicker type="date" placeholder="Return Date" v-model="overdueChargeForm.invoice_containers_empty_return_date" format="dd/MM/yyyy" @on-change="returnDateChange"></DatePicker>
-            <Tag type="dot" v-if="overdueChargeForm.invoice_containers_empty_return_diff_days">Diff {{overdueChargeForm.invoice_containers_empty_return_diff_days}} Days</Tag>
+          <FormItem label="Loading Date">
+            <DatePicker type="date" placeholder="Loading Date" v-model="overdueChargeForm.export_container_edi_loading_date" format="dd/MM/yyyy" @on-change="loadingDateChange" :disabled ="overdueChargeForm.export_container_edi_loading_date_disabled"></DatePicker>
+            <Tag type="dot">ETD {{overdueChargeForm.export_vessel_etd}}</Tag>
           </FormItem>
           <FormItem label="Free Days">
-            <Input-number :min="parseInt(overdueChargeForm.invoice_containers_empty_return_overdue_static_free_days)" v-model="overdueChargeForm.invoice_containers_empty_return_overdue_free_days" :active-change="false" @on-change="overdueFreeDaysChange" :disabled ="returnOverdueDaysDisabled" style="width: 200px;"></Input-number>
+            <Input-number :min="parseInt(overdueChargeForm.export_container_cal_static_free_days)" v-model="overdueChargeForm.export_container_cal_free_days" :active-change="false" @on-change="overdueFreeDaysChange" :disabled ="returnOverdueDaysDisabled" style="width: 200px;"></Input-number>
             <Checkbox v-model="overdueChargeForm.free_days_single" :disabled ="returnOverdueDaysDisabled">SINGLE</Checkbox>
           </FormItem>
-          <FormItem label="Overdue Days">
-            <Input v-model="overdueChargeForm.invoice_containers_empty_return_overdue_days" disabled>
+          <FormItem label="Demurrage Days">
+            <Input v-model="overdueChargeForm.export_container_cal_demurrage_days" disabled>
                 <span slot="append" style="display:block; width: 40px">Days</span>
             </Input>
           </FormItem>
-          <FormItem label="Overdue Charge">
-            <Input v-model="overdueChargeForm.invoice_containers_empty_return_overdue_amount" :disabled ="returnOverdueDaysDisabled">
+          <FormItem label="Demurrage Charge">
+            <Input v-model="overdueChargeForm.export_container_cal_demurrage_amount" :disabled ="returnOverdueDaysDisabled">
               <span slot="append" style="display:block; width: 40px">USD</span>
             </Input>
           </FormItem>
@@ -172,36 +159,7 @@
             <i class="fa fa-edit"></i>Edit
           </a>
           <Button type="text" size="large" @click="modal.calculationModal = false">Cancel</Button>
-          <Button type="primary" size="large" @click="emptySubmitAct" :disabled="emptySubmitDisabled">Submit</Button>
-        </div>
-      </Modal>
-      <Modal v-model="modal.ediCalculationModal" title="EDI Overdue Calculation" width="640">
-        <Form ref="overdueChargeForm" :model="overdueChargeForm" :label-width="150" style="padding-right: 80px;">
-          <FormItem label="Discharge Date">
-            <DatePicker type="date" placeholder="Discharge Date" v-model="overdueChargeForm.invoice_containers_edi_discharge_date" format="dd/MM/yyyy" @on-change="ediDischargeDateChange"></DatePicker>
-            <Tag type="dot">ATA {{overdueChargeForm.invoice_vessel_ata}}</Tag>
-          </FormItem>
-          <FormItem label="Return Date">
-            <DatePicker type="date" placeholder="Return Date" v-model="overdueChargeForm.invoice_containers_actually_return_date" format="dd/MM/yyyy" @on-change="ediReturnDateChange"></DatePicker>
-            <Tag type="dot" v-if="overdueChargeForm.invoice_containers_actually_return_diff_days">Diff {{overdueChargeForm.invoice_containers_actually_return_diff_days}} Days</Tag>
-          </FormItem>
-          <FormItem label="Free Days">
-            <Input-number :min="parseInt(overdueChargeForm.invoice_containers_empty_return_overdue_static_free_days)" v-model="overdueChargeForm.invoice_containers_empty_return_overdue_free_days" :active-change="false" @on-change="overdueFreeDaysChange" disabled style="width: 200px;"></Input-number>
-          </FormItem>
-          <FormItem label="Overdue Days">
-            <Input v-model="overdueChargeForm.invoice_containers_actually_return_overdue_days" disabled>
-                <span slot="append" style="display:block; width: 40px">Days</span>
-            </Input>
-          </FormItem>
-          <FormItem label="Overdue Charge">
-            <Input v-model="overdueChargeForm.invoice_containers_actually_return_overdue_amount">
-              <span slot="append" style="display:block; width: 40px">USD</span>
-            </Input>
-          </FormItem>
-        </Form>
-        <div slot="footer">
-          <Button type="text" size="large" @click="modal.ediCalculationModal = false">Cancel</Button>
-          <Button type="primary" size="large" @click="ediCalculationSubmitAct">Submit</Button>
+          <Button type="primary" size="large" @click="demurrageSubmitAct" :disabled="emptySubmitDisabled">Submit</Button>
         </div>
       </Modal>
       <Modal v-model="modal.invoiceModal" title="INVOICE" width="600">
@@ -217,7 +175,7 @@
         </Form>
         <div slot="footer">
           <Button type="text" size="large" @click="modal.invoiceModal = false">Cancel</Button>
-          <Button type="primary" size="large" @click="emptyInvoiceAct" >Submit</Button>
+          <Button type="primary" size="large" @click="demurrageInvoiceAct" >Submit</Button>
         </div>
       </Modal>
       <Modal v-model="modal.reInvoiceModal" title="RE INVOICE" width="600">
@@ -299,16 +257,16 @@
 import PageOptions from '../../../config/PageOptions.vue'
 const moment = require('moment')
 const common = require('@/lib/common')
-const apiUrl = '/api/zhongtan/equipment/ImportOverdueCalculationAdmin/'
+const apiUrl = '/api/zhongtan/equipment/ExportDemurrageInvoiceAdmin/'
 
 export default {
-  name: 'ImportOverdueCalculationAdmin',
+  name: 'ExportDemurrageInvoiceAdmin',
   data: function() {
     return {
-      modal: { calculationModal: false, invoiceModal : false, checkPasswordModal: false, invoiceTimelineModal: false, storingOrderModal: false, reInvoiceModal: false, ediCalculationModal: false },
+      modal: { calculationModal: false, invoiceModal : false, checkPasswordModal: false, invoiceTimelineModal: false, storingOrderModal: false, reInvoiceModal: false },
       cargoTypeFileter: [
-        { id: 'IM', text: 'IM' },
-        { id: 'TR', text: 'TR' }
+        { id: 'LOCAL', text: 'LOCAL' },
+        { id: 'TRANSIT', text: 'TRANSIT' }
       ],
       carrierFileter: [
         { id: 'COSCO', text: 'COSCO' },
@@ -325,7 +283,7 @@ export default {
             },
             {
               title: '#M B/L No',
-              key: 'invoice_containers_bl',
+              key: 'export_container_bl',
               width: 150,
               align: 'center'
             },
@@ -337,116 +295,75 @@ export default {
             },
             {
               title: 'Container No',
-              slot: 'invoice_containers_no',
+              slot: 'export_container_no',
               width: 160,
               align: 'center'
             },
             {
-              title: 'Discharge Date',
-              slot: 'invoice_discharge_date',
-              width: 140,
-              align: 'center'
-            },
-            {
               title: 'Size/Type',
-              slot: 'invoice_containers_size',
+              slot: 'export_container_size_type',
               width: 120,
               align: 'center'
             },
             {
-              title: 'IM/TR',
-              key: 'invoice_masterbi_cargo_type',
+              title: 'Cargo Type',
+              key: 'export_masterbl_cargo_type',
               width: 80,
               align: 'center'
             },
             {
-              title: 'Destination',
-              key: 'invoice_masterbi_destination',
-              width: 120,
-              align: 'center'
-            },
-            {
               title: 'Depot Name',
-              key: 'invoice_containers_depot_name',
+              key: 'export_container_get_depot_name',
               width: 125,
               align: 'center'
             },
             {
               title: 'Free Days',
-              key: 'invoice_containers_empty_return_overdue_free_days',
+              key: 'export_container_cal_free_days',
               width: 120,
               align: 'center',
             },
             {
-              title: 'OVERDUE CALCULATION',
+              title: 'Gate Out',
+              slot: 'export_container_edi_depot_gate_out_date',
+              width: 120,
               align: 'center',
-              children: [
-                {
-                  title: 'Return',
-                  slot: 'invoice_containers_empty_return_date',
-                  width: 120,
-                  align: 'center',
-                },
-                {
-                  title: 'Overdue',
-                  slot: 'invoice_containers_empty_return_overdue_days',
-                  width: 120,
-                  align: 'center',
-                },
-                {
-                  title: 'Demurrage',
-                  slot: 'invoice_containers_empty_return_overdue_amount',
-                  width: 120,
-                  align: 'center',
-                },
-                {
-                  title: 'Deduction',
-                  key: 'invoice_containers_empty_return_overdue_deduction',
-                  width: 120,
-                  align: 'center',
-                },
-                {
-                  title: 'Act',
-                  slot: 'empty_overdue_calculation',
-                  width: 120,
-                  align: 'center',
-                }
-              ]
             },
             {
-              title: 'EDI',
+              title: 'Loading Date',
+              slot: 'export_container_edi_loading_date',
+              width: 140,
+              align: 'center'
+            },
+            {
+              title: 'Days',
+              slot: 'export_container_cal_demurrage_days',
+              width: 120,
               align: 'center',
-              children: [
-                {
-                  title: 'Return',
-                  slot: 'invoice_containers_actually_return_date',
-                  width: 120,
-                  align: 'center',
-                },
-                {
-                  title: 'Overdue',
-                  slot: 'invoice_containers_actually_return_overdue_days',
-                  width: 120,
-                  align: 'center',
-                },
-                {
-                  title: 'Demurrage',
-                  slot: 'invoice_containers_actually_return_overdue_amount',
-                  width: 120,
-                  align: 'center',
-                },
-                {
-                  title: 'Act',
-                  slot: 'actually_return_act',
-                  width: 120,
-                  align: 'center',
-                }
-              ]
+            },
+            {
+              title: 'Amount',
+              slot: 'export_container_cal_demurrage_amount',
+              width: 120,
+              align: 'center',
+            },
+            {
+              title: 'Deduction',
+              key: 'export_container_cal_demurrage_deduction',
+              width: 120,
+              align: 'center',
+            },
+            {
+              title: 'Act',
+              slot: 'cal_demurrage',
+              width: 120,
+              align: 'center',
             }
           ],
           data: [],
           unchanged: [],
-          height: common.getTableHeight() - 80,
+          height: common.getTableHeight(),
+          current: 1,
           limit: 10,
           offset: 0,
           total: 0
@@ -551,6 +468,7 @@ export default {
     getTableData: async function(index) {
       try {
         if (index) {
+          this.table.containerTable.current = index
           this.table.containerTable.offset = (index - 1) * this.table.containerTable.limit
         }
         let searchPara = {
@@ -564,11 +482,9 @@ export default {
         this.table.containerTable.data = JSON.parse(JSON.stringify(data.rows))
         if(this.table.containerTable.data) {
           for(let d of this.table.containerTable.data) {
-            if((d.invoice_containers_empty_return_overdue_amount_receipt && d.invoice_containers_actually_return_overdue_amount && parseInt(d.invoice_containers_empty_return_overdue_amount_receipt) === parseInt(d.invoice_containers_actually_return_overdue_amount))
-            || (d.invoice_containers_empty_return_overdue_amount_receipt && d.invoice_containers_empty_return_overdue_amount && parseInt(d.invoice_containers_empty_return_overdue_amount_receipt) === parseInt(d.invoice_containers_empty_return_overdue_amount))) {
+            if(d.export_container_cal_demurrage_amount && d.export_container_cal_receipt_amount && parseInt(d.export_container_cal_demurrage_amount) === parseInt(d.export_container_cal_receipt_amount)) {
               d._disabled = true
-            } else if((d.invoice_containers_empty_return_receipt_date && d.invoice_containers_empty_return_overdue_amount && parseInt(d.invoice_containers_empty_return_overdue_amount) === 0) 
-                || (d.invoice_containers_empty_return_date && d.invoice_containers_empty_return_overdue_amount && parseInt(d.invoice_containers_empty_return_overdue_amount) > 0)) {
+            } else if(d.export_container_cal_demurrage_amount && parseInt(d.export_container_cal_demurrage_amount) > 0) {
               d._disabled = false
             } else {
               d._disabled = true
@@ -580,8 +496,8 @@ export default {
       }
     },
     resetTableSizer: function(pageSizer) {
-        this.table.containerTable.limit = pageSizer
-        this.getTableData(1)
+      this.table.containerTable.limit = pageSizer
+      this.getTableData(1)
     },
     handleSpan: function({row, column, rowIndex, columnIndex}) {
       if(column.title === '#M B/L No' || column.title === 'Files') {
@@ -593,12 +509,12 @@ export default {
       let colspan = 1
       let tableData = this.table.containerTable.data
       for(let d of tableData) {
-        if(d.invoice_masterbi_id === row.invoice_masterbi_id) {
+        if(d.export_masterbl_id === row.export_masterbl_id) {
           rowspan++
         }
       }
       if(rowspan > 1) {
-        if(rowIndex > 0 && tableData[rowIndex - 1].invoice_masterbi_id === row.invoice_masterbi_id) {
+        if(rowIndex > 0 && tableData[rowIndex - 1].export_masterbl_id === row.export_masterbl_id) {
           return [0, 0]
         } else {
           return [rowspan, colspan]
@@ -618,32 +534,21 @@ export default {
         let bl = ''
         for(let s of selection) {
           if(!bl) {
-            bl = s.invoice_containers_bl
+            bl = s.export_container_bl
           } else {
-            if(bl !== s.invoice_containers_bl) {
+            if(bl !== s.export_container_bl) {
               this.emptyInvoiceDisabled = true
               return this.$Message.error('please select same #B/L No.')
             }
           }
-          if(s.invoice_containers_empty_return_date) {
+          if(s.export_container_cal_demurrage_amount) {
             this.emptyInvoiceDisabled = false
           }
         }
       } else {
         this.emptyInvoiceDisabled = true
       }
-      let enabledCount = 0
-      for(let d of this.table.containerTable.data) {
-        if(!d._disabled) {
-          enabledCount++
-        }
-      }
       this.$forceUpdate()
-      if(selection && selection.length === enabledCount) {
-        this.tableSelectAll = true
-      } else {
-        this.tableSelectAll = false
-      }
     },
     resetChageRuleForm: function() {
       this.overdueChargeFormOld = {}
@@ -661,76 +566,50 @@ export default {
       this.overdueChargeForm.invoice_containers_edi_discharge_date_disabled = this.overdueChargeForm.invoice_containers_edi_discharge_date
       this.returnOverdueDaysDisabled = true
       this.modal.calculationModal = true
-    },
-    ediCalculationModalAct: async function(row) {
-      try {
-        this.checkPassword = ''
-        this.modal.checkPasswordModal = true
-        this.checkPasswordType = 'IMPORT_DEMURRANGE_EDI_EDIT'
-
-        this.calculationType = 'EDI'
-        this.$nextTick(() => {
-          this.$refs['overdueChargeForm'].resetFields()
-        })
-        this.resetChageRuleForm()
-        this.overdueChargeFormOld = Object.assign({}, row)
-        this.overdueChargeForm = Object.assign({}, row) // copy obj
-        this.overdueChargeForm.invoice_containers_edi_discharge_date_disabled = this.overdueChargeForm.invoice_containers_edi_discharge_date
-        this.returnOverdueDaysDisabled = true
-      } catch (error) {
-        this.$commonact.fault(error)
+      if(!this.overdueChargeForm.export_container_cal_demurrage_days) {
+        this.calculationDiff()
       }
     },
-    dischargeDateChange: async function(date) {
-      this.overdueChargeForm.invoice_containers_edi_discharge_date = date
-      if(this.overdueChargeForm.invoice_containers_empty_return_date) {
-        await this.calculationDiff()
-      }else {
-        this.emptySubmitDisabled = false
-      }
-    },
-    ediDischargeDateChange: async function(date) {
-      this.overdueChargeForm.invoice_containers_edi_discharge_date = date
-      if(this.overdueChargeForm.invoice_containers_actually_return_date) {
-        await this.ediCalculationDiff()
-      }
-    },
-    returnDateChange: async function(date) {
-      this.overdueChargeForm.invoice_containers_empty_return_date = date
+    gateOutDateChange: async function(date) {
+      this.overdueChargeForm.export_container_edi_depot_gate_out_date = date
       await this.calculationDiff()
     },
-    ediReturnDateChange: async function(date) {
-      this.overdueChargeForm.invoice_containers_actually_return_date = date
-      await this.ediCalculationDiff()
+    loadingDateChange: async function(date) {
+      this.overdueChargeForm.export_container_edi_loading_date = date
+      await this.calculationDiff()
     },
     calculationDiff: async function() {
-      let discharge_date = this.overdueChargeForm.invoice_vessel_ata
-      if(this.overdueChargeForm.invoice_containers_edi_discharge_date) {
-        if(typeof this.overdueChargeForm.invoice_containers_edi_discharge_date === 'object') {
-          discharge_date = moment(this.overdueChargeForm.invoice_containers_edi_discharge_date).local().format('DD/MM/YYYY')
-        } else {
-          discharge_date = this.overdueChargeForm.invoice_containers_edi_discharge_date
-        }
+      let loading_date = this.overdueChargeForm.export_vessel_etd
+      if(this.overdueChargeForm.export_container_edi_loading_date) {
+        loading_date = this.overdueChargeForm.export_container_edi_loading_date
       }
-      let return_date = this.overdueChargeForm.invoice_containers_empty_return_date
-      if(discharge_date && return_date) {
-        let diff = moment(return_date, "DD/MM/YYYY").diff(moment(discharge_date, "DD/MM/YYYY"), 'days')
+      let gate_out_date = this.overdueChargeForm.export_container_edi_depot_gate_out_date
+      if(loading_date && gate_out_date) {
+
+        if(typeof loading_date === 'object') {
+          loading_date = moment(loading_date).local().format('DD/MM/YYYY')
+        }
+        if(typeof gate_out_date === 'object') {
+          gate_out_date = moment(gate_out_date).local().format('DD/MM/YYYY')
+        }
+        let diff = moment(loading_date, "DD/MM/YYYY").diff(moment(gate_out_date, "DD/MM/YYYY"), 'days')
         if(diff >= 0) {
           try {
             let param = {
-              discharge_date: discharge_date,
-              return_date: return_date,
-              invoice_masterbi_cargo_type: this.overdueChargeForm.invoice_masterbi_cargo_type,
-              invoice_masterbi_destination: this.overdueChargeForm.invoice_masterbi_destination,
-              invoice_containers_bl: this.overdueChargeForm.invoice_containers_bl,
-              invoice_containers_size: this.overdueChargeForm.invoice_containers_size,
-              invoice_containers_empty_return_overdue_free_days: this.overdueChargeForm.invoice_containers_empty_return_overdue_free_days
+              masterbl_id: this.overdueChargeForm.export_masterbl_id,
+              container_id: this.overdueChargeForm.export_container_id,
+              gate_out_date: gate_out_date,
+              loading_date: loading_date,
+              bl_carrier: this.overdueChargeForm.export_masterbl_bl_carrier,
+              cargo_type: this.overdueChargeForm.export_masterbl_cargo_type,
+              containers_size: this.overdueChargeForm.export_container_size_type,
+              free_days: this.overdueChargeForm.export_container_cal_free_days
             }
             let response = await this.$http.post(apiUrl + 'calculation', param)
             this.$nextTick(function() {
-              this.overdueChargeForm.invoice_containers_empty_return_diff_days = response.data.info.diff_days
-              this.overdueChargeForm.invoice_containers_empty_return_overdue_days = response.data.info.overdue_days
-              this.overdueChargeForm.invoice_containers_empty_return_overdue_amount = response.data.info.overdue_amount
+              this.overdueChargeForm.demurrage_invoice_containers_diff_days = response.data.info.diff_days
+              this.overdueChargeForm.export_container_cal_demurrage_days = response.data.info.overdue_days
+              this.overdueChargeForm.export_container_cal_demurrage_amount = response.data.info.overdue_amount
               this.emptySubmitDisabled = false
               this.$forceUpdate()
             })
@@ -742,76 +621,24 @@ export default {
         } else {
           this.ladenSubmitDisabled = true
           this.emptySubmitDisabled = true
-          return this.$Message.error('return must after discharge date')
+          return this.$Message.error('loading date must after gate out date')
         }
       }
     },
-    ediCalculationDiff: async function() {
-      let discharge_date = this.overdueChargeForm.invoice_vessel_ata
-      if(this.overdueChargeForm.invoice_containers_edi_discharge_date) {
-        if(typeof this.overdueChargeForm.invoice_containers_edi_discharge_date === 'object') {
-          discharge_date = moment(this.overdueChargeForm.invoice_containers_edi_discharge_date).local().format('DD/MM/YYYY')
-        } else {
-          discharge_date = this.overdueChargeForm.invoice_containers_edi_discharge_date
-        }
-      }
-      let return_date = this.overdueChargeForm.invoice_containers_actually_return_date
-      if(discharge_date && return_date) {
-        let diff = moment(return_date, "DD/MM/YYYY").diff(moment(discharge_date, "DD/MM/YYYY"), 'days')
-        if(diff >= 0) {
-          try {
-            let param = {
-              discharge_date: discharge_date,
-              return_date: return_date,
-              invoice_masterbi_cargo_type: this.overdueChargeForm.invoice_masterbi_cargo_type,
-              invoice_masterbi_destination: this.overdueChargeForm.invoice_masterbi_destination,
-              invoice_containers_bl: this.overdueChargeForm.invoice_containers_bl,
-              invoice_containers_size: this.overdueChargeForm.invoice_containers_size,
-              invoice_containers_empty_return_overdue_free_days: this.overdueChargeForm.invoice_containers_empty_return_overdue_free_days
-            }
-            let response = await this.$http.post(apiUrl + 'calculation', param)
-            this.$nextTick(function() {
-              this.overdueChargeForm.invoice_containers_actually_return_diff_days = response.data.info.diff_days
-              this.overdueChargeForm.invoice_containers_actually_return_overdue_days = response.data.info.overdue_days
-              this.overdueChargeForm.invoice_containers_actually_return_overdue_amount = response.data.info.overdue_amount
-              this.emptySubmitDisabled = false
-              this.$forceUpdate()
-            })
-          } catch (error) {
-            this.ladenSubmitDisabled = true
-            this.emptySubmitDisabled = true
-            this.$commonact.fault(error)
-          }
-        } else {
-          this.ladenSubmitDisabled = true
-          this.emptySubmitDisabled = true
-          return this.$Message.error('return must after discharge date')
-        }
-      }
-    },
-    emptySubmitAct: async function() {
+    demurrageSubmitAct: async function() {
       try {
-        if(this.overdueChargeForm.invoice_containers_edi_discharge_date) {
-          if(typeof this.overdueChargeForm.invoice_containers_edi_discharge_date === 'object') {
-            this.overdueChargeForm.invoice_containers_edi_discharge_date = moment(this.overdueChargeForm.invoice_containers_edi_discharge_date).local().format('DD/MM/YYYY')
+        if(this.overdueChargeForm.export_container_edi_depot_gate_out_date) {
+          if(typeof this.overdueChargeForm.export_container_edi_depot_gate_out_date === 'object') {
+            this.overdueChargeForm.export_container_edi_depot_gate_out_date = moment(this.overdueChargeForm.export_container_edi_depot_gate_out_date).local().format('DD/MM/YYYY')
           }
         }
-        await this.$http.post(apiUrl + 'emptyReturnSave', this.overdueChargeForm)
+        if(this.overdueChargeForm.export_container_edi_loading_date) {
+          if(typeof this.overdueChargeForm.export_container_edi_loading_date === 'object') {
+            this.overdueChargeForm.export_container_edi_loading_date = moment(this.overdueChargeForm.export_container_edi_loading_date).local().format('DD/MM/YYYY')
+          }
+        }
+        await this.$http.post(apiUrl + 'demurrageCalculationSave', this.overdueChargeForm)
         this.modal.calculationModal = false
-        this.getTableData()
-      } catch (error) {
-        this.$commonact.fault(error)
-      }
-    },
-    ediCalculationSubmitAct: async function() {
-      try {
-        if(this.overdueChargeForm.invoice_containers_edi_discharge_date) {
-          if(typeof this.overdueChargeForm.invoice_containers_edi_discharge_date === 'object') {
-            this.overdueChargeForm.invoice_containers_edi_discharge_date = moment(this.overdueChargeForm.invoice_containers_edi_discharge_date).local().format('DD/MM/YYYY')
-          }
-        }
-        await this.$http.post(apiUrl + 'ediCalculationSave', this.overdueChargeForm)
-        this.modal.ediCalculationModal = false
         this.getTableData()
       } catch (error) {
         this.$commonact.fault(error)
@@ -829,7 +656,7 @@ export default {
         this.customer.options = []
       }
     },
-    emptyInvoiceModal: async function() {
+    demurrageInvoiceModal: async function() {
       let selection = this.$refs.containerTable.getSelection()
       let invoice_customer_id = ''
       let totalDemurrage = 0
@@ -856,16 +683,36 @@ export default {
       this.invoiceForm.totalDemurrage = totalDemurrage
       this.modal.invoiceModal = true
     },
-    emptyReInvoiceModal: async function() {
+    demurrageInvoiceAct: async function() {
+      this.$refs['invoiceForm'].validate(async valid => {
+        if (valid) {
+          let selection = this.$refs.containerTable.getSelection()
+          if(selection && selection.length > 0) {
+            try {
+              await this.$http.post(apiUrl + 'demurrageInvoice', {selectAll: this.tableSelectAll, selection: selection, invoicePara: this.invoiceForm})
+              this.getTableData()
+              this.$Message.success('Invoice Success')
+              this.modal.invoiceModal = false
+              this.emptyInvoiceDisabled = true
+            } catch (error) {
+              this.$commonact.fault(error)
+            }
+          }
+        } else {
+            this.$Message.error('Validate Fail!')
+        }
+      })
+    },
+    demurrageReInvoiceModal: async function() {
       try {
         this.checkPassword = ''
         this.modal.checkPasswordModal = true
-        this.checkPasswordType = 'IMPORT_DEMURRANGE_RE_INVOICE'
+        this.checkPasswordType = 'demurrageReinvoice'
       } catch (error) {
         this.$commonact.fault(error)
       }
     },
-    actemptyReInvoiceModal: async function() {
+    demurrageReInvoiceModalAct: async function() {
       let selection = this.$refs.containerTable.getSelection()
       let invoice_customer_id = ''
       let totalDemurrage = 0
@@ -893,26 +740,6 @@ export default {
       this.invoiceForm.deduction = 0
       this.modal.reInvoiceModal = true
     },
-    emptyInvoiceAct: async function() {
-      this.$refs['invoiceForm'].validate(async valid => {
-        if (valid) {
-          let selection = this.$refs.containerTable.getSelection()
-          if(selection && selection.length > 0) {
-            try {
-              await this.$http.post(apiUrl + 'emptyInvoice', {selectAll: this.tableSelectAll, selection: selection, invoicePara: this.invoiceForm})
-              this.getTableData()
-              this.$Message.success('Invoice Success')
-              this.modal.invoiceModal = false
-              this.emptyInvoiceDisabled = true
-            } catch (error) {
-              this.$commonact.fault(error)
-            }
-          }
-        } else {
-            this.$Message.error('Validate Fail!')
-        }
-      })
-    },
     emptyReInvoiceAct: async function() {
       this.$refs['invoiceForm'].validate(async valid => {
         if (valid) {
@@ -937,7 +764,7 @@ export default {
       try {
         this.checkPassword = ''
         this.modal.checkPasswordModal = true
-        this.checkPasswordType = 'IMPORT_FREE_DAYS_EDIT'
+        this.checkPasswordType = 'calculationEdit'
       } catch (error) {
         this.$commonact.fault(error)
       }
@@ -948,19 +775,20 @@ export default {
           return this.$Message.error('Please enter right password')
         }
         let param = {
+          page: 'Import Overdue Invoice Admin',
           action: this.checkPasswordType,
           checkPassword: common.md52(this.checkPassword)
         }
         await this.$http.post(apiUrl + 'checkPassword', param)
         this.modal.checkPasswordModal = false
-        if(this.checkPasswordType === 'IMPORT_FREE_DAYS_EDIT') {
+        if(this.checkPasswordType === 'calculationEdit') {
           this.returnOverdueDaysDisabled = false
           this.emptySubmitDisabled = false
           this.ladenSubmitDisabled = false
-        } else if(this.checkPasswordType === 'IMPORT_DEMURRANGE_RE_INVOICE'){
-          this.actemptyReInvoiceModal()
-        } else if(this.checkPasswordType === 'IMPORT_DEMURRANGE_EDI_EDIT'){
-          this.modal.ediCalculationModal = true
+          this.overdueChargeForm.export_container_edi_depot_gate_out_date_disabled = false
+          this.overdueChargeForm.export_container_edi_loading_date_disabled = false
+        } else if(this.checkPasswordType === 'demurrageReinvoice'){
+          this.demurrageReInvoiceModalAct()
         }
       } catch (error) {
         this.$commonact.fault(error)
@@ -975,13 +803,7 @@ export default {
       }
     },
     overdueFreeDaysChange: async function() {
-      if(this.overdueChargeForm.invoice_containers_empty_return_date) {
-        if(typeof this.overdueChargeForm.invoice_containers_empty_return_date === 'object') {
-          await this.returnDateChange(moment(this.overdueChargeForm.invoice_containers_empty_return_date).local().format('DD/MM/YYYY'))
-        } else {
-          await this.returnDateChange(this.overdueChargeForm.invoice_containers_empty_return_date)
-        }
-      }
+      await this.calculationDiff()
     },
     containerInvoiceDetailAct: async function(row) {
       try {

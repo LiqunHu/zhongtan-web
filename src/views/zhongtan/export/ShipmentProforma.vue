@@ -143,7 +143,7 @@
             <Icon type="ios-document" size="60" />
           </div>
           <Upload
-            ref="upload"
+            ref="uploadImport"
             :headers="headers"
             :show-upload-list="false"
             :on-success="handleSuccess"
@@ -617,7 +617,7 @@ export default {
     bookingImportModalAct: async function() {
       this.workPara = {}
       this.action = 'import'
-      this.$refs.upload.fileList = []
+      this.$refs.uploadImport.fileList = []
       this.files.fileList = []
       this.modal.importModal = true
     },
