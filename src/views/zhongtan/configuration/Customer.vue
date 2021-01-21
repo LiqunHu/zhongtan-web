@@ -68,6 +68,9 @@
         <FormItem label="TIN" prop="user_tin">
           <Input placeholder="TIN" v-model="workPara.user_tin"/>
         </FormItem>
+        <FormItem label="VRN" prop="user_vrn">
+          <Input placeholder="VRN" v-model="workPara.user_vrn"/>
+        </FormItem>
       </Form>
       <div slot="footer">
         <Button type="text" size="large" @click="modal.userModal=false">Cancel</Button>
@@ -128,6 +131,11 @@ export default {
             {
               title: 'TIN',
               key: 'user_tin',
+              width: 150,
+            },
+            {
+              title: 'VRN',
+              key: 'user_vrn',
               width: 150,
             },
             {

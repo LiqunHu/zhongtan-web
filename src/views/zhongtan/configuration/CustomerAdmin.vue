@@ -28,6 +28,11 @@
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="addUserModal">Add Customer</button>
             </div>
+            <div class="form-group m-r-10">
+              <button type="button" class="btn btn-info" @click="exportUserReport">
+                <i class="fa fa-download"></i> Export
+              </button>
+            </div>
           </div>
         </div>
       </template>
@@ -79,6 +84,9 @@
         <FormItem label="TIN" prop="user_tin">
           <Input placeholder="TIN" v-model="workPara.user_tin"/>
         </FormItem>
+        <FormItem label="VRN" prop="user_vrn">
+          <Input placeholder="VRN" v-model="workPara.user_vrn"/>
+        </FormItem>
       </Form>
       <div slot="footer">
         <Button type="text" size="large" @click="modal.userModal=false">Cancel</Button>
@@ -89,6 +97,7 @@
 </template>
 <script>
 import PageOptions from '../../../config/PageOptions.vue'
+const moment = require('moment')
 const common = require('@/lib/common')
 const apiUrl = '/api/zhongtan/configuration/CustomerAdmin/'
 
@@ -139,6 +148,11 @@ export default {
             {
               title: 'TIN',
               key: 'user_tin',
+              width: 150,
+            },
+            {
+              title: 'VRN',
+              key: 'user_vrn',
               width: 150,
             },
             {
@@ -271,6 +285,29 @@ export default {
         } else {
           row.user_blacklist = '1'
         }
+        this.$commonact.fault(error)
+      }
+    },
+    exportUserReport: async function() {
+      try {
+        let response = await this.$http.request({
+            url: apiUrl + 'exportCustomer',
+            method: 'post',
+            data: {search_data: this.search_data},
+            responseType: 'blob'
+          })
+        let blob = response.data
+        let reader = new FileReader()
+        reader.readAsDataURL(blob)
+        reader.onload = e => {
+          let a = document.createElement('a')
+          a.download = 'customer user ' + moment().format('YYYYMMDDHHmmSS') + '.xlsx'
+          a.href = e.target.result
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+        }
+      } catch (error) {
         this.$commonact.fault(error)
       }
     }
