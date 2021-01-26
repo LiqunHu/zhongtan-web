@@ -229,6 +229,11 @@ export default {
               width: 200
             },
             {
+              title: 'INVOICE AMOUNT',
+              key: 'export_verification_invoice_amount',
+              width: 150
+            },
+            {
               title: 'RECEIVABLE',
               key: 'export_verification_shipment_receivable',
               width: 150

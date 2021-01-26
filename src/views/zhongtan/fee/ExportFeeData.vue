@@ -260,8 +260,8 @@ export default {
           this.table.checkTable.offset = (index - 1) * this.table.checkTable.limit
         }
         let searchPara = {
-          fee_cargo_type: this.search_data.fee_cargo_type,
-          fee_name: this.search_data.fee_name,
+          fee_data_code: this.search_data.fee_data_code,
+          fee_data_name: this.search_data.fee_data_name,
           offset: this.table.checkTable.offset,
           limit: this.table.checkTable.limit
         }

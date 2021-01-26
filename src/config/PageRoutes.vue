@@ -25,6 +25,10 @@ const routes = [
     path: '/admin/zhongtan/configuration/BillladingNoConfig',
     component: resolve => require(['@/views/zhongtan/configuration/BillladingNoConfig'], resolve)
   },
+  {
+    path: '/admin/zhongtan/configuration/AllotDepotConfig',
+    component: resolve => require(['@/views/zhongtan/configuration/AllotDepotConfig'], resolve)
+  },
   { path: '/admin/zhongtan/export/Booking', component: resolve => require(['@/views/zhongtan/export/Booking'], resolve) },
   { path: '/admin/zhongtan/export/BookingWork', component: resolve => require(['@/views/zhongtan/export/BookingWork'], resolve) },
   { path: '/admin/zhongtan/export/Receipt', component: resolve => require(['@/views/zhongtan/export/Receipt'], resolve) },
@@ -69,7 +73,7 @@ const routes = [
   { path: '/admin/zhongtan/equipment/ContainerMNRLedgerInvoice', component: resolve => require(['@/views/zhongtan/equipment/ContainerMNRLedgerInvoice'], resolve) },
   { path: '/admin/zhongtan/equipment/ContainerMNRLedgerReceipt', component: resolve => require(['@/views/zhongtan/equipment/ContainerMNRLedgerReceipt'], resolve) },
   { path: '/admin/zhongtan/equipment/ContainerMNRLedgerStatistics', component: resolve => require(['@/views/zhongtan/equipment/ContainerMNRLedgerStatistics'], resolve) },
-  { path: '/admin/zhongtan/equipment/ExportDemurrageInvoiceAdmin', component: resolve => require(['@/views/zhongtan/equipment/ExportDemurrageInvoiceAdmin'], resolve) },
+  { path: '/admin/zhongtan/equipment/ExportDemurrageCalculation', component: resolve => require(['@/views/zhongtan/equipment/ExportDemurrageCalculation'], resolve) },
 ]
 
 export default routes
