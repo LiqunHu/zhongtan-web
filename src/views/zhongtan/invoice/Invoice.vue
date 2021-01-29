@@ -94,6 +94,10 @@
                             </Col>
                             <Col span="13">Container: {{item.invoice_container_soc_count}}/{{item.invoice_container_count}}</Col>
                         </Row>
+                        <Row v-if="item.return_depot" v-for="(item1, index1) in item.return_depot" :key="index1" >
+                            <Col span="11">DEPOT: {{item1.depot_name}}</Col>
+                            <Col span="13">COUNT: {{item1.depot_count}}</Col>
+                        </Row>
                     </Card>
                 </div>
                 </Col>
