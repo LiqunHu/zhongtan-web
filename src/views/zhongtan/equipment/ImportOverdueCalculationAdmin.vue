@@ -446,7 +446,7 @@ export default {
           ],
           data: [],
           unchanged: [],
-          height: common.getTableHeight() - 80,
+          height: common.getTableHeight(),
           limit: 10,
           offset: 0,
           total: 0

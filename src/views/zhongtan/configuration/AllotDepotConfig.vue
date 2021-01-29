@@ -18,7 +18,13 @@
         <div class="panel-toolbar">
           <div class="form-inline">
             <div class="form-group m-r-10">
+              <button type="button" class="btn btn-info" @click="getData">Search</button>
+            </div>
+            <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="addModal">Add</button>
+            </div>
+            <div class="form-group m-r-10">
+              <button type="button" class="btn btn-info" @click="handleModal">Handle Vessel</button>
             </div>
           </div>
         </div>
@@ -84,6 +90,30 @@
         <Button type="primary" size="large" @click="submitAllotDepot">Submit</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.handleModal" title="Handle Vessel Depot" width="820" :footer-hide = "true">
+      <Form :model="searchVesselForm" inline>
+        <FormItem>
+          <DatePicker type="daterange" :value="searchVesselForm.ata_date" placeholder="ATA" @on-change="searchAtaDate"></DatePicker>
+        </FormItem>
+        <FormItem>
+          <Input type="text" v-model="searchVesselForm.vessel_name" placeholder="VESSEL">
+          </Input>
+        </FormItem>
+        <FormItem >
+          <Input type="text" v-model="searchVesselForm.vessel_voyage" placeholder="VOYAGE">
+          </Input>
+        </FormItem>
+        <FormItem>
+          <Button type="primary" @click="searchVessel">SEARCH</Button>
+          <Button type="success" @click="handleVessel">HANDLE</Button>
+        </FormItem>
+      </Form>
+      <List v-if="searchVesselList" style="height: 400px; overflow-y: auto;">
+        <ListItem v-for="(item, index) in searchVesselList" :key="index">
+          {{item.invoice_vessel_name}} / {{item.invoice_vessel_voyage}} : ATA {{item.invoice_vessel_ata}}
+        </ListItem>
+      </List>
+    </Modal>
   </div>
 </template>
 <script>
@@ -94,7 +124,7 @@ export default {
   name: 'AllotDepotConfig',
   data: function() {
     return {
-      modal: { configModal: false },
+      modal: { configModal: false, handleModal: false },
       table: {
         userTable: {
           rows: [
@@ -126,15 +156,28 @@ export default {
       },
       pagePara: {},
       oldPara: {},
-      workPara: {},
-      action: ''
+      workPara: {
+        allot_depot_id: '',
+        allot_depot_enabled: '',
+        allot_depot_rules: {
+          COSCO: [],
+          OOCL: []
+        }
+      },
+      action: '',
+      searchVesselForm: {},
+      searchVesselList: {}
     }
   },
   created() {
     PageOptions.pageEmpty = false
   },
   mounted: function() {
-    const initPage = async () => {
+    this.initPage()
+    this.getData(1)
+  },
+  methods: {
+    initPage: async function() {
       try {
         let response = await this.$http.post(apiUrl + 'init', {})
         this.pagePara = JSON.parse(JSON.stringify(response.data.info))
@@ -146,12 +189,7 @@ export default {
       } catch (error) {
         this.$commonact.fault(error)
       }
-    }
-
-    initPage()
-    this.getData(1)
-  },
-  methods: {
+    },
     getData: async function(index) {
       try {
         if (index) {
@@ -178,6 +216,9 @@ export default {
       }
       this.action = 'add'
       this.modal.configModal = true
+    },
+    handleModal: async function() {
+      this.modal.handleModal = true
     },
     modifyModal: async function(row) {
       let actrow = JSON.parse(JSON.stringify(row))
@@ -214,6 +255,18 @@ export default {
     },
     enabledDateChange: async function(date) {
       this.workPara.allot_depot_enabled = date
+    },
+    searchAtaDate: async function(e) {
+      this.searchVesselForm.ata_date = JSON.parse(JSON.stringify(e))
+    },
+    searchVessel: async function() {
+      let response = await this.$http.post(apiUrl + 'searchVessel', {search_data: this.searchVesselForm})
+      this.searchVesselList = response.data.info
+    },
+    handleVessel: async function() {
+      await this.$http.post(apiUrl + 'allotVesselDepot', {search_data: this.searchVesselForm})
+      this.$Message.success('Handle Success')
+      this.modal.handleModal = false
     }
   }
 }

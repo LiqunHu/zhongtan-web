@@ -21,6 +21,9 @@
               ATA&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.ata_date" placeholder="ATA Date" style="width: 200px" @on-change="searchAtaDate"></DatePicker>
             </div>
             <div class="form-group m-r-2">
+              RETURN&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.return_date" placeholder="RETURN Date" style="width: 200px" @on-change="searchReturnDate"></DatePicker>
+            </div>
+            <div class="form-group m-r-2">
               <Select v-model="search_data.vessel_id" clearable filterable placeholder="VESSEL" style="width: 120px;">
                 <Option v-for="item in pagePara.VESSEL" :value="item.invoice_vessel_id" :key="item.invoice_vessel_id">{{item.vessel_info}}</Option>
               </Select>
@@ -256,7 +259,7 @@ export default {
           ],
           data: [],
           unchanged: [],
-          height: common.getTableHeight() - 80,
+          height: common.getTableHeight(),
           limit: 10,
           offset: 0,
           total: 0
@@ -292,6 +295,9 @@ export default {
     },
     searchAtaDate: function(e) {
       this.search_data.ata_date = JSON.parse(JSON.stringify(e))
+    },
+    searchReturnDate: function(e) {
+      this.search_data.return_date = JSON.parse(JSON.stringify(e))
     },
     getTableData: async function(index) {
       try {
