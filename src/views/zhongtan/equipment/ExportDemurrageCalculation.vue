@@ -31,12 +31,16 @@
                 <i class="fa fa-search"></i> Search
               </button>
             </div>
+            <div class="form-group m-r-10">
+              <button type="button" class="btn btn-info" @click="setDeductionData()" :disabled="deductionDisabled"> Deduction
+              </button>
+            </div>
           </div>
         </div>
       </template>
       <Table stripe size="small" ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data" :height="table.containerTable.height" :border="table.containerTable.data && table.containerTable.data.length > 0" @on-select-all="containerSelectedAll"  @on-select-all-cancel="containerSelectedAllCancel" @on-selection-change="containerSelectedChange" :span-method="handleSpan">
         <template slot-scope="{ row, index }" slot="export_container_no">
-          <i style="color: #FF9900; margin-right:10px;" class="fa fa-money-bill-alt" v-if="row.export_container_cal_demurrage_deduction && row.export_container_cal_demurrage_deduction > 0"></i>{{row.export_container_no}}<font color="#1890ff" style="margin-left:10px;" v-if="row.export_container_soc_type==='S'">SOC</font>
+          <i style="color: #FF9900; margin-right:10px;" class="fa fa-money-bill-alt" v-if="row.export_container_cal_deduction_amount && row.export_container_cal_deduction_amount > 0"></i>{{row.export_container_no}}<font color="#1890ff" style="margin-left:10px;" v-if="row.export_container_soc_type==='S'">SOC</font>
         </template>
          <template slot-scope="{ row, index }" slot="export_container_size_type">
             {{row.export_container_size_type}} [
@@ -78,8 +82,8 @@
         <template slot-scope="{ row, index }" slot="export_container_cal_demurrage_amount">
           <span>{{row.export_container_cal_demurrage_amount}}</span>
         </template>
-        <template slot-scope="{ row, index }" slot="export_container_cal_demurrage_deduction">
-          <span>{{row.export_container_cal_demurrage_deduction}}</span>
+        <template slot-scope="{ row, index }" slot="export_container_cal_deduction_amount">
+          <span>{{row.export_container_cal_deduction_amount}}</span>
         </template>
         <template slot-scope="{ row, index }" slot="cal_demurrage">
           <a href="#" class="btn btn-success btn-icon btn-sm" title="RECEIPT" v-if="row.export_container_cal_receipt === '1'" @click.prevent="demurrageCalculationModal(row)">
@@ -131,6 +135,20 @@
           <Button type="primary" size="large" @click="demurrageSubmitAct" :disabled="emptySubmitDisabled">Submit</Button>
         </div>
       </Modal>
+      <Modal v-model="modal.deductionModal" title="INVOICE" width="600">
+        <Form ref="deductionForm" :model="deductionForm" :label-width="180" style="padding-right: 80px;">
+          <FormItem label="TOTAL DEMURRAGE" style="margin-bottom: 0px;">
+            <Input v-model="deductionForm.total_demurrage_amount" disabled></Input>
+          </FormItem>
+          <FormItem label="DEDUCTION AMOUNT" style="margin-bottom: 0px;">
+            <InputNumber :max="deductionForm.total_demurrage_amount" :min="0" v-model="deductionForm.deduction_amount"></InputNumber >
+          </FormItem>
+        </Form>
+        <div slot="footer">
+          <Button type="text" size="large" @click="modal.deductionModal = false">Cancel</Button>
+          <Button type="primary" size="large" @click="deductionDemurrageAct">Submit</Button>
+        </div>
+      </Modal>
       <Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :closable="false" :mask-closable="false">
         <Form :label-width="120">
           <FormItem v-show="false">
@@ -158,7 +176,7 @@ export default {
   name: 'ExportDemurrageCalculation',
   data: function() {
     return {
-      modal: { calculationModal: false, checkPasswordModal: false },
+      modal: { calculationModal: false, checkPasswordModal: false, deductionModal: false},
       cargoTypeFileter: [
         { id: 'LOCAL', text: 'LOCAL' },
         { id: 'TRANSIT', text: 'TRANSIT' }
@@ -225,14 +243,20 @@ export default {
               align: 'center'
             },
             {
-              title: 'Free Days',
+              title: 'Overdue Days',
               slot: 'export_container_cal_demurrage_days',
-              width: 120,
+              width: 140,
               align: 'center',
             },
             {
               title: 'Demurrage',
               slot: 'export_container_cal_demurrage_amount',
+              width: 120,
+              align: 'center',
+            },
+            {
+              title: 'Deduction',
+              slot: 'export_container_cal_deduction_amount',
               width: 120,
               align: 'center',
             },
@@ -259,8 +283,6 @@ export default {
       },
       overdueChargeFormOld: {},
       overdueChargeForm: {},
-      emptySubmitDisabled: true,
-      emptyInvoiceDisabled: true,
       tableSelectAll: false,
       invoiceForm: {
         invoice_customer_id: '',
@@ -277,6 +299,12 @@ export default {
       checkPassword: '',
       checkPasswordType: '',
       returnOverdueDaysDisabled: true,
+      emptySubmitDisabled: true,
+      deductionDisabled: true,
+      deductionForm: {
+        total_demurrage_amount: '',
+        deduction_amount: ''
+      }
     }
   },
   created() {
@@ -371,16 +399,16 @@ export default {
             bl = s.export_container_bl
           } else {
             if(bl !== s.export_container_bl) {
-              this.emptyInvoiceDisabled = true
+              this.deductionDisabled = true
               return this.$Message.error('please select same #B/L No.')
             }
           }
           if(s.export_container_cal_demurrage_amount) {
-            this.emptyInvoiceDisabled = false
+            this.deductionDisabled = false
           }
         }
       } else {
-        this.emptyInvoiceDisabled = true
+        this.deductionDisabled = true
       }
       this.$forceUpdate()
     },
@@ -533,6 +561,31 @@ export default {
     },
     overdueFreeDaysChange: async function() {
       await this.calculationDiff()
+    },
+    setDeductionData: async function() {
+      let selection = this.$refs.containerTable.getSelection()
+      if(selection && selection.length > 0) {
+        try {
+          let response = await this.$http.post(apiUrl + 'getSelectionDemurrage', {selectAll: this.tableSelectAll, selection: selection})
+          this.deductionForm.total_demurrage_amount = response.data.info.total_demurrage_amount
+          this.deductionForm.deduction_amount = ''
+          this.modal.deductionModal = true
+        } catch (error) {
+          this.$commonact.fault(error)
+        }
+      }
+    },
+    deductionDemurrageAct: async function() {
+      let selection = this.$refs.containerTable.getSelection()
+      if(selection && selection.length > 0) {
+        try {
+          await this.$http.post(apiUrl + 'deductionDemurrage', {selectAll: this.tableSelectAll, selection: selection, deduction_amount: this.deductionForm.deduction_amount })
+          this.modal.deductionModal = false
+          this.getTableData()
+        } catch (error) {
+          this.$commonact.fault(error)
+        }
+      }
     }
   }
 }

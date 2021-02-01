@@ -218,6 +218,12 @@ export default {
       this.modal.configModal = true
     },
     handleModal: async function() {
+      this.searchVesselForm = {
+        ata_date: '',
+        vessel_name: '',
+        vessel_voyage: ''
+      }
+      this.searchVesselList = []
       this.modal.handleModal = true
     },
     modifyModal: async function(row) {

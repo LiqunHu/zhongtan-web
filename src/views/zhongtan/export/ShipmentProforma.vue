@@ -139,14 +139,14 @@
     <Modal v-model="modal.importModal" title="Import Freight">
       <Form :model="workPara" :label-width="100">
         <FormItem label="Files">
-          <div v-for="f in files.fileList" v-bind:key="f.name" class="upload-list">
+          <div v-for="f in files.fileListFreight" v-bind:key="f.name" class="upload-list">
             <Icon type="ios-document" size="60" />
           </div>
           <Upload
             ref="uploadImport"
             :headers="headers"
             :show-upload-list="false"
-            :on-success="handleSuccess"
+            :on-success="handleSuccessFreight"
             :format="['xlsx', 'xls', 'XLSX', 'XLS']"
             :max-size="4096"
             :on-format-error="handleFormatError"
@@ -162,7 +162,7 @@
         </FormItem>
       </Form>
       <div slot="footer">
-        <Button type="text" size="large" @click="modal.bookingModal=false">Cancel</Button>
+        <Button type="text" size="large" @click="modal.importModal=false">Cancel</Button>
         <Button type="primary" size="large" @click="importFreightData">Submit</Button>
       </div>
     </Modal>
@@ -246,7 +246,8 @@ export default {
       },
       workPara: {},
       files: {
-        fileList: []
+        fileList: [],
+        fileListFreight: []
       },
       vesselData: [],
       blTable: {
@@ -588,6 +589,11 @@ export default {
       file.name = res.info.name
       this.files.fileList = JSON.parse(JSON.stringify(this.$refs.upload.fileList))
     },
+    handleSuccessFreight(res, file, fileList) {
+      file.url = res.info.url
+      file.name = res.info.name
+      this.files.fileListFreight = JSON.parse(JSON.stringify(this.$refs.uploadImport.fileList))
+    },
     handleFormatError(file) {
       this.$Notice.warning({
         title: 'The file format is incorrect',
@@ -618,7 +624,7 @@ export default {
       this.workPara = {}
       this.action = 'import'
       this.$refs.uploadImport.fileList = []
-      this.files.fileList = []
+      this.files.fileListFreight = []
       this.modal.importModal = true
     },
     importFreightData: async function() {
@@ -626,7 +632,7 @@ export default {
         if (this.files.fileList.length < 1) {
           return this.$Message.error('Please upload pdf file')
         }
-        this.workPara.upload_files = this.files.fileList
+        this.workPara.upload_files = this.files.fileListFreight
         await this.$http.post(apiUrl + 'importFreight', this.workPara)
         this.$Message.success('import success')
         this.modal.importModal = false
