@@ -554,6 +554,18 @@ export default {
           if(!this.overdueChargeForm.export_container_cal_demurrage_days) {
             this.calculationDiff()
           }
+        } else if(this.checkPasswordType === 'deductionDemurrage') {
+          let selection = this.$refs.containerTable.getSelection()
+          if(selection && selection.length > 0) {
+            try {
+              let response = await this.$http.post(apiUrl + 'getSelectionDemurrage', {selectAll: this.tableSelectAll, selection: selection})
+              this.deductionForm.total_demurrage_amount = response.data.info.total_demurrage_amount
+              this.deductionForm.deduction_amount = ''
+              this.modal.deductionModal = true
+            } catch (error) {
+              this.$commonact.fault(error)
+            }
+          }
         }
       } catch (error) {
         this.$commonact.fault(error)
@@ -563,16 +575,12 @@ export default {
       await this.calculationDiff()
     },
     setDeductionData: async function() {
-      let selection = this.$refs.containerTable.getSelection()
-      if(selection && selection.length > 0) {
-        try {
-          let response = await this.$http.post(apiUrl + 'getSelectionDemurrage', {selectAll: this.tableSelectAll, selection: selection})
-          this.deductionForm.total_demurrage_amount = response.data.info.total_demurrage_amount
-          this.deductionForm.deduction_amount = ''
-          this.modal.deductionModal = true
-        } catch (error) {
-          this.$commonact.fault(error)
-        }
+      try {
+        this.checkPassword = ''
+        this.modal.checkPasswordModal = true
+        this.checkPasswordType = 'deductionDemurrage'
+      } catch (error) {
+        this.$commonact.fault(error)
       }
     },
     deductionDemurrageAct: async function() {
