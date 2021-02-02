@@ -241,8 +241,15 @@
         </Row>
         <Row>
           <Col>
-            <FormItem label="Data" prop="collect_date">
-              <DatePicker type="daterange" v-model="workPara.collect_date" placeholder="Date" style="width: 200px"></DatePicker>
+            <FormItem label="VSL ATA" prop="collect_date">
+              <DatePicker type="daterange" v-model="workPara.collect_date" placeholder="ATA Date" style="width: 200px" @on-change="searchCollectDate"></DatePicker>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <FormItem label="RECEIPT DATE" prop="receipt_date">
+              <DatePicker type="daterange" v-model="workPara.receipt_date" placeholder="Receipt Date" style="width: 200px" @on-change="searchReceiptDate"></DatePicker>
             </FormItem>
           </Col>
         </Row>
@@ -1013,6 +1020,7 @@ export default {
           a.click()
           document.body.removeChild(a)
         }
+        this.modal.collectModal = false
       } catch (error) {
         this.$commonact.fault(error)
       }
@@ -1112,6 +1120,12 @@ export default {
         this.$commonact.fault(error)
       }
     },
+    searchCollectDate: function(e) {
+      this.workPara.collect_date = JSON.parse(JSON.stringify(e))
+    },
+    searchReceiptDate: function(e) {
+      this.workPara.receipt_date = JSON.parse(JSON.stringify(e))
+    }
   }
 }
 </script>
