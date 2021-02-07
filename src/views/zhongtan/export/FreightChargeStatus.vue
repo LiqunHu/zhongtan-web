@@ -57,6 +57,11 @@
         </div>
       </template>
       <Table stripe size="small" ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data" :height="table.containerTable.height" :border="table.containerTable.data && table.containerTable.data.length > 0" :span-method="handleSpan">
+        <template slot-scope="{ row, index }" slot="export_masterbl_bl">
+          <Tag color="primary" v-if="row.loading_list_import === '1'">L</Tag>
+          <Tag color="success" v-if="row.proforma_import === '1'">P</Tag>
+          {{row.export_masterbl_bl}}
+        </template>
         <template slot-scope="{ row, index }" slot="export_charge_status">
           <Tag color="success" v-if="row.charge_status === 'RELEASE'">RELEASE</Tag>
           <Tag color="error" v-else>HOLD</Tag>
@@ -67,6 +72,11 @@
          <template slot-scope="{ row, index }" slot="container_size_type">
             {{row.container_size_type}} [
             <span v-for="(item, index) in pagePara.CONTAINER_SIZE" :key="index" v-if="item.container_size_code === row.container_size_type">{{item.container_size_name}}</span> ]
+        </template>
+        <template slot-scope="{ row, index }" slot="container_no">
+          <Tag color="primary" v-if="row.container_loading_list_import === '1'">L</Tag>
+          <Tag color="success" v-if="row.container_proforma_import === '1'">P</Tag>
+          {{row.container_no}}
         </template>
         <template slot-scope="{ row, index }" slot="receivable_detail">
           <List size="small" v-if="row.receivable_detail" v-for="(item, index) in row.receivable_detail" :key="index">
@@ -153,8 +163,8 @@ export default {
           columns: [
             {
               title: '#M B/L No',
-              key: 'export_masterbl_bl',
-              width: 150,
+              slot: 'export_masterbl_bl',
+              width: 240,
               align: 'center'
             },
             {
@@ -189,8 +199,8 @@ export default {
             },
             {
               title: 'Container No',
-              key: 'container_no',
-              width: 160,
+              slot: 'container_no',
+              width: 200,
               align: 'center'
             },
             {
@@ -334,7 +344,10 @@ export default {
     },
     exportFreightCharge: async function() {
       try {
-        let response = await this.$http.request({url: apiUrl + 'exportFreight', method: 'post', data: this.search_data, responseType: 'blob'})
+        let searchPara = {
+          search_data: this.search_data
+        }
+        let response = await this.$http.request({url: apiUrl + 'exportFreight', method: 'post', data: searchPara, responseType: 'blob'})
         let blob = response.data
         let reader = new FileReader()
         reader.readAsDataURL(blob)

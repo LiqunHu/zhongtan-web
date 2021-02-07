@@ -21,11 +21,6 @@
               <input type="text" class="form-control" v-model="search_data.masterbl_bl" placeholder="#M B/L No" style="width: 200px" />
             </div>
             <div class="form-group m-r-2">
-              <Select v-model="search_data.charge_status" placeholder="Charge Status" clearable style="width:200px">
-                <Option v-for="item in chargeStatus" :value="item.id" :key="item.id">{{ item.text }}</Option>
-              </Select>
-            </div>
-            <div class="form-group m-r-2">
               <Select v-model="search_data.vessel_id" placeholder="Select Vessel" clearable filterable style="width:200px">
                 <Option v-for="item in pagePara.VESSELS" :value="item.export_vessel_id" :key="item.export_vessel_id">{{ item.export_vessel_name + '/' + item.export_vessel_voyage }}</Option>
               </Select>
@@ -34,9 +29,7 @@
               <DatePicker type="daterange" :value="search_data.etd_date" placeholder="ETD Date" style="width: 200px" @on-change="searchETDData"></DatePicker>
             </div>
             <div class="form-group m-r-2">
-              <Select v-model="search_data.receivable_agent" placeholder="Select Agent" clearable filterable style="width:200px">
-                <Option v-for="item in pagePara.AGENTS" :value="item.user_id" :key="item.user_id">{{ item.user_name }}</Option>
-              </Select>
+              <input type="text" class="form-control" v-model="search_data.consignee" placeholder="Consignee" style="width: 200px" />
             </div>
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="getTableData(1)">
@@ -193,6 +186,24 @@ export default {
               key: 'export_masterbl_shipper_company',
               width: 160,
               align: 'center'
+            },
+            {
+              title: 'Consignee',
+              key: 'export_masterbl_consignee_company',
+              width: 160,
+              align: 'center'
+            },
+            {
+              title: 'Forwarder',
+              key: 'export_masterbl_forwarder_company',
+              width: 160,
+              align: 'center'
+            },
+            {
+              title: 'cargo Descriptions',
+              key: 'export_masterbl_cargo_descriptions',
+              width: 200,
+              align: 'center'
             }
           ],
           data: [],
@@ -206,10 +217,9 @@ export default {
       },
       search_data: {
         masterbl_bl: '',
-        charge_status: '',
         vessel_id: '',
         etd_date: '',
-        receivable_agent: ''
+        consignee: ''
       },
       files: {
         fileList: []
@@ -299,7 +309,10 @@ export default {
     },
     exportStatisticsAct: async function() {
       try {
-        let response = await this.$http.request({url: apiUrl + 'exportStatistics', method: 'post', data: this.search_data, responseType: 'blob'})
+        let searchPara = {
+          search_data: this.search_data
+        }
+        let response = await this.$http.request({url: apiUrl + 'exportStatistics', method: 'post', data: searchPara, responseType: 'blob'})
         let blob = response.data
         let reader = new FileReader()
         reader.readAsDataURL(blob)

@@ -75,6 +75,12 @@
           <Tabs :animated="true" @on-click="changeTabAct">
               <TabPane label="MasterBl">
                 <Table stripe size="small" ref="masterbiTable" :columns="blTable.columns" :data="blTable.data" :height="blTable.height">
+                  <template slot-scope="{ row, index }" slot="export_masterbl_bl">
+                    {{row.export_masterbl_bl}} 
+                    <a href="#" slot="extra" @click.stop="masterblDeleteModalAct(row)" title="Remove" style="color: red; margin-left: 5px;">
+                      <i class="fa fa-times"></i>
+                    </a>
+                  </template>
                   <template slot-scope="{ row, index }" slot="empty_release">
                     <Tooltip content="EDIT">
                       <a v-if="row.export_masterbl_empty_release_date" href="#" class="btn btn-primary btn-icon btn-sm" v-on:click="bookingEditCheckModalAct(row)">
@@ -254,7 +260,7 @@ export default {
         columns: [
           {
             title: '#M B/L No',
-            key: 'export_masterbl_bl',
+            slot: 'export_masterbl_bl',
             width: 220
           },
           {
@@ -649,7 +655,7 @@ export default {
           let action = ''
           if (this.checkPasswordType === 'vesselModify' || this.checkPasswordType === 'vesselDelete') {
             action = 'EXPORT_VESSEL_EDIT'
-          } else if (this.checkPasswordType === 'bookingEdit') {
+          } else if (this.checkPasswordType === 'bookingEdit' || this.checkPasswordType === 'bookingDelete') {
             action = 'EXPORT_PROFORMA_EDIT'
           } 
           let param = {
@@ -664,7 +670,9 @@ export default {
             this.doVesselDeleteAct()
           } else if (this.checkPasswordType === 'bookingEdit') {
             this.bookingEditModalAct(this.bookingEditForm)
-          } 
+          } else if(this.checkPasswordType === 'bookingDelete') {
+            this.masterblDeleteAct()
+          }
         } catch (error) {
           this.$commonact.fault(error)
         }
@@ -724,7 +732,7 @@ export default {
       this.bookingEditForm = JSON.parse(JSON.stringify(item))
       this.modal.bookingEditModal = true
     },
-    submitBookingAct: async function(item) {
+    submitBookingAct: async function() {
       this.$refs['bookingEditForm'].validate(async valid => {
         if (valid) {
           try {
@@ -737,6 +745,27 @@ export default {
             this.$commonact.fault(error)
           }
           this.modal.bookingEditModal = false
+        }
+      })
+    },
+    masterblDeleteModalAct: async function(item) {
+      this.$nextTick(function() {
+        this.bookingEditForm = JSON.parse(JSON.stringify(item))
+        this.checkPassword = ''
+        this.checkPasswordType = 'bookingDelete'
+        this.modal.checkPasswordModal = true
+      })
+    },
+    masterblDeleteAct: async function() {
+      this.$commonact.confirm(`Delete the booking?`, async() => {
+        try {
+          let param = {
+            ...this.bookingEditForm
+          }
+          await this.$http.post(apiUrl + 'bookingDataDelete', param)
+          this.searchDataAct()
+        }catch (error) {
+          this.$commonact.fault(error)
         }
       })
     }
