@@ -38,6 +38,9 @@ const routes = [
   { path: '/admin/zhongtan/export/ShipmentProforma', component: resolve => require(['@/views/zhongtan/export/ShipmentProforma'], resolve) },
   { path: '/admin/zhongtan/export/ShipmentRelease', component: resolve => require(['@/views/zhongtan/export/ShipmentRelease'], resolve) },
   { path: '/admin/zhongtan/export/ShipmentReceipt', component: resolve => require(['@/views/zhongtan/export/ShipmentReceipt'], resolve) },
+  { path: '/admin/zhongtan/export/FreightChargeStatus', component: resolve => require(['@/views/zhongtan/export/FreightChargeStatus'], resolve) },
+  { path: '/admin/zhongtan/export/ExportStatistics', component: resolve => require(['@/views/zhongtan/export/ExportStatistics'], resolve) },
+  
   { path: '/admin/zhongtan/import/ImportWork', component: resolve => require(['@/views/zhongtan/import/ImportWork'], resolve) },
   { path: '/admin/zhongtan/invoice/Invoice', component: resolve => require(['@/views/zhongtan/invoice/Invoice'], resolve) },
   { path: '/admin/zhongtan/invoice/InvoiceReceipt', component: resolve => require(['@/views/zhongtan/invoice/InvoiceReceipt'], resolve) },

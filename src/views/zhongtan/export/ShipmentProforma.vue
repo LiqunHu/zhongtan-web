@@ -106,7 +106,7 @@
           </Col>
       </Row>
     </panel>
-    <Modal v-model="modal.bookingModal" title="Booking">
+    <Modal v-model="modal.bookingModal" title="Proforma">
       <Form :model="workPara" :label-width="100">
         <FormItem label="Files">
           <div v-for="f in files.fileList" v-bind:key="f.name" class="upload-list">
@@ -122,7 +122,7 @@
             :on-format-error="handleFormatError"
             :on-exceeded-size="handleMaxSize"
             type="drag"
-            action="/api/zhongtan/export/BookingLoad/upload"
+            action="/api/zhongtan/export/ShipmentProforma/upload"
             style="display: inline-block;width:58px;"
           >
             <div style="width: 58px;height:58px;line-height: 58px;">
@@ -152,7 +152,7 @@
             :on-format-error="handleFormatError"
             :on-exceeded-size="handleMaxSize"
             type="drag"
-            action="/api/zhongtan/export/BookingLoad/upload"
+            action="/api/zhongtan/export/ShipmentProforma/upload"
             style="display: inline-block;width:58px;"
           >
             <div style="width: 58px;height:58px;line-height: 58px;">

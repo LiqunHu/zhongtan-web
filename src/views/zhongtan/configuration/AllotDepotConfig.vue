@@ -90,7 +90,7 @@
         <Button type="primary" size="large" @click="submitAllotDepot">Submit</Button>
       </div>
     </Modal>
-    <Modal v-model="modal.handleModal" title="Handle Vessel Depot" width="820" :footer-hide = "true">
+    <Modal v-model="modal.handleModal" title="Handle Vessel Depot" width="900" :footer-hide = "true">
       <Form :model="searchVesselForm" inline>
         <FormItem>
           <DatePicker type="daterange" :value="searchVesselForm.ata_date" placeholder="ATA" @on-change="searchAtaDate"></DatePicker>
@@ -106,6 +106,7 @@
         <FormItem>
           <Button type="primary" @click="searchVessel">SEARCH</Button>
           <Button type="success" @click="handleVessel">HANDLE</Button>
+          <Button type="success" @click="handleResetVessel">RESET</Button>
         </FormItem>
       </Form>
       <List v-if="searchVesselList" style="height: 400px; overflow-y: auto;">
@@ -270,7 +271,12 @@ export default {
       this.searchVesselList = response.data.info
     },
     handleVessel: async function() {
-      await this.$http.post(apiUrl + 'allotVesselDepot', {search_data: this.searchVesselForm})
+      await this.$http.post(apiUrl + 'allotVesselDepot', {search_data: this.searchVesselForm, reset: '0'})
+      this.$Message.success('Handle Success')
+      this.modal.handleModal = false
+    },
+    handleResetVessel: async function() {
+      await this.$http.post(apiUrl + 'allotVesselDepot', {search_data: this.searchVesselForm, reset: '1'})
       this.$Message.success('Handle Success')
       this.modal.handleModal = false
     }
