@@ -31,10 +31,10 @@
               </button>
             </div>
             <div class="form-group m-r-3">
-              <button type="button" class="btn btn-info" @click="bookingLoadModalAct">Load</button>
+              <button type="button" class="btn btn-info" @click="bookingLoadModalAct">Load Proforma</button>
             </div>
             <div class="form-group m-r-3">
-              <button type="button" class="btn btn-info" @click="bookingImportModalAct" title="import freight amount">Import</button>
+              <button type="button" class="btn btn-info" @click="bookingImportModalAct" title="import freight amount">Import Freight</button>
             </div>
           </div>
         </div>
@@ -155,8 +155,8 @@
             :on-success="handleSuccessFreight"
             :format="['xlsx', 'xls', 'XLSX', 'XLS']"
             :max-size="4096"
-            :on-format-error="handleFormatError"
-            :on-exceeded-size="handleMaxSize"
+            :on-format-error="handleFormatErrorFreight"
+            :on-exceeded-size="handleMaxSizeFreight"
             type="drag"
             action="/api/zhongtan/export/ShipmentProforma/upload"
             style="display: inline-block;width:58px;"
@@ -606,7 +606,19 @@ export default {
         desc: 'File format of ' + file.name + ' is incorrect, please select pdf.'
       })
     },
+    handleFormatErrorFreight(file) {
+      this.$Notice.warning({
+        title: 'The file format is incorrect',
+        desc: 'File format of ' + file.name + ' is incorrect, please select pdf.'
+      })
+    },
     handleMaxSize(file) {
+      this.$Notice.warning({
+        title: 'Exceeding file size limit',
+        desc: 'File  ' + file.name + ' is too large, no more than 4M.'
+      })
+    },
+    handleMaxSizeFreight(file) {
       this.$Notice.warning({
         title: 'Exceeding file size limit',
         desc: 'File  ' + file.name + ' is too large, no more than 4M.'
@@ -635,8 +647,8 @@ export default {
     },
     importFreightData: async function() {
       try {
-        if (this.files.fileList.length < 1) {
-          return this.$Message.error('Please upload pdf file')
+        if (this.files.fileListFreight.length < 1) {
+          return this.$Message.error('Please upload excel file')
         }
         this.workPara.upload_files = this.files.fileListFreight
         await this.$http.post(apiUrl + 'importFreight', this.workPara)

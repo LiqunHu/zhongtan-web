@@ -24,6 +24,11 @@
               <DatePicker type="daterange" :value="search_data.receipt_date" placeholder="Receipt Date" style="width: 200px" @on-change="searchReceiptDate"></DatePicker>
             </div>
             <div class="form-group m-r-2">
+              <Select v-model="search_data.mnr_ledger_corresponding_payer_id" clearable filterable placeholder="Payer">
+                <Option v-for="item in pagePara.CUSTOMER" :value="item.user_id" :key="item.user_id">{{item.user_name}}</Option>
+              </Select>
+            </div>
+            <div class="form-group m-r-2">
               <input type="text" class="form-control" v-model="search_data.mnr_ledger_bl" placeholder="BL#" style="width: 200px" />
             </div>
             <div class="form-group m-r-2">
@@ -199,7 +204,7 @@ export default {
           ],
           data: [],
           unchanged: [],
-          height: common.getTableHeight() - 80,
+          height: common.getTableHeight(),
           limit: 10,
           offset: 0,
           total: 0
@@ -255,7 +260,7 @@ export default {
         }
       },
       search_data: {
-        date: [moment().startOf('month').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
+        mnr_ledger_corresponding_payer_id: '',
         mnr_ledger_bl: '',
         container_no: ''
       },
