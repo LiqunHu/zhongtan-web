@@ -69,9 +69,14 @@
               <Table stripe size="small" :columns="table.filesTable.columns" :data="row.mnr_files">
                 <template slot-scope="{ row, index }" slot="act">
                   <template>
-                    <Tooltip content="Download" v-if="row.state === 'AP'">
+                    <Tooltip content="Download" v-if="row.state === 'AP' && row.filetype === 'MNR Invoice'" placement="top">
                       <a :href="row.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
                         <i class="fa fa-download"></i>
+                      </a>
+                    </Tooltip>
+                    <Tooltip content="Download" v-if="row.filetype === 'MNR Invoice' && !row.receipt_status" placement="top">
+                      <a class="btn btn-danger btn-icon btn-sm" target="_blank" v-on:click="doDeleteMNRInvoie(row)">
+                        <i class="fa fa-times"></i>
                       </a>
                     </Tooltip>
                   </template>
@@ -207,6 +212,20 @@
           <Button type="primary" size="large" @click="updateAct" v-if="act_type === 'update'">Submit</Button>
         </div>
       </Modal>
+      <Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :mask-closable="false">
+      <Form :label-width="120">
+          <FormItem v-show="false">
+              <Input type="password" style='width:0;opacity:0;'></Input>
+          </FormItem>
+          <FormItem label="Password" prop="checkPassword">
+              <Input type="password" placeholder="Password" v-model="checkPassword"></Input>
+          </FormItem>
+      </Form>
+      <div slot="footer">
+          <Button type="text" size="large" @click="checkPasswordCancel">Cancel</Button>
+          <Button type="primary" size="large" @click="checkPasswordAct">Submit</Button>
+      </div>
+    </Modal>
     </panel>
   </div>
 </template>
@@ -220,7 +239,7 @@ export default {
   name: 'ContainerMNRLedgerInvoice',
   data: function() {
     return {
-      modal: { addEditModal: false },
+      modal: { addEditModal: false, checkPasswordModal: false },
       pagePara: {},
       table: {
         containerTable: {
@@ -391,6 +410,7 @@ export default {
       files: {
         fileList: []
       },
+      workPara: {}
     }
   },
   created() {
@@ -645,6 +665,51 @@ export default {
       e.target.value = e.target.value.replace(/^0[^\\.]+/g, '0')
       e.target.value = e.target.value.replace(/^(\d+)\.(\d\d).*$/, '$1.$2')
       this.mnr_ledger_actual_charge_amount = e.target.value
+    },
+    doDeleteMNRInvoie: async function(row){
+      this.workPara = JSON.parse(JSON.stringify(row))
+      this.checkPassword = ''
+      this.checkPasswordType = 'MNRInvoieDelete'
+      this.modal.checkPasswordModal = true
+    },
+    doDeleteMNRInvoieAct: async function(){
+      this.$commonact.confirm(`Delete the invoice file?`, async() => {
+        try {
+          let param = {
+            ...this.workPara
+          }
+          await this.$http.post(apiUrl + 'deleteMNRInvoie', param)
+          this.getTableData(1)
+        }catch (error) {
+          this.$commonact.fault(error)
+        }
+      })
+    },
+    checkPasswordCancel: async function() {
+      this.modal.checkPasswordModal = false
+    },
+    checkPasswordAct: async function() {
+      if (this.checkPassword) {
+        try {
+          let action = ''
+          if (this.checkPasswordType === 'MNRInvoieDelete') {
+            action = 'MNR_INVOICE'
+          }
+          let param = {
+            action: action,
+            checkPassword: common.md52(this.checkPassword)
+          }
+          await this.$http.post(apiUrl + 'checkPassword', param)
+          this.modal.checkPasswordModal = false
+          if (this.checkPasswordType === 'MNRInvoieDelete') {
+            await this.doDeleteMNRInvoieAct()
+          }
+        } catch (error) {
+          this.$commonact.fault(error)
+        }
+      } else {
+        return this.$Message.error('Please enter right password')
+      }
     },
   }
 }

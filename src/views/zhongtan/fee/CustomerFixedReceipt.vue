@@ -37,6 +37,11 @@
                         <i class="fa fa-search"></i>
                     </button>
                 </div>
+                <div class="form-group m-r-10">
+                    <button type="button" class="btn btn-info" @click="exportFixedDeposit">
+                        <i class="fa fa-download"></i>Report
+                    </button>
+                </div>
             </div>
             </div>
         </template>
@@ -86,12 +91,15 @@
                         <i class="fa fa-money-bill-alt"></i>
                     </a>
                 </Tooltip>
-                <Tooltip :content="row.deposit_invoice_release_date_fm" v-else-if="row.deposit_invoice_release_date && row.fixed_deposit_type === 'FD'">
+                <Tooltip :content="row.deposit_invoice_release_date_fm" v-else-if="row.deposit_invoice_release_date && row.fixed_deposit_type === 'FD' && row.deposit_work_state === 'N'">
                     <a href="#" v-if="row.deposit_invoice_release_date" class="btn btn-green btn-icon btn-sm" @click="receiptFixedDepositModal(row)">
                         <i class="fa fa-money-bill-alt"></i>
                     </a>
                 </Tooltip>
-                <a href="#" class="btn btn-danger btn-icon btn-sm" @click="invalidFixedDepositAct(row)" title="INVALID">
+                <a href="#" class="btn btn-warning btn-icon btn-sm" v-if="row.deposit_work_state === 'N' || row.deposit_work_state === 'W'" @click="cancelFixedDepositAct(row)" title="CANCEL">
+                    <i class="fa fa-undo"></i>
+                </a>
+                <a href="#" class="btn btn-danger btn-icon btn-sm" v-if="row.deposit_work_state === 'C'" @click="deleteFixedDepositAct(row)" title="DELETE">
                     <i class="fa fa-times"></i>
                 </a>
             </template>
@@ -146,6 +154,20 @@
             <Button type="text" size="large" @click="modal.fixedReceipt=false">Cancel</Button>
             <Button type="primary" size="large" @click="receiptFixedDepositAct">Submit</Button>
         </div>
+    </Modal>
+    <Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :mask-closable="false">
+      <Form :label-width="120">
+          <FormItem v-show="false">
+              <Input type="password" style='width:0;opacity:0;'></Input>
+          </FormItem>
+          <FormItem label="Password" prop="checkPassword">
+              <Input type="password" placeholder="Password" v-model="checkPassword"></Input>
+          </FormItem>
+      </Form>
+      <div slot="footer">
+          <Button type="text" size="large" @click="checkPasswordCancel">Cancel</Button>
+          <Button type="primary" size="large" @click="checkPasswordAct">Submit</Button>
+      </div>
     </Modal>
   </div>
 </template>
@@ -224,7 +246,7 @@ export default {
                     }
                 ],
                 data: [],
-                height: common.getTableHeight() - 80,
+                height: common.getTableHeight(),
                 limit: 10,
                 offset: 0,
                 total: 0
@@ -278,7 +300,7 @@ export default {
         files: {
             fileList: []
         },
-        modal: { fixedReceipt: false},
+        modal: { fixedReceipt: false, checkPasswordModal: false},
         receiptForm: {
             fixed_deposit_id: '',
             fixed_deposit_customer_id: '',
@@ -292,7 +314,8 @@ export default {
             deposit_check_cash: 'CASH',
             deposit_check_cash_no: '',
             deposit_currency: 'USD'
-        }
+        },
+        workPara: {}
     }
   },
   created() {
@@ -398,14 +421,14 @@ export default {
         this.customer.options = []
       }
     },
-    invalidFixedDepositAct: async function(row) {
+    cancelFixedDepositAct: async function(row) {
         try {
             let _self = this
-            _self.$commonact.confirm(`Invalid the fixed deposit?`, async () => {
+            _self.$commonact.confirm(`cancel the fixed deposit?`, async () => {
                 try {
-                    await _self.$http.post(apiUrl + 'invalid', row)
+                    await _self.$http.post(apiUrl + 'cancel', row)
                     _self.getTableData()
-                    _self.$Message.success('Invalid Fixed Deposit Success')
+                    _self.$Message.success('cancel Fixed Deposit Success')
                 } catch (error) {
                     this.$commonact.fault(error)
                 }
@@ -413,6 +436,72 @@ export default {
         } catch (error) {
             this.$commonact.fault(error)
         }
+    },
+    deleteFixedDepositAct: async function(row) {
+        this.workPara = JSON.parse(JSON.stringify(row))
+        this.checkPassword = ''
+        this.checkPasswordType = 'deleteFixedDeposit'
+        this.modal.checkPasswordModal = true
+    },
+    doDeleteFixedDepositAct: async function() {
+        try {
+            let _self = this
+            _self.$commonact.confirm(`delete the fixed deposit?`, async () => {
+                try {
+                    await _self.$http.post(apiUrl + 'invalid', this.workPara)
+                    _self.getTableData()
+                    _self.$Message.success('delete Fixed Deposit Success')
+                } catch (error) {
+                    this.$commonact.fault(error)
+                }
+            })
+        } catch (error) {
+            this.$commonact.fault(error)
+        }
+    },
+    exportFixedDeposit: async function() {
+        try {
+            let response = await this.$http.request({url: apiUrl + 'exportFixedDeposit', method: 'post', data: this.search_data, responseType: 'blob'})
+            let blob = response.data
+            let reader = new FileReader()
+            reader.readAsDataURL(blob)
+            reader.onload = e => {
+            let a = document.createElement('a')
+            a.download = 'Fixed Deposit Report.xlsx'
+            a.href = e.target.result
+            document.body.appendChild(a)
+            a.click()
+            document.body.removeChild(a)
+            }
+        } catch (error) {
+            this.$commonact.fault(error)
+        }
+    },
+    checkPasswordCancel: async function() {
+      this.modal.checkPasswordModal = false
+    },
+    checkPasswordAct: async function() {
+      if (this.checkPassword) {
+        try {
+          let action = ''
+          if (this.checkPasswordType === 'deleteFixedDeposit') {
+            action = 'FIXED_DEPOSIT'
+          }
+          let param = {
+            action: action,
+            checkPassword: common.md52(this.checkPassword)
+          }
+          await this.$http.post(apiUrl + 'checkPassword', param)
+          this.modal.checkPasswordModal = false
+          if (this.checkPasswordType === 'deleteFixedDeposit') {
+            this.doDeleteFixedDepositAct()
+          }
+        } catch (error) {
+          this.$commonact.fault(error)
+        }
+      } else {
+        return this.$Message.error('Please enter right password')
+      }
     },
   }
 }
