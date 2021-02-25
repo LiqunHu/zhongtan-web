@@ -32,7 +32,7 @@
               <input type="text" class="form-control" v-model="search_data.container_no" placeholder="Container#" style="width: 200px" />
             </div>
             <div class="form-group m-r-10">
-              <button type="button" class="btn btn-info" @click="getTableData">
+              <button type="button" class="btn btn-info" @click="getTableData(1)">
                 <i class="fa fa-search"></i> Search
               </button>
             </div>
@@ -60,6 +60,9 @@
           </a>
           <a href="#" class="btn btn-green btn-icon btn-sm" @click.prevent="invoiceAct(row)" title="INVOICE" v-else :disabled="row.invoice_disabled">
             <i class="fa fa-money-bill-alt "/>
+          </a>
+          <a href="#" class="btn btn-danger btn-icon btn-sm" @click.prevent="doDeleteMNR(row)" title="DELETE" v-if="!row.mnr_files || row.mnr_files.length === 0">
+            <i class="fa fa-times "/>
           </a>
         </template>
         <template slot-scope="{ row, index }" slot="mnr_files">
@@ -111,7 +114,7 @@
           </Poptip>
         </template>
       </Table>
-      <Page class="m-t-10" :total="table.containerTable.total" show-sizer :page-size="table.containerTable.limit" @on-change="getTableData" @on-page-size-change="resetTableSizer"/>
+      <Page class="m-t-10" :current="table.containerTable.current" :total="table.containerTable.total" show-sizer show-total :page-size="table.containerTable.limit" @on-change="getTableData" @on-page-size-change="resetTableSizer"/>
       <Modal v-model="modal.addEditModal" :title="modal_title[act_type]" width="600">
         <Form ref="containerForm" :model="containerForm" :label-width="120" style="padding-right: 80px;">
           <FormItem label="Container#" style="margin-bottom: 0px;">
@@ -338,7 +341,8 @@ export default {
           height: common.getTableHeight(),
           limit: 10,
           offset: 0,
-          total: 0
+          total: 0,
+          current: 1
         },
         attachmentsTable: {
           columns: [
@@ -439,6 +443,7 @@ export default {
     getTableData: async function(index) {
       try {
         if (index) {
+          this.table.containerTable.current = index
           this.table.containerTable.offset = (index - 1) * this.table.containerTable.limit
         }
         let searchPara = {
@@ -685,6 +690,25 @@ export default {
         }
       })
     },
+    doDeleteMNR: async function(row){
+      this.workPara = JSON.parse(JSON.stringify(row))
+      this.checkPassword = ''
+      this.checkPasswordType = 'MNRDelete'
+      this.modal.checkPasswordModal = true
+    },
+    doDeleteMNRAct: async function(){
+      this.$commonact.confirm(`Delete the MNR?`, async() => {
+        try {
+          let param = {
+            ...this.workPara
+          }
+          await this.$http.post(apiUrl + 'deleteMNR', param)
+          this.getTableData(1)
+        }catch (error) {
+          this.$commonact.fault(error)
+        }
+      })
+    },
     checkPasswordCancel: async function() {
       this.modal.checkPasswordModal = false
     },
@@ -692,7 +716,7 @@ export default {
       if (this.checkPassword) {
         try {
           let action = ''
-          if (this.checkPasswordType === 'MNRInvoieDelete') {
+          if (this.checkPasswordType === 'MNRInvoieDelete' || this.checkPasswordType === 'MNRDelete') {
             action = 'MNR_INVOICE'
           }
           let param = {
@@ -703,6 +727,8 @@ export default {
           this.modal.checkPasswordModal = false
           if (this.checkPasswordType === 'MNRInvoieDelete') {
             await this.doDeleteMNRInvoieAct()
+          } else if(this.checkPasswordType === 'MNRDelete') {
+            await this.doDeleteMNRAct()
           }
         } catch (error) {
           this.$commonact.fault(error)

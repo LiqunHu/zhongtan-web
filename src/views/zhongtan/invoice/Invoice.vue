@@ -21,7 +21,7 @@
               <DatePicker type="daterange" :value="vessel.search_data.date" placeholder="Vessel Date" style="width: 200px" @on-change="searchData"></DatePicker>
             </div>
             <div class="form-group m-r-2">
-              <Select clearable v-model="vessel.search_data.collect" style="width:180px" @on-change="getMasterbiData">
+              <Select clearable v-model="vessel.search_data.collect" style="width:180px" @on-change="getMasterbiData(1)">
                 <Option v-for="item in pagePara.COLLECT_FLAG" :value="item.id" :key="item.id">{{ item.text }}</Option>
               </Select>
             </div>
@@ -333,7 +333,7 @@
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_terminal_code" size="small" />
                 </template>
             </Table>
-            <Page class="m-t-10" :total="table.masterbiTable.total" :page-size="table.masterbiTable.limit" @on-change="getMasterbiData" />
+            <Page class="m-t-10" :current="table.masterbiTable.current" :total="table.masterbiTable.total" :page-size="table.masterbiTable.limit" @on-change="getMasterbiData" />
         </TabPane>
         <TabPane label="Containers">
             <Table stripe size="small" ref="containersTable" :columns="table.containersTable.columns" :data="table.containersTable.data" :height="table.containersTable.height">
@@ -393,7 +393,7 @@
                   <Input v-model="table.containersTable.data[index].invoice_containers_max_temperature" size="small" :disabled="tableEdit"/>
                 </template>
             </Table>
-            <Page class="m-t-10" :total="table.containersTable.total" :page-size="table.containersTable.limit" @on-change="getContainersData" />
+            <Page class="m-t-10" :current="table.containersTable.current" :total="table.containersTable.total" :page-size="table.containersTable.limit" @on-change="getContainersData" />
         </TabPane>
     </Tabs>
     </Col>
@@ -927,7 +927,8 @@
                         height: common.getTableHeight() - 80,
                         limit: 10,
                         offset: 0,
-                        total: 0
+                        total: 0,
+                        current: 1
                     },
                     containersTable: {
                         columns: [{
@@ -1004,7 +1005,8 @@
                         height: common.getTableHeight() - 80,
                         limit: 10,
                         offset: 0,
-                        total: 0
+                        total: 0,
+                        current: 1
                     },
                     filesTable: {
                         columns: [{
@@ -1244,6 +1246,7 @@
                 if (this.vessel.current) {
                     if (index) {
                         this.table.masterbiTable.offset = (index - 1) * this.table.masterbiTable.limit
+                        this.table.masterbiTable.current = index
                     }
                     let searchPara = {
                         invoice_vessel_id: this.vessel.current,
@@ -1262,6 +1265,7 @@
             getContainersData: async function(index) {
                 if (index) {
                     this.table.containersTable.offset = (index - 1) * this.table.containersTable.limit
+                    this.table.containersTable.current = index
                 }
                 let searchPara = {
                     invoice_vessel_id: this.vessel.current,

@@ -27,7 +27,7 @@
               <input type="text" class="form-control" v-model="search_data.container_no" placeholder="Container#" style="width: 200px" />
             </div>
             <div class="form-group m-r-10">
-              <button type="button" class="btn btn-info" @click="getTableData">
+              <button type="button" class="btn btn-info" @click="getTableData(1)">
                 <i class="fa fa-search"></i> Search
               </button>
             </div>
@@ -87,7 +87,7 @@
           </Poptip>
         </template>
       </Table>
-      <Page class="m-t-10" :total="table.containerTable.total" show-sizer :page-size="table.containerTable.limit" @on-change="getTableData" @on-page-size-change="resetTableSizer"/>
+      <Page class="m-t-10" :current="table.containerTable.current" :total="table.containerTable.total" show-sizer :page-size="table.containerTable.limit" @on-change="getTableData" @on-page-size-change="resetTableSizer"/>
       <Modal v-model="modal.receiptModal" title="Receipt" width="600">
         <Form ref="receiptForm" :model="receiptForm" :label-width="150" style="padding-right: 80px;">
           <FormItem label="Received From" style="margin-bottom: 0px;">
@@ -236,7 +236,8 @@ export default {
           height: common.getTableHeight(),
           limit: 10,
           offset: 0,
-          total: 0
+          total: 0,
+          current: 1
         },
         attachmentsTable: {
           columns: [
@@ -324,6 +325,7 @@ export default {
     getTableData: async function(index) {
       try {
         if (index) {
+          this.table.containerTable.current = index
           this.table.containerTable.offset = (index - 1) * this.table.containerTable.limit
         }
         let searchPara = {
