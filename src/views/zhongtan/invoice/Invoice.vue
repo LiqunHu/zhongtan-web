@@ -95,8 +95,18 @@
                             <Col span="13">Container: {{item.invoice_container_soc_count}}/{{item.invoice_container_count}}</Col>
                         </Row>
                         <Row v-if="item.return_depot" v-for="(item1, index1) in item.return_depot" :key="index1" >
-                            <Col span="11">DEPOT: {{item1.depot_name}}</Col>
-                            <Col span="13">COUNT: {{item1.depot_count}}</Col>
+                            <Col span="11">{{item1.depot_name}} : {{item1.depot_count}}</Col>
+                            <Col span="13" v-if="item1.con_depot && item1.con_depot.length > 0">
+                                <Tooltip placement="right" v-if="item1.con_depot.length > 1">
+                                    <Tag>{{item1.con_depot[0].containers_size}} : {{item1.con_depot[0].containers_size_count}} ...</Tag>
+                                    <div slot="content">
+                                        <p v-for="(con, conI) in item1.con_depot" :key="conI">
+                                            {{con.containers_size}} : {{con.containers_size_count}}
+                                        </p>
+                                    </div>
+                                </Tooltip>
+                                <Tag v-else>{{item1.con_depot[0].containers_size}} : {{item1.con_depot[0].containers_size_count}}</Tag>
+                            </Col>
                         </Row>
                     </Card>
                 </div>
