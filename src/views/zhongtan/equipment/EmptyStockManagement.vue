@@ -18,16 +18,19 @@
         <div class="panel-toolbar">
           <div class="form-inline">
             <div class="form-group m-r-2">
-              ATA&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.ata_date" placeholder="ATA Date" style="width: 180px" @on-change="searchAtaDate"></DatePicker>
+              Discharg Date&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.discharge_date" placeholder="Discharg Date" style="width: 180px" @on-change="searchDischargeDate"></DatePicker>
             </div>
             <div class="form-group m-r-2">
-              GATE IN&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.gate_in_date" placeholder="GATE IN Date" style="width: 180px" @on-change="searchGateInDate"></DatePicker>
+              GATE IN&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.gate_in_depot_date" placeholder="GATE IN Date" style="width: 180px" @on-change="searchGateInDate"></DatePicker>
             </div>
             <div class="form-group m-r-2">
-              GATE OUT&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.gate_out_date" placeholder="GATE OUT Date" style="width: 180px" @on-change="searchGateOutDate"></DatePicker>
+              GATE OUT&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.gate_out_depot_date" placeholder="GATE OUT Date" style="width: 180px" @on-change="searchGateOutDate"></DatePicker>
+            </div>
+            <div class="form-group m-r-2">
+              Loading Date&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.loading_date" placeholder="Loading Date" style="width: 180px" @on-change="searchLoadingDate"></DatePicker>
             </div>
             <div class="form-group m-r-10">
-              <button type="button" class="btn btn-info" @click="getTableData">
+              <button type="button" class="btn btn-info" @click="getTableData(1)">
                 <i class="fa fa-search"></i> Search
               </button>
             </div>
@@ -39,39 +42,38 @@
           </div>
           <div class="form-inline" style="margin-top: 10px;">
             <div class="form-group m-r-2">
-              <input type="number" class="form-control" v-model.number="search_data.storing_min_days" placeholder="Storing MIN Days" style="width: 105px" />
-              <input type="number" class="form-control" v-model.number="search_data.storing_max_days" placeholder="Storing MIN Days" style="width: 105px" />
+              Storing Days&nbsp;&nbsp;
+              <input type="number" class="form-control" v-model.number="search_data.storing_days_min" placeholder="MIN" style="width: 93px" />
+              <input type="number" class="form-control" v-model.number="search_data.storing_days_max" placeholder="MAX" style="width: 93px" />
             </div>
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.invoice_vessel_name" placeholder="Vessel Name" style="width: 180px" />
+              Detention Days&nbsp;&nbsp;
+              <input type="number" class="form-control" v-model.number="search_data.detention_days_min" placeholder="MIN" style="width: 93px" />
+              <input type="number" class="form-control" v-model.number="search_data.detention_days_max" placeholder="MAX" style="width: 93px" />
             </div>
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.invoice_containers_bl" placeholder="Vessel Name" style="width: 180px" />
-            </div>
-            <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.invoice_containers_no" placeholder="Container No" style="width: 180px" />
+              Container No&nbsp;&nbsp;
+              <input type="text" class="form-control" v-model="search_data.containers_no" placeholder="Container No" style="width: 180px" />
             </div>
           </div>
         </div>
       </template>
       <Table stripe size="small" ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data" :height="table.containerTable.height" :border="table.containerTable.data && table.containerTable.data.length > 0">
-        <template slot-scope="{ row, index }" slot="invoice_containers_size">
-            {{row.invoice_containers_size}} [
-            <span v-for="item in pagePara.CONTAINER_SIZE" v-if="item.container_size_code === row.invoice_containers_size">{{item.container_size_name}}</span> ]
+        <template slot-scope="{ row, index }" slot="empty_stock_size_type">
+            {{row.empty_stock_size_type}} [
+            <span v-for="item in pagePara.CONTAINER_SIZE" v-if="item.container_size_code === row.empty_stock_size_type">{{item.container_size_name}}</span> ]
         </template>
-        <template slot-scope="{ row, index }" slot="invoice_discharge_date">
-          {{row.invoice_containers_edi_discharge_date}}
-          <Row class="right-bottom-title">
-            <span>ATA: {{row.invoice_vessel_ata}}</span>
-          </Row>
-        </template>
-        <template slot-scope="{ row, index }" slot="action">
-          <a href="#" class="btn btn-primary btn-icon btn-sm" @click.prevent="editModal(row)">
-            <i class="fa fa-edit "/>
-          </a>
+        <template slot-scope="{ row, index }" slot="empty_stock_depot_name">
+          <div v-if="row.empty_stock_in_depot_name && row.empty_stock_out_depot_name && row.empty_stock_in_depot_name === row.empty_stock_out_depot_name">
+            {{row.empty_stock_in_depot_name}}
+          </div>
+          <div v-else>
+            <tag v-if="row.empty_stock_in_depot_name" color="success">I</Tag> {{row.empty_stock_in_depot_name}}<br/>
+            <tag v-if="row.empty_stock_out_depot_name" color="primary">E</Tag> {{row.empty_stock_out_depot_name}}
+          </div>
         </template>
       </Table>
-      <Page class="m-t-10" :total="table.containerTable.total" show-sizer :page-size="table.containerTable.limit" @on-change="getTableData" @on-page-size-change="resetTableSizer"/>
+      <Page class="m-t-10" :current="table.containerTable.current" :total="table.containerTable.total" show-sizer :page-size="table.containerTable.limit" @on-change="getTableData" @on-page-size-change="resetTableSizer"/>
       <Modal v-model="modal.editModal" title="Overdue Calculation" width="600">
         <Form ref="containerForm" :model="containerForm" :label-width="200" style="padding-right: 80px;">
           <FormItem label="Gate Out Terminal Date">
@@ -109,101 +111,92 @@ export default {
           columns: [
             {
               title: 'Container#',
-              key: 'invoice_containers_no',
+              key: 'empty_stock_container_no',
               width: 130,
               align: 'center'
             },
             {
               title: 'Size/Type',
-              slot: 'invoice_containers_size',
+              slot: 'empty_stock_size_type',
               width: 120,
               align: 'center'
             },
             {
-              title: 'Line',
-              key: 'invoice_containers_bl_line',
+              title: 'Owner',
+              key: 'empty_stock_container_owner',
               width: 80,
               align: 'center'
             },
             {
               title: 'Discharge Date',
-              slot: 'invoice_discharge_date',
+              key: 'empty_stock_discharge_date',
               width: 140,
               align: 'center'
             },
             {
               title: 'Gate Out Terminal Date',
-              key: 'invoice_containers_gate_out_terminal_date',
-              width: 120,
-              align: 'center',
-            },
-            {
-              title: 'Gate In Terminal Date',
-              key: 'invoice_containers_gate_in_terminal_date',
-              width: 120,
-              align: 'center',
-            },
-            {
-              title: 'Depot Name',
-              key: 'invoice_containers_depot_name',
-              width: 120,
+              key: 'empty_stock_gate_out_terminal_date',
+              width: 180,
               align: 'center',
             },
             {
               title: 'Gate In Depot Date',
-              key: 'invoice_containers_actually_return_date',
-              width: 120,
-              align: 'center',
-            },
-            {
-              title: 'Detention Days',
-              key: 'invoice_containers_detention_days',
-              width: 120,
+              key: 'empty_stock_gate_in_depot_date',
+              width: 180,
               align: 'center',
             },
             {
               title: 'Gate Out Depot Date',
-              key: 'invoice_containers_actually_gate_out_date',
-              width: 120,
+              key: 'empty_stock_gate_out_depot_date',
+              width: 180,
               align: 'center',
+            },
+            {
+              title: 'Gate In Terminal Date',
+              key: 'empty_stock_gate_in_terminal_date',
+              width: 180,
+              align: 'center',
+            },
+            {
+              title: 'Loading Date',
+              key: 'empty_stock_loading_date',
+              width: 140,
+              align: 'center',
+            },
+            {
+              title: 'Depot Name',
+              slot: 'empty_stock_depot_name',
+              width: 140,
             },
             {
               title: 'Storing Days',
-              key: 'invoice_containers_storing_days',
-              width: 120,
+              key: 'empty_stock_storing_days',
+              width: 140,
               align: 'center',
             },
             {
-              title: 'Remark',
-              key: 'invoice_containers_gate_remark',
-              width: 200,
-              align: 'center',
-            },
-            {
-              title: 'Act',
-              slot: 'action',
-              width: 80,
+              title: 'Detention Days',
+              key: 'empty_stock_detention_days',
+              width: 140,
               align: 'center',
             }
+            // {
+            //   title: 'Remark',
+            //   key: 'invoice_containers_gate_remark',
+            //   width: 200,
+            //   align: 'center',
+            // }
           ],
           data: [],
           unchanged: [],
           height: common.getTableHeight() - 80,
           limit: 10,
           offset: 0,
-          total: 0
+          total: 0,
+          current: 1
         }
       },
-      search_data: {
-        ata_date: [moment().subtract(30, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
-        gate_in_date: '',
-        gate_out_date: '',
-        storing_min_days: '',
-        storing_max_days: '',
-        invoice_vessel_name: '',
-        invoice_containers_bl: '',
-        invoice_containers_no: ''
-      },
+      search_data: {},
       containerForm: {}
     }
   },
@@ -227,18 +220,22 @@ export default {
         this.$commonact.fault(error)
       }
     },
-    searchAtaDate: function(e) {
-      this.search_data.ata_date = JSON.parse(JSON.stringify(e))
+    searchDischargeDate: function(e) {
+      this.search_data.discharge_date = JSON.parse(JSON.stringify(e))
     },
     searchGateInDate: function(e) {
-      this.search_data.gate_in_date = JSON.parse(JSON.stringify(e))
+      this.search_data.gate_in_depot_date = JSON.parse(JSON.stringify(e))
     },
     searchGateOutDate: function(e) {
-      this.search_data.gate_out_date = JSON.parse(JSON.stringify(e))
+      this.search_data.gate_out_depot_date = JSON.parse(JSON.stringify(e))
+    },
+    searchLoadingDate: function(e) {
+      this.search_data.loading_date = JSON.parse(JSON.stringify(e))
     },
     getTableData: async function(index) {
       try {
         if (index) {
+          this.table.containerTable.current = index
           this.table.containerTable.offset = (index - 1) * this.table.containerTable.limit
         }
         let searchPara = {
@@ -250,15 +247,6 @@ export default {
         let data = response.data.info
         this.table.containerTable.total = data.total
         this.table.containerTable.data = JSON.parse(JSON.stringify(data.rows))
-        if(this.table.containerTable.data) {
-          for(let d of this.table.containerTable.data) {
-            if((d.invoice_containers_laden_release_date && d.invoice_containers_laden_release_overdue_amount && parseInt(d.invoice_containers_laden_release_overdue_amount) > 0) || (d.invoice_containers_empty_return_date && d.invoice_containers_empty_return_overdue_amount && parseInt(d.invoice_containers_empty_return_overdue_amount) > 0)) {
-              d._disabled = false
-            } else {
-              d._disabled = true
-            }
-          }
-        }
       } catch (error) {
         this.$commonact.fault(error)
       }
