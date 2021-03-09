@@ -336,7 +336,6 @@ export default {
       this.modal.handleModal = false
     },
     addConTypeDetail: async function(obj, type) {
-      console.log('########################')
       this.conWorkPara = JSON.parse(JSON.stringify(obj))
       this.conWorkPara.carrier = type
       let details = []
