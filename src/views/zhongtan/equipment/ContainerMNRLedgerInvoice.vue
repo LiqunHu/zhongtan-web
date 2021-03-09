@@ -414,7 +414,8 @@ export default {
       files: {
         fileList: []
       },
-      workPara: {}
+      workPara: {},
+      checkPassword: ''
     }
   },
   created() {
@@ -663,13 +664,21 @@ export default {
       this.mnr_ledger_dv_amount = e.target.value
     },
     keyupActualChargeAmount: async function(e) {
-      e.target.value = e.target.value.replace(/[^\d.]/g, '')
-      e.target.value = e.target.value.replace(/\.{2,}/g, '.')
-      e.target.value = e.target.value.replace(/^\./g, '0.')
-      e.target.value = e.target.value.replace(/^\d*\.\d*\./g, e.target.value.substring(0,e.target.value.length-1))
-      e.target.value = e.target.value.replace(/^0[^\\.]+/g, '0')
-      e.target.value = e.target.value.replace(/^(\d+)\.(\d\d).*$/, '$1.$2')
-      this.mnr_ledger_actual_charge_amount = e.target.value
+      if(e.target.value) {
+        e.target.value = e.target.value.replace(/\s+/g, '')
+        let nagtiveFlg = e.target.value.indexOf('-') === 0
+        console.log('nagtiveFlg', nagtiveFlg)
+        e.target.value = e.target.value.replace(/[^\d.]/g, '')
+        e.target.value = e.target.value.replace(/\.{2,}/g, '.')
+        e.target.value = e.target.value.replace(/^\./g, '0.')
+        e.target.value = e.target.value.replace(/^\d*\.\d*\./g, e.target.value.substring(0,e.target.value.length-1))
+        e.target.value = e.target.value.replace(/^0[^\\.]+/g, '0')
+        e.target.value = e.target.value.replace(/^(\d+)\.(\d\d).*$/, '$1.$2')
+        e.target.value = nagtiveFlg ? '-' + e.target.value : e.target.value
+        this.mnr_ledger_actual_charge_amount = e.target.value
+      } else {
+        this.mnr_ledger_actual_charge_amount = ''
+      }
     },
     doDeleteMNRInvoie: async function(row){
       this.workPara = JSON.parse(JSON.stringify(row))
