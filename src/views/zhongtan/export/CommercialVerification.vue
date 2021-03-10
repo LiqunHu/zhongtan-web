@@ -412,7 +412,7 @@ export default {
       }
     },
     clickCheckTable: async function(row) {
-      if(row.export_verification_api_name === 'SHIPMENT RELEASE') {
+      if(row.export_verification_api_name === 'SHIPMENT RELEASE' || row.export_verification_api_name === 'BK CANCELLATION') {
         let response = await this.$http.post(apiUrl + 'verificationDetail', row)
         this.verificationDetail = response.data.info
         if(this.verificationDetail) {

@@ -33,6 +33,9 @@
                     <a href="#" class="btn btn-danger btn-icon btn-sm" v-else>
                       <i class="fa fa-money-bill-alt"></i>
                     </a>
+                    <a href="#" class="btn btn-danger btn-icon btn-sm" v-if="row.bk_cancellation_status && row.bk_cancellation_status === '1'">
+                      <i class="fa fa-backward"></i>
+                    </a>
                   </template>
                 </Table>
               </div>
@@ -69,7 +72,7 @@
                     <Row style="margin-bottom: 10px;">
                       <Col span="24">
                         RECEIVABLE
-                        <Button size="small" type="primary" icon="ios-add" title="ADD RECEIVABLE" v-on:click="addReceivableAct">ADD</Button>
+                        <Button size="small" type="primary" icon="ios-add" title="ADD RECEIVABLE" v-on:click="addReceivableAct" :disabled="bookingShipment.bk_cancellation_status === '1'">ADD</Button>
                         <Button size="small" type="error" style="margin-left: 7px;" icon="ios-remove" title="REMOVE RECEIVABLE" :disabled="receivableTable.removeDisabled" v-on:click="removeReceivableAct">REMOVE</Button>
                         <!-- <Button size="small" type="warning" style="margin-left: 7px;" icon="ios-add" title="SUPPLEMENT RECEIVABLE" v-on:click="addSupplementReceivableAct">SUPPLEMENT</Button> -->
                       </Col>
@@ -124,7 +127,7 @@
                     <Row style="margin-bottom: 10px;">
                       <Col span="24">
                         PAYABLE
-                        <Button size="small" type="primary" icon="ios-add" title="ADD PAYABLE" v-on:click="addPayableAct">ADD</Button>
+                        <Button size="small" type="primary" icon="ios-add" title="ADD PAYABLE" v-on:click="addPayableAct" :disabled="bookingShipment.bk_cancellation_status === '1'">ADD</Button>
                         <Button size="small" type="error" style="margin-left: 7px;" icon="ios-remove" title="REMOVE PAYABLE" :disabled="payableTable.removeDisabled" v-on:click="removePayableAct">REMOVE</Button>
                         <!-- <Button size="small" type="warning" style="margin-left: 7px;" icon="ios-add" title="SUPPLEMENT PAYABLE" v-on:click="addSupplementPayableAct">SUPPLEMENT</Button> -->
                       </Col>
@@ -206,7 +209,7 @@ export default {
       modal: { checkPasswordModal: false},
       headers: common.uploadHeaders(),
       fullHeight: '',
-      splitLeft: '240',
+      splitLeft: '280',
       splitBooking: '156',
       splitShipment: 0.6,
       pagePara: {},
@@ -227,7 +230,7 @@ export default {
           {
             title: '#',
             align: 'center',
-            width: 50,
+            width: 90,
             slot: 'booking_status',
           }
         ],

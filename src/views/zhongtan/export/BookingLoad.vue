@@ -96,14 +96,26 @@
                         <i class="fa fa-edit"></i>
                       </a>
                     </Tooltip>
+                    <Tooltip content="BK Cancellation Fee" v-if="row.bk_cancellation && row.bk_cancellation === '1'">
+                      <a href="#" class="btn btn-success btn-icon btn-sm" v-if="row.bk_cancellation_disabled" v-on:click="bkCancellationFeeModalAct(row)">
+                        <i class="fa fa-backward"></i>
+                      </a>
+                      <a href="#" class="btn btn-primary btn-icon btn-sm" v-else-if="row.bk_cancellation_input" v-on:click="bkCancellationFeeModalAct(row)">
+                        <i class="fa fa-backward"></i>
+                      </a>
+                      
+                      <a href="#" class="btn btn-danger btn-icon btn-sm" v-else v-on:click="bkCancellationFeeModalAct(row)">
+                        <i class="fa fa-backward"></i>
+                      </a>
+                    </Tooltip>
                   </template>
                 </Table>
-                <Page class="m-t-10" :total="blTable.total" :page-size="blTable.limit" @on-change="searchBlAct" />
+                <Page class="m-t-10" :current="blTable.current" :total="blTable.total" :page-size="blTable.limit" @on-change="searchBlAct" />
               </TabPane>
               <TabPane label="Containers">
                 <Table stripe size="small" ref="containerTable" :columns="containerTable.columns" :data="containerTable.data" :height="containerTable.height">
                 </Table>
-                <Page class="m-t-10" :total="containerTable.total" :page-size="containerTable.limit" @on-change="searchContainerAct" />
+                <Page class="m-t-10" :current="containerTable.current" :total="containerTable.total" :page-size="containerTable.limit" @on-change="searchContainerAct" />
               </TabPane>
           </Tabs>
           </Col>
@@ -243,6 +255,17 @@
         <Button type="primary" size="large" @click="submitBookingAct">Submit</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.bkCancellationFeeModal" title="BK Cancellation Fee" width="640">
+      <Form ref="bkCancellationFeeForm" :model="bkCancellationFeeForm" :label-width="200">
+        <FormItem v-if="bkCancellationFeeForm && bkCancellationFeeForm.cancellationFee && bkCancellationFeeForm.cancellationFee.length"  v-for="(item, index) in bkCancellationFeeForm.cancellationFee" :key="index" :label="item.fee_data_code + '(' + item.fee_data_name + ')'">
+          <InputNumber :min="1" v-model="item.fee_data_amount" style="width: 200px;" :disabled="bkCancellationFeeForm.bk_cancellation_disabled"></InputNumber>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.bkCancellationFeeModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="submitBkCancellationFeeAct" :disabled="bkCancellationFeeForm.bk_cancellation_disabled">Submit</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -255,7 +278,7 @@ export default {
   name: 'BookingLoadControl',
   data: function() {
     return {
-      modal: { bookingModal: false, checkPasswordModal: false, emptyReleaseModal: false, bookingEditModal: false},
+      modal: { bookingModal: false, checkPasswordModal: false, emptyReleaseModal: false, bookingEditModal: false, bkCancellationFeeModal: false},
       headers: common.uploadHeaders(),
       vesselHeight: common.getTableHeight(),
       search_data: {
@@ -266,6 +289,7 @@ export default {
         masterbi_bl: '',
         export_vessel_id: ''
       },
+      pagePara: {},
       workPara: {},
       files: {
         fileList: []
@@ -349,7 +373,8 @@ export default {
         unchanged:[],
         limit: 10,
         offset: 0,
-        total: 0
+        total: 0,
+        current: 1
       },
       containerTable: {
         columns: [
@@ -384,7 +409,8 @@ export default {
         unchanged:[],
         limit: 10,
         offset: 0,
-        total: 0
+        total: 0,
+        current: 1
       },
       containerData: [],
       currentTab: 0,
@@ -404,16 +430,26 @@ export default {
       emptyReleaseAgentStaff: [],
       checkPassword: '',
       checkPasswordType: '',
-      bookingEditForm: {}
+      bookingEditForm: {},
+      bkCancellationFeeForm: {}
     }
   },
   created() {
     PageOptions.pageEmpty = false
   },
   mounted: function() {
+    this.initPage()
     this.searchDataAct()
   },
   methods: {
+    initPage: async function() {
+      try {
+        let response = await this.$http.post(apiUrl + 'init', {})
+        this.pagePara = JSON.parse(JSON.stringify(response.data.info))
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
     searchDataAct: async function() {
       try {
         let searchPara = {
@@ -442,7 +478,7 @@ export default {
               }
             }
           }
-          this.searchBlAct()
+          this.searchBlAct(1)
         })
       } catch (error) {
           this.$commonact.fault(error)
@@ -452,6 +488,7 @@ export default {
       try {
         if (index) {
           this.blTable.offset = (index - 1) * this.blTable.limit
+          this.blTable.current = index
         }
         let searchPara = {
             ...this.search_data,
@@ -473,6 +510,7 @@ export default {
       try {
         if (index) {
           this.containerTable.offset = (index - 1) * this.containerTable.limit
+          this.containerTable.current = index
         }
         let searchPara = {
             ...this.search_data,
@@ -570,9 +608,9 @@ export default {
     },
     searchTableAct: function() {
       if(this.currentTab === 0) {
-        this.searchBlAct()
+        this.searchBlAct(1)
       } else {
-        this.searchContainerAct()
+        this.searchContainerAct(1)
       }
     },
     bookingLoadModalAct: async function() {
@@ -727,7 +765,7 @@ export default {
       this.bookingEditForm = JSON.parse(JSON.stringify(item))
       this.modal.bookingEditModal = true
     },
-    submitBookingAct: async function(item) {
+    submitBookingAct: async function() {
       this.$refs['bookingEditForm'].validate(async valid => {
         if (valid) {
           try {
@@ -742,6 +780,74 @@ export default {
           this.modal.bookingEditModal = false
         }
       })
+    },
+    bkCancellationFeeModalAct: async function(item) {
+      this.bkCancellationFeeForm = {}
+      this.bkCancellationFeeForm.cancellationFee = []
+      this.bkCancellationFeeForm.export_masterbl_id = item.export_masterbl_id
+      this.bkCancellationFeeForm.export_vessel_id = item.export_vessel_id
+      this.bkCancellationFeeForm.export_masterbl_bl = item.export_masterbl_bl
+      this.bkCancellationFeeForm.bk_cancellation_disabled = item.bk_cancellation_disabled
+      this.bkCancellationFeeForm.bk_cancellation_input = item.bk_cancellation_input
+      if(item.cancellationFee && item.cancellationFee.length > 0) {
+        this.bkCancellationFeeForm.cancellationFee = JSON.parse(JSON.stringify(item.cancellationFee))
+      }
+      if(this.pagePara.BK_CANCELLATION_FEE) {
+        for(let cf of this.pagePara.BK_CANCELLATION_FEE) {
+          if(this.bkCancellationFeeForm.cancellationFee && this.bkCancellationFeeForm.cancellationFee.length > 0) {
+            let exist = false
+            for(let bcf of this.bkCancellationFeeForm.cancellationFee) {
+              if(bcf.fee_data_code === cf.fee_data_code) {
+                bcf.fee_data_name = cf.fee_data_name
+                exist = true
+                this.bkCancellationFeeForm.
+                break
+              }
+            }
+            if(!exist) {
+              this.bkCancellationFeeForm.cancellationFee.push({
+                fee_data_code: cf.fee_data_code,
+                fee_data_name: cf.fee_data_name,
+                fee_data_amount: null
+              }) 
+            }
+          } else {
+            this.bkCancellationFeeForm.cancellationFee.push({
+              fee_data_code: cf.fee_data_code,
+              fee_data_name: cf.fee_data_name,
+              fee_data_amount: null
+            })
+          }
+        }
+      }
+      this.modal.bkCancellationFeeModal = true
+    },
+    submitBkCancellationFeeAct: async function() {
+      if(this.bkCancellationFeeForm.cancellationFee && this.bkCancellationFeeForm.cancellationFee.length > 0) {
+        let cancellationFee = []
+        for(let bcf of this.bkCancellationFeeForm.cancellationFee) {
+          if(bcf.fee_data_amount) {
+            cancellationFee.push(bcf)
+          }
+        }
+        if(cancellationFee && cancellationFee.length > 0) {
+          try {
+            let param = {
+              export_masterbl_id: this.bkCancellationFeeForm.export_masterbl_id,
+              cancellationFee: cancellationFee
+            }
+            await this.$http.post(apiUrl + 'bkCancellationFeeSave', param)
+            this.searchDataAct()
+            this.modal.bkCancellationFeeModal = false
+          }catch (error) {
+            this.$commonact.fault(error)
+          }
+        } else {
+          return this.$Message.error('Please input BK Cancellation Fee')
+        }
+      } else {
+        return this.$Message.error('Please input BK Cancellation Fee')
+      }
     }
   }
 }
