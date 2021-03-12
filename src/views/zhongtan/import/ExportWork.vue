@@ -3,17 +3,17 @@
     <!-- begin breadcrumb -->
     <ol class="breadcrumb pull-right">
       <li class="breadcrumb-item active">
-        <a href="javascript:;">Import</a>
+        <a href="javascript:;">Export</a>
       </li>
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
     <h1 class="page-header">
-      Import
+      Export
       <small></small>
     </h1>
     <!-- end page-header -->
-    <panel title="Import Work">
+    <panel title="Export Work">
       <template slot="beforeBody">
         <div class="panel-toolbar">
           <div class="form-inline">
@@ -82,6 +82,11 @@
                 <button type="button" class="btn btn-info" @click="exportCBL()">CBL</button>
               </div>
             </div>
+            <div class="form-group m-r-3">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-info" @click="exportShipmentList()">SHIPMENT LIST</button>
+              </div>
+            </div>
           </div>
         </div>
       </template>
@@ -122,11 +127,8 @@
         </Col>
       </Row>
     </panel>
-    <Modal v-model="modal.importModal" title="Import">
+    <Modal v-model="modal.importModal" title="Export">
       <Form :model="workPara" :label-width="100">
-        <FormItem label="Arrive Date" prop="arrive_date">
-          <DatePicker type="date" placeholder="Arrive Date" v-model="workPara.arrive_date"></DatePicker>
-        </FormItem>
         <FormItem label="Files">
           <div v-for="f in files.fileList" v-bind:key="f.name" class="upload-list">
             <Icon type="ios-document" size="60" />
@@ -141,7 +143,7 @@
             :on-format-error="handleFormatError"
             :on-exceeded-size="handleMaxSize"
             type="drag"
-            action="/api/zhongtan/import/ImportWork/upload"
+            action="/api/zhongtan/import/ExportWork/upload"
             style="display: inline-block;width:58px;"
           >
             <div style="width: 58px;height:58px;line-height: 58px;">
@@ -312,10 +314,10 @@ import _ from 'lodash'
 const moment = require('moment')
 const common = require('@/lib/common')
 import expandRow from '../../../components/import/import-expand.vue'
-const apiUrl = '/api/zhongtan/import/ImportWork/'
+const apiUrl = '/api/zhongtan/import/ExportWork/'
 
 export default {
-  name: 'ImportWorkControl',
+  name: 'ExportWorkControl',
   components: { expandRow },
   data: function() {
     return {
@@ -499,7 +501,7 @@ export default {
   methods: {
     getPara: async function() {
       try {
-        let response = await this.$http.post(apiUrl + 'init', {})
+        let response = await this.$http.post(apiUrl + 'init', {business_type: 'E'})
         this.pagePara = JSON.parse(JSON.stringify(response.data.info))
       } catch (error) {
         this.$commonact.fault(error)
@@ -545,6 +547,7 @@ export default {
           voyage: this.table.importTable.search_data.voyage,
           bl: this.table.importTable.search_data.bl,
           search_text: this.table.importTable.search_text,
+          business_type: 'E',
           offset: this.table.importTable.offset,
           limit: this.table.importTable.limit
         }
@@ -564,6 +567,7 @@ export default {
     loadImportModal: async function() {
       this.workPara = {}
       this.action = 'add'
+      this.files.fileList = []
       this.modal.importModal = true
     },
     handleSuccess(res, file, fileList) {
@@ -608,6 +612,7 @@ export default {
           return this.$Message.error('Please upload xml file')
         }
         this.workPara.upload_files = this.files.fileList
+        this.workPara.business_type = 'E'
         await this.$http.post(apiUrl + 'uploadImport', this.workPara)
         this.$Message.success('submit success')
         this.getImportData()
@@ -654,6 +659,7 @@ export default {
           voyage: this.table.importTable.search_data.voyage,
           bl: this.table.importTable.search_data.bl,
           search_text: this.table.importTable.search_text,
+          business_type: 'E',
           offset: this.table.importTable.offset,
           limit: this.table.importTable.limit
         }
@@ -693,6 +699,7 @@ export default {
           voyage: this.table.importTable.search_data.voyage,
           bl: this.table.importTable.search_data.bl,
           search_text: this.table.importTable.search_text,
+          business_type: 'E',
           offset: this.table.importTable.offset,
           limit: this.table.importTable.limit
         }
@@ -855,6 +862,46 @@ export default {
           this.$commonact.fault(error)
         }
       })
+    },
+    exportShipmentList: async function() {
+      try {
+        let searchPara = {
+          start_date: this.table.importTable.search_data.date[0],
+          end_date: this.table.importTable.search_data.date[1],
+          vessel: this.table.importTable.search_data.vessel,
+          voyage: this.table.importTable.search_data.voyage,
+          bl: this.table.importTable.search_data.bl,
+          search_text: this.table.importTable.search_text,
+          business_type: 'E',
+        }
+
+        if (this.table.importTable.search_data.customer.value) {
+          searchPara.customer = this.table.importTable.search_data.customer.value
+        }
+        if(!searchPara.vessel || !searchPara.voyage) {
+          return this.$Message.error('Please select vessel and voyage')
+        }
+        let response = await this.$http.request({
+          url: apiUrl + 'exportShipmentList',
+          method: 'post',
+          data: searchPara,
+          responseType: 'blob'
+        })
+
+        let blob = response.data
+        let reader = new FileReader()
+        reader.readAsDataURL(blob)
+        reader.onload = e => {
+          let a = document.createElement('a')
+          a.download = 'SHIPMENT_LIST_UPLOAD_' + moment().format('YYYYMMDDHHmmSS') + '.xlsx'
+          a.href = e.target.result
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+        }
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
     }
   }
 }
