@@ -1,3 +1,9 @@
+<style>
+  .ivu-table .table-info-row td{
+      background-color: #49B6D6;
+      color: #FFF;
+  }
+</style>
 <template>
   <div>
     <!-- begin breadcrumb -->
@@ -29,6 +35,9 @@
               <button type="button" class="btn btn-info" @click="searchDataAct">
                 <i class="fa fa-search"></i>
               </button>
+            </div>
+            <div class="form-group m-r-3">
+              <button type="button" class="btn btn-info" @click="shipmentLoadModalAct">Load Shipment</button>
             </div>
             <div class="form-group m-r-3">
               <button type="button" class="btn btn-info" @click="bookingLoadModalAct">Load Proforma</button>
@@ -64,6 +73,11 @@
                             B/C: {{item.bl_count}}/{{item.container_count}}
                           </Col>
                       </Row>
+                      <Row v-if="item.export_vessel_total_prepaid">
+                          <Col span="12">
+                          <p>Prepaid: {{item.export_vessel_total_prepaid}}</p>
+                          </Col>
+                      </Row>
                     </Card>
                   </div>
                 </Col>
@@ -74,7 +88,7 @@
         <Col span="17" offset="1">
           <Tabs :animated="true" @on-click="changeTabAct">
               <TabPane label="MasterBl">
-                <Table stripe size="small" ref="masterbiTable" :columns="blTable.columns" :data="blTable.data" :height="blTable.height">
+                <Table size="small" ref="masterbiTable" :row-class-name="masterbiRowClassName" :columns="blTable.columns" :data="blTable.data" :height="blTable.height">
                   <template slot-scope="{ row, index }" slot="export_masterbl_bl">
                     {{row.export_masterbl_bl}} 
                     <a href="#" slot="extra" @click.stop="masterblDeleteModalAct(row)" title="Remove" style="color: red; margin-left: 5px;">
@@ -172,6 +186,36 @@
         <Button type="primary" size="large" @click="importFreightData">Submit</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.shipmentModal" title="Shipment">
+      <Form :model="workPara" :label-width="100">
+        <FormItem label="Files">
+          <div v-for="f in files.fileListShipment" v-bind:key="f.name" class="upload-list">
+            <Icon type="ios-document" size="60" />
+          </div>
+          <Upload
+            ref="uploadShipment"
+            :headers="headers"
+            :show-upload-list="false"
+            :on-success="handleShipmentSuccess"
+            :format="['xls', 'XLS', 'xlsx', 'XLSX']"
+            :max-size="4096"
+            :on-format-error="handleShipmentFormatError"
+            :on-exceeded-size="handleShipmentMaxSize"
+            type="drag"
+            action="/api/zhongtan/export/ShipmentProforma/upload"
+            style="display: inline-block;width:58px;"
+          >
+            <div style="width: 58px;height:58px;line-height: 58px;">
+              <Icon type="md-add" size="20"></Icon>
+            </div>
+          </Upload>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.shipmentModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="shipmentData">Submit</Button>
+      </div>
+    </Modal>
     <Modal v-model="modal.vesselModal" title="Vessel">
       <Form ref="vesselForm" :model="vesselForm" :rules="vesselFormRule" :label-width="120">
         <FormItem label="Vessel Name" prop="export_vessel_name">
@@ -239,7 +283,7 @@ export default {
   name: 'ShipmentProformaControl',
   data: function() {
     return {
-      modal: { bookingModal: false, importModal: false, checkPasswordModal: false, emptyReleaseModal: false, bookingEditModal: false},
+      modal: { bookingModal: false, importModal: false, checkPasswordModal: false, emptyReleaseModal: false, bookingEditModal: false, shipmentModal:  false},
       headers: common.uploadHeaders(),
       vesselHeight: common.getTableHeight(),
       search_data: {
@@ -253,7 +297,8 @@ export default {
       workPara: {},
       files: {
         fileList: [],
-        fileListFreight: []
+        fileListFreight: [],
+        fileListShipment: []
       },
       vesselData: [],
       blTable: {
@@ -600,6 +645,11 @@ export default {
       file.name = res.info.name
       this.files.fileListFreight = JSON.parse(JSON.stringify(this.$refs.uploadImport.fileList))
     },
+    handleShipmentSuccess(res, file, fileList) {
+      file.url = res.info.url
+      file.name = res.info.name
+      this.files.fileListShipment = JSON.parse(JSON.stringify(this.$refs.uploadShipment.fileList))
+    },
     handleFormatError(file) {
       this.$Notice.warning({
         title: 'The file format is incorrect',
@@ -612,6 +662,12 @@ export default {
         desc: 'File format of ' + file.name + ' is incorrect, please select pdf.'
       })
     },
+    handleShipmentFormatError(file) {
+      this.$Notice.warning({
+        title: 'The file format is incorrect',
+        desc: 'File format of ' + file.name + ' is incorrect, please select pdf.'
+      })
+    },
     handleMaxSize(file) {
       this.$Notice.warning({
         title: 'Exceeding file size limit',
@@ -619,6 +675,12 @@ export default {
       })
     },
     handleMaxSizeFreight(file) {
+      this.$Notice.warning({
+        title: 'Exceeding file size limit',
+        desc: 'File  ' + file.name + ' is too large, no more than 4M.'
+      })
+    },
+    handleShipmentMaxSize(file) {
       this.$Notice.warning({
         title: 'Exceeding file size limit',
         desc: 'File  ' + file.name + ' is too large, no more than 4M.'
@@ -780,6 +842,33 @@ export default {
           this.$commonact.fault(error)
         }
       })
+    },
+    shipmentLoadModalAct: async function() {
+      this.workPara = {}
+      this.action = 'shipment'
+      this.$refs.uploadShipment.fileList = []
+      this.files.fileListShipment = []
+      this.modal.shipmentModal = true
+    },
+    shipmentData: async function() {
+      try {
+        if (this.files.fileListShipment.length < 1) {
+          return this.$Message.error('Please upload xls file')
+        }
+        this.workPara.upload_files = this.files.fileListShipment
+        await this.$http.post(apiUrl + 'uploadShipment', this.workPara)
+        this.$Message.success('submit success')
+        this.modal.shipmentModal = false
+        this.searchDataAct()
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
+    masterbiRowClassName (row, index) {
+      if(row.shipment_fee) {
+        return 'table-info-row'
+      }
+      return ''
     }
   }
 }
