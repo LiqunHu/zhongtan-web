@@ -55,6 +55,18 @@
               Container No&nbsp;&nbsp;
               <input type="text" class="form-control" v-model="search_data.containers_no" placeholder="Container No" style="width: 180px" />
             </div>
+            <div class="form-group m-r-2">
+              Size Type&nbsp;&nbsp;
+              <Select filterable clearable v-model="search_data.size_type" style="width:150px" placeholder="Size Type">
+                <Option v-for="item in pagePara.CONTAINER_SIZE" :value="item.container_size_code" :key="item.container_size_code">{{ item.container_size_code }}[{{item.container_size_name}}]</Option>
+              </Select>
+            </div>
+            <div class="form-group m-r-2">
+              Depot Name&nbsp;&nbsp;
+              <Select filterable clearable v-model="search_data.depot" style="width:150px" placeholder="Depot">
+                <Option v-for="item in pagePara.DEPOT" :value="item.edi_depot_name" :key="item.edi_depot_name">{{ item.edi_depot_name }}</Option>
+              </Select>
+            </div>
           </div>
         </div>
       </template>
@@ -118,7 +130,7 @@ export default {
             {
               title: 'Size/Type',
               slot: 'empty_stock_size_type',
-              width: 120,
+              width: 150,
               align: 'center'
             },
             {
