@@ -380,7 +380,7 @@ export default {
             {
               title: 'S/O',
               key: 'import_billlading_no',
-              width: 150
+              width: 160
             },
             {
               title: 'Shipper',
@@ -615,6 +615,7 @@ export default {
         this.workPara.business_type = 'E'
         await this.$http.post(apiUrl + 'uploadImport', this.workPara)
         this.$Message.success('submit success')
+        this.getPara()
         this.getImportData()
         this.modal.importModal = false
       } catch (error) {
@@ -628,7 +629,6 @@ export default {
         if (sels.length === 0) {
           return _self.$Message.warning('Please select bls.')
         }
-
         _self.$commonact.confirm(`Assign the select BL. to ${_self.table.importTable.search_data.customer.options[0].text}?`, async () => {
           try {
             let bls = []

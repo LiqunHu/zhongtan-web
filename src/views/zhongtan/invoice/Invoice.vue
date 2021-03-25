@@ -554,7 +554,7 @@
         <Tabs ref="depositTabs" active-key="Container Deposit" @on-click="currentFeeTabChanged">
             <Tab-pane :label="containerDepositFeeLabel" name="Container Deposit" key="Container Deposit" :disabled="workPara.invoice_masterbi_vessel_type === 'Bulk'">
                 <FormItem label="Deposit Amount" prop="invoice_masterbi_deposit" style="margin-bottom: 0px;">
-                    <Input placeholder="Deposit Amount" v-model="workPara.invoice_masterbi_deposit" :disabled="!!workPara.invoice_masterbi_deposit_disabled && !depositEdit">
+                    <Input placeholder="Deposit Amount" v-model="workPara.invoice_masterbi_deposit" :disabled="!!workPara.invoice_masterbi_deposit_disabled && !depositEdit" @keyup.native='keyupNumberFormat($event, "invoice_masterbi_deposit")'>
                     <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_deposit_necessary" :disabled="workPara.invoice_masterbi_deposit_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_deposit')">Fixed</Checkbox>
                     <Select slot="append" v-model="workPara.invoice_container_deposit_currency" style="width: 80px" maxlength=10 show-word-limit :disabled="!!workPara.invoice_masterbi_deposit_disabled && !depositEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
@@ -567,7 +567,7 @@
             </Tab-pane>
             <Tab-pane :label="invoiceFeeLabel" name="Invoice Fee" key="Invoice Fee">
                 <FormItem label="Ocean Freight" prop="invoice_masterbi_of" style="margin-bottom: 0px;">
-                    <Input placeholder="Ocean Freight Fee" v-model="workPara.invoice_masterbi_of" :disabled="!!workPara.invoice_masterbi_of_disabled && !invoiceFeeEdit">
+                    <Input placeholder="Ocean Freight Fee" v-model="workPara.invoice_masterbi_of" @keyup.native='keyupNumberFormat($event, "invoice_masterbi_of")' :disabled="!!workPara.invoice_masterbi_of_disabled && !invoiceFeeEdit">
                     <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_of_necessary" :disabled="workPara.invoice_masterbi_of_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_of')">Fixed</Checkbox>
                     <Select slot="append" v-model="workPara.invoice_masterbi_of_currency" style="width: 80px" :disabled="!!workPara.invoice_masterbi_of_currency_disabled && !invoiceFeeEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
@@ -575,7 +575,7 @@
                     </Input>
                 </FormItem>
                 <FormItem label="B/L amendment" prop="invoice_masterbi_bl_amendment" style="margin-bottom: 0px;">
-                    <Input placeholder="B/L amendment" v-model="workPara.invoice_masterbi_bl_amendment" :disabled="!!workPara.invoice_masterbi_bl_amendment_disabled && !invoiceFeeEdit">
+                    <Input placeholder="B/L amendment" v-model="workPara.invoice_masterbi_bl_amendment" @keyup.native='keyupNumberFormat($event, "invoice_masterbi_bl_amendment")' :disabled="!!workPara.invoice_masterbi_bl_amendment_disabled && !invoiceFeeEdit">
                     <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_bl_amendment_necessary" :disabled="workPara.invoice_masterbi_bl_amendment_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_bl_amendment')">Fixed</Checkbox>
                     <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !invoiceFeeEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
@@ -583,7 +583,7 @@
                     </Input>
                 </FormItem>
                 <FormItem label="COD Charge" prop="invoice_masterbi_cod_charge" style="margin-bottom: 0px;">
-                    <Input placeholder="COD Charge" v-model="workPara.invoice_masterbi_cod_charge" :disabled="!!workPara.invoice_masterbi_cod_charge_disabled && !invoiceFeeEdit">
+                    <Input placeholder="COD Charge" v-model="workPara.invoice_masterbi_cod_charge" @keyup.native='keyupNumberFormat($event, "invoice_masterbi_cod_charge")' :disabled="!!workPara.invoice_masterbi_cod_charge_disabled && !invoiceFeeEdit">
                     <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_cod_charge_necessary" :disabled="workPara.invoice_masterbi_cod_charge_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_cod_charge')">Fixed</Checkbox>
                     <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !invoiceFeeEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
@@ -591,7 +591,7 @@
                     </Input>
                 </FormItem>
                 <FormItem label="Container Transfer" prop="invoice_masterbi_transfer" style="margin-bottom: 0px;">
-                    <Input placeholder="Container Transfer" v-model="workPara.invoice_masterbi_transfer" :disabled="!!workPara.invoice_masterbi_transfer_disabled && !invoiceFeeEdit">
+                    <Input placeholder="Container Transfer" v-model="workPara.invoice_masterbi_transfer" @keyup.native='keyupNumberFormat($event, "invoice_masterbi_transfer")' :disabled="!!workPara.invoice_masterbi_transfer_disabled && !invoiceFeeEdit">
                     <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_transfer_necessary" :disabled="workPara.invoice_masterbi_transfer_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_transfer')">Fixed</Checkbox>
                     <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !invoiceFeeEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
@@ -599,7 +599,7 @@
                     </Input>
                 </FormItem>
                 <FormItem label="Lift On Lift Off" prop="invoice_masterbi_lolf" style="margin-bottom: 0px;">
-                    <Input placeholder="Lift On Lift Off" v-model="workPara.invoice_masterbi_lolf" :disabled="!!workPara.invoice_masterbi_lolf_disabled && !invoiceFeeEdit">
+                    <Input placeholder="Lift On Lift Off" v-model="workPara.invoice_masterbi_lolf" @keyup.native='keyupNumberFormat($event, "invoice_masterbi_lolf")' :disabled="!!workPara.invoice_masterbi_lolf_disabled && !invoiceFeeEdit">
                     <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_lolf_necessary" :disabled="workPara.invoice_masterbi_lolf_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_lolf')">Fixed</Checkbox>
                     <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !invoiceFeeEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
@@ -607,7 +607,7 @@
                     </Input>
                 </FormItem>
                 <FormItem label="LCL" prop="invoice_masterbi_lcl" style="margin-bottom: 0px;">
-                    <Input placeholder="LCL" v-model="workPara.invoice_masterbi_lcl" :disabled="!!workPara.invoice_masterbi_lcl_disabled && invoiceFeeEdit">
+                    <Input placeholder="LCL" v-model="workPara.invoice_masterbi_lcl" @keyup.native='keyupNumberFormat($event, "invoice_masterbi_lcl")' :disabled="!!workPara.invoice_masterbi_lcl_disabled && invoiceFeeEdit">
                     <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_lcl_necessary" :disabled="workPara.invoice_masterbi_lcl_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_lcl')">Fixed</Checkbox>
                     <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !invoiceFeeEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
@@ -615,7 +615,7 @@
                     </Input>
                 </FormItem>
                 <FormItem label="Amendment" prop="invoice_masterbi_amendment" style="margin-bottom: 0px;">
-                    <Input placeholder="Amendment" v-model="workPara.invoice_masterbi_amendment" :disabled="!!workPara.invoice_masterbi_amendment_disabled && !invoiceFeeEdit">
+                    <Input placeholder="Amendment" v-model="workPara.invoice_masterbi_amendment" @keyup.native='keyupNumberFormat($event, "invoice_masterbi_amendment")' :disabled="!!workPara.invoice_masterbi_amendment_disabled && !invoiceFeeEdit">
                     <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_amendment_necessary" :disabled="workPara.invoice_masterbi_amendment_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_amendment')">Fixed</Checkbox>
                     <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !invoiceFeeEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
@@ -623,7 +623,7 @@
                     </Input>
                 </FormItem>
                 <FormItem label="Tasac" prop="invoice_masterbi_tasac" style="margin-bottom: 0px;">
-                    <Input placeholder="Tasac" v-model="workPara.invoice_masterbi_tasac" :disabled="!!workPara.invoice_masterbi_tasac_disabled && !invoiceFeeEdit">
+                    <Input placeholder="Tasac" v-model="workPara.invoice_masterbi_tasac" @keyup.native='keyupNumberFormat($event, "invoice_masterbi_tasac")' :disabled="!!workPara.invoice_masterbi_tasac_disabled && !invoiceFeeEdit">
                     <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_tasac_necessary" :disabled="workPara.invoice_masterbi_tasac_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_tasac')">Fixed</Checkbox>
                     <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !invoiceFeeEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
@@ -631,7 +631,7 @@
                     </Input>
                 </FormItem>
                 <FormItem label="Bill Pringting" prop="invoice_masterbi_printing" style="margin-bottom: 0px;">
-                    <Input placeholder="Bill Pringting" v-model="workPara.invoice_masterbi_printing" :disabled="!!workPara.invoice_masterbi_printing_disabled && !invoiceFeeEdit">
+                    <Input placeholder="Bill Pringting" v-model="workPara.invoice_masterbi_printing" @keyup.native='keyupNumberFormat($event, "invoice_masterbi_printing")' :disabled="!!workPara.invoice_masterbi_printing_disabled && !invoiceFeeEdit">
                     <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_printing_necessary" :disabled="workPara.invoice_masterbi_printing_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_printing')">Fixed</Checkbox>
                     <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !invoiceFeeEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
@@ -639,7 +639,7 @@
                     </Input>
                 </FormItem>
                 <FormItem label="Others" prop="invoice_masterbi_others" style="margin-bottom: 0px;">
-                    <Input placeholder="Others" v-model="workPara.invoice_masterbi_others" :disabled="!!workPara.invoice_masterbi_others_disabled && !invoiceFeeEdit">
+                    <Input placeholder="Others" v-model="workPara.invoice_masterbi_others" @keyup.native='keyupNumberFormat($event, "invoice_masterbi_others")' :disabled="!!workPara.invoice_masterbi_others_disabled && !invoiceFeeEdit">
                     <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_others_necessary" :disabled="workPara.invoice_masterbi_others_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_others')">Fixed</Checkbox>
                     <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !invoiceFeeEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
@@ -1994,6 +1994,22 @@
                     this.$commonact.fault(error)
                 }
             },
+            keyupNumberFormat: async function(e, key) {
+                if(e.target.value) {
+                    e.target.value = e.target.value.replace(/\s+/g, '')
+                    let nagtiveFlg = e.target.value.indexOf('-') === 0
+                    e.target.value = e.target.value.replace(/[^\d.]/g, '')
+                    e.target.value = e.target.value.replace(/\.{2,}/g, '.')
+                    e.target.value = e.target.value.replace(/^\./g, '0.')
+                    e.target.value = e.target.value.replace(/^\d*\.\d*\./g, e.target.value.substring(0,e.target.value.length-1))
+                    e.target.value = e.target.value.replace(/^0[^\\.]+/g, '0')
+                    e.target.value = e.target.value.replace(/^(\d+)\.(\d\d).*$/, '$1.$2')
+                    e.target.value = nagtiveFlg ? '-' + e.target.value : e.target.value
+                    this.workPara[key] = e.target.value
+                } else {
+                    this.workPara[key] = ''
+                }
+            }
         }
     }
 </script>
