@@ -9,11 +9,11 @@
     <!-- end breadcrumb -->
     <!-- begin page-header -->
     <h1 class="page-header">
-      Demurrage Statistics
+      Import Demurrage Invoice Statistics
       <small></small>
     </h1>
     <!-- end page-header -->
-    <panel title="Demurrage Invoice Statistics">
+    <panel title="Import Demurrage Invoice Statistics">
       <template slot="beforeBody">
         <div class="panel-toolbar">
           <div class="form-inline">

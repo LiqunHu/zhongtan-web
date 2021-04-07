@@ -462,7 +462,6 @@ export default {
       }
       let gate_out_date = this.overdueChargeForm.export_container_edi_depot_gate_out_date
       if(loading_date && gate_out_date) {
-
         if(typeof loading_date === 'object') {
           loading_date = moment(loading_date).local().format('DD/MM/YYYY')
         }

@@ -39,12 +39,12 @@
             <div class="form-group m-r-3">
               <button type="button" class="btn btn-info" @click="shipmentLoadModalAct">Load Shipment</button>
             </div>
-            <div class="form-group m-r-3">
+            <!-- <div class="form-group m-r-3">
               <button type="button" class="btn btn-info" @click="bookingLoadModalAct">Load Proforma</button>
             </div>
             <div class="form-group m-r-3">
               <button type="button" class="btn btn-info" @click="bookingImportModalAct" title="import freight amount">Import Freight</button>
-            </div>
+            </div> -->
           </div>
         </div>
       </template>

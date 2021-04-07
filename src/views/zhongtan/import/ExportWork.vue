@@ -568,6 +568,7 @@ export default {
       this.workPara = {}
       this.action = 'add'
       this.files.fileList = []
+      this.$refs.upload.fileList = []
       this.modal.importModal = true
     },
     handleSuccess(res, file, fileList) {
