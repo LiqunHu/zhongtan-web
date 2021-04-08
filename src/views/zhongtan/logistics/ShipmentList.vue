@@ -30,7 +30,9 @@
               </Select>
               <DatePicker type="daterange" :value="searchPara.shipment_list_in_date" placeholder="DISCHARGE/GATE OUT" @on-change="searchInDateChange" format="yyyy-MM-dd"></DatePicker>
               <DatePicker type="daterange" :value="searchPara.shipment_list_out_date" placeholder="EMPTY RETURN/LOADING" @on-change="searchOutDateChange" format="yyyy-MM-dd"></DatePicker>
-              <input type="text" placeholder="VENDOR" v-model.trim="searchPara.shipment_list_vendor" class="form-control">
+              <Select v-model="searchPara.shipment_list_vendor" clearable placeholder="VENDOR" style="width:180px">
+                <Option v-for="item in pagePara.VENDOR" :value="item.id" :key="item.id">{{ item.text }}</Option>
+              </Select>
               <div class="input-group-append">
                 <button type="button" class="btn btn-info" @click="getPortData(1)">
                   <i class="fa fa-search"></i>
@@ -46,7 +48,7 @@
           </div>
         </div>
       </template>
-      <Table stripe ref="portTable" :current="table.portTable.current"  :columns="table.portTable.rows" :data="table.portTable.data">
+      <Table stripe ref="shipmentTable" :columns="table.shipmentTable.rows" :data="table.shipmentTable.data">
         <template slot-scope="{ row, index }" slot="shipment_list_cargo_type">
           <span v-if="row.shipment_list_business_type === 'I' && row.shipment_list_cargo_type === 'LOCAL'">
             IMPORT
@@ -80,7 +82,7 @@
           </a>
         </template>
       </Table>
-      <Page class="m-t-10" :total="table.portTable.total" show-total :page-size="table.portTable.limit" @on-change="getPortData"/>
+      <Page class="m-t-10" :total="table.shipmentTable.total" :current="table.shipmentTable.current" show-total :page-size="table.shipmentTable.limit" @on-change="getPortData"/>
     </panel>
     <Modal v-model="modal.addShipmentModal" title="Add Shipment List" width="1000">
       <Form ref="addShipment" :model="addSearchData" :label-width="120" :rules="addSearchRule" inline>
@@ -159,7 +161,7 @@
           </span>
         </FormItem>
         <FormItem label="PORT OF LOADING" style="margin-bottom:0px;">
-          <Input placeholder="PORT OF LOADING" v-model="workPara.shipment_list_port_of_loading"/>
+          <Input placeholder="PORT OF LOADING" v-model.trim="workPara.shipment_list_port_of_loading"/>
         </FormItem>
         <FormItem label="DAR CUSTOMS RELEASE DATE" style="margin-bottom:0px;">
           <DatePicker type="date" :value = "workPara.shipment_list_dar_customs_release_date" @on-change="releaseDateChange" format="yyyy-MM-dd" style="width:278px;"></DatePicker>
@@ -168,28 +170,30 @@
           <DatePicker type="date" :value = "workPara.shipment_list_truck_departure_date" @on-change="departureDateChange" format="yyyy-MM-dd" style="width:278px;"></DatePicker>
         </FormItem>
         <FormItem label="TRUCK PLATE#" style="margin-bottom:0px;">
-          <Input placeholder="TRUCK PLATE#" v-model="workPara.shipment_list_truck_plate"/>
+          <Input placeholder="TRUCK PLATE#" v-model.trim="workPara.shipment_list_truck_plate"/>
         </FormItem>
         <FormItem label="ATA TZ BORDER" style="margin-bottom:0px;">
-          <Input placeholder="ATA TZ BORDER" v-model="workPara.shipment_list_ata_tz_border"/>
+          <Input placeholder="ATA TZ BORDER" v-model.trim="workPara.shipment_list_ata_tz_border"/>
         </FormItem>
         <FormItem label="ATA FOREIGN BORDER" style="margin-bottom:0px;">
-          <Input placeholder="ATA FOREIGN BORDER" v-model="workPara.shipment_list_ata_foreing_border"/>
+          <Input placeholder="ATA FOREIGN BORDER" v-model.trim="workPara.shipment_list_ata_foreing_border"/>
         </FormItem>
         <FormItem label="BORDER RELEASE DATE" style="margin-bottom:0px;">
           <DatePicker type="date" :value = "workPara.shipment_list_border_release_date" @on-change="borderReleaseDateChange" format="yyyy-MM-dd" style="width:278px;"></DatePicker>
         </FormItem>
         <FormItem label="ATA DESTINATION" style="margin-bottom:0px;">
-          <Input placeholder="ATA DESTINATION" v-model="workPara.shipment_list_ata_destination"/>
+          <Input placeholder="ATA DESTINATION" v-model.trim="workPara.shipment_list_ata_destination"/>
         </FormItem>
         <FormItem label="DELIVERY (UNLOADING) DATE" style="margin-bottom:0px;">
           <DatePicker type="date" :value = "workPara.shipment_list_delivery_date" @on-change="deliveryDateChange" format="yyyy-MM-dd" style="width:278px;"></DatePicker>
         </FormItem>
         <FormItem label="VENDOR" style="margin-bottom:0px;">
-          <Input placeholder="VENDOR" v-model="workPara.shipment_list_vendor"/>
+          <Select v-model="workPara.shipment_list_vendor" clearable placeholder="VENDOR" style="width:278px">
+            <Option v-for="item in pagePara.VENDOR" :value="item.id" :key="item.id">{{ item.text }}</Option>
+          </Select>
         </FormItem>
         <FormItem label="REMARK" style="margin-bottom:0px;">
-          <Input v-model="workPara.shipment_list_remark" maxlength="200" :rows="2" show-word-limit type="textarea" style="width: 278px" />
+          <Input v-model.trim="workPara.shipment_list_remark" maxlength="200" :rows="2" show-word-limit type="textarea" style="width: 278px" />
         </FormItem>
       </Form>
       <div slot="footer">
@@ -224,7 +228,7 @@ export default {
     return {
       modal: { addShipmentModal: false, editShipmentModal: false, checkPasswordModal: false },
       table: {
-        portTable: {
+        shipmentTable: {
           rows: [
             {
               type: 'index',
@@ -352,7 +356,7 @@ export default {
             },
             {
               title: 'VENDOR',
-              key: 'shipment_list_vendor',
+              key: 'shipment_list_vendor_name',
               width: 150,
               align: 'center'
             },
@@ -506,17 +510,17 @@ export default {
     getPortData: async function(index) {
       try {
         if (index) {
-          this.table.portTable.offset = (index - 1) * this.table.portTable.limit
-          this.table.portTable.current = index
+          this.table.shipmentTable.offset = (index - 1) * this.table.shipmentTable.limit
+          this.table.shipmentTable.current = index
         }
         let response = await this.$http.post(apiUrl + 'search', {
           searchPara: this.searchPara,
-          offset: this.table.portTable.offset,
-          limit: this.table.portTable.limit
+          offset: this.table.shipmentTable.offset,
+          limit: this.table.shipmentTable.limit
         })
         let data = response.data.info
-        this.table.portTable.total = data.total
-        this.table.portTable.data = JSON.parse(JSON.stringify(data.rows))
+        this.table.shipmentTable.total = data.total
+        this.table.shipmentTable.data = JSON.parse(JSON.stringify(data.rows))
       } catch (error) {
         this.$commonact.fault(error)
       }

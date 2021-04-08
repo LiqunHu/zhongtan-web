@@ -14,21 +14,14 @@ const routes = [
   { path: '/admin/zhongtan/configuration/PortConfig', component: resolve => require(['@/views/zhongtan/configuration/PortConfig'], resolve) },
   { path: '/admin/zhongtan/configuration/VesselConfig', component: resolve => require(['@/views/zhongtan/configuration/VesselConfig'], resolve) },
   { path: '/admin/zhongtan/configuration/VoyageConfig', component: resolve => require(['@/views/zhongtan/configuration/VoyageConfig'], resolve) },
-  {
-    path: '/admin/zhongtan/configuration/ContainerManagerConfig',
-    component: resolve => require(['@/views/zhongtan/configuration/ContainerManagerConfig'], resolve)
-  },
+  { path: '/admin/zhongtan/configuration/ContainerManagerConfig', component: resolve => require(['@/views/zhongtan/configuration/ContainerManagerConfig'], resolve)},
   { path: '/admin/zhongtan/configuration/Customer', component: resolve => require(['@/views/zhongtan/configuration/Customer'], resolve) },
   { path: '/admin/zhongtan/configuration/CustomerAdmin', component: resolve => require(['@/views/zhongtan/configuration/CustomerAdmin'], resolve) },
   { path: '/admin/zhongtan/configuration/Employee', component: resolve => require(['@/views/zhongtan/configuration/Employee'], resolve) },
-  {
-    path: '/admin/zhongtan/configuration/BillladingNoConfig',
-    component: resolve => require(['@/views/zhongtan/configuration/BillladingNoConfig'], resolve)
-  },
-  {
-    path: '/admin/zhongtan/configuration/AllotDepotConfig',
-    component: resolve => require(['@/views/zhongtan/configuration/AllotDepotConfig'], resolve)
-  },
+  { path: '/admin/zhongtan/configuration/BillladingNoConfig', component: resolve => require(['@/views/zhongtan/configuration/BillladingNoConfig'], resolve)},
+  { path: '/admin/zhongtan/configuration/AllotDepotConfig', component: resolve => require(['@/views/zhongtan/configuration/AllotDepotConfig'], resolve)},
+  { path: '/admin/zhongtan/configuration/VendorControl', component: resolve => require(['@/views/zhongtan/configuration/VendorControl'], resolve)},
+
   { path: '/admin/zhongtan/export/Booking', component: resolve => require(['@/views/zhongtan/export/Booking'], resolve) },
   { path: '/admin/zhongtan/export/BookingWork', component: resolve => require(['@/views/zhongtan/export/BookingWork'], resolve) },
   { path: '/admin/zhongtan/export/Receipt', component: resolve => require(['@/views/zhongtan/export/Receipt'], resolve) },
