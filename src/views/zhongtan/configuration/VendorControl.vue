@@ -71,6 +71,9 @@
         <FormItem label="Bank Account" prop="vendor_bank_account">
           <Input placeholder="Bank Account" v-model="workPara.vendor_bank_account"/>
         </FormItem>
+        <FormItem label="Bank Address" prop="vendor_bank_address">
+          <Input placeholder="Bank Address" v-model="workPara.vendor_bank_address"/>
+        </FormItem>
         <FormItem label="Swift Code" prop="vendor_swift_code">
           <Input placeholder="Swift Code" v-model="workPara.vendor_swift_code"/>
         </FormItem>
@@ -140,6 +143,11 @@ export default {
             {
               title: 'BANK ACCOUNT',
               key: 'vendor_bank_account',
+              width: 200,
+            },
+            {
+              title: 'BANK ADDRESS',
+              key: 'vendor_bank_address',
               width: 200,
             },
             {

@@ -142,7 +142,7 @@
           {{workPara.shipment_list_cargo_weight}}
         </FormItem>
         <FormItem label="POD#" style="margin-bottom:0px;">
-          {{workPara.shipment_list_port_of_discharge}}
+          {{workPara.shipment_list_port_of_destination}}
         </FormItem>
         <FormItem label="DISCHARGE/GATE OUT" style="margin-bottom:0px;">
           <span v-if="workPara.shipment_list_business_type === 'I'">
@@ -284,7 +284,7 @@ export default {
             },
             {
               title: 'POD',
-              key: 'shipment_list_port_of_discharge',
+              key: 'shipment_list_port_of_destination',
               width: 150,
               align: 'center'
             },
@@ -429,7 +429,7 @@ export default {
             },
             {
               title: 'POD',
-              key: 'shipment_list_port_of_discharge',
+              key: 'shipment_list_port_of_destination',
               width: 150,
               align: 'center'
             },
