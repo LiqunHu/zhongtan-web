@@ -48,11 +48,11 @@
                 <i class="fa fa-download" style="padding-right:7px;"></i> Export
               </button>
             </div>
-            <div class="form-group m-r-10">
+            <!-- <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="loadingListAct()"> 
                 <i class="fa fa-upload" style="padding-right:7px;"></i> Loading List
               </button>
-            </div>
+            </div> -->
           </div>
         </div>
       </template>
