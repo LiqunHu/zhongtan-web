@@ -21,6 +21,7 @@ const routes = [
   { path: '/admin/zhongtan/configuration/BillladingNoConfig', component: resolve => require(['@/views/zhongtan/configuration/BillladingNoConfig'], resolve)},
   { path: '/admin/zhongtan/configuration/AllotDepotConfig', component: resolve => require(['@/views/zhongtan/configuration/AllotDepotConfig'], resolve)},
   { path: '/admin/zhongtan/configuration/VendorControl', component: resolve => require(['@/views/zhongtan/configuration/VendorControl'], resolve)},
+  { path: '/admin/zhongtan/configuration/FreightPlace', component: resolve => require(['@/views/zhongtan/configuration/FreightPlace'], resolve)},
 
   { path: '/admin/zhongtan/export/Booking', component: resolve => require(['@/views/zhongtan/export/Booking'], resolve) },
   { path: '/admin/zhongtan/export/BookingWork', component: resolve => require(['@/views/zhongtan/export/BookingWork'], resolve) },
@@ -73,6 +74,7 @@ const routes = [
   { path: '/admin/zhongtan/equipment/ExportDemurrageCalculation', component: resolve => require(['@/views/zhongtan/equipment/ExportDemurrageCalculation'], resolve) },
 
   { path: '/admin/zhongtan/logistics/ShipmentList', component: resolve => require(['@/views/zhongtan/logistics/ShipmentList'], resolve) },
+  { path: '/admin/zhongtan/logistics/TBLFreightConfig', component: resolve => require(['@/views/zhongtan/logistics/TBLFreightConfig'], resolve) },
 ]
 
 export default routes

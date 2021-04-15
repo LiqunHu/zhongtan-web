@@ -3,17 +3,17 @@
     <!-- begin breadcrumb -->
     <ol class="breadcrumb pull-right">
       <li class="breadcrumb-item active">
-        <a href="javascript:;">System Configuration</a>
+        <a href="javascript:;">Logistics</a>
       </li>
     </ol>
     <!-- end breadcrumb -->
     <!-- begin page-header -->
     <h1 class="page-header">
-      Logistics Shipment List
+      Shipment List
       <small></small>
     </h1>
     <!-- end page-header -->
-    <panel title="Logistics Shipment List">
+    <panel title="Shipment List">
       <template slot="beforeBody">
         <div class="panel-toolbar">
           <div class="form-inline">
@@ -173,16 +173,16 @@
           <Input placeholder="TRUCK PLATE#" v-model.trim="workPara.shipment_list_truck_plate"/>
         </FormItem>
         <FormItem label="ATA TZ BORDER" style="margin-bottom:0px;">
-          <Input placeholder="ATA TZ BORDER" v-model.trim="workPara.shipment_list_ata_tz_border"/>
+          <DatePicker type="date" :value = "workPara.shipment_list_ata_tz_border" @on-change="ataTzBorderChange" format="yyyy-MM-dd" style="width:278px;"></DatePicker>
         </FormItem>
         <FormItem label="ATA FOREIGN BORDER" style="margin-bottom:0px;">
-          <Input placeholder="ATA FOREIGN BORDER" v-model.trim="workPara.shipment_list_ata_foreing_border"/>
+          <DatePicker type="date" :value = "workPara.shipment_list_ata_foreing_border" @on-change="ataForeignBorderChange" format="yyyy-MM-dd" style="width:278px;"></DatePicker>
         </FormItem>
         <FormItem label="BORDER RELEASE DATE" style="margin-bottom:0px;">
           <DatePicker type="date" :value = "workPara.shipment_list_border_release_date" @on-change="borderReleaseDateChange" format="yyyy-MM-dd" style="width:278px;"></DatePicker>
         </FormItem>
         <FormItem label="ATA DESTINATION" style="margin-bottom:0px;">
-          <Input placeholder="ATA DESTINATION" v-model.trim="workPara.shipment_list_ata_destination"/>
+          <DatePicker type="date" :value = "workPara.shipment_list_ata_destination" @on-change="ataDestinationChange" format="yyyy-MM-dd" style="width:278px;"></DatePicker>
         </FormItem>
         <FormItem label="DELIVERY (UNLOADING) DATE" style="margin-bottom:0px;">
           <DatePicker type="date" :value = "workPara.shipment_list_delivery_date" @on-change="deliveryDateChange" format="yyyy-MM-dd" style="width:278px;"></DatePicker>
@@ -587,8 +587,17 @@ export default {
     departureDateChange: async function(e) {
       this.workPara.shipment_list_truck_departure_date = JSON.parse(JSON.stringify(e))
     },
+    ataTzBorderChange: async function(e) {
+      this.workPara.shipment_list_ata_tz_border = JSON.parse(JSON.stringify(e))
+    },
+    ataForeignBorderChange: async function(e) {
+      this.workPara.shipment_list_ata_foreing_border = JSON.parse(JSON.stringify(e))
+    },
     borderReleaseDateChange: async function(e) {
       this.workPara.shipment_list_border_release_date = JSON.parse(JSON.stringify(e))
+    },
+    ataDestinationChange: async function(e) {
+      this.workPara.shipment_list_ata_destination = JSON.parse(JSON.stringify(e))
     },
     deliveryDateChange: async function(e) {
       this.workPara.shipment_list_delivery_date = JSON.parse(JSON.stringify(e))

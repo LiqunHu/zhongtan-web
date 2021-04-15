@@ -9,11 +9,11 @@
     <!-- end breadcrumb -->
     <!-- begin page-header -->
     <h1 class="page-header">
-      Export Demurrage Invoice
+      Export Demurrage Calculation
       <small></small>
     </h1>
     <!-- end page-header -->
-    <panel title="Export Demurrage Invoice">
+    <panel title="Export Demurrage Calculation">
       <template slot="beforeBody">
         <div class="panel-toolbar">
           <div class="form-inline">
@@ -101,15 +101,15 @@
       <Modal v-model="modal.calculationModal" title="Demurrage Calculation" width="640">
         <Form ref="overdueChargeForm" :model="overdueChargeForm" :label-width="150" style="padding-right: 80px;">
           <FormItem label="Gate Out">
-            <DatePicker type="date" placeholder="Gate Out Date" v-model="overdueChargeForm.export_container_edi_depot_gate_out_date" format="dd/MM/yyyy" @on-change="gateOutDateChange"></DatePicker>
+            <DatePicker type="date" placeholder="Gate Out Date" v-model="overdueChargeForm.export_container_edi_depot_gate_out_date" format="dd/MM/yyyy" @on-change="gateOutDateChange" :disabled="!!overdueChargeForm.export_container_edi_depot_gate_out_date && returnOverdueDaysDisabled"></DatePicker>
             <Tag type="dot" v-if="overdueChargeForm.demurrage_invoice_containers_diff_days">Diff {{overdueChargeForm.demurrage_invoice_containers_diff_days}} Days</Tag>
           </FormItem>
           <FormItem label="Loading Date" v-if="overdueChargeForm.export_masterbl_bl_carrier === 'OOCL'">
-            <DatePicker type="date" placeholder="Loading Date" v-model="overdueChargeForm.export_container_edi_loading_date" format="dd/MM/yyyy" @on-change="loadingDateChange"></DatePicker>
+            <DatePicker type="date" placeholder="Loading Date" v-model="overdueChargeForm.export_container_edi_loading_date" format="dd/MM/yyyy" @on-change="loadingDateChange" :disabled="!!overdueChargeForm.export_container_edi_loading_date && returnOverdueDaysDisabled"></DatePicker>
             <Tag type="dot">ETD {{overdueChargeForm.export_vessel_etd}}</Tag>
           </FormItem>
           <FormItem label="Get In Date" v-if="overdueChargeForm.export_masterbl_bl_carrier === 'COSCO'">
-            <DatePicker type="date" placeholder="Get In Date" v-model="overdueChargeForm.export_container_edi_wharf_gate_in_date" format="dd/MM/yyyy" @on-change="gateInDateChange"></DatePicker>
+            <DatePicker type="date" placeholder="Get In Date" v-model="overdueChargeForm.export_container_edi_wharf_gate_in_date" format="dd/MM/yyyy" @on-change="gateInDateChange" :disabled="!!overdueChargeForm.export_container_edi_wharf_gate_in_date && returnOverdueDaysDisabled"></DatePicker>
             <Tag type="dot">ETD {{overdueChargeForm.export_vessel_etd}}</Tag>
           </FormItem>
           <FormItem label="Free Days">
