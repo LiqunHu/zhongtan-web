@@ -121,7 +121,7 @@ export default {
             },
             {
               title: 'EMAIL',
-              slot: 'vendor_email',
+              key: 'vendor_email',
               width: 200,
             },
             {

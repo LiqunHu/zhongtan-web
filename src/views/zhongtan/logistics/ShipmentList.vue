@@ -93,7 +93,7 @@
           <Button type="primary" @click="searchShipmentList">Search</Button>
         </FormItem>
       </Form>
-      <Table border ref="searchTable" :columns="table.searchTable.rows" :data="table.searchTable.data" max-height="400">
+      <Table border ref="searchTable" :columns="table.searchTable.rows" :data="table.searchTable.data" @on-select="searchShipmentSelect" @on-select-cancel="searchShipmentSelectCancel" max-height="400">
         <template slot-scope="{ row, index }" slot="shipment_list_cargo_type">
           <span v-if="row.shipment_list_business_type === 'I' && row.shipment_list_cargo_type === 'LOCAL'">
             IMPORT
@@ -141,27 +141,23 @@
         <FormItem label="CARGO WEIGHT(KGS)" style="margin-bottom:0px;">
           {{workPara.shipment_list_cargo_weight}}
         </FormItem>
-        <FormItem label="POD#" style="margin-bottom:0px;">
-          {{workPara.shipment_list_port_of_destination}}
+        <FormItem label="DISCHARGE DATE" style="margin-bottom:0px;" v-if="workPara.shipment_list_business_type === 'I'">
+          {{workPara.shipment_list_discharge_date}}
         </FormItem>
-        <FormItem label="DISCHARGE/GATE OUT" style="margin-bottom:0px;">
-          <span v-if="workPara.shipment_list_business_type === 'I'">
-            {{workPara.shipment_list_discharge_date}}
-          </span>
-          <span v-else>
-            {{workPara.shipment_list_depot_gate_out_date}}
-          </span>
+        <FormItem label="GATE OUT DATE" style="margin-bottom:0px;" v-else>
+          {{workPara.shipment_list_depot_gate_out_date}}
         </FormItem>
-        <FormItem label="EMPTY RETURN/LOADING" style="margin-bottom:0px;">
-          <span v-if="workPara.shipment_list_business_type === 'I'">
-            {{workPara.shipment_list_empty_return_date}}
-          </span>
-          <span v-else>
-            {{workPara.shipment_list_loading_date}}
-          </span>
+        <FormItem label="EMPTY RETURN DATE" style="margin-bottom:0px;" v-if="workPara.shipment_list_business_type === 'I'">
+          {{workPara.shipment_list_empty_return_date}}
         </FormItem>
-        <FormItem label="PORT OF LOADING" style="margin-bottom:0px;">
+        <FormItem label="LOADING DATE" style="margin-bottom:0px;" v-else>
+          {{workPara.shipment_list_loading_date}}
+        </FormItem>
+        <FormItem label="POL#" style="margin-bottom:0px;">
           <Input placeholder="PORT OF LOADING" v-model.trim="workPara.shipment_list_port_of_loading"/>
+        </FormItem>
+        <FormItem label="POD#" style="margin-bottom:0px;">
+          <Input placeholder="PORT OF DESTINATION" v-model.trim="workPara.shipment_list_port_of_destination"/>
         </FormItem>
         <FormItem label="DAR CUSTOMS RELEASE DATE" style="margin-bottom:0px;">
           <DatePicker type="date" :value = "workPara.shipment_list_dar_customs_release_date" @on-change="releaseDateChange" format="yyyy-MM-dd" style="width:278px;"></DatePicker>
@@ -277,13 +273,19 @@ export default {
               align: 'center'
             },
             {
-              title: 'CARGO WEIGHT',
-              key: 'shipment_list_cargo_weight',
+              title: 'VENDOR',
+              key: 'shipment_list_vendor_name',
               width: 150,
               align: 'center'
             },
             {
-              title: 'POD',
+              title: 'POL#',
+              key: 'shipment_list_port_of_loading',
+              width: 200,
+              align: 'center'
+            },
+            {
+              title: 'POD#',
               key: 'shipment_list_port_of_destination',
               width: 150,
               align: 'center'
@@ -295,9 +297,15 @@ export default {
               align: 'center'
             },
             {
-              title: 'PORT OF LOADING',
-              key: 'shipment_list_port_of_loading',
-              width: 200,
+              title: 'EMPTY RETURN/LOADING',
+              slot: 'shipment_list_out_date',
+              width: 240,
+              align: 'center'
+            },
+            {
+              title: 'CARGO WEIGHT',
+              key: 'shipment_list_cargo_weight',
+              width: 150,
               align: 'center'
             },
             {
@@ -346,18 +354,6 @@ export default {
               title: 'DELIVERY (UNLOADING) DATE',
               key: 'shipment_list_delivery_date',
               width: 250,
-              align: 'center'
-            },
-            {
-              title: 'EMPTY RETURN/LOADING',
-              slot: 'shipment_list_out_date',
-              width: 240,
-              align: 'center'
-            },
-            {
-              title: 'VENDOR',
-              key: 'shipment_list_vendor_name',
-              width: 150,
               align: 'center'
             },
             {
@@ -607,6 +603,24 @@ export default {
     },
     searchOutDateChange: async function(e) {
       this.searchPara.shipment_list_out_date = JSON.parse(JSON.stringify(e))
+    },
+    searchShipmentSelect: async function(selection, row) {
+      if(this.table.searchTable.data) {
+        for(let d of this.table.searchTable.data) {
+          if(d.shipment_list_bill_no === row.shipment_list_bill_no) {
+            d._checked = true
+          }
+        }
+      }
+    },
+    searchShipmentSelectCancel: async function(selection, row) {
+      if(this.table.searchTable.data) {
+        for(let d of this.table.searchTable.data) {
+          if(d.shipment_list_bill_no === row.shipment_list_bill_no) {
+            d._checked = false
+          }
+        }
+      }
     },
     addShipmentList: async function() {
       let selection = this.$refs.searchTable.getSelection()

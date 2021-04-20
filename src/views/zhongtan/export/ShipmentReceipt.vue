@@ -160,7 +160,15 @@
             </FormItem>
           </Col>
         </Row>
-        
+        <Row>
+          <Col>
+            <FormItem label="Vessel" prop="vessel">
+              <Select v-model="collectForm.receipt_vessel" transfer filterable>
+                <Option v-for="item in pagePara.VESSEL" :value="item.export_vessel_id" :key="item.export_vessel_id">{{ item.export_vessel }}</Option>
+              </Select>
+            </FormItem>
+          </Col>
+        </Row>
         <Row>
           <Col>
             <FormItem label="Receipt Data" prop="collect_date">
