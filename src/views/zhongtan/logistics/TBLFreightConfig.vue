@@ -17,13 +17,32 @@
         <template slot="beforeBody">
             <div class="panel-toolbar">
                 <div class="form-inline">
-                    <div class="form-group m-r-2">
-                        <i-select v-model="search_data.freight_config_vendor" clearable filterable placeholder = "select vendor">
+                    <div class="form-group m-r-10">
+                        <i-select v-model="search_data.freight_config_vendor" clearable filterable placeholder = "select vendor" style="width:160px">
                             <i-option  v-for="item in pagePara.COMMON_VENDOR" :value="item.vendor_id" :key="item.vendor_id" :label="item.vendor_code + '/' + item.vendor_name">
                                 <span>{{item.vendor_code}}</span>
                                 <span style="float:right;color:#ccc">{{item.vendor_name}}</span>
                             </i-option>
                         </i-select>
+                        <Select v-model="search_data.freight_config_business_type" clearable placeholder="BUSINESS TYPE" style="width:160px">
+                            <Option v-for="item in businessTypeFilter" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                        </Select>
+                        <Select v-model="search_data.freight_config_cargo_type" clearable placeholder="CARGO TYPE" style="width:160px">
+                            <Option v-for="item in cargoTypeFilter" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                        </Select>
+                        <Select v-model="search_data.freight_config_carrier" clearable placeholder="CNTR OWNER" style="width:160px">
+                            <Option v-for="item in cntrOwnerFilter" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                        </Select>
+                        <Select v-model="search_data.freight_config_pol" clearable placeholder="POL" style="width:160px">
+                            <Option v-for="item in pagePara.FREIGHT_PLACE" :value="item.freight_place_code" :key="item.freight_place_code">{{ item.freight_place_code }}</Option>
+                        </Select>
+                        <Select v-model="search_data.freight_config_pod" clearable placeholder="POD" style="width:160px">
+                            <Option v-for="item in pagePara.FREIGHT_PLACE" :value="item.freight_place_code" :key="item.freight_place_code">{{ item.freight_place_code }}</Option>
+                        </Select>
+                        <Select v-model="search_data.freight_config_size_type" clearable placeholder="SIZE TYPE" style="width:160px">
+                            <Option v-for="item in pagePara.CONTAINER_SIZE" :value="item.container_size_code" :key="item.container_size_code">{{ item.container_size_code }}/{{ item.container_size_name }}</Option>
+                        </Select>
+                        <DatePicker type="date" placeholder="Enabled Date" v-model="search_data.freight_config_enabled_date" format="yyyy-MM-dd" @on-change="searchDataChange" style="width:160px"></DatePicker>
                     </div>
                     <div class="form-group m-r-10">
                         <button type="button" class="btn btn-info" @click="getTableData">
@@ -60,7 +79,7 @@
                 </a>
             </template>
         </Table>
-        <Page class="m-t-10" :total="table.ruleTable.total" :page-size="table.ruleTable.limit" @on-change="getTableData" show-total/>
+        <Page class="m-t-10" :total="table.ruleTable.total" :page-size="table.ruleTable.limit" :pageSizeOpts = "table.ruleTable.pageSizeOpts" show-total show-sizer @on-change="getTableData" @on-page-size-change="pageSizeChange"/>
         <Modal v-model="modal.freightConfigModal" :title="textMap[modalStatus]" width="600">
             <Form ref="freightConfigForm" :model="freightConfigForm" :rules="chargeRules" :label-width="150" style="padding-right: 80px;">
                 <FormItem label="Vendor" prop="freight_config_vendor">
@@ -212,6 +231,18 @@ export default {
           {id: 'COS', text: 'COSCO'},
           {id: 'OOL', text: 'OOCL'}
       ],
+      businessTypeFilter: [
+        {id: 'I', text: 'IMPORT'},
+        {id: 'E', text: 'EXPORT'}
+      ],
+      cargoTypeFilter: [
+        {id: 'LOCAL', text: 'IMPORT/LOCAL'},
+        {id: 'TRANSIT', text: 'TRANSIT'}
+      ],
+      cntrOwnerFilter: [
+        {id: 'COS', text: 'COSCO'},
+        {id: 'OOL', text: 'OOCL'}
+      ],
       pagePara: {},
       table: {
         ruleTable: {
@@ -269,10 +300,11 @@ export default {
                 width: 150
             }
           ],
+          pageSizeOpts: [40, 60, 80, 100],
           data: [],
           unchanged: [],
-          height: common.getTableHeight() - 80,
-          limit: 10,
+          height: common.getTableHeight(),
+          limit: 40,
           offset: 0,
           total: 0
         }
@@ -394,6 +426,10 @@ export default {
         this.$commonact.fault(error)
       }
     },
+    pageSizeChange: async function(pageSize) {
+        this.table.ruleTable.limit = pageSize
+        this.getTableData(1)
+    },
     resetFreightForm: function() {
         this.freightConfigForm = {
             freight_config_vendor: '',
@@ -498,8 +534,8 @@ export default {
       this.freightConfigForm.freight_config_enabled_date = date
     },
     searchDataChange: async function(date) {
-      this.search_data.enabled_date = date
-    },
+      this.search_data.freight_config_enabled_date = date
+    }
   }
 }
 </script>

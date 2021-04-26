@@ -83,7 +83,6 @@
                     </Tooltip>
                   </template>
                 </template>
-                amount
                 <template slot-scope="{ row, index }" slot="amount">
                   {{row.amount}}({{row.currency}})
                 </template>
@@ -294,6 +293,9 @@
                           </a>
                         </Tooltip>
                       </template>
+                    </template>
+                    <template slot-scope="{ row, index }" slot="amount">
+                      {{row.amount}}({{row.currency}})
                     </template>
                   </Table>
                 </template>
@@ -1007,13 +1009,13 @@ export default {
             },
             {
               title: 'Amount',
-              key: 'amount',
-              width: 200
+              slot: 'amount',
+              width: 150
             }, 
             {
               title: 'Create By',
               key: 'created_by',
-              width: 150
+              width: 100
             },
             {
               title: 'Create Date',
