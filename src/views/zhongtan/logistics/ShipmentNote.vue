@@ -9,11 +9,11 @@
     <!-- end breadcrumb -->
     <!-- begin page-header -->
     <h1 class="page-header">
-      Shipment Note
+      Payment Note
       <small></small>
     </h1>
     <!-- end page-header -->
-    <panel title="Shipment Note">
+    <panel title="Payment Note">
       <template slot="beforeBody">
         <div class="panel-toolbar">
             <Row>
@@ -47,6 +47,9 @@
             <Row style="margin-top:7px;">
               <div class="form-inline">
                 <div class="input-group m-r-10">
+                  <Select v-model="searchPara.shipment_list_payment_status" clearable placeholder="PAYMENT STATUS" style="width:199px; margin-right:7px;">
+                    <Option v-for="item in pagePara.PAYMENT_STATUS" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                  </Select>
                   <Select v-model="searchPara.shipment_list_business_type" clearable placeholder="BUSINESS TYPE" style="width:199px; margin-right:7px;">
                     <Option v-for="item in businessTypeFilter" :value="item.id" :key="item.id">{{ item.text }}</Option>
                   </Select>
@@ -80,6 +83,10 @@
                     </Tooltip>
                   </template>
                 </template>
+                amount
+                <template slot-scope="{ row, index }" slot="amount">
+                  {{row.amount}}({{row.currency}})
+                </template>
               </Table>
             </template>
           </Poptip>
@@ -92,9 +99,6 @@
           <Tag color="success" v-if="row.shipment_list_payment_status === '5'">BALANCE PAYMENT</Tag>
           <Tag color="warning" v-if="row.shipment_list_payment_status === '6'">EXTRA CHARGES</Tag>
           <Tag color="success" v-if="row.shipment_list_payment_status === '7'">EXTRA PAYMENT</Tag>
-        </template>
-        <template slot-scope="{ row, index }" slot="shipment_list_total_freight">
-          {{row.shipment_list_total_freight}}
         </template>
         <template slot-scope="{ row, index }" slot="shipment_list_advance_payment">
           {{row.shipment_list_advance_payment}}({{row.shipment_list_advance_percent}}%)
@@ -276,7 +280,26 @@
           </Table>
         </TabPane>
         <TabPane label="EXTRA" name="EXTRA">
-          <Table border ref="extraTable" :columns="table.extraTable.rows" :data="table.extraTable.data" max-height="400">
+          <Table border ref="extraTable" :columns="table.extraTable.rows" :data="table.extraTable.data" max-height="400" :span-method="extraHandleSpan">
+            <template slot-scope="{ row, index }" slot="extra_act">
+              <Poptip trigger="hover" placement="bottom" :transfer="true" width="555">
+                <Button type="text" style="text-decoration:underline" v-if="row.extra_files && row.extra_files.length > 0">Files[{{row.extra_files.length}}]</Button>
+                <template slot="content">
+                  <Table stripe size="small" :columns="table.extraFilesTable.columns" :data="row.extra_files">
+                    <template slot-scope="{ row, index }" slot="act">
+                      <template>
+                        <Tooltip content="Download">
+                          <a :href="row.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
+                            <i class="fa fa-download"></i>
+                          </a>
+                        </Tooltip>
+                      </template>
+                    </template>
+                  </Table>
+                </template>
+              </Poptip>
+              <Icon type="md-add" size="24" color="#2b85e4" style="cursor: pointer; padding-top: 10px;" v-on:click="applyPaymentExtraModalAct(row)"/>
+            </template>
             <template slot-scope="{ row, index }" slot="shipment_list_vendor">
               {{row.shipment_list_vendor_code}}/{{row.shipment_list_vendor_name}}
             </template>
@@ -312,6 +335,38 @@
         <Button type="primary" size="large" @click="applyPaymentAct">Apply</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.applyPaymentExtraModal" title="Payment Extra" width="800">
+      <Form ref="paymentExtra" :model="paymentExtraForm" :rules="paymentExtraRules" :label-width="160" style="padding-right: 80px;">
+        <FormItem label="B/L#" prop="payment_extra_bl_no">
+          {{paymentExtraForm.payment_extra_bl_no}}
+        </FormItem>
+        <FormItem label="Extra Attachment" prop="payment_extra_files">
+          <Upload
+            ref="upload"
+            :headers="uploadHeaders"
+            :on-success="handleUploadSuccess"
+            :on-remove="handleUploadRemove"
+            type="drag"
+            action="/api/zhongtan/logistics/ShipmentNote/upload">
+            <div style="padding: 20px 0">
+                <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+                <p>Click or drag files here to upload</p>
+            </div>
+          </Upload>
+        </FormItem>
+        <FormItem label="Amount" prop="payment_extra_amount">
+          <Input v-model="paymentExtraForm.payment_extra_amount" placeholder="Enter your amount">
+            <Select slot="append" v-model="paymentExtraForm.payment_extra_currency" style="width: 100px">
+              <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
+            </Select>
+          </Input>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+          <Button type="text" size="large" @click="modal.applyPaymentExtraModal=false">Cancel</Button>
+          <Button type="primary" size="large" @click="applyPaymentExtraAct">Submit</Button>
+      </div>
+    </Modal>
     <Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :mask-closable="false">
       <Form :label-width="120">
         <FormItem v-show="false">
@@ -337,7 +392,7 @@ export default {
   name: 'ShipmentList',
   data: function() {
     return {
-      modal: { addShipmentModal: false, applyPaymentModal: false, checkPasswordModal: false },
+      modal: { addShipmentModal: false, applyPaymentModal: false, applyPaymentExtraModal: false, checkPasswordModal: false },
       table: {
         shipmentTable: {
           rows: [
@@ -392,8 +447,14 @@ export default {
               align: 'center'
             },
             {
-              title: 'FREIGHT#',
-              slot: 'shipment_list_total_freight',
+              title: 'FREIGHT#USD',
+              key: 'shipment_list_total_freight',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'FREIGHT#TZS',
+              key: 'shipment_list_total_freight_tzs',
               width: 150,
               align: 'center'
             },
@@ -541,12 +602,17 @@ export default {
             {
               title: 'Type',
               key: 'filetype',
-              width: 200
+              width: 150
+            }, 
+            {
+              title: 'Amount',
+              slot: 'amount',
+              width: 150
             }, 
             {
               title: 'Create By',
               key: 'creater',
-              width: 150
+              width: 100
             },
             {
               title: 'Create Date',
@@ -845,9 +911,9 @@ export default {
               align: 'center'
             },
             {
-              title: 'TYPE',
-              key: 'shipment_list_business_type',
-              width: 80,
+              title: 'Act',
+              slot: 'extra_act',
+              width: 150,
               align: 'center'
             },
             {
@@ -857,8 +923,8 @@ export default {
               align: 'center'
             },
             {
-              title: 'CNTR OWNER',
-              key: 'shipment_list_cntr_owner',
+              title: 'VENDOR',
+              slot: 'shipment_list_vendor',
               width: 150,
               align: 'center'
             },
@@ -869,26 +935,26 @@ export default {
               align: 'center'
             },
             {
-              title: 'FREIGHT#',
-              key: 'shipment_list_total_freight',
+              title: 'Charges(USD)',
+              key: 'shipment_list_extra_charges_usd',
               width: 150,
               align: 'center'
             },
             {
-              title: 'ADVANCE#',
-              key: 'shipment_list_advance_payment',
+              title: 'Charges(TZS)',
+              key: 'shipment_list_extra_charges_tzs',
               width: 150,
               align: 'center'
             },
             {
-              title: 'BALANCE#',
-              key: 'shipment_list_balance_payment',
-              width: 150,
+              title: 'TYPE',
+              key: 'shipment_list_business_type',
+              width: 80,
               align: 'center'
             },
             {
-              title: 'VENDOR',
-              slot: 'shipment_list_vendor',
+              title: 'CNTR OWNER',
+              key: 'shipment_list_cntr_owner',
               width: 150,
               align: 'center'
             },
@@ -931,6 +997,30 @@ export default {
           ],
           data: [],
           total: 0
+        },
+        extraFilesTable: {
+          columns: [
+            {
+              title: 'Action',
+              slot: 'act',
+              width: 100
+            },
+            {
+              title: 'Amount',
+              key: 'amount',
+              width: 200
+            }, 
+            {
+              title: 'Create By',
+              key: 'created_by',
+              width: 150
+            },
+            {
+              title: 'Create Date',
+              key: 'created_at',
+              width: 150
+            }
+          ]
         }
       },
       pagePara: {},
@@ -968,7 +1058,28 @@ export default {
       checkPassword: '',
       paymentSelectedAll: false,
       applyPaymentDisabled: true,
-      applyPaymentAction: 'ADVANCE'
+      applyPaymentAction: 'ADVANCE',
+      paymentExtraForm: {
+        payment_extra_bl_no: '',
+        payment_extra_shipment_id: '',
+        payment_extra_vendor: '',
+        payment_extra_cntr_owner: '',
+        payment_extra_business_type: '',
+        payment_extra_cargo_type: '',
+        payment_extra_files: [],
+        payment_extra_amount: '',
+        payment_extra_currency: ''
+      },
+      paymentExtraRules: {
+        payment_extra_amount: [
+          { required: true, message: 'The amount cannot be empty', trigger: 'blur' },
+          { type: 'number', message: 'The amount must be number', trigger: 'blur' , transform(value) { return Number(value)}}
+        ],
+        payment_extra_files: [
+          { type: 'array', min: 1, required: true, trigger: 'change', message: 'upload extra Attachment'}
+        ]
+      },
+      uploadHeaders: common.uploadHeaders()
     }
   },
   created() {
@@ -1019,7 +1130,7 @@ export default {
         reader.readAsDataURL(blob)
         reader.onload = e => {
           let a = document.createElement('a')
-          a.download = 'Logistics Shipment List.xlsx'
+          a.download = 'Logistics Payment Note.xlsx'
           a.href = e.target.result
           document.body.appendChild(a)
           a.click()
@@ -1191,6 +1302,30 @@ export default {
     closedEditBalance: async function(row) {
       this.table.balanceTable.data[row._index].shipment_list_balance_payment_edit = false
     },
+    extraHandleSpan: function({row, column, rowIndex, columnIndex}) {
+      if(column.title === 'Act' || column.title === 'B/L#' || column.title === 'Files') {
+        return this.getExtraLayout(row, rowIndex, columnIndex)
+      }
+    },
+    getExtraLayout: function(row, rowIndex, columnIndex) {
+      let rowspan = 0
+      let colspan = 1
+      let tableData = this.table.extraTable.data
+      for(let d of tableData) {
+        if(d.shipment_list_bill_no === row.shipment_list_bill_no) {
+          rowspan++
+        }
+      }
+      if(rowspan > 1) {
+        if(rowIndex > 0 && tableData[rowIndex - 1].shipment_list_bill_no === row.shipment_list_bill_no) {
+          return [0, 0]
+        } else {
+          return [rowspan, colspan]
+        }
+      } else {
+        return [1, 1]
+      }
+    },
     applyPaymentAct: async function() {
       let selection = []
       if(this.applyPaymentAction === 'ADVANCE') {
@@ -1262,6 +1397,50 @@ export default {
         } else {
             this.table.balanceTable.data[index][key] = ''
         }
+    },
+    handleUploadSuccess(res, file, fileList) {
+      file.url = res.info.url
+      file.name = res.info.name
+      this.paymentExtraForm.payment_extra_files = JSON.parse(JSON.stringify(this.$refs.upload.fileList))
+    },
+    handleUploadRemove(file, fileList) {
+        const index = this.paymentExtraForm.payment_extra_files.indexOf(file)
+        this.paymentExtraForm.payment_extra_files.splice(index, 1)
+    },
+    applyPaymentExtraModalAct: async function(row) {
+      console.log('row', row)
+      this.$nextTick(() => {
+        this.$refs['paymentExtra'].resetFields()
+      })
+      this.paymentExtraForm = {
+        payment_extra_bl_no: row.shipment_list_bill_no,
+        payment_extra_shipment_id: row.shipment_list_id,
+        payment_extra_vendor: row.shipment_list_vendor,
+        payment_extra_cntr_owner: row.shipment_list_cntr_owner,
+        payment_extra_business_type: row.shipment_list_business_type,
+        payment_extra_cargo_type: row.shipment_list_cargo_type,
+        payment_extra_files: [],
+        payment_extra_amount: '',
+        payment_extra_currency: 'USD'
+      }
+      this.modal.applyPaymentExtraModal = true
+    },
+    applyPaymentExtraAct: async function() {
+      this.$refs['paymentExtra'].validate(async valid => {
+        if (valid) {
+          try {
+            await this.$http.post(apiUrl + 'applyPaymentExtra', this.paymentExtraForm)
+            this.$Message.success('apply success')
+            this.modal.applyPaymentExtraModal = false
+            this.modal.applyPaymentModal = false
+            this.getShipmentNoteData(1)
+          } catch (error) {
+            this.$commonact.fault(error)
+          }
+        } else {
+          this.$Message.error('Validate Fail!')
+        }
+      })
     },
     checkPasswordCancel: async function() {
       this.modal.checkPasswordModal = false

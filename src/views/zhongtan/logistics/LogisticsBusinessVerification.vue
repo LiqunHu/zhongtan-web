@@ -78,9 +78,6 @@
             </template>
           </Table>
           <Table border ref="balanceTable" :columns="table.balanceTable.rows" :data="table.balanceTable.data" v-if="workPara.logistics_verification_api_name === 'PAYMENT BALANCE'">
-            <template slot-scope="{ row, index }" slot="shipment_list_balance_payment" >
-              {{row.shipment_list_balance_payment}}
-            </template>
             <template slot-scope="{ row, index }" slot="shipment_list_cargo_type">
               <span v-if="row.shipment_list_business_type === 'I' && row.shipment_list_cargo_type === 'LOCAL'">
                 IMPORT
@@ -103,6 +100,16 @@
               </span>
               <span v-else>
                 {{row.shipment_list_loading_date}}
+              </span>
+            </template>
+          </Table>
+          <Table border ref="extraTable" :columns="table.extraTable.rows" :data="table.extraTable.data" v-if="workPara.logistics_verification_api_name === 'PAYMENT EXTRA'">
+            <template slot-scope="{ row, index }" slot="payment_extra_cargo_type">
+              <span v-if="row.payment_extra_business_type === 'I' && row.payment_extra_cargo_type === 'LOCAL'">
+                IMPORT
+              </span>
+              <span v-else>
+                {{row.payment_extra_cargo_type}}
               </span>
             </template>
           </Table>
@@ -346,6 +353,59 @@ export default {
           ],
           data: [],
           total: 0
+        },
+        extraTable: {
+          rows: [
+            {
+              type: 'index',
+              width: 80,
+              align: 'center'
+            },
+            {
+              title: 'B/L#',
+              key: 'payment_extra_bl_no',
+              width: 180,
+              align: 'center'
+            },
+            {
+              title: 'EXTRA(USD)',
+              key: 'payment_extra_amount_usd',
+              width: 200,
+              align: 'center'
+            },
+            {
+              title: 'EXTRA(TZS)',
+              key: 'payment_extra_amount_tzs',
+              width: 200,
+              align: 'center'
+            },
+            {
+              title: 'VENDOR',
+              key: 'vendor',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'TYPE',
+              key: 'payment_extra_business_type',
+              width: 80,
+              align: 'center'
+            },
+            {
+              title: 'CNTR OWNER',
+              key: 'payment_extra_cntr_owner',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'CARGO TYPE',
+              slot: 'payment_extra_cargo_type',
+              width: 150,
+              align: 'center'
+            }
+          ],
+          data: [],
+          total: 0
         }
       },
       pagePara: {},
@@ -436,6 +496,8 @@ export default {
           this.table.advanceTable.data = response.data.info
         } else if(this.workPara.logistics_verification_api_name === 'PAYMENT BALANCE') {
           this.table.balanceTable.data = response.data.info
+        } else if(this.workPara.logistics_verification_api_name === 'PAYMENT EXTRA') {
+          this.table.extraTable.data = response.data.info
         }
         if(this.verificationDetail) {
           this.verificationDetailModal = true

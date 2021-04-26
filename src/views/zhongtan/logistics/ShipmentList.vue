@@ -184,7 +184,7 @@
           <DatePicker type="date" :value = "workPara.shipment_list_delivery_date" @on-change="deliveryDateChange" format="yyyy-MM-dd" style="width:278px;"></DatePicker>
         </FormItem>
         <FormItem label="VENDOR" style="margin-bottom:0px;">
-          <Select v-model="workPara.shipment_list_vendor" clearable placeholder="VENDOR" style="width:278px">
+          <Select v-model="workPara.shipment_list_vendor" clearable filterable placeholder="VENDOR" style="width:278px">
             <Option v-for="item in pagePara.VENDOR" :value="item.id" :key="item.id">{{ item.text }}</Option>
           </Select>
         </FormItem>
@@ -637,12 +637,18 @@ export default {
       }
     },
     modifyShipmentList: async function() {
-      try {
-        await this.$http.post(apiUrl + 'modify', {old: this.oldPara, new: this.workPara})
-        this.modal.editShipmentModal = false
-        this.getPortData(1)
-      } catch (error) {
-        this.$commonact.fault(error)
+      if(this.oldPara.shipment_list_vendor && this.workPara.shipment_list_vendor && this.oldPara.shipment_list_vendor !== this.workPara.shipment_list_vendor) {
+        this.checkPassword = ''
+        this.checkPasswordType = 'ShipmentListEdit'
+        this.modal.checkPasswordModal = true
+      } else {
+        try {
+          await this.$http.post(apiUrl + 'modify', {old: this.oldPara, new: this.workPara})
+          this.modal.editShipmentModal = false
+          this.getPortData(1)
+        } catch (error) {
+          this.$commonact.fault(error)
+        }
       }
     },
     deleteShipment: async function(row) {
@@ -669,7 +675,7 @@ export default {
       if (this.checkPassword) {
         try {
           let action = ''
-          if (this.checkPasswordType === 'ShipmentListDelete') {
+          if (this.checkPasswordType === 'ShipmentListDelete' || this.checkPasswordType === 'ShipmentListEdit') {
             action = 'LOGISTICS_SHIPMENT_LIST_DELETE'
           }
           let param = {
@@ -680,6 +686,14 @@ export default {
           this.modal.checkPasswordModal = false
           if (this.checkPasswordType === 'ShipmentListDelete') {
             await this.deleteShipmentAct()
+          } else if(this.checkPasswordType === 'ShipmentListEdit') {
+            try {
+              await this.$http.post(apiUrl + 'modify', {old: this.oldPara, new: this.workPara})
+              this.modal.editShipmentModal = false
+              this.getPortData(1)
+            } catch (error) {
+              this.$commonact.fault(error)
+            }
           }
         } catch (error) {
           this.$commonact.fault(error)
