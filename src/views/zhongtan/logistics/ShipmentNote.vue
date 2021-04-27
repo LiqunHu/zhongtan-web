@@ -1410,7 +1410,6 @@ export default {
         this.paymentExtraForm.payment_extra_files.splice(index, 1)
     },
     applyPaymentExtraModalAct: async function(row) {
-      console.log('row', row)
       this.$nextTick(() => {
         this.$refs['paymentExtra'].resetFields()
       })
