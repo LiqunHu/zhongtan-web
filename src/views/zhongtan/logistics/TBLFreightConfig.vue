@@ -175,7 +175,7 @@
                     </i-select>
                 </FormItem>
                 <FormItem label="Total Freight" prop="freight_config_amount">
-                    <Input v-model="freightConfigForm.freight_config_amount" clearable placeholder="charge amount" @on-change="changeFreight"/>
+                    <Input v-model="freightConfigForm.freight_config_amount" clearable placeholder="freight amount" @on-change="changeFreight"/>
                 </FormItem>
                 <FormItem label="Advance" prop="freight_config_advance">
                     <Row>
@@ -186,12 +186,15 @@
                         </i-col>
                         <i-col span="1">&nbsp;</i-col>
                         <i-col span="11">
-                            <Input v-model="freightConfigForm.freight_config_advance_amount" disabled placeholder="charge amount"/>
+                            <Input v-model="freightConfigForm.freight_config_advance_amount" disabled placeholder="advance amount"/>
                         </i-col>
                     </Row>
                 </FormItem>
+                <FormItem label="Total Receivable" prop="freight_config_amount_receivable">
+                    <Input v-model="freightConfigForm.freight_config_amount_receivable" clearable placeholder="receivable amount"/>
+                </FormItem>
                 <FormItem label="Enabled Date" prop="freight_config_enabled_date">
-                    <DatePicker type="date" placeholder="Enabled Date" v-model="freightConfigForm.freight_config_enabled_date" format="yyyy-MM-dd" @on-change="enabledToDateChange"></DatePicker>
+                    <DatePicker type="date" placeholder="Enabled Date" :value="freightConfigForm.freight_config_enabled_date" format="yyyy-MM-dd" @on-change="enabledToDateChange"></DatePicker>
                 </FormItem>
             </Form>
             <div slot="footer">
@@ -291,6 +294,10 @@ export default {
               slot: 'freight_config_advance',
             },
             {
+              title: 'Receivable',
+              key: 'freight_config_amount_receivable',
+            },
+            {
               title: 'Enabled Date',
               key: 'freight_config_enabled_date',
             },
@@ -329,6 +336,7 @@ export default {
         freight_config_amount: '',
         freight_config_advance: '',
         freight_config_advance_amount: '',
+        freight_config_amount_receivable: '',
         freight_config_enabled_date: moment().format('YYYY-MM-DD')
       },
       overdueChargeFree: false,
@@ -381,6 +389,10 @@ export default {
                     }
                 });
             }}
+        ],
+        freight_config_amount_receivable: [
+            { required: true, message: 'The receivable cannot be empty', trigger: 'blur' },
+            { type: 'number', message: 'The receivable must be number', trigger: 'blur' , transform(value) { return Number(value)}}
         ],
         freight_config_enabled_date: [
             { required: true, message: 'The enabled date cannot be empty', trigger: 'blur' },
@@ -442,6 +454,7 @@ export default {
             freight_config_amount: '',
             freight_config_advance: '',
             freight_config_advance_amount: '',
+            freight_config_amount_receivable: '',
             freight_config_enabled_date: moment().format('YYYY-MM-DD')
       }
       this.overdueChargeFree = false
