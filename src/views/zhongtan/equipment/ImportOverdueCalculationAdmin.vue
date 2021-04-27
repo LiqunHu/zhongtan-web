@@ -255,7 +255,7 @@
       </Modal>
       <Modal v-model="modal.invoiceTimelineModal" :title="invoiceTimelineTitle">
         <Timeline>
-          <TimelineItem v-for="(item, index) in containerInvoiceDetail" :key="index" v-if="index === 0" color="green">
+          <TimelineItem v-for="(item, index) in containerInvoiceDetail" :key="item.overdue_invoice_containers_id" v-if="index === 0" color="green">
             <i class="fa fa-trophy" slot="dot"></i>
             <p class="timeline-content">Discharge Date: {{item.overdue_invoice_containers_overdue_discharge_date}}</p>
             <p class="timeline-content">Return Date: {{item.overdue_invoice_containers_return_date}}</p>
@@ -263,7 +263,7 @@
             <p class="timeline-content">Overdue Amount: {{item.overdue_invoice_containers_overdue_amount}} USD</p>
             <p class="timeline-content">Deduction: {{item.overdue_invoice_containers_overdue_deduction}} USD</p>
           </TimelineItem>
-          <TimelineItem v-for="item in containerInvoiceDetail" v-bind:key="item.overdue_invoice_containers_id">
+          <TimelineItem v-for="(item, index) in containerInvoiceDetail" v-bind:key="item.overdue_invoice_containers_id" v-if="index > 0">
               <p class="timeline-time">{{item.invoice_created_at}}</p>
               <p class="timeline-content">{{item.user_name}}</p>
               <p class="timeline-content">Free: {{item.overdue_invoice_containers_overdue_free_days}} Days</p>
