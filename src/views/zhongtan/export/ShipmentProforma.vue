@@ -1,7 +1,7 @@
 <style>
   .ivu-table .table-info-row td{
-      background-color: #49B6D6;
-      color: #FFF;
+      /* background-color: #49B6D6; */
+      color: #ADADAD;
   }
 </style>
 <template>
@@ -866,9 +866,10 @@ export default {
     },
     masterbiRowClassName (row, index) {
       if(row.shipment_fee) {
+        return ''
+      } else {
         return 'table-info-row'
       }
-      return ''
     }
   }
 }

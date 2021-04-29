@@ -1,3 +1,9 @@
+<style>
+  .ivu-table .table-info-row td{
+      /* background-color: #49B6D6; */
+      color: #ADADAD;
+  }
+</style>
 <template>
   <div>
     <!-- begin breadcrumb -->
@@ -48,7 +54,7 @@
           </div>
         </div>
       </template>
-      <Table stripe ref="shipmentTable" :columns="table.shipmentTable.rows" :data="table.shipmentTable.data">
+      <Table stripe ref="shipmentTable" :row-class-name="freightRowClassName" :columns="table.shipmentTable.rows" :data="table.shipmentTable.data">
         <template slot-scope="{ row, index }" slot="shipment_list_cargo_type">
           <span v-if="row.shipment_list_business_type === 'I' && row.shipment_list_cargo_type === 'LOCAL'">
             IMPORT
@@ -637,7 +643,7 @@ export default {
       }
     },
     modifyShipmentList: async function() {
-      if(this.oldPara.shipment_list_vendor && this.workPara.shipment_list_vendor && this.oldPara.shipment_list_vendor !== this.workPara.shipment_list_vendor) {
+      if(this.oldPara.shipment_list_vendor && this.oldPara.shipment_list_vendor !== this.workPara.shipment_list_vendor) {
         this.checkPassword = ''
         this.checkPasswordType = 'ShipmentListEdit'
         this.modal.checkPasswordModal = true
@@ -700,6 +706,13 @@ export default {
         }
       } else {
         return this.$Message.error('Please enter right password')
+      }
+    },
+    freightRowClassName (row, index) {
+      if(row.shipment_list_payment_status === '0' && row.shipment_list_receivable_status === '0') {
+        return 'table-info-row'
+      } else {
+        return ''
       }
     }
   }
