@@ -37,10 +37,10 @@
       </template>
       <Table stripe size="small" ref="checkTable" highlight-row	:columns="table.checkTable.columns" :data="table.checkTable.data" :height="table.checkTable.height" @on-row-click="clickCheckTable">
         <template slot-scope="{ row, index }" slot="action">
-          <a v-if = "row.logistics_verification_state == 'PB'" href="#" class="btn btn-primary btn-icon btn-sm" @click.stop="approve(row)">
+          <a v-if = "row.logistics_verification_state == 'PB' || row.logistics_verification_state == 'PM'" href="#" class="btn btn-primary btn-icon btn-sm" @click.stop="approve(row)">
             <i class="fa fa-check"></i>
           </a>
-          <a v-if = "row.logistics_verification_state == 'PB'" href="#" class="btn btn-danger btn-icon btn-sm" @click.stop="decline(row)">
+          <a v-if = "row.logistics_verification_state == 'PB' || row.logistics_verification_state == 'PM'" href="#" class="btn btn-danger btn-icon btn-sm" @click.stop="decline(row)">
             <i class="fa fa-times"></i>
           </a>
         </template>
@@ -104,6 +104,56 @@
             </template>
           </Table>
           <Table border ref="extraTable" :columns="table.extraTable.rows" :data="table.extraTable.data" v-if="workPara.logistics_verification_api_name === 'PAYMENT EXTRA'">
+            <template slot-scope="{ row, index }" slot="files">
+              <span v-if="row.files">
+                <a v-for="(item, index) in row.files" v-bind:key="index" :href="item.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
+                  <i class="fa fa-download"></i>
+                </a>
+              </span>
+            </template>
+            <template slot-scope="{ row, index }" slot="payment_extra_cargo_type">
+              <span v-if="row.payment_extra_business_type === 'I' && row.payment_extra_cargo_type === 'LOCAL'">
+                IMPORT
+              </span>
+              <span v-else>
+                {{row.payment_extra_cargo_type}}
+              </span>
+            </template>
+          </Table>
+          <Table border ref="freightInvoiceTable" :columns="table.freightInvoiceTable.rows" :data="table.freightInvoiceTable.data" v-if="workPara.logistics_verification_api_name === 'FREIGHT INVOICE'">
+            <template slot-scope="{ row, index }" slot="shipment_list_cargo_type">
+              <span v-if="row.shipment_list_business_type === 'I' && row.shipment_list_cargo_type === 'LOCAL'">
+                IMPORT
+              </span>
+              <span v-else>
+                {{row.shipment_list_cargo_type}}
+              </span>
+            </template>
+            <template slot-scope="{ row, index }" slot="shipment_list_in_date">
+              <span v-if="row.shipment_list_business_type === 'I'">
+                {{row.shipment_list_discharge_date}}
+              </span>
+              <span v-else>
+                {{row.shipment_list_depot_gate_out_date}}
+              </span>
+            </template>
+            <template slot-scope="{ row, index }" slot="shipment_list_out_date">
+              <span v-if="row.shipment_list_business_type === 'I'">
+                {{row.shipment_list_empty_return_date}}
+              </span>
+              <span v-else>
+                {{row.shipment_list_loading_date}}
+              </span>
+            </template>
+          </Table>
+          <Table border ref="freightExtraTable" :columns="table.freightExtraTable.rows" :data="table.freightExtraTable.data" v-if="workPara.logistics_verification_api_name === 'EXTRA INVOICE'">
+            <template slot-scope="{ row, index }" slot="files">
+              <span v-if="row.files">
+                <a v-for="(item, index) in row.files" v-bind:key="index" :href="item.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
+                  <i class="fa fa-download"></i>
+                </a>
+              </span>
+            </template>
             <template slot-scope="{ row, index }" slot="payment_extra_cargo_type">
               <span v-if="row.payment_extra_business_type === 'I' && row.payment_extra_cargo_type === 'LOCAL'">
                 IMPORT
@@ -136,7 +186,7 @@ export default {
               width: 150
             },
             {
-              title: 'Vendor',
+              title: 'Vendor/Customer',
               key: 'vendor',
               width: 150
             },
@@ -386,6 +436,154 @@ export default {
               align: 'center'
             },
             {
+              title: 'ATTACHMENT',
+              slot: 'files',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'TYPE',
+              key: 'payment_extra_business_type',
+              width: 80,
+              align: 'center'
+            },
+            {
+              title: 'CNTR OWNER',
+              key: 'payment_extra_cntr_owner',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'CARGO TYPE',
+              slot: 'payment_extra_cargo_type',
+              width: 150,
+              align: 'center'
+            }
+          ],
+          data: [],
+          total: 0
+        },
+        freightInvoiceTable: {
+          rows: [
+            {
+              type: 'index',
+              width: 80,
+              align: 'center'
+            },
+            {
+              title: 'B/L#',
+              key: 'shipment_list_bill_no',
+              width: 180,
+              align: 'center'
+            },
+            {
+              title: 'SIZE TYPE',
+              key: 'shipment_list_size_type',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'CONTAINER#',
+              key: 'shipment_list_container_no',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'FREIGHT#',
+              key: 'shipment_list_receivable_freight',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'CUSTOMER',
+              key: 'vendor',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'TYPE',
+              key: 'shipment_list_business_type',
+              width: 80,
+              align: 'center'
+            },
+            {
+              title: 'CNTR OWNER',
+              key: 'shipment_list_cntr_owner',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'CARGO TYPE',
+              slot: 'shipment_list_cargo_type',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'POL',
+              key: 'shipment_list_port_of_loading',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'POD',
+              key: 'shipment_list_port_of_destination',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'DISCHARGE/GATE OUT',
+              slot: 'shipment_list_in_date',
+              width: 200,
+              align: 'center'
+            },
+            {
+              title: 'GATE IN/LOADING',
+              slot: 'shipment_list_out_date',
+              width: 200,
+              align: 'center'
+            }
+          ],
+          data: [],
+          total: 0
+        },
+        freightExtraTable: {
+          rows: [
+            {
+              type: 'index',
+              width: 80,
+              align: 'center'
+            },
+            {
+              title: 'B/L#',
+              key: 'payment_extra_bl_no',
+              width: 180,
+              align: 'center'
+            },
+            {
+              title: 'EXTRA(USD)',
+              key: 'payment_extra_amount_usd',
+              width: 200,
+              align: 'center'
+            },
+            {
+              title: 'EXTRA(TZS)',
+              key: 'payment_extra_amount_tzs',
+              width: 200,
+              align: 'center'
+            },
+            {
+              title: 'CUSTOMER',
+              key: 'vendor',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'ATTACHMENT',
+              slot: 'files',
+              width: 150,
+              align: 'center'
+            },
+            {
               title: 'TYPE',
               key: 'payment_extra_business_type',
               width: 80,
@@ -498,6 +696,10 @@ export default {
           this.table.balanceTable.data = response.data.info
         } else if(this.workPara.logistics_verification_api_name === 'PAYMENT EXTRA') {
           this.table.extraTable.data = response.data.info
+        } else if(this.workPara.logistics_verification_api_name === 'FREIGHT INVOICE') {
+          this.table.freightInvoiceTable.data = response.data.info
+        } else if(this.workPara.logistics_verification_api_name === 'EXTRA INVOICE') {
+          this.table.freightExtraTable.data = response.data.info
         }
         if(this.verificationDetail) {
           this.verificationDetailModal = true

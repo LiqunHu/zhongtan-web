@@ -75,6 +75,8 @@ const routes = [
 
   { path: '/admin/zhongtan/logistics/ShipmentList', component: resolve => require(['@/views/zhongtan/logistics/ShipmentList'], resolve) },
   { path: '/admin/zhongtan/logistics/ShipmentNote', component: resolve => require(['@/views/zhongtan/logistics/ShipmentNote'], resolve) },
+  { path: '/admin/zhongtan/logistics/FreightCollection', component: resolve => require(['@/views/zhongtan/logistics/FreightCollection'], resolve) },
+  { path: '/admin/zhongtan/logistics/FreightReceipt', component: resolve => require(['@/views/zhongtan/logistics/FreightReceipt'], resolve) },
   { path: '/admin/zhongtan/logistics/TBLFreightConfig', component: resolve => require(['@/views/zhongtan/logistics/TBLFreightConfig'], resolve) },
   { path: '/admin/zhongtan/logistics/LogisticsBusinessVerification', component: resolve => require(['@/views/zhongtan/logistics/LogisticsBusinessVerification'], resolve) },
   { path: '/admin/zhongtan/logistics/LogisticsManagerVerification', component: resolve => require(['@/views/zhongtan/logistics/LogisticsManagerVerification'], resolve) },

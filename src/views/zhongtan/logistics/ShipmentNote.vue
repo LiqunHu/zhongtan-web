@@ -63,7 +63,7 @@
             </Row>
         </div>
       </template>
-      <Table stripe ref="shipmentTable" :columns="table.shipmentTable.rows" :data="table.shipmentTable.data" @on-select="paymentSelect" @on-select-cancel="paymentSelectCancel" @on-selection-change="paymentSelectedChange">
+      <Table stripe ref="shipmentTable" :columns="table.shipmentTable.rows" :data="table.shipmentTable.data" :height="table.shipmentTable.height" @on-select="paymentSelect" @on-select-cancel="paymentSelectCancel" @on-selection-change="paymentSelectedChange">
         <template slot-scope="{ row, index }" slot="files">
           <Poptip trigger="hover" placement="bottom" :transfer="true" width="690" v-if="row.files && row.files.length > 0">
             <Button type="text" style="text-decoration:underline">Files [{{row.files.length}}]</Button>
@@ -153,9 +153,9 @@
           </a>
         </template>
       </Table>
-      <Page class="m-t-10" :total="table.shipmentTable.total" :current="table.shipmentTable.current" show-total :page-size="table.shipmentTable.limit" @on-change="getShipmentNoteData"/>
+      <Page class="m-t-10" :total="table.shipmentTable.total" :current="table.shipmentTable.current" :pageSizeOpts = "table.shipmentTable.pageSizeOpts" show-total show-sizer :page-size="table.shipmentTable.limit" @on-change="getShipmentNoteData"/>
     </panel>
-    <Modal v-model="modal.addShipmentModal" title="Add Shipment Note" width="1000">
+    <Modal v-model="modal.addShipmentModal" title="Add Payment Note" width="1000">
       <Form ref="addShipment" :model="addSearchData" :label-width="120" :rules="addSearchRule" inline>
         <FormItem label="B/L#" prop="bill_no">
           <Input placeholder="B/L#" v-model="addSearchData.bill_no"/>
@@ -588,8 +588,10 @@ export default {
               align: 'center'
             }
           ],
+          pageSizeOpts: [40, 60, 80, 100],
+          height: common.getTableHeight(),
           data: [],
-          limit: 10,
+          limit: 40,
           offset: 0,
           total: 0,
           current: 1

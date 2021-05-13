@@ -24,7 +24,7 @@
         <div class="panel-toolbar">
           <div class="form-inline">
             <div class="input-group m-r-10">
-              <input type="text" placeholder="B/L#" v-model.trim="searchPara.shipment_list_bill_no" class="form-control">
+              <input type="text" placeholder="B/L#" v-model.trim="searchPara.shipment_list_bill_no" style="width:180px" class="form-control">
               <Select v-model="searchPara.shipment_list_business_type" clearable placeholder="BUSINESS TYPE" style="width:180px">
                 <Option v-for="item in businessTypeFilter" :value="item.id" :key="item.id">{{ item.text }}</Option>
               </Select>
@@ -54,7 +54,7 @@
           </div>
         </div>
       </template>
-      <Table stripe ref="shipmentTable" :row-class-name="freightRowClassName" :columns="table.shipmentTable.rows" :data="table.shipmentTable.data">
+      <Table stripe ref="shipmentTable" :row-class-name="freightRowClassName" :columns="table.shipmentTable.rows" :data="table.shipmentTable.data" :height="table.shipmentTable.height">
         <template slot-scope="{ row, index }" slot="shipment_list_cargo_type">
           <span v-if="row.shipment_list_business_type === 'I' && row.shipment_list_cargo_type === 'LOCAL'">
             IMPORT
@@ -88,7 +88,7 @@
           </a>
         </template>
       </Table>
-      <Page class="m-t-10" :total="table.shipmentTable.total" :current="table.shipmentTable.current" show-total :page-size="table.shipmentTable.limit" @on-change="getPortData"/>
+      <Page class="m-t-10" :total="table.shipmentTable.total" :current="table.shipmentTable.current" :pageSizeOpts = "table.shipmentTable.pageSizeOpts" show-total show-sizer :page-size="table.shipmentTable.limit" @on-change="getPortData"/>
     </panel>
     <Modal v-model="modal.addShipmentModal" title="Add Shipment List" width="1000">
       <Form ref="addShipment" :model="addSearchData" :label-width="120" :rules="addSearchRule" inline>
@@ -369,8 +369,10 @@ export default {
               align: 'center'
             }
           ],
+          pageSizeOpts: [40, 60, 80, 100],
           data: [],
-          limit: 10,
+          height: common.getTableHeight(),
+          limit: 40,
           offset: 0,
           total: 0,
           current: 1
