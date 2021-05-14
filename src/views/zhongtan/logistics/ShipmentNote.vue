@@ -98,6 +98,7 @@
           <Tag color="success" v-if="row.shipment_list_payment_status === '5'">BALANCE PAYMENT</Tag>
           <Tag color="warning" v-if="row.shipment_list_payment_status === '6'">EXTRA CHARGES</Tag>
           <Tag color="success" v-if="row.shipment_list_payment_status === '7'">EXTRA PAYMENT</Tag>
+          <Tag color="warning" v-if="row.shipment_list_payment_status === '8'">APPLY FULL</Tag>
         </template>
         <template slot-scope="{ row, index }" slot="shipment_list_advance_payment">
           {{row.shipment_list_advance_payment}}({{row.shipment_list_advance_percent}}%)
@@ -334,6 +335,7 @@
       </Tabs>
       <div slot="footer">
         <Button type="text" size="large" @click="modal.applyPaymentModal=false">Cancel</Button>
+        <Button type="success" size="large" @click="applyFullPaymentAct" v-if="applyPaymentAction === 'ADVANCE'">Full Payment</Button>
         <Button type="primary" size="large" @click="applyPaymentAct">Apply</Button>
       </div>
     </Modal>
@@ -1350,6 +1352,25 @@ export default {
         }
       } else {
         return this.$Message.error('Please select apply payment')
+      }
+    },
+    applyFullPaymentAct: async function() {
+      if(this.applyPaymentAction === 'ADVANCE') {
+        let selection = this.$refs.advanceTable.getSelection()
+        if(selection && selection.length > 0) {
+          try {
+            await this.$http.post(apiUrl + 'applyFullPayment', { applyAction: this.applyPaymentAction, applyData: selection })
+            this.$Message.success('apply success')
+            this.getShipmentNoteData(1)
+            this.modal.applyPaymentModal = false
+          } catch (error) {
+            this.$commonact.fault(error)
+          }
+        } else {
+          return this.$Message.error('Please select apply payment')
+        }
+      } else {
+        return this.$Message.error('Please select advance payment list')
       }
     },
     deleteShipment: async function(row) {

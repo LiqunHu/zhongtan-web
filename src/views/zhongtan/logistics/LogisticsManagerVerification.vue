@@ -78,9 +78,6 @@
             </template>
           </Table>
           <Table border ref="balanceTable" :columns="table.balanceTable.rows" :data="table.balanceTable.data" v-if="workPara.logistics_verification_api_name === 'PAYMENT BALANCE'">
-            <template slot-scope="{ row, index }" slot="shipment_list_balance_payment" >
-              {{row.shipment_list_balance_payment}}
-            </template>
             <template slot-scope="{ row, index }" slot="shipment_list_cargo_type">
               <span v-if="row.shipment_list_business_type === 'I' && row.shipment_list_cargo_type === 'LOCAL'">
                 IMPORT
@@ -163,6 +160,35 @@
               </span>
               <span v-else>
                 {{row.payment_extra_cargo_type}}
+              </span>
+            </template>
+          </Table>
+          <Table border ref="fullTable" :columns="table.fullTable.rows" :data="table.fullTable.data" v-if="workPara.logistics_verification_api_name === 'PAYMENT FULL'">
+            <template slot-scope="{ row, index }" slot="shipment_list_advance_payment">
+              {{row.shipment_list_advance_payment}}({{row.shipment_list_advance_percent}}%)
+            </template>
+            <template slot-scope="{ row, index }" slot="shipment_list_cargo_type">
+              <span v-if="row.shipment_list_business_type === 'I' && row.shipment_list_cargo_type === 'LOCAL'">
+                IMPORT
+              </span>
+              <span v-else>
+                {{row.shipment_list_cargo_type}}
+              </span>
+            </template>
+            <template slot-scope="{ row, index }" slot="shipment_list_in_date">
+              <span v-if="row.shipment_list_business_type === 'I'">
+                {{row.shipment_list_discharge_date}}
+              </span>
+              <span v-else>
+                {{row.shipment_list_depot_gate_out_date}}
+              </span>
+            </template>
+            <template slot-scope="{ row, index }" slot="shipment_list_out_date">
+              <span v-if="row.shipment_list_business_type === 'I'">
+                {{row.shipment_list_empty_return_date}}
+              </span>
+              <span v-else>
+                {{row.shipment_list_loading_date}}
               </span>
             </template>
           </Table>
@@ -607,6 +633,95 @@ export default {
           ],
           data: [],
           total: 0
+        },
+        fullTable: {
+          rows: [
+            {
+              type: 'index',
+              width: 80,
+              align: 'center'
+            },
+            {
+              title: 'B/L#',
+              key: 'shipment_list_bill_no',
+              width: 180,
+              align: 'center'
+            },
+            {
+              title: 'SIZE TYPE',
+              key: 'shipment_list_size_type',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'CONTAINER#',
+              key: 'shipment_list_container_no',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'ADVANCE#',
+              slot: 'shipment_list_advance_payment',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'BALANCE#',
+              key: 'shipment_list_balance_payment',
+              width: 200,
+              align: 'center'
+            },
+            {
+              title: 'VENDOR',
+              key: 'vendor',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'TYPE',
+              key: 'shipment_list_business_type',
+              width: 80,
+              align: 'center'
+            },
+            {
+              title: 'CNTR OWNER',
+              key: 'shipment_list_cntr_owner',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'CARGO TYPE',
+              slot: 'shipment_list_cargo_type',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'POL',
+              key: 'shipment_list_port_of_loading',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'POD',
+              key: 'shipment_list_port_of_destination',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'DISCHARGE/GATE OUT',
+              slot: 'shipment_list_in_date',
+              width: 200,
+              align: 'center'
+            },
+            {
+              title: 'GATE IN/LOADING',
+              slot: 'shipment_list_out_date',
+              width: 200,
+              align: 'center'
+            }
+          ],
+          data: [],
+          total: 0
         }
       },
       pagePara: {},
@@ -703,6 +818,8 @@ export default {
           this.table.freightInvoiceTable.data = response.data.info
         } else if(this.workPara.logistics_verification_api_name === 'EXTRA INVOICE') {
           this.table.freightExtraTable.data = response.data.info
+        } else if(this.workPara.logistics_verification_api_name === 'PAYMENT FULL') {
+          this.table.fullTable.data = response.data.info
         }
         if(this.verificationDetail) {
           this.verificationDetailModal = true
