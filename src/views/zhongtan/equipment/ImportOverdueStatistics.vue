@@ -144,6 +144,20 @@
       </Table>
       <Page class="m-t-10" :total="table.containerTable.total" show-sizer show-total :page-size="table.containerTable.limit" @on-change="getTableData" @on-page-size-change="resetTableSizer"/>
     </panel>
+    <Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :mask-closable="false">
+      <Form :label-width="120">
+        <FormItem v-show="false">
+            <Input type="password" style='width:0;opacity:0;'></Input>
+        </FormItem>
+        <FormItem label="Password" prop="checkPassword">
+            <Input type="password" placeholder="Password" v-model="checkPassword"></Input>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.checkPasswordModal = false">Cancel</Button>
+        <Button type="primary" size="large" @click="checkPasswordAct">Submit</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -156,6 +170,7 @@ export default {
   name: 'ImportOverdueStatistics',
   data: function() {
     return {
+      modal: {checkPasswordModal: false },
       pagePara: {},
       table: {
         containerTable: {
@@ -331,28 +346,49 @@ export default {
         this.getTableData(1)
     },
     exportData: async function() {
-      try {
-        let response = await this.$http.request({
-            url: apiUrl + 'exportData',
-            method: 'post',
-            data: {search_data: this.search_data},
-            responseType: 'blob'
-          })
-        let blob = response.data
-        let reader = new FileReader()
-        reader.readAsDataURL(blob)
-        reader.onload = e => {
-          let a = document.createElement('a')
-          a.download = 'overdue report ' + moment().format('YYYYMMDDHHmmSS') + '.xlsx'
-          a.href = e.target.result
-          document.body.appendChild(a)
-          a.click()
-          document.body.removeChild(a)
+      this.checkPassword = ''
+      this.checkPasswordType = 'export'
+      this.modal.checkPasswordModal = true
+    },
+    checkPasswordAct: async function() {
+      if (this.checkPassword) {
+        try {
+          let act = ''
+          if (this.checkPasswordType === 'export') {
+            act = 'IMPORT_DEMURAGE_STATISTICS_ACTION'
+          }
+          let param = {
+            action: act,
+            checkPassword: common.md52(this.checkPassword)
+          }
+          await this.$http.post(apiUrl + 'checkPassword', param)
+          this.modal.checkPasswordModal = false
+          if (this.checkPasswordType === 'export') {
+            let response = await this.$http.request({
+                url: apiUrl + 'exportData',
+                method: 'post',
+                data: {search_data: this.search_data},
+                responseType: 'blob'
+              })
+            let blob = response.data
+            let reader = new FileReader()
+            reader.readAsDataURL(blob)
+            reader.onload = e => {
+              let a = document.createElement('a')
+              a.download = 'overdue report ' + moment().format('YYYYMMDDHHmmSS') + '.xlsx'
+              a.href = e.target.result
+              document.body.appendChild(a)
+              a.click()
+              document.body.removeChild(a)
+            }
+          }
+        } catch (error) {
+          this.$commonact.fault(error)
         }
-      } catch (error) {
-        this.$commonact.fault(error)
+      } else {
+        return this.$Message.error('Please enter right password')
       }
-    }
+    },
   }
 }
 </script>

@@ -71,6 +71,12 @@
         <FormItem label="VRN" prop="user_vrn">
           <Input placeholder="VRN" v-model="workPara.user_vrn"/>
         </FormItem>
+        <FormItem label="BANK USD" prop="user_bank_account_usd">
+          <Input placeholder="BANK USD" v-model="workPara.user_bank_account_usd"/>
+        </FormItem>
+        <FormItem label="BANK TZS" prop="user_bank_account_tzs">
+          <Input placeholder="BANK TZS" v-model="workPara.user_bank_account_tzs"/>
+        </FormItem>
       </Form>
       <div slot="footer">
         <Button type="text" size="large" @click="modal.userModal=false">Cancel</Button>
@@ -136,6 +142,16 @@ export default {
             {
               title: 'VRN',
               key: 'user_vrn',
+              width: 150,
+            },
+            {
+              title: 'BANK USD',
+              key: 'user_bank_account_usd',
+              width: 150,
+            },
+            {
+              title: 'BANK TZS',
+              key: 'user_bank_account_tzs',
               width: 150,
             },
             {

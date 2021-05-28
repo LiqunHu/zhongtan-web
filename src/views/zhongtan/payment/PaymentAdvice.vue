@@ -1,0 +1,441 @@
+<template>
+  <div>
+    <!-- begin breadcrumb -->
+    <ol class="breadcrumb pull-right">
+      <li class="breadcrumb-item active">
+        <a href="javascript:;">Payment</a>
+      </li>
+    </ol>
+    <!-- end breadcrumb -->
+    <!-- begin page-header -->
+    <h1 class="page-header">
+      Payment Items
+      <small></small>
+    </h1>
+    <!-- end page-header -->
+    <panel title="Payment Items">
+      <template slot="beforeBody">
+        <div class="panel-toolbar">
+          <div class="form-inline">
+            <div class="input-group m-r-2">
+              <input type="text" placeholder="ADVICE No." v-model="search_data.payment_advice_no" class="form-control">
+            </div>
+            <div class="input-group m-r-2">
+              <Select placeholder="PAYMENT METHOD" clearable filterable v-model="search_data.payment_advice_method">
+                <Option v-for="item in pagePara.PAYMENT_METHOD" :value="item.id" :key="item.id">{{ item.text }}</Option>
+              </Select>
+            </div>
+            <div class="input-group m-r-2">
+              <Select placeholder="ITEMS" clearable filterable v-model="search_data.payment_advice_items">
+                <Option v-for="item in pagePara.PAYMENT_ITEMS" :value="item.payment_items_code" :key="item.payment_items_code" :label="item.payment_items_name">
+                  <span>{{item.payment_items_name}}</span>
+                  <span style="float:right;color:#ccc">{{item.payment_items_code}}</span>
+                </Option>
+              </Select>
+            </div>
+            <div class="input-group m-r-2">
+              <input type="text" placeholder="INV/CNTRL#" v-model="search_data.payment_advice_inv_cntrl" class="form-control">
+            </div>
+            <div class="input-group m-r-2">
+              <Select placeholder="BENEFICIARY" clearable filterable v-model="search_data.payment_advice_beneficiary">
+                <Option v-for="item in pagePara.COMMON_CUSTOMER" :value="item.user_id" :key="item.user_id">{{ item.user_name }}</Option>
+              </Select>
+            </div>
+            <div class="input-group m-r-2">
+              <Select placeholder="REMARKS" clearable filterable v-model="search_data.payment_advice_remarks">
+                <Option v-for="item in pagePara.COMMON_CUSTOMER" :value="item.user_id" :key="item.user_id">{{ item.user_name }}</Option>
+              </Select>
+            </div>
+            <div class="form-group m-r-10">
+              <button type="button" class="btn btn-info" @click="getPaymentAdviceData(1)">
+                <i class="fa fa-search"></i>
+              </button>
+            </div>
+            <div class="form-group m-r-10">
+              <button type="button" class="btn btn-info" @click="addPaymentAdviceModal">Add</button>
+            </div>
+            <div class="form-group m-r-10">
+              <button type="button" class="btn btn-info" @click="exportAct">Export</button>
+            </div>
+          </div>
+        </div>
+      </template>
+      <Table stripe ref="paymentAdvice" :columns="table.paymentAdvice.rows" :data="table.paymentAdvice.data" :border="table.paymentAdvice.data && table.paymentAdvice.data.length > 0">
+        <template slot-scope="{ row, index }" slot="payment_advice_no">
+          {{row.payment_advice_no}}
+          <a :href="row.advice_files.uploadfile_url" class="btn btn-primary btn-icon btn-sm" target="_blank" v-if="row.advice_files" title="payment advice">
+            <i class="fa fa-download"></i>
+          </a>
+        </template>
+        <template slot-scope="{ row, index }" slot="payment_advice_items">
+          {{row.payment_advice_items_name}}
+        </template>
+        <template slot-scope="{ row, index }" slot="payment_advice_beneficiary">
+          {{row.payment_advice_beneficiary_name}}
+        </template>
+        <template slot-scope="{ row, index }" slot="payment_advice_amount">
+          {{row.payment_advice_amount}}{{row.payment_advice_currency}}
+        </template>
+        <template slot-scope="{ row, index }" slot="payment_advice_remarks">
+          {{row.payment_advice_remarks_name}}
+        </template>
+        <template slot-scope="{ row, index }" slot="action" v-if="row.payment_advice_status === '1'">
+          <a href="#" class="btn btn-info btn-icon btn-sm" @click="modifyPaymentAdviceModal(row)">
+            <i class="fa fa-edit"></i>
+          </a>
+          <a href="#" class="btn btn-danger btn-icon btn-sm" @click="deletePaymentAdvice(row)">
+            <i class="fa fa-times"></i>
+          </a>
+        </template>
+      </Table>
+      <Page class="m-t-10" :total="table.paymentAdvice.total" :page-size="table.paymentAdvice.limit" @on-change="getPaymentAdviceData"/>
+    </panel>
+    <Modal v-model="modal.paymentAdviceModal" title="Payment Advice">
+      <Form :model="workPara" :label-width="160" :rules="formRule.rulePaymentAdviceModal" ref="formPaymentAdvice">
+        <FormItem label="PAYMENT METHOD" prop="payment_advice_method">
+          <Select placeholder="PAYMENT METHOD" clearable filterable v-model="workPara.payment_advice_method">
+            <Option v-for="item in pagePara.PAYMENT_METHOD" :value="item.id" :key="item.id">{{ item.text }}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="ITEMS" prop="payment_advice_items">
+          <Select placeholder="ITEMS" clearable filterable v-model="workPara.payment_advice_items">
+            <Option v-for="item in pagePara.PAYMENT_ITEMS" :value="item.payment_items_code" :key="item.payment_items_code" :label="item.payment_items_name">
+              <span>{{item.payment_items_name}}</span>
+              <span style="float:right;color:#ccc">{{item.payment_items_code}}</span>
+            </Option>
+          </Select>
+        </FormItem>
+        <FormItem label="INV/CNTRL#" prop="payment_advice_inv_cntrl">
+          <Input placeholder="INV/CNTRL" v-model="workPara.payment_advice_inv_cntrl"/>
+        </FormItem>
+        <FormItem label="BENEFICIARY" prop="payment_advice_beneficiary">
+          <Select placeholder="BENEFICIARY" clearable filterable v-model="workPara.payment_advice_beneficiary" @on-change="changeBeneficiary">
+            <Option v-for="item in pagePara.COMMON_CUSTOMER" :value="item.user_id" :key="item.user_id">{{ item.user_name }}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="AMOUNT" prop="payment_advice_amount">
+          <Input placeholder="AMOUNT" v-model="workPara.payment_advice_amount" @keyup.native='keyupNumberFormat($event, "payment_advice_amount")'>
+            <Select slot="append" v-model="workPara.payment_advice_currency" style="width: 100px" @on-change="changeCurrency">
+              <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
+            </Select>
+          </INput>
+        </FormItem>
+        <FormItem label="BANK ACCOUNT" prop="payment_advice_bank_account">
+          <Input placeholder="Discharge Port Code" v-model="workPara.payment_advice_bank_account" disabled/>
+        </FormItem>
+        <FormItem label="REMARKS" prop="payment_advice_remarks">
+          <Select placeholder="REMARKS" clearable filterable v-model="workPara.payment_advice_remarks">
+            <Option v-for="item in pagePara.COMMON_CUSTOMER" :value="item.user_id" :key="item.user_id">{{ item.user_name }}</Option>
+          </Select>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.paymentAdviceModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="submitPaymentAdvicePort">Submit</Button>
+      </div>
+    </Modal>
+    <Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :mask-closable="false">
+      <Form :label-width="120">
+        <FormItem v-show="false">
+            <Input type="password" style='width:0;opacity:0;'></Input>
+        </FormItem>
+        <FormItem label="Password" prop="checkPassword">
+            <Input type="password" placeholder="Password" v-model="checkPassword"></Input>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.checkPasswordModal = false">Cancel</Button>
+        <Button type="primary" size="large" @click="checkPasswordAct">Submit</Button>
+      </div>
+    </Modal>
+  </div>
+</template>
+<script>
+import PageOptions from '../../../config/PageOptions.vue'
+const common = require('@/lib/common')
+const apiUrl = '/api/zhongtan/payment/PaymentAdvice/'
+
+export default {
+  name: 'PaymentAdvice',
+  data: function() {
+    return {
+      modal: { paymentAdviceModal: false, checkPasswordModal: false },
+      table: {
+        paymentAdvice: {
+          rows: [
+            {
+              type: 'index',
+              width: 60,
+              align: 'center'
+            },
+            {
+              title: 'PAYMENT NO.',
+              slot: 'payment_advice_no'
+            },
+            {
+              title: 'PAYMENT METHOD',
+              key: 'payment_advice_method'
+            },
+            {
+              title: 'ITEMS',
+              slot: 'payment_advice_items'
+            },
+            {
+              title: 'INV/CNTRL#',
+              key: 'payment_advice_inv_cntrl'
+            },
+            {
+              title: 'BENEFICIARY',
+              slot: 'payment_advice_beneficiary'
+            },
+            {
+              title: 'BANK ACCOUNT',
+              key: 'payment_advice_bank_account'
+            },
+            {
+              title: 'AMOUNT',
+              slot: 'payment_advice_amount'
+            },
+            {
+              title: 'REMARKS',
+              slot: 'payment_advice_remarks'
+            },
+            {
+              title: 'Action',
+              slot: 'action'
+            }
+          ],
+          data: [],
+          limit: 10,
+          offset: 0,
+          total: 0,
+        }
+      },
+      search_data: {
+        payment_advice_no: '',
+        payment_advice_method: '',
+        payment_advice_items: '',
+        payment_advice_inv_cntrl: '',
+        payment_advice_beneficiary: '',
+        payment_advice_remarks: ''
+      },
+      formRule: {
+        rulePaymentAdviceModal: {
+          payment_items_code: [{ required: true, trigger: 'change', message: 'Enter payment item code' }],
+          payment_items_name: [{ required: true, trigger: 'change', message: 'Enter payment item name' }],
+        }
+      },
+      pagePara: {},
+      oldPara: {},
+      workPara: {},
+      action: '',
+      checkPassword: '',
+      checkPasswordType: '' 
+    }
+  },
+  created() {
+    PageOptions.pageEmpty = false
+  },
+  mounted: function() {
+    const initPage = async () => {
+      try {
+        let response = await this.$http.post(apiUrl + 'init', {})
+        this.pagePara = JSON.parse(JSON.stringify(response.data.info))
+        this.getPaymentAdviceData(1)
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    }
+
+    initPage()
+  },
+  methods: {
+    getPaymentAdviceData: async function(index) {
+      try {
+        if (index) {
+          this.table.paymentAdvice.offset = (index - 1) * this.table.paymentAdvice.limit
+        }
+
+        let response = await this.$http.post(apiUrl + 'search', {
+          search_data: this.search_data,
+          offset: this.table.paymentAdvice.offset,
+          limit: this.table.paymentAdvice.limit
+        })
+        let data = response.data.info
+        this.table.paymentAdvice.total = data.total
+        this.table.paymentAdvice.data = JSON.parse(JSON.stringify(data.rows))
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
+    resetWorkPara: async function() {
+      this.workPara = {
+        payment_advice_method: '',
+        payment_advice_items: '',
+        payment_advice_inv_cntrl: '',
+        payment_advice_beneficiary: '',
+        payment_advice_amount: '',
+        payment_advice_currency: 'USD',
+        payment_advice_bank_account: '',
+        payment_advice_remarks: ''
+      }
+    },
+    addPaymentAdviceModal: async function() {
+      this.resetWorkPara()
+      this.action = 'add'
+      this.$refs.formPaymentAdvice.resetFields()
+      this.modal.paymentAdviceModal = true
+    },
+    changeBeneficiary: async function(value) {
+      if(value && this.workPara.payment_advice_currency) {
+        for(let c of this.pagePara.COMMON_CUSTOMER) {
+          if(c.user_id === value) {
+            if(this.workPara.payment_advice_currency === 'USD') {
+              this.workPara.payment_advice_bank_account = c.user_bank_account_usd
+            } else {
+              this.workPara.payment_advice_bank_account = c.user_bank_account_tzs
+            }
+            return
+          }
+        }
+      }
+    },
+    changeCurrency: async function(value) {
+      if(value && this.workPara.payment_advice_beneficiary) {
+        for(let c of this.pagePara.COMMON_CUSTOMER) {
+          if(c.user_id === this.workPara.payment_advice_beneficiary) {
+            if(value === 'USD') {
+              this.workPara.payment_advice_bank_account = c.user_bank_account_usd
+            } else {
+              this.workPara.payment_advice_bank_account = c.user_bank_account_tzs
+            }
+            return
+          }
+        }
+      }
+    },
+    modifyPaymentAdviceModal: async function(row) {
+      let actrow = JSON.parse(JSON.stringify(row))
+      delete actrow._index
+      delete actrow._rowKey
+      this.oldPara = JSON.parse(JSON.stringify(actrow))
+      this.workPara = JSON.parse(JSON.stringify(actrow))
+      this.$refs.formPaymentAdvice.resetFields()
+      this.action = 'modify'
+      if(row.payment_advice_check) {
+        this.checkPassword = ''
+        this.checkPasswordType = 'paymentAdviceModify'
+        this.modal.checkPasswordModal = true
+      } else {
+        this.modal.paymentAdviceModal = true
+      }
+    },
+    submitPaymentAdvicePort: function() {
+      this.$refs.formPaymentAdvice.validate(async valid => {
+        if (valid) {
+          try {
+            if (this.action === 'add') {
+              await this.$http.post(apiUrl + 'add', this.workPara)
+              this.$Message.success('add payment item success')
+            } else if (this.action === 'modify') {
+              await this.$http.post(apiUrl + 'modify', { old: this.oldPara, new: this.workPara })
+              this.$Message.success('modify payment item success')
+            }
+            this.modal.paymentAdviceModal = false
+            this.getPaymentAdviceData()
+          } catch (error) {
+            this.$commonact.fault(error)
+          }
+        }
+      })
+    },
+    deletePaymentAdvice: function(row) {
+      this.$commonact.confirm('delete confirmed?', async () => {
+        try {
+          let actrow = JSON.parse(JSON.stringify(row))
+          delete actrow._index
+          delete actrow._rowKey     
+          this.workPara = JSON.parse(JSON.stringify(actrow))
+          if(row.payment_advice_check) {
+            this.checkPassword = ''
+            this.checkPasswordType = 'paymentAdviceDelete'
+            this.modal.checkPasswordModal = true
+          } else {
+            await this.$http.post(apiUrl + 'delete', { payment_advice_id: row.payment_advice_id })
+            this.$Message.success('delete success')
+            this.getPaymentAdviceData()
+          }
+        } catch (error) {
+          this.$commonact.fault(error)
+        }
+      })
+    },
+    checkPasswordAct: async function() {
+      if (this.checkPassword) {
+        try {
+          let act = ''
+          if (this.checkPasswordType === 'paymentAdviceModify' || this.checkPasswordType === 'paymentAdviceDelete') {
+            act = 'PAYMENT_ADVICE_ACTION'
+          }
+          let param = {
+            action: act,
+            checkPassword: common.md52(this.checkPassword)
+          }
+          await this.$http.post(apiUrl + 'checkPassword', param)
+          this.modal.checkPasswordModal = false
+          if (this.checkPasswordType === 'paymentAdviceModify') {
+            this.modal.paymentAdviceModal = true
+          } else if (this.checkPasswordType === 'paymentAdviceDelete') {
+            await this.$http.post(apiUrl + 'delete', { payment_advice_id: this.workPara.payment_advice_id })
+            this.$Message.success('delete success')
+            this.getPaymentAdviceData()
+          }
+        } catch (error) {
+          this.$commonact.fault(error)
+        }
+      } else {
+        return this.$Message.error('Please enter right password')
+      }
+    },
+    exportAct: async function() {
+      try {
+        let response = await this.$http.request({
+            url: apiUrl + 'export',
+            method: 'post',
+            data: {search_data: this.search_data},
+            responseType: 'blob'
+          })
+        let blob = response.data
+        let reader = new FileReader()
+        reader.readAsDataURL(blob)
+        reader.onload = e => {
+          let a = document.createElement('a')
+          a.download = 'Payment Advice.xlsx'
+          a.href = e.target.result
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+        }
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
+    keyupNumberFormat: async function(e, key) {
+      if(e.target.value) {
+          e.target.value = e.target.value.replace(/\s+/g, '')
+          let nagtiveFlg = e.target.value.indexOf('-') === 0
+          e.target.value = e.target.value.replace(/[^\d.]/g, '')
+          e.target.value = e.target.value.replace(/\.{2,}/g, '.')
+          e.target.value = e.target.value.replace(/^\./g, '0.')
+          e.target.value = e.target.value.replace(/^\d*\.\d*\./g, e.target.value.substring(0,e.target.value.length-1))
+          e.target.value = e.target.value.replace(/^0[^\\.]+/g, '0')
+          e.target.value = e.target.value.replace(/^(\d+)\.(\d\d).*$/, '$1.$2')
+          e.target.value = nagtiveFlg ? '-' + e.target.value : e.target.value
+          this.workPara[key] = e.target.value
+      } else {
+          this.workPara[key] = ''
+      }
+  }
+  }
+}
+</script>
