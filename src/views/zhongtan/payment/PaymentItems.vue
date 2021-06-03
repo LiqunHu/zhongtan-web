@@ -46,10 +46,10 @@
     <Modal v-model="modal.paymentItemsModal" title="Freight Place">
       <Form :model="workPara" :label-width="120" :rules="formRule.rulePaymentItemsModal" ref="formPaymentItems">
         <FormItem label="Code" prop="payment_items_code">
-          <Input placeholder="Discharge Port Code" v-model="workPara.payment_items_code"/>
+          <Input placeholder="Discharge Port Code" maxlength="20" v-model="workPara.payment_items_code"/>
         </FormItem>
         <FormItem label="Name" prop="payment_items_name">
-          <Input placeholder="Discharge Port Name" v-model="workPara.payment_items_name"/>
+          <Input placeholder="Discharge Port Name" maxlength="100" v-model="workPara.payment_items_name"/>
         </FormItem>
       </Form>
       <div slot="footer">

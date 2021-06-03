@@ -9,11 +9,11 @@
     <!-- end breadcrumb -->
     <!-- begin page-header -->
     <h1 class="page-header">
-      Payment Items
+      Payment Advice
       <small></small>
     </h1>
     <!-- end page-header -->
-    <panel title="Payment Items">
+    <panel title="Payment Advice">
       <template slot="beforeBody">
         <div class="panel-toolbar">
           <div class="form-inline">
@@ -61,6 +61,14 @@
         </div>
       </template>
       <Table stripe ref="paymentAdvice" :columns="table.paymentAdvice.rows" :data="table.paymentAdvice.data" :border="table.paymentAdvice.data && table.paymentAdvice.data.length > 0">
+        <template slot-scope="{ row, index }" slot="action" v-if="row.payment_advice_status === '1'">
+          <a href="#" class="btn btn-info btn-icon btn-sm" @click="modifyPaymentAdviceModal(row)">
+            <i class="fa fa-edit"></i>
+          </a>
+          <a href="#" class="btn btn-danger btn-icon btn-sm" @click="deletePaymentAdvice(row)">
+            <i class="fa fa-times"></i>
+          </a>
+        </template>
         <template slot-scope="{ row, index }" slot="payment_advice_no">
           {{row.payment_advice_no}}
           <a :href="row.advice_files.uploadfile_url" class="btn btn-primary btn-icon btn-sm" target="_blank" v-if="row.advice_files" title="payment advice">
@@ -77,24 +85,28 @@
           {{row.payment_advice_amount}}{{row.payment_advice_currency}}
         </template>
         <template slot-scope="{ row, index }" slot="payment_advice_remarks">
-          {{row.payment_advice_remarks_name}}
+          <font style="font-weight: bold;">BILLS TO</font> {{row.payment_advice_remarks_name}}
         </template>
-        <template slot-scope="{ row, index }" slot="action" v-if="row.payment_advice_status === '1'">
-          <a href="#" class="btn btn-info btn-icon btn-sm" @click="modifyPaymentAdviceModal(row)">
-            <i class="fa fa-edit"></i>
-          </a>
-          <a href="#" class="btn btn-danger btn-icon btn-sm" @click="deletePaymentAdvice(row)">
-            <i class="fa fa-times"></i>
-          </a>
+        <template slot-scope="{ row, index }" slot="atta_files">
+          <span v-if="row.atta_files">
+            <a v-for="(item, index) in row.atta_files" v-bind:key="index" :href="item.uploadfile_url" class="btn btn-primary btn-icon btn-sm" target="_blank">
+              <i class="fa fa-download"></i>
+            </a>
+          </span>
         </template>
       </Table>
       <Page class="m-t-10" :total="table.paymentAdvice.total" :page-size="table.paymentAdvice.limit" @on-change="getPaymentAdviceData"/>
     </panel>
-    <Modal v-model="modal.paymentAdviceModal" title="Payment Advice">
-      <Form :model="workPara" :label-width="160" :rules="formRule.rulePaymentAdviceModal" ref="formPaymentAdvice">
+    <Modal v-model="modal.paymentAdviceModal" title="Payment Advice" width="600px;">
+      <Form :model="workPara" :label-width="160" :rules="formRule.rulePaymentAdviceModal" ref="formPaymentAdvice" style="padding-right: 50px;">
         <FormItem label="PAYMENT METHOD" prop="payment_advice_method">
           <Select placeholder="PAYMENT METHOD" clearable filterable v-model="workPara.payment_advice_method">
             <Option v-for="item in pagePara.PAYMENT_METHOD" :value="item.id" :key="item.id">{{ item.text }}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="PAYMENT VESSELS" prop="payment_advice_vessel_voyage">
+          <Select placeholder="VESSEL VOYAGE" clearable filterable v-model="workPara.payment_advice_vessel_voyage">
+            <Option v-for="item in pagePara.VESSELS" :value="item.vessel_voyage" :key="item.vessel_voyage">{{ item.vessel_voyage }}</Option>
           </Select>
         </FormItem>
         <FormItem label="ITEMS" prop="payment_advice_items">
@@ -124,9 +136,25 @@
           <Input placeholder="Discharge Port Code" v-model="workPara.payment_advice_bank_account" disabled/>
         </FormItem>
         <FormItem label="REMARKS" prop="payment_advice_remarks">
-          <Select placeholder="REMARKS" clearable filterable v-model="workPara.payment_advice_remarks">
-            <Option v-for="item in pagePara.COMMON_CUSTOMER" :value="item.user_id" :key="item.user_id">{{ item.user_name }}</Option>
-          </Select>
+          <Input value="BILLS TO" disabled>
+            <Select slot="append" placeholder="REMARKS" clearable filterable v-model="workPara.payment_advice_remarks" style="width: 240px">
+              <Option v-for="item in pagePara.COMMON_CUSTOMER" :value="item.user_id" :key="item.user_id">{{ item.user_name }}</Option>
+            </Select>
+          </INput>
+        </FormItem>
+        <FormItem label="Attachment" prop="payment_atta_files">
+          <Upload
+            ref="upload"
+            :headers="uploadHeaders"
+            :on-success="handleUploadSuccess"
+            :on-remove="handleUploadRemove"
+            type="drag"
+            action="/api/zhongtan/payment/PaymentAdvice/upload">
+            <div style="padding: 20px 0">
+                <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+                <p>Click or drag files here to upload</p>
+            </div>
+          </Upload>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -169,41 +197,60 @@ export default {
               align: 'center'
             },
             {
+              title: 'Action',
+              width: 100,
+              slot: 'action'
+            },
+            {
               title: 'PAYMENT NO.',
-              slot: 'payment_advice_no'
+              width: 180,
+              slot: 'payment_advice_no',
             },
             {
               title: 'PAYMENT METHOD',
+              width: 180,
               key: 'payment_advice_method'
             },
             {
+              title: 'VESSEL/VOYOGE',
+              width: 160,
+              key: 'payment_advice_vessel_voyage'
+            },
+            {
               title: 'ITEMS',
+              width: 180,
               slot: 'payment_advice_items'
             },
             {
               title: 'INV/CNTRL#',
+              width: 200,
               key: 'payment_advice_inv_cntrl'
             },
             {
               title: 'BENEFICIARY',
+              width: 200,
               slot: 'payment_advice_beneficiary'
             },
             {
               title: 'BANK ACCOUNT',
+              width: 160,
               key: 'payment_advice_bank_account'
             },
             {
               title: 'AMOUNT',
+              width: 160,
               slot: 'payment_advice_amount'
             },
             {
               title: 'REMARKS',
+              width: 200,
               slot: 'payment_advice_remarks'
             },
             {
-              title: 'Action',
-              slot: 'action'
-            }
+              title: 'ATTACHMENT',
+              width: 200,
+              slot: 'atta_files'
+            },
           ],
           data: [],
           limit: 10,
@@ -221,8 +268,14 @@ export default {
       },
       formRule: {
         rulePaymentAdviceModal: {
-          payment_items_code: [{ required: true, trigger: 'change', message: 'Enter payment item code' }],
-          payment_items_name: [{ required: true, trigger: 'change', message: 'Enter payment item name' }],
+          payment_advice_method: [{ required: true, trigger: 'change', message: 'Enter payment method' }],
+          payment_advice_items: [{ required: true, trigger: 'change', message: 'Enter payment items' }],
+          payment_advice_inv_cntrl: [{ required: true, trigger: 'change', message: 'Enter payment inv/cntrl' }],
+          payment_advice_beneficiary: [{ required: true, trigger: 'change', message: 'Enter payment beneficiary' }],
+          payment_advice_amount: [{ required: true, trigger: 'change', message: 'Enter payment amount' }],
+          payment_advice_bank_account: [{ required: true, trigger: 'change', message: 'Enter payment bank account' }],
+          payment_advice_remarks: [{ required: true, trigger: 'change', message: 'Enter payment remarks' }],
+          payment_atta_files: [{ type: 'array', min: 1, required: true, trigger: 'change', message: 'upload Attachment'}]
         }
       },
       pagePara: {},
@@ -230,7 +283,8 @@ export default {
       workPara: {},
       action: '',
       checkPassword: '',
-      checkPasswordType: '' 
+      checkPasswordType: '',
+      uploadHeaders: common.uploadHeaders()
     }
   },
   created() {
@@ -255,7 +309,6 @@ export default {
         if (index) {
           this.table.paymentAdvice.offset = (index - 1) * this.table.paymentAdvice.limit
         }
-
         let response = await this.$http.post(apiUrl + 'search', {
           search_data: this.search_data,
           offset: this.table.paymentAdvice.offset,
@@ -270,15 +323,18 @@ export default {
     },
     resetWorkPara: async function() {
       this.workPara = {
-        payment_advice_method: '',
+        payment_advice_method: 'REMITTANCE',
+        payment_advice_vessel_voyage: '',
         payment_advice_items: '',
         payment_advice_inv_cntrl: '',
         payment_advice_beneficiary: '',
         payment_advice_amount: '',
         payment_advice_currency: 'USD',
         payment_advice_bank_account: '',
-        payment_advice_remarks: ''
+        payment_advice_remarks: '',
+        payment_atta_files: []
       }
+      this.$refs.upload.fileList = []
     },
     addPaymentAdviceModal: async function() {
       this.resetWorkPara()
@@ -321,6 +377,7 @@ export default {
       this.oldPara = JSON.parse(JSON.stringify(actrow))
       this.workPara = JSON.parse(JSON.stringify(actrow))
       this.$refs.formPaymentAdvice.resetFields()
+      this.$refs.upload.fileList = []
       this.action = 'modify'
       if(row.payment_advice_check) {
         this.checkPassword = ''
@@ -374,7 +431,9 @@ export default {
       if (this.checkPassword) {
         try {
           let act = ''
-          if (this.checkPasswordType === 'paymentAdviceModify' || this.checkPasswordType === 'paymentAdviceDelete') {
+          if (this.checkPasswordType === 'paymentAdviceModify' 
+              || this.checkPasswordType === 'paymentAdviceDelete' 
+              || this.checkPasswordType === 'paymentAdviceExport') {
             act = 'PAYMENT_ADVICE_ACTION'
           }
           let param = {
@@ -389,6 +448,24 @@ export default {
             await this.$http.post(apiUrl + 'delete', { payment_advice_id: this.workPara.payment_advice_id })
             this.$Message.success('delete success')
             this.getPaymentAdviceData()
+          } else if (this.checkPasswordType === 'paymentAdviceExport') {
+            let response = await this.$http.request({
+                url: apiUrl + 'export',
+                method: 'post',
+                data: {search_data: this.search_data},
+                responseType: 'blob'
+              })
+            let blob = response.data
+            let reader = new FileReader()
+            reader.readAsDataURL(blob)
+            reader.onload = e => {
+              let a = document.createElement('a')
+              a.download = 'Payment Advice.xlsx'
+              a.href = e.target.result
+              document.body.appendChild(a)
+              a.click()
+              document.body.removeChild(a)
+            }
           }
         } catch (error) {
           this.$commonact.fault(error)
@@ -398,27 +475,9 @@ export default {
       }
     },
     exportAct: async function() {
-      try {
-        let response = await this.$http.request({
-            url: apiUrl + 'export',
-            method: 'post',
-            data: {search_data: this.search_data},
-            responseType: 'blob'
-          })
-        let blob = response.data
-        let reader = new FileReader()
-        reader.readAsDataURL(blob)
-        reader.onload = e => {
-          let a = document.createElement('a')
-          a.download = 'Payment Advice.xlsx'
-          a.href = e.target.result
-          document.body.appendChild(a)
-          a.click()
-          document.body.removeChild(a)
-        }
-      } catch (error) {
-        this.$commonact.fault(error)
-      }
+      this.checkPassword = ''
+      this.checkPasswordType = 'paymentAdviceExport'
+      this.modal.checkPasswordModal = true
     },
     keyupNumberFormat: async function(e, key) {
       if(e.target.value) {
@@ -435,7 +494,16 @@ export default {
       } else {
           this.workPara[key] = ''
       }
-  }
+    },
+    handleUploadSuccess(res, file, fileList) {
+      file.url = res.info.url
+      file.name = res.info.name
+      this.workPara.payment_atta_files = JSON.parse(JSON.stringify(this.$refs.upload.fileList))
+    },
+    handleUploadRemove(file, fileList) {
+      const index = this.workPara.payment_atta_files.indexOf(file)
+      this.workPara.payment_atta_files.splice(index, 1)
+    },
   }
 }
 </script>

@@ -507,10 +507,26 @@ export default {
       })
     },
     addPayableAct: async function() {
-      this.$nextTick(function() {
-        this.checkPassword = ''
-        this.checkPasswordType = 'addPayable'
-        this.modal.checkPasswordModal = true
+      // this.$nextTick(function() {
+      //   this.checkPassword = ''
+      //   this.checkPasswordType = 'addPayable'
+      //   this.modal.checkPasswordModal = true
+      // })
+      this.payableTable.data.push({
+        shipment_fee_id: 'N' + (this.shipmentAddIndex++),
+        fee_data_code: '',
+        shipment_fee_type: 'P',
+        shipment_fee_party: '',
+        shipment_fee_status: 'NE',
+        fee_data_fixed: '0',
+        shipment_fee_fixed_amount: '0',
+        shipment_fee_amount: '',
+        shipment_fee_currency: 'USD',
+        shipment_fee_supplement: '0',
+        party_disabled: false,
+        fee_disabled: false,
+        amount_disabled: false,
+        currency_disabled: false,
       })
     },
     addSupplementReceivableAct: async function() {

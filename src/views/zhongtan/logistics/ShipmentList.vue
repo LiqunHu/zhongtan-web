@@ -160,10 +160,10 @@
           {{workPara.shipment_list_loading_date}}
         </FormItem>
         <FormItem label="POL#" style="margin-bottom:0px;">
-          <Input placeholder="PORT OF LOADING" v-model.trim="workPara.shipment_list_port_of_loading"/>
+          <Input placeholder="PORT OF LOADING" v-model.trim="workPara.shipment_list_port_of_loading" disabled/>
         </FormItem>
         <FormItem label="POD#" style="margin-bottom:0px;">
-          <Input placeholder="PORT OF DESTINATION" v-model.trim="workPara.shipment_list_port_of_destination"/>
+          <Input placeholder="PORT OF DESTINATION" v-model.trim="workPara.shipment_list_port_of_destination" disabled/>
         </FormItem>
         <FormItem label="DAR CUSTOMS RELEASE DATE" style="margin-bottom:0px;">
           <DatePicker type="date" :value = "workPara.shipment_list_dar_customs_release_date" @on-change="releaseDateChange" format="yyyy-MM-dd" style="width:278px;"></DatePicker>

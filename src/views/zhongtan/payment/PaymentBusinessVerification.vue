@@ -52,7 +52,14 @@
           {{row.payment_advice_amount}}{{row.payment_advice_currency}}
         </template>
         <template slot-scope="{ row, index }" slot="payment_advice_remarks">
-          {{row.payment_advice_remarks_name}}
+          <font style="font-weight: bold;">BILLS TO</font> {{row.payment_advice_remarks_name}}
+        </template>
+        <template slot-scope="{ row, index }" slot="atta_files">
+          <span v-if="row.atta_files">
+            <a v-for="(item, index) in row.atta_files" v-bind:key="index" :href="item.uploadfile_url" class="btn btn-primary btn-icon btn-sm" target="_blank">
+              <i class="fa fa-download"></i>
+            </a>
+          </span>
         </template>
       </Table>
       <Page class="m-t-10" :total="table.paymentVerification.total" :page-size="table.paymentVerification.limit" @on-change="getPaymentVerificationData"/>
@@ -80,40 +87,59 @@ export default {
             },
             {
               title: 'Action',
+              width: 120,
               slot: 'action'
             },
             {
               title: 'State',
               key: 'payment_verification_state',
+              width: 180,
               render: common.selectRender(this, 'BUSINESS_STATE'),
             },
             {
               title: 'PAYMENT METHOD',
+              width: 180,
               key: 'payment_advice_method'
             },
             {
+              title: 'VESSEL/VOYOGE',
+              width: 160,
+              key: 'payment_advice_vessel_voyage'
+            },
+            {
               title: 'ITEMS',
+              width: 160,
               slot: 'payment_advice_items'
             },
             {
               title: 'INV/CNTRL#',
+              width: 160,
               key: 'payment_advice_inv_cntrl'
             },
             {
               title: 'BENEFICIARY',
+              width: 160,
               slot: 'payment_advice_beneficiary'
             },
             {
               title: 'BANK ACCOUNT',
+              width: 160,
               key: 'payment_advice_bank_account'
             },
             {
               title: 'AMOUNT',
+              width: 160,
               slot: 'payment_advice_amount'
             },
             {
               title: 'REMARKS',
+              width: 200,
               slot: 'payment_advice_remarks'
+            },
+            {
+              title: 'ATTACHMENT',
+              width: 200,
+              slot: 'atta_files'
             }
           ],
           data: [],
