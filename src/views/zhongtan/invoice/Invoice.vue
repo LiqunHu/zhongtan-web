@@ -1348,6 +1348,7 @@
             },
             downloadDo: async function() {
                 try {
+                    this.workPara.doDeliverToEdit = this.doDeliverValidToEdit
                     let response = await this.$http.post(apiUrl + 'deliveryCheck', this.workPara)
                     let retData = response.data.info
                     if(retData.result) {

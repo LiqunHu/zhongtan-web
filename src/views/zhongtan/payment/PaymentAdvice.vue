@@ -133,7 +133,7 @@
           </INput>
         </FormItem>
         <FormItem label="BANK ACCOUNT" prop="payment_advice_bank_account">
-          <Input placeholder="Discharge Port Code" v-model="workPara.payment_advice_bank_account" disabled/>
+          <Input placeholder="BANK ACCOUNT" v-model="workPara.payment_advice_bank_account" disabled/>
         </FormItem>
         <FormItem label="REMARKS" prop="payment_advice_remarks">
           <Input value="BILLS TO" disabled>
@@ -273,7 +273,6 @@ export default {
           payment_advice_inv_cntrl: [{ required: true, trigger: 'change', message: 'Enter payment inv/cntrl' }],
           payment_advice_beneficiary: [{ required: true, trigger: 'change', message: 'Enter payment beneficiary' }],
           payment_advice_amount: [{ required: true, trigger: 'change', message: 'Enter payment amount' }],
-          payment_advice_bank_account: [{ required: true, trigger: 'change', message: 'Enter payment bank account' }],
           payment_advice_remarks: [{ required: true, trigger: 'change', message: 'Enter payment remarks' }],
           payment_atta_files: [{ type: 'array', min: 1, required: true, trigger: 'change', message: 'upload Attachment'}]
         }
