@@ -142,7 +142,7 @@
             </Select>
           </INput>
         </FormItem>
-        <FormItem label="Attachment" prop="payment_atta_files">
+        <FormItem label="Attachment">
           <Upload
             ref="upload"
             :headers="uploadHeaders"
@@ -370,12 +370,13 @@ export default {
       }
     },
     modifyPaymentAdviceModal: async function(row) {
+      this.$refs.formPaymentAdvice.resetFields()
       let actrow = JSON.parse(JSON.stringify(row))
       delete actrow._index
       delete actrow._rowKey
       this.oldPara = JSON.parse(JSON.stringify(actrow))
       this.workPara = JSON.parse(JSON.stringify(actrow))
-      this.$refs.formPaymentAdvice.resetFields()
+      this.workPara.payment_atta_files = []
       this.$refs.upload.fileList = []
       this.action = 'modify'
       if(row.payment_advice_check) {
@@ -391,8 +392,12 @@ export default {
         if (valid) {
           try {
             if (this.action === 'add') {
-              await this.$http.post(apiUrl + 'add', this.workPara)
-              this.$Message.success('add payment item success')
+              if(this.workPara.payment_atta_files && this.workPara.payment_atta_files.length > 0) {
+                await this.$http.post(apiUrl + 'add', this.workPara)
+                this.$Message.success('add payment item success')
+              } else {
+                return this.$Message.error('Please upload Attachment file')
+              }
             } else if (this.action === 'modify') {
               await this.$http.post(apiUrl + 'modify', { old: this.oldPara, new: this.workPara })
               this.$Message.success('modify payment item success')

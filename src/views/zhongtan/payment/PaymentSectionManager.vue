@@ -9,11 +9,11 @@
     <!-- end breadcrumb -->
     <!-- begin page-header -->
     <h1 class="page-header">
-      Manager Verification
+      Section Manager
       <small></small>
     </h1>
     <!-- end page-header -->
-    <panel title="Manager Verification">
+    <panel title="Section Manager">
       <template slot="beforeBody">
         <div class="panel-toolbar">
           <div class="form-inline">
@@ -22,7 +22,7 @@
             </div>
             <div class="form-group m-r-2">
               <Select v-model="search_data.verification_state" style="width:180px" @on-change="getPaymentVerificationData">
-                <Option v-for="item in pagePara.PAYMENT_VERIFICATION_STATE" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                <Option v-for="item in pagePara.SECTION_STATE" :value="item.id" :key="item.id">{{ item.text }}</Option>
               </Select>
             </div>
             <div class="form-group m-r-10">
@@ -35,10 +35,10 @@
       </template>
       <Table stripe ref="paymentVerification" :columns="table.paymentVerification.rows" :data="table.paymentVerification.data" :border="table.paymentVerification.data && table.paymentVerification.data.length > 0">
         <template slot-scope="{ row, index }" slot="action">
-          <a v-if = "row.payment_verification_state == 'PS' || row.payment_verification_state == 'PB' || row.payment_verification_state == 'PM'" href="#" class="btn btn-primary btn-icon btn-sm" @click.stop="approve(row)">
+          <a v-if = "row.payment_verification_state == 'PS'" href="#" class="btn btn-primary btn-icon btn-sm" @click.stop="approve(row)">
             <i class="fa fa-check"></i>
           </a>
-          <a v-if = "row.payment_verification_state == 'PS' || row.payment_verification_state == 'PB' || row.payment_verification_state == 'PM'" href="#" class="btn btn-danger btn-icon btn-sm" @click.stop="decline(row)">
+          <a v-if = "row.payment_verification_state == 'PS'" href="#" class="btn btn-danger btn-icon btn-sm" @click.stop="decline(row)">
             <i class="fa fa-times"></i>
           </a>
         </template>
@@ -70,10 +70,10 @@
 import PageOptions from '../../../config/PageOptions.vue'
 const moment = require('moment')
 const common = require('@/lib/common')
-const apiUrl = '/api/zhongtan/payment/ManagerVerification/'
+const apiUrl = '/api/zhongtan/payment/SectionManager/'
 
 export default {
-  name: 'PaymentManagerVerification',
+  name: 'PaymentSectionManager',
   data: function() {
     return {
       modal: { paymentVerificationModal: false },
@@ -94,7 +94,7 @@ export default {
               title: 'State',
               key: 'payment_verification_state',
               width: 180,
-              render: common.selectRender(this, 'BUSINESS_STATE'),
+              render: common.selectRender(this, 'SECTION_STATE'),
             },
             {
               title: 'PAYMENT METHOD',
@@ -157,7 +157,7 @@ export default {
       },
       search_data: {
         date: [moment().subtract(30, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
-        verification_state: 'PM',
+        verification_state: 'PS',
       },
       pagePara: {},
       oldPara: {},

@@ -80,10 +80,12 @@ const routes = [
   { path: '/admin/zhongtan/logistics/TBLFreightConfig', component: resolve => require(['@/views/zhongtan/logistics/TBLFreightConfig'], resolve) },
   { path: '/admin/zhongtan/logistics/LogisticsBusinessVerification', component: resolve => require(['@/views/zhongtan/logistics/LogisticsBusinessVerification'], resolve) },
   { path: '/admin/zhongtan/logistics/LogisticsManagerVerification', component: resolve => require(['@/views/zhongtan/logistics/LogisticsManagerVerification'], resolve) },
+  { path: '/admin/zhongtan/logistics/LogisticsSectionManager', component: resolve => require(['@/views/zhongtan/logistics/LogisticsSectionManager'], resolve) },
 
   { path: '/admin/zhongtan/payment/PaymentAdvice', component: resolve => require(['@/views/zhongtan/payment/PaymentAdvice'], resolve) },
   { path: '/admin/zhongtan/payment/PaymentManaverVerification', component: resolve => require(['@/views/zhongtan/payment/PaymentManaverVerification'], resolve) },
   { path: '/admin/zhongtan/payment/PaymentBusinessVerification', component: resolve => require(['@/views/zhongtan/payment/PaymentBusinessVerification'], resolve) },
+  { path: '/admin/zhongtan/payment/PaymentSectionManager', component: resolve => require(['@/views/zhongtan/payment/PaymentSectionManager'], resolve) },
   { path: '/admin/zhongtan/payment/PaymentItems', component: resolve => require(['@/views/zhongtan/payment/PaymentItems'], resolve) },
 ]
 

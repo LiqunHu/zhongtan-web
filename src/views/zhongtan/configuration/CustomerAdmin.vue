@@ -42,6 +42,9 @@
             <Tag :color="item.color" v-if="row.user_customer_type == item.id">{{item.text}}</Tag>
           </div>
         </template>
+        <template slot-scope="{ row, index }" slot="export_split_shipment">
+          <Tag v-if="row.export_split_shipment" v-for="item in row.export_split_shipment" v-bind:key="item">{{item}}</Tag>
+        </template>
         <template slot-scope="{ row, index }" slot="user_blacklist">
           <i-switch v-model="row.user_blacklist" @on-change="changeBlacklist(row)" size="large" true-value="1" false-value="0">
               <span slot="open">ON</span>
@@ -60,38 +63,46 @@
       <Page class="m-t-10" :total="table.userTable.total" :page-size="table.userTable.limit" @on-change="getUserData"/>
     </panel>
     <Modal v-model="modal.userModal" title="Customer">
-      <Form :model="workPara" :label-width="100" :rules="formRule.ruleUserModal" ref="formUser">
-        <FormItem label="Username" prop="user_username">
+      <Form :model="workPara" :label-width="120" :rules="formRule.ruleUserModal" ref="formUser">
+        <FormItem label="Username" prop="user_username" style="margin-bottom: 7px;">
           <Input placeholder="Username" v-model="workPara.user_username" :disabled="action === 'modify'"/>
         </FormItem>
-        <FormItem label="Name" prop="user_name">
+        <FormItem label="Name" prop="user_name" style="margin-bottom: 7px;">
           <Input placeholder="Name" v-model="workPara.user_name"/>
         </FormItem>
-        <FormItem label="Email" prop="user_email">
+        <FormItem label="Email" prop="user_email" style="margin-bottom: 7px;">
           <Input placeholder="Email" v-model="workPara.user_email"/>
         </FormItem>
-        <FormItem label="Phone" prop="user_phone">
+        <FormItem label="Phone" prop="user_phone" style="margin-bottom: 7px;">
           <Input placeholder="Phone" v-model="workPara.user_phone"/>
         </FormItem>
-        <FormItem label="Address" prop="user_address">
+        <FormItem label="Address" prop="user_address" style="margin-bottom: 7px;">
           <Input placeholder="Address" v-model="workPara.user_address"/>
         </FormItem>
-        <FormItem label="Type" prop="user_type">
+        <FormItem label="Type" prop="user_type" style="margin-bottom: 7px;">
           <Select v-model="workPara.user_customer_type">
             <Option v-for="item in pagePara.USER_CUSTOMER_TYPE" :value="item.id" :key="item.id">{{item.text}}</Option>
           </Select>
         </FormItem>
-        <FormItem label="TIN" prop="user_tin">
+        <FormItem label="TIN" prop="user_tin" style="margin-bottom: 7px;">
           <Input placeholder="TIN" v-model="workPara.user_tin"/>
         </FormItem>
-        <FormItem label="VRN" prop="user_vrn">
+        <FormItem label="VRN" prop="user_vrn" style="margin-bottom: 7px;">
           <Input placeholder="VRN" v-model="workPara.user_vrn"/>
         </FormItem>
-        <FormItem label="BANK USD" prop="user_bank_account_usd">
+        <FormItem label="BANK USD" prop="user_bank_account_usd" style="margin-bottom: 7px;">
           <Input placeholder="BANK USD" v-model="workPara.user_bank_account_usd"/>
         </FormItem>
-        <FormItem label="BANK TZS" prop="user_bank_account_tzs">
+        <FormItem label="BANK TZS" prop="user_bank_account_tzs" style="margin-bottom: 7px;">
           <Input placeholder="BANK TZS" v-model="workPara.user_bank_account_tzs"/>
+        </FormItem>
+        <FormItem label="EXPORT SPLIT" prop="export_split_shipment" style="margin-bottom: 7px;">
+          <Select v-model="workPara.export_split_shipment" multiple>
+            <Option v-for="item in pagePara.EXPORT_SHIPMENTS" :value="item.fee_data_code" :key="item.fee_data_code" :label="item.fee_data_code">
+              <span>{{item.fee_data_code}}</span>
+              <span style="float:right;color:#ccc">{{item.fee_data_name}}</span>
+            </Option>
+          </Select>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -170,6 +181,11 @@ export default {
               title: 'BANK TZS',
               key: 'user_bank_account_tzs',
               width: 150,
+            },
+            {
+              title: 'EXPORT SPLIT',
+              slot: 'export_split_shipment',
+              width: 200,
             },
             {
               title: 'Blacklist',

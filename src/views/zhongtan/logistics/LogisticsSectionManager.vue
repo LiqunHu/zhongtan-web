@@ -9,10 +9,10 @@
     <!-- end breadcrumb -->
     <!-- begin page-header -->
     <h1 class="page-header">
-      Business Verification
+      Section Manager
     </h1>
     <!-- end page-header -->
-    <panel title="Business Verification">
+    <panel title="Section Manager">
       <template slot="beforeBody">
         <div class="panel-toolbar">
           <div class="form-inline">
@@ -20,7 +20,7 @@
               <DatePicker type="daterange" :value="search_data.date" placeholder="Verification Date" style="width: 200px" @on-change="searchData"></DatePicker>
             </div>
             <div class="form-group m-r-2">
-              <Select v-model="search_data.verification_state" style="width:180px" @on-change="getTableData">
+              <Select clearable v-model="search_data.verification_state" style="width:180px" @on-change="getTableData">
                 <Option v-for="item in pagePara.FREIGHT_STATE" :value="item.id" :key="item.id">{{ item.text }}</Option>
               </Select>
             </div>
@@ -37,10 +37,10 @@
       </template>
       <Table stripe size="small" ref="checkTable" highlight-row	:columns="table.checkTable.columns" :data="table.checkTable.data" :height="table.checkTable.height" @on-row-click="clickCheckTable">
         <template slot-scope="{ row, index }" slot="action">
-          <a v-if = "row.logistics_verification_state == 'PS' || row.logistics_verification_state == 'PB' || row.logistics_verification_state == 'PM'" href="#" class="btn btn-primary btn-icon btn-sm" @click.stop="approve(row)">
+          <a v-if = "row.logistics_verification_state == 'PS'" href="#" class="btn btn-primary btn-icon btn-sm" @click.stop="approve(row)">
             <i class="fa fa-check"></i>
           </a>
-          <a v-if = "row.logistics_verification_state == 'PS' || row.logistics_verification_state == 'PB' || row.logistics_verification_state == 'PM'" href="#" class="btn btn-danger btn-icon btn-sm" @click.stop="decline(row)">
+          <a v-if = "row.logistics_verification_state == 'PS'" href="#" class="btn btn-danger btn-icon btn-sm" @click.stop="decline(row)">
             <i class="fa fa-times"></i>
           </a>
         </template>
@@ -201,9 +201,10 @@
 import PageOptions from '../../../config/PageOptions.vue'
 const moment = require('moment')
 const common = require('@/lib/common')
-const apiUrl = '/api/zhongtan/logistics/BusinessVerification/'
+const apiUrl = '/api/zhongtan/logistics/SectionManager/'
 
 export default {
+  name: 'PaymentSectionManager',
   data: function() {
     return {
       table: {
@@ -727,7 +728,7 @@ export default {
       pagePara: {},
       search_data: {
         date: [moment().subtract(30, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
-        verification_state: 'PB',
+        verification_state: 'PS',
         bl: '',
       },
       modal: { invoiceDetail: false, verificationTimeline: false},
