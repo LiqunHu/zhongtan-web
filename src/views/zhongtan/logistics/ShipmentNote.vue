@@ -336,7 +336,7 @@
       <div slot="footer">
         <Button type="text" size="large" @click="modal.applyPaymentModal=false">Cancel</Button>
         <Button type="success" size="large" @click="applyFullPaymentAct" v-if="applyPaymentAction === 'ADVANCE'">Full Payment</Button>
-        <Button type="primary" size="large" @click="applyPaymentAct">Apply</Button>
+        <Button type="primary" size="large" @click="applyPaymentAct" v-if="applyPaymentAction === 'ADVANCE' || applyPaymentAction === 'BALANCE'">Apply</Button>
       </div>
     </Modal>
     <Modal v-model="modal.applyPaymentExtraModal" title="Payment Extra" width="800">

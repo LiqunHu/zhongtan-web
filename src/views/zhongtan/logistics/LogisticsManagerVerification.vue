@@ -37,10 +37,10 @@
       </template>
       <Table stripe size="small" ref="checkTable" highlight-row	:columns="table.checkTable.columns" :data="table.checkTable.data" :height="table.checkTable.height" @on-row-click="clickCheckTable">
         <template slot-scope="{ row, index }" slot="action">
-          <a v-if = "row.logistics_verification_state == 'PM'" href="#" class="btn btn-primary btn-icon btn-sm" @click.stop="approve(row)">
+          <a v-if = "row.logistics_verification_state == 'PS' || row.logistics_verification_state == 'PB' || row.logistics_verification_state == 'PM'" href="#" class="btn btn-primary btn-icon btn-sm" @click.stop="approve(row)">
             <i class="fa fa-check"></i>
           </a>
-          <a v-if = "row.logistics_verification_state == 'PM'" href="#" class="btn btn-danger btn-icon btn-sm" @click.stop="decline(row)">
+          <a v-if = "row.logistics_verification_state == 'PS' || row.logistics_verification_state == 'PB' || row.logistics_verification_state == 'PM'" href="#" class="btn btn-danger btn-icon btn-sm" @click.stop="decline(row)">
             <i class="fa fa-times"></i>
           </a>
         </template>
