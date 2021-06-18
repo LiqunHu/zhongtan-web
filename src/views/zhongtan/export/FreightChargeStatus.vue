@@ -168,7 +168,7 @@
         </FormItem>
       </Form>
       <div slot="footer">
-        <Button type="text" size="large" @click="checkPasswordModal = false">Cancel</Button>
+        <Button type="text" size="large" @click="modal.checkPasswordModal = false">Cancel</Button>
         <Button type="primary" size="large" @click="checkPasswordAct">Submit</Button>
       </div>
     </Modal>
