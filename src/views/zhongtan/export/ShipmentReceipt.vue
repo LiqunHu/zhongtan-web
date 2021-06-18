@@ -23,6 +23,9 @@
               <input type="text" class="form-control" v-model="search_data.vessel_name" placeholder="Vessel Name" style="width: 200px" />
             </div>
             <div class="form-group m-r-2">
+              <input type="text" class="form-control" v-model="search_data.invoice_no" placeholder="INVOICE No" style="width: 200px" />
+            </div>
+            <div class="form-group m-r-2">
               <input type="text" class="form-control" v-model="search_data.masterbi_bl" placeholder="B/L No" style="width: 200px" />
             </div>
             <div class="form-group m-r-10">
@@ -218,6 +221,7 @@ export default {
         etd_start_date: '',
         etd_end_date: '',
         vessel_name: '',
+        invoice_no: '',
         masterbi_bl: '',
         export_vessel_id: ''
       },

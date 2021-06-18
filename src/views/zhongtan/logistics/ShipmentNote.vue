@@ -33,9 +33,9 @@
                     <i class="fa fa-search"></i>Search
                   </button>
                 </div>
-                <div class="form-group m-r-10">
+                <!-- <div class="form-group m-r-10">
                   <button type="button" class="btn btn-info" @click="addShipmentListModal">AddPayment</button>
-                </div>
+                </div> -->
                 <div class="form-group m-r-10">
                   <button type="button" class="btn btn-info" @click="applyPaymentModal" :disabled="applyPaymentDisabled">ApplyPayment</button>
                 </div>

@@ -57,6 +57,24 @@
         </div>
       </template>
       <Table stripe size="small" ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data" :height="table.containerTable.height" :border="table.containerTable.data && table.containerTable.data.length > 0" :span-method="handleSpan">
+        <template slot-scope="{ row, index }" slot="shipment_list_bl_print">
+          <Poptip trigger="hover" placement="right" v-if="row.shipment_list_bl_print_user" width="300">
+            <Button type="success" size="small" v-if="row.shipment_list_bl_print === 'YES'" v-on:click="blPrintChange(row)">{{row.shipment_list_bl_print}}</Button>
+            <Button type="error" size="small" v-if="row.shipment_list_bl_print === 'NO'" v-on:click="blPrintChange(row)">{{row.shipment_list_bl_print}}</Button>
+            <template slot="content">
+              <Row>
+                <Col span="6">Op: </Col>
+                <Col span="18">{{row.shipment_list_bl_print_user_name}}</Col>
+              </Row>
+              <Row>
+                <Col span="6">Time: </Col>
+                <Col span="18">{{row.shipment_list_bl_print_time}}</Col>
+              </Row>
+            </template>
+          </Poptip>
+          <Button type="success" size="small" v-if="!row.shipment_list_bl_print_user && row.shipment_list_bl_print === 'YES'" v-on:click="blPrintChange(row)">{{row.shipment_list_bl_print}}</Button>
+          <Button type="error" size="small" v-if="!row.shipment_list_bl_print_user && row.shipment_list_bl_print === 'NO'" v-on:click="blPrintChange(row)">{{row.shipment_list_bl_print}}</Button>
+        </template>
         <template slot-scope="{ row, index }" slot="export_masterbl_bl">
           <Tag color="primary" v-if="row.loading_list_import === '1'">L</Tag>
           <Tag color="success" v-if="row.proforma_import === '1'">P</Tag>
@@ -140,6 +158,20 @@
         <Button type="primary" size="large" @click="loadingListData">Submit</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :mask-closable="false">
+      <Form :label-width="120">
+        <FormItem v-show="false">
+            <Input type="password" style='width:0;opacity:0;'></Input>
+        </FormItem>
+        <FormItem label="Password" prop="checkPassword">
+            <Input type="password" placeholder="Password" v-model="checkPassword"></Input>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="checkPasswordCancel">Cancel</Button>
+        <Button type="primary" size="large" @click="checkPasswordAct">Submit</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -151,7 +183,7 @@ export default {
   name: 'FreightChargeStatus',
   data: function() {
     return {
-      modal: {loadingListModal: false},
+      modal: {loadingListModal: false, checkPasswordModal: false},
       headers: common.uploadHeaders(),
       chargeStatus: [
         { id: 'RELEASE', text: 'RELEASE' },
@@ -161,6 +193,12 @@ export default {
       table: {
         containerTable: {
           columns: [
+            {
+              title: 'B/L PRINT',
+              slot: 'shipment_list_bl_print',
+              width: 100,
+              align: 'center'
+            },
             {
               title: '#M B/L No',
               slot: 'export_masterbl_bl',
@@ -258,7 +296,8 @@ export default {
       },
       files: {
         fileList: []
-      }
+      },
+      checkPassword: ''
     }
   },
   created() {
@@ -343,25 +382,9 @@ export default {
       }
     },
     exportFreightCharge: async function() {
-      try {
-        let searchPara = {
-          search_data: this.search_data
-        }
-        let response = await this.$http.request({url: apiUrl + 'exportFreight', method: 'post', data: searchPara, responseType: 'blob'})
-        let blob = response.data
-        let reader = new FileReader()
-        reader.readAsDataURL(blob)
-        reader.onload = e => {
-          let a = document.createElement('a')
-          a.download = 'Freight Charge List.xlsx'
-          a.href = e.target.result
-          document.body.appendChild(a)
-          a.click()
-          document.body.removeChild(a)
-        }
-      } catch (error) {
-        this.$commonact.fault(error)
-      }
+      this.checkPassword = ''
+      this.checkPasswordType = 'exportFreight'
+      this.modal.checkPasswordModal = true
     },
     loadingListAct: async function() {
       this.$refs.upload.fileList = []
@@ -397,7 +420,64 @@ export default {
       } catch (error) {
         this.$commonact.fault(error)
       }
-    }
+    },
+    blPrintChange: async function(row) {
+      this.$commonact.confirm('Submit ' + (row.shipment_list_bl_print === 'YES' ? 'NO' : 'YES') + ' ?', async() => {
+        try {
+          if(row.shipment_list_bl_print === 'YES') {
+            this.workPara = JSON.parse(JSON.stringify(row))
+            this.checkPassword = ''
+            this.checkPasswordType = 'blPrint'
+            this.modal.checkPasswordModal = true
+          } else {
+            await this.$http.post(apiUrl + 'blPrint', {export_masterbl_id: row.export_masterbl_id})
+            this.getTableData(1)
+          }
+        }catch (error) {
+          this.$commonact.fault(error)
+        }
+      })
+    },
+    checkPasswordAct: async function() {
+      if (this.checkPassword) {
+        try {
+          let action = ''
+          if (this.checkPasswordType === 'blPrint' || this.checkPasswordType === 'exportFreight') {
+            action = 'FRIGHT_CHARGE_ACTION'
+          }
+          let param = {
+            action: action,
+            checkPassword: common.md52(this.checkPassword)
+          }
+          await this.$http.post(apiUrl + 'checkPassword', param)
+          this.modal.checkPasswordModal = false
+          if (this.checkPasswordType === 'blPrint') {
+            await this.$http.post(apiUrl + 'blPrint', {export_masterbl_id: this.workPara.export_masterbl_id})
+            this.getTableData(1)
+          } else if(this.checkPasswordType === 'exportFreight') {
+            let searchPara = {
+              search_data: this.search_data
+            }
+            let response = await this.$http.request({url: apiUrl + 'exportFreight', method: 'post', data: searchPara, responseType: 'blob'})
+            let blob = response.data
+            let reader = new FileReader()
+            reader.readAsDataURL(blob)
+            reader.onload = e => {
+              let a = document.createElement('a')
+              a.download = 'Freight Charge List.xlsx'
+              a.href = e.target.result
+              document.body.appendChild(a)
+              a.click()
+              document.body.removeChild(a)
+            }
+          }
+        } catch (error) {
+          this.$commonact.fault(error)
+        }
+      } else {
+        return this.$Message.error('Please enter right password')
+      }
+    },
   }
 }
 </script>

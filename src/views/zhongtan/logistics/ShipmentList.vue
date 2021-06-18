@@ -71,6 +71,14 @@
             {{row.shipment_list_depot_gate_out_date}}
           </span>
         </template>
+        <template slot-scope="{ row, index }" slot="shipment_list_vessel_ata_etd">
+          <span v-if="row.shipment_list_business_type === 'I'">
+            {{row.shipment_list_vessel_ata}}
+          </span>
+          <span v-else>
+            {{row.shipment_list_vessel_etd}}
+          </span>
+        </template>
         <template slot-scope="{ row, index }" slot="shipment_list_out_date">
           <span v-if="row.shipment_list_business_type === 'I'">
             {{row.shipment_list_empty_return_date}}
@@ -114,6 +122,14 @@
           </span>
           <span v-else>
             {{row.shipment_list_depot_gate_out_date}}
+          </span>
+        </template>
+        <template slot-scope="{ row, index }" slot="shipment_list_vessel_ata_etd">
+          <span v-if="row.shipment_list_business_type === 'I'">
+            {{row.shipment_list_vessel_ata}}
+          </span>
+          <span v-else>
+            {{row.shipment_list_vessel_etd}}
           </span>
         </template>
         <template slot-scope="{ row, index }" slot="shipment_list_out_date">
@@ -303,6 +319,12 @@ export default {
               align: 'center'
             },
             {
+              title: 'VESSEL ATA/ETD',
+              slot: 'shipment_list_vessel_ata_etd',
+              width: 200,
+              align: 'center'
+            },
+            {
               title: 'EMPTY RETURN/LOADING',
               slot: 'shipment_list_out_date',
               width: 240,
@@ -366,6 +388,18 @@ export default {
               title: 'REMARK',
               key: 'shipment_list_remark',
               width: 150,
+              align: 'center'
+            },
+            {
+              title: 'VESSEL NAME',
+              key: 'shipment_list_vessel_name',
+              width: 200,
+              align: 'center'
+            },
+            {
+              title: 'VESSEL VOYAGE',
+              key: 'shipment_list_vessel_voyage',
+              width: 200,
               align: 'center'
             }
           ],
@@ -444,6 +478,12 @@ export default {
               align: 'center'
             },
             {
+              title: 'VESSEL ATA/ETD',
+              slot: 'shipment_list_vessel_ata_etd',
+              width: 200,
+              align: 'center'
+            },
+            {
               title: 'POL',
               key: 'shipment_list_port_of_loading',
               width: 150,
@@ -454,7 +494,19 @@ export default {
               slot: 'shipment_list_out_date',
               width: 200,
               align: 'center'
-            }
+            },
+            {
+              title: 'VESSEL NAME',
+              key: 'shipment_list_vessel_name',
+              width: 200,
+              align: 'center'
+            },
+            {
+              title: 'VESSEL VOYAGE',
+              key: 'shipment_list_vessel_voyage',
+              width: 200,
+              align: 'center'
+            },
           ],
           data: [],
           total: 0
