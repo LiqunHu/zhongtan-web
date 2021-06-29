@@ -252,12 +252,12 @@ export default {
               slot: 'atta_files'
             },
           ],
-          pageSizeOpts: [40, 60, 80, 100],
+          pageSizeOpts: [20, 40, 60, 80, 100],
           data: [],
-          limit: 40,
+          limit: 20,
           offset: 0,
           total: 0,
-          height: common.getTableHeight(),
+          height: common.getTableHeight() - 100,
           current: 1
         }
       },

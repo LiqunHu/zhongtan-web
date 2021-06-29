@@ -434,7 +434,7 @@ export default {
             }
           ],
           pageSizeOpts: [40, 60, 80, 100],
-          height: common.getTableHeight(),
+          height: common.getTableHeight() - 100,
           data: [],
           limit: 40,
           offset: 0,
