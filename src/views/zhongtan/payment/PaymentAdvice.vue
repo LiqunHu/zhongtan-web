@@ -60,7 +60,7 @@
           </div>
         </div>
       </template>
-      <Table stripe ref="paymentAdvice" :columns="table.paymentAdvice.rows" :data="table.paymentAdvice.data" :border="table.paymentAdvice.data && table.paymentAdvice.data.length > 0">
+      <Table stripe ref="paymentAdvice" :columns="table.paymentAdvice.rows" :data="table.paymentAdvice.data" :border="table.paymentAdvice.data && table.paymentAdvice.data.length > 0" :height="table.paymentAdvice.height">
         <template slot-scope="{ row, index }" slot="action" v-if="row.payment_advice_status === '1'">
           <a href="#" class="btn btn-info btn-icon btn-sm" @click="modifyPaymentAdviceModal(row)">
             <i class="fa fa-edit"></i>
@@ -95,7 +95,7 @@
           </span>
         </template>
       </Table>
-      <Page class="m-t-10" :total="table.paymentAdvice.total" :page-size="table.paymentAdvice.limit" @on-change="getPaymentAdviceData"/>
+      <Page class="m-t-10" :total="table.paymentAdvice.total" :current="table.paymentAdvice.current" :pageSizeOpts = "table.paymentAdvice.pageSizeOpts" :page-size="table.paymentAdvice.limit" @on-change="getPaymentAdviceData"/>
     </panel>
     <Modal v-model="modal.paymentAdviceModal" title="Payment Advice" width="600px;">
       <Form :model="workPara" :label-width="160" :rules="formRule.rulePaymentAdviceModal" ref="formPaymentAdvice" style="padding-right: 50px;">
@@ -252,10 +252,13 @@ export default {
               slot: 'atta_files'
             },
           ],
+          pageSizeOpts: [40, 60, 80, 100],
           data: [],
-          limit: 10,
+          limit: 40,
           offset: 0,
           total: 0,
+          height: common.getTableHeight(),
+          current: 1
         }
       },
       search_data: {
@@ -307,6 +310,7 @@ export default {
       try {
         if (index) {
           this.table.paymentAdvice.offset = (index - 1) * this.table.paymentAdvice.limit
+          this.table.paymentAdvice.current = index
         }
         let response = await this.$http.post(apiUrl + 'search', {
           search_data: this.search_data,
