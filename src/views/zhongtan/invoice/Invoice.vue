@@ -244,7 +244,7 @@
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_container_no" size="small" :disabled="tableEdit"/>
                 </template>
             <template slot-scope="{ row, index }" slot="invoice_masterbi_goods_description">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_goods_description" size="small" :disabled="tableEdit"/>
+                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_goods_description" type="textarea" :disabled="tableEdit" style="margin-top:4px; margin-bottom:4px;"></Input>
                 </template>
             <template slot-scope="{ row, index }" slot="invoice_masterbi_package_no">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_package_no" size="small" :disabled="tableEdit"/>

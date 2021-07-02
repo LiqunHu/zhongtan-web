@@ -91,6 +91,9 @@
           <a href="#" class="btn btn-info btn-icon btn-sm" @click="editShipmentModal(row)">
             <i class="fa fa-edit"></i>
           </a>
+          <a href="#" class="btn btn-success btn-icon btn-sm" @click="refreshShipment(row)">
+            <Icon type="ios-refresh" size="22"></Icon>
+          </a>
           <a href="#" class="btn btn-danger btn-icon btn-sm" @click="deleteShipment(row)">
             <i class="fa fa-times"></i>
           </a>
@@ -256,7 +259,7 @@ export default {
             {
               title: 'Action',
               slot: 'action',
-              width: 100
+              width: 120
             },
             {
               title: 'TYPE',
@@ -735,7 +738,7 @@ export default {
       if (this.checkPassword) {
         try {
           let action = ''
-          if (this.checkPasswordType === 'ShipmentListDelete' || this.checkPasswordType === 'ShipmentListEdit') {
+          if (this.checkPasswordType === 'ShipmentListDelete' || this.checkPasswordType === 'ShipmentListEdit' || this.checkPasswordType === 'ShipmentListRefresh') {
             action = 'LOGISTICS_SHIPMENT_LIST_DELETE'
           }
           let param = {
@@ -754,7 +757,9 @@ export default {
             } catch (error) {
               this.$commonact.fault(error)
             }
-          }
+          } else if (this.checkPasswordType === 'ShipmentListRefresh') {
+            await this.refreshShipmentAct()
+          } 
         } catch (error) {
           this.$commonact.fault(error)
         }
@@ -767,6 +772,22 @@ export default {
         return 'table-info-row'
       } else {
         return ''
+      }
+    },
+    refreshShipment: async function(row) {
+      // 刷新提还箱日期
+      this.workPara = JSON.parse(JSON.stringify(row))
+      this.checkPassword = ''
+      this.checkPasswordType = 'ShipmentListRefresh'
+      this.modal.checkPasswordModal = true
+    },
+    refreshShipmentAct: async function() {
+      try {
+        await this.$http.post(apiUrl + 'refresh', { shipment_list_id: this.workPara.shipment_list_id })
+        this.$Message.success('refresh success')
+        this.getPortData(1)
+      } catch (error) {
+        this.$commonact.fault(error)
       }
     }
   }
