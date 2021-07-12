@@ -12,7 +12,7 @@
       Business Verification
     </h1>
     <!-- end page-header -->
-    <panel title="Commercial Verification">
+    <panel title="Business Verification">
       <template slot="beforeBody">
         <div class="panel-toolbar">
           <div class="form-inline">
@@ -20,8 +20,13 @@
               <DatePicker type="daterange" :value="search_data.date" placeholder="Vessel Date" style="width: 200px" @on-change="searchData"></DatePicker>
             </div>
             <div class="form-group m-r-2">
-              <Select clearable v-model="search_data.verification_state" style="width:180px" @on-change="getTableData">
+              <Select clearable v-model="search_data.verification_state" style="width:180px" placeholder="State" @on-change="getTableData">
                 <Option v-for="item in pagePara.RELEASE_STATE" :value="item.id" :key="item.id">{{ item.text }}</Option>
+              </Select>
+            </div>
+            <div class="form-group m-r-2">
+              <Select clearable v-model="search_data.verification_vessel_id" filterable placeholder="Vessel Voyage" style="width:180px">
+                <Option v-for="item in pagePara.VESSEL_VOYAGES" :value="item.export_vessel_id" :key="item.export_vessel_id">{{ item.export_vessel_voyage }}</Option>
               </Select>
             </div>
             <div class="form-group m-r-2">
@@ -30,6 +35,11 @@
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="getTableData">
                 <i class="fa fa-search"></i>
+              </button>
+            </div>
+            <div class="form-group m-r-10">
+              <button type="button" class="btn btn-info" @click="exportAct">
+                <i class="fa fa-download"></i> Export
               </button>
             </div>
           </div>
@@ -48,6 +58,9 @@
           <a v-if = "row.export_verification_state == 'PM'" href="#" class="btn btn-danger btn-icon btn-sm" @click.stop="decline(row)">
             <i class="fa fa-times"></i>
           </a>
+        </template>
+        <template slot-scope="{ row, index }" slot="export_vessel_voyage">
+          {{row.export_vessel_name}} / {{row.export_vessel_voyage}}
         </template>
       </Table>
       <Page class="m-t-10" :total="table.checkTable.total" :page-size="table.checkTable.limit" @on-change="getTableData" />
@@ -141,6 +154,11 @@ export default {
             {
               title: 'Action',
               slot: 'action',
+              width: 150
+            },
+            {
+              title: 'Vessel Voyage',
+              slot: 'export_vessel_voyage',
               width: 150
             },
             {
@@ -270,6 +288,7 @@ export default {
       search_data: {
         date: [moment().subtract(30, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
         verification_state: 'PM',
+        verification_vessel_id: '',
         bl: '',
       },
       modal: { invoiceDetail: false, verificationTimeline: false},
@@ -313,6 +332,7 @@ export default {
           start_date: this.search_data.date[0],
           end_date: this.search_data.date[1],
           verification_state: this.search_data.verification_state,
+          verification_vessel_id: this.search_data.verification_vessel_id,
           bl: this.search_data.bl,
           offset: this.table.checkTable.offset,
           limit: this.table.checkTable.limit
@@ -350,7 +370,37 @@ export default {
           this.verificationDetailModal = true
         }
       }
-    }
+    },
+    exportAct: async function() {
+      try {
+        let searchPara = {
+          start_date: this.search_data.date[0],
+          end_date: this.search_data.date[1],
+          verification_state: this.search_data.verification_state,
+          verification_vessel_id: this.search_data.verification_vessel_id,
+          bl: this.search_data.bl
+        }
+        let response = await this.$http.request({
+            url: apiUrl + 'export',
+            method: 'post',
+            data: searchPara,
+            responseType: 'blob'
+          })
+        let blob = response.data
+        let reader = new FileReader()
+        reader.readAsDataURL(blob)
+        reader.onload = e => {
+          let a = document.createElement('a')
+          a.download = 'Export Business Verification.xlsx'
+          a.href = e.target.result
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+        }
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
   }
 }
 </script>

@@ -20,7 +20,14 @@
               <DatePicker type="daterange" :value="search_data.date_range" placeholder="Vessel Date" style="width: 200px" @on-change="searchRangeAct"></DatePicker>
             </div>
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.vessel_name" placeholder="Vessel Name" style="width: 200px" />
+              <Select clearable v-model="search_data.vessel_id" filterable placeholder="Vessel Voyage" style="width:180px">
+                <Option v-for="item in pagePara.VESSEL_VOYAGES" :value="item.export_vessel_id" :key="item.export_vessel_id">{{ item.export_vessel_voyage }}</Option>
+              </Select>
+            </div>
+            <div class="form-group m-r-2">
+              <Select clearable v-model="search_data.firm_booking" filterable placeholder="FIRM BK" style="width:180px">
+                <Option v-for="item in firm_booking_filter" :value="item.id" :key="item.id">{{ item.text }}</Option>
+              </Select>
             </div>
             <div class="form-group m-r-2">
               <input type="text" class="form-control" v-model="search_data.masterbi_bl" placeholder="B/L No" style="width: 200px" />
@@ -32,6 +39,9 @@
             </div>
             <div class="form-group m-r-3">
               <button type="button" class="btn btn-info" @click="bookingLoadModalAct">Load</button>
+            </div>
+            <div class="form-group m-r-3">
+              <button type="button" class="btn btn-info" @click="bookingExport">Export</button>
             </div>
           </div>
         </div>
@@ -72,6 +82,9 @@
           <Tabs :animated="true" @on-click="changeTabAct">
               <TabPane label="MasterBl">
                 <Table stripe size="small" ref="masterbiTable" :columns="blTable.columns" :data="blTable.data" :height="blTable.height">
+                  <template slot-scope="{ row, index }" slot="export_masterbl_firm_booking">
+                    <Checkbox v-model="row.export_masterbl_firm_booking" true-value="YES" false-value="NO" @on-change="changeFirmBooking(row)"></Checkbox>
+                  </template>
                   <template slot-scope="{ row, index }" slot="empty_release">
                     <Tooltip :content="row.export_masterbl_empty_release_approve_date" v-if="row.export_masterbl_empty_release_approve_date">
                       <a href="#" class="btn btn-green btn-icon btn-sm" v-on:click="emptyReleaseModalCheckAct(row)">
@@ -278,15 +291,16 @@ export default {
   name: 'BookingLoadControl',
   data: function() {
     return {
-      modal: { bookingModal: false, checkPasswordModal: false, emptyReleaseModal: false, bookingEditModal: false, bkCancellationFeeModal: false},
+      modal: { bookingModal: false, checkPasswordModal: false, emptyReleaseModal: false, bookingEditModal: false, bkCancellationFeeModal: false },
       headers: common.uploadHeaders(),
       vesselHeight: common.getTableHeight(),
       search_data: {
         date_range: [moment().subtract(30, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
         etd_start_date: '',
         etd_end_date: '',
-        vessel_name: '',
+        vessel_id: '',
         masterbi_bl: '',
+        firm_booking: '',
         export_vessel_id: ''
       },
       pagePara: {},
@@ -297,6 +311,11 @@ export default {
       vesselData: [],
       blTable: {
         columns: [
+          {
+            title: '#FIRM BK',
+            slot: 'export_masterbl_firm_booking',
+            width: 120
+          },
           {
             title: '#M B/L No',
             key: 'export_masterbl_bl',
@@ -431,7 +450,11 @@ export default {
       checkPassword: '',
       checkPasswordType: '',
       bookingEditForm: {},
-      bkCancellationFeeForm: {}
+      bkCancellationFeeForm: {},
+      firm_booking_filter: [
+        {id: 'YES', text: 'YES'},
+        {id: 'NO', text: 'NO'}
+      ]
     }
   },
   created() {
@@ -662,8 +685,10 @@ export default {
             action = 'EXPORT_VESSEL_EDIT'
           } else if (this.checkPasswordType === 'emptyRelease') {
             action = 'EXPORT_EMPORT_RELEASE'
-          } else if (this.checkPasswordType === 'bookingEdit') {
+          } else if (this.checkPasswordType === 'bookingEdit' || this.checkPasswordType === 'frimBooking') {
             action = 'EXPORT_BOOKING_EDIT'
+          } else if (this.checkPasswordType === 'bookingExport') {
+            action = 'EXPORT_BOOKING_EXPORT'
           } 
           let param = {
             action: action,
@@ -679,7 +704,11 @@ export default {
             this.emptyReleaseModalAct(this.emptyReleaseForm)
           } else if (this.checkPasswordType === 'bookingEdit') {
             this.bookingEditModalAct(this.bookingEditForm)
-          } 
+          } else if (this.checkPasswordType === 'frimBooking') {
+            this.firmBookingAct()
+          } else if (this.checkPasswordType === 'bookingExport') {
+            this.bookingExportAct()
+          }
         } catch (error) {
           this.$commonact.fault(error)
         }
@@ -847,6 +876,48 @@ export default {
         }
       } else {
         return this.$Message.error('Please input BK Cancellation Fee')
+      }
+    },
+    changeFirmBooking: async function(row) {
+      this.workPara = JSON.parse(JSON.stringify(row))
+      this.$commonact.confirm('Submit ' + (String(row.export_masterbl_firm_booking) === 'YES' ? 'SELECTED' : 'CANCEL SELECT') + ' Firm BK?', async() => {
+        try {
+          this.workPara = JSON.parse(JSON.stringify(row))
+          this.checkPassword = ''
+          this.checkPasswordType = 'frimBooking'
+          this.modal.checkPasswordModal = true
+        }catch (error) {
+          this.$commonact.fault(error)
+        }
+      }, async() => {
+        this.searchDataAct()
+      })
+    },
+    firmBookingAct: async function() {
+      try {
+        await this.$http.post(apiUrl + 'frimBooking', this.workPara)
+        this.searchDataAct()
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
+    bookingExport: async function() {
+      this.checkPassword = ''
+      this.checkPasswordType = 'bookingExport'
+      this.modal.checkPasswordModal = true
+    },
+    bookingExportAct: async function() {
+      let response = await this.$http.request({url: apiUrl + 'bookingExport', method: 'post', data: this.search_data, responseType: 'blob'})
+      let blob = response.data
+      let reader = new FileReader()
+      reader.readAsDataURL(blob)
+      reader.onload = e => {
+        let a = document.createElement('a')
+        a.download = 'BOOKING STATISTICS.xlsx'
+        a.href = e.target.result
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
       }
     }
   }

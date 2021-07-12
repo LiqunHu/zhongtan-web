@@ -53,7 +53,7 @@
         <Page class="m-t-10" :total="table.checkTable.total" :page-size="table.checkTable.limit" @on-change="getTableData" />
     </panel>
     <Modal v-model="modal.addOrUpdateFee" :title="textMap[dialogStatus]" width="600">
-        <Form ref="feeForm" :model="feeForm" :rules="feeRule" :label-width="120" style="padding-right: 80px;">
+        <Form ref="feeForm" :model="feeForm" :rules="feeRule" :label-width="140" style="padding-right: 80px;">
             <FormItem label="Cargo Type" prop="fee_cargo_type">
                 <RadioGroup v-model="feeForm.fee_cargo_type">
                     <Radio v-for="item in pagePara.CARGO_TYPE" v-bind:key="item.id" :label="item.id" style="margin-right: 50px;" :disabled ="dialogStatus === 'update'">{{item.text}}</Radio>
@@ -80,6 +80,10 @@
             <FormItem label="Container Size" prop="fee_container_size" v-if="feeForm.fee_type === 'CON'">
                 <Input v-model="feeForm.fee_container_size" placeholder="Enter your container size" :disabled ="dialogStatus === 'update'"></Input>
             </FormItem>
+            <FormItem label="POL Mark" prop="fee_pol_mark" v-if="feeForm.fee_type === 'CON'">
+                <Input v-model="feeForm.fee_pol_mark" placeholder="Enter your POL mark, Comma separated"></Input>
+            </FormItem>
+            
             <FormItem label="Amount" prop="fee_amount">
                 <Input v-model="feeForm.fee_amount" placeholder="Enter your amount">
                     <Select slot="append" v-model="feeForm.fee_currency" style="width: 100px" :disabled ="dialogStatus === 'update'">
@@ -128,6 +132,10 @@ export default {
                 {
                     title: 'Container Size',
                     key: 'fee_container_size',
+                },
+                {
+                    title: 'POL Mark',
+                    key: 'fee_pol_mark',
                 },
                 {
                     title: 'Amount',

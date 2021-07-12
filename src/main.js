@@ -125,12 +125,21 @@ Vue.prototype.$commonact = {
       content: '<p>' + message + '</p>'
     })
   },
-  confirm: (message, cb) => {
-    vueInstance.$Modal.confirm({
-      title: 'confirm',
-      content: '<p>' + message + '</p>',
-      onOk: cb
-    })
+  confirm: (message, cb, cc) => {
+    if(cc) {
+      vueInstance.$Modal.confirm({
+        title: 'confirm',
+        content: '<p>' + message + '</p>',
+        onOk: cb,
+        onCancel: cc
+      })
+    } else {
+      vueInstance.$Modal.confirm({
+        title: 'confirm',
+        content: '<p>' + message + '</p>',
+        onOk: cb
+      })
+    }
   },
   fault: error => {
     let response = error.response

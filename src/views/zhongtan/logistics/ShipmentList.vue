@@ -184,31 +184,40 @@
         <FormItem label="POD#" style="margin-bottom:0px;">
           <Input placeholder="PORT OF DESTINATION" v-model.trim="workPara.shipment_list_port_of_destination" disabled/>
         </FormItem>
-        <FormItem label="DAR CUSTOMS RELEASE DATE" style="margin-bottom:0px;">
+        <FormItem style="margin-bottom:0px;">
+          <span slot="label"><i class="fa fa-lock" style="color: red;" v-if="workPara.shipment_list_dar_customs_release_date"></i> DAR CUSTOMS RELEASE DATE</span>
           <DatePicker type="date" :value = "workPara.shipment_list_dar_customs_release_date" @on-change="releaseDateChange" format="yyyy-MM-dd" style="width:278px;"></DatePicker>
         </FormItem>
-        <FormItem label="TRUCK DEPARTURE DATE" style="margin-bottom:0px;">
+        <FormItem style="margin-bottom:0px;">
+          <span slot="label"><i class="fa fa-lock" style="color: red;" v-if="workPara.shipment_list_truck_departure_date"></i> TRUCK DEPARTURE DATE</span>
           <DatePicker type="date" :value = "workPara.shipment_list_truck_departure_date" @on-change="departureDateChange" format="yyyy-MM-dd" style="width:278px;"></DatePicker>
         </FormItem>
-        <FormItem label="TRUCK PLATE#" style="margin-bottom:0px;">
+        <FormItem style="margin-bottom:0px;">
+          <span slot="label"><i class="fa fa-lock" style="color: red;" v-if="workPara.shipment_list_truck_plate"></i> TRUCK PLATE#</span>
           <Input placeholder="TRUCK PLATE#" v-model.trim="workPara.shipment_list_truck_plate"/>
         </FormItem>
-        <FormItem label="ATA TZ BORDER" style="margin-bottom:0px;">
+        <FormItem style="margin-bottom:0px;">
+          <span slot="label"><i class="fa fa-lock" style="color: red;" v-if="workPara.shipment_list_ata_tz_border"></i> ATA TZ BORDER</span>
           <DatePicker type="date" :value = "workPara.shipment_list_ata_tz_border" @on-change="ataTzBorderChange" format="yyyy-MM-dd" style="width:278px;"></DatePicker>
         </FormItem>
-        <FormItem label="ATA FOREIGN BORDER" style="margin-bottom:0px;">
+        <FormItem style="margin-bottom:0px;">
+          <span slot="label"><i class="fa fa-lock" style="color: red;" v-if="workPara.shipment_list_ata_foreing_border"></i> ATA FOREIGN BORDER</span>
           <DatePicker type="date" :value = "workPara.shipment_list_ata_foreing_border" @on-change="ataForeignBorderChange" format="yyyy-MM-dd" style="width:278px;"></DatePicker>
         </FormItem>
-        <FormItem label="BORDER RELEASE DATE" style="margin-bottom:0px;">
+        <FormItem style="margin-bottom:0px;">
+          <span slot="label"><i class="fa fa-lock" style="color: red;" v-if="workPara.shipment_list_border_release_date"></i> BORDER RELEASE DATE</span>
           <DatePicker type="date" :value = "workPara.shipment_list_border_release_date" @on-change="borderReleaseDateChange" format="yyyy-MM-dd" style="width:278px;"></DatePicker>
         </FormItem>
-        <FormItem label="ATA DESTINATION" style="margin-bottom:0px;">
+        <FormItem style="margin-bottom:0px;">
+          <span slot="label"><i class="fa fa-lock" style="color: red;" v-if="workPara.shipment_list_ata_destination"></i> ATA DESTINATION</span>
           <DatePicker type="date" :value = "workPara.shipment_list_ata_destination" @on-change="ataDestinationChange" format="yyyy-MM-dd" style="width:278px;"></DatePicker>
         </FormItem>
-        <FormItem label="DELIVERY (UNLOADING) DATE" style="margin-bottom:0px;">
+        <FormItem style="margin-bottom:0px;">
+          <span slot="label"><i class="fa fa-lock" style="color: red;" v-if="workPara.shipment_list_delivery_date"></i> DELIVERY (UNLOADING) DATE</span>
           <DatePicker type="date" :value = "workPara.shipment_list_delivery_date" @on-change="deliveryDateChange" format="yyyy-MM-dd" style="width:278px;"></DatePicker>
         </FormItem>
-        <FormItem label="VENDOR" style="margin-bottom:0px;">
+        <FormItem style="margin-bottom:0px;">
+          <span slot="label"><i class="fa fa-lock" style="color: red;" v-if="workPara.shipment_list_vendor"></i> VENDOR</span>
           <Select v-model="workPara.shipment_list_vendor" clearable filterable placeholder="VENDOR" style="width:278px">
             <Option v-for="item in pagePara.VENDOR" :value="item.id" :key="item.id">{{ item.text }}</Option>
           </Select>
@@ -700,7 +709,15 @@ export default {
       }
     },
     modifyShipmentList: async function() {
-      if(this.oldPara.shipment_list_vendor && this.oldPara.shipment_list_vendor !== this.workPara.shipment_list_vendor) {
+      if((this.oldPara.shipment_list_dar_customs_release_date && this.oldPara.shipment_list_dar_customs_release_date !== this.workPara.shipment_list_dar_customs_release_date)
+          || (this.oldPara.shipment_list_truck_departure_date && this.oldPara.shipment_list_truck_departure_date !== this.workPara.shipment_list_truck_departure_date)
+          || (this.oldPara.shipment_list_truck_plate && this.oldPara.shipment_list_truck_plate !== this.workPara.shipment_list_truck_plate)
+          || (this.oldPara.shipment_list_ata_tz_border && this.oldPara.shipment_list_ata_tz_border !== this.workPara.shipment_list_ata_tz_border)
+          || (this.oldPara.shipment_list_ata_foreing_border && this.oldPara.shipment_list_ata_foreing_border !== this.workPara.shipment_list_ata_foreing_border)
+          || (this.oldPara.shipment_list_border_release_date && this.oldPara.shipment_list_border_release_date !== this.workPara.shipment_list_border_release_date)
+          || (this.oldPara.shipment_list_ata_destination && this.oldPara.shipment_list_ata_destination !== this.workPara.shipment_list_ata_destination)
+          || (this.oldPara.shipment_list_delivery_date && this.oldPara.shipment_list_delivery_date !== this.workPara.shipment_list_delivery_date)
+          || (this.oldPara.shipment_list_vendor && this.oldPara.shipment_list_vendor !== this.workPara.shipment_list_vendor)) {
         this.checkPassword = ''
         this.checkPasswordType = 'ShipmentListEdit'
         this.modal.checkPasswordModal = true

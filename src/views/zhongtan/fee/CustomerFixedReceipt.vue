@@ -315,7 +315,9 @@ export default {
             deposit_check_cash_no: '',
             deposit_currency: 'USD'
         },
-        workPara: {}
+        workPara: {},
+        checkPassword: '',
+        checkPasswordType: ''
     }
   },
   created() {
