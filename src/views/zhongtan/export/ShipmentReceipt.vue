@@ -174,6 +174,13 @@
         </Row>
         <Row>
           <Col>
+            <FormItem label="VSL ETD" prop="collect_etd">
+              <DatePicker type="daterange" v-model="collectForm.collect_etd" placeholder="ETD Date" style="width: 200px" @on-change="collectETD"></DatePicker>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
             <FormItem label="Receipt Data" prop="collect_date">
               <DatePicker type="daterange" v-model="collectForm.collect_date" placeholder="Date" @on-change="collectData"></DatePicker>
             </FormItem>
@@ -554,6 +561,9 @@ export default {
       } catch (error) {
         this.$commonact.fault(error)
       }
+    },
+    collectETD: function(e) {
+      this.collectForm.collect_etd = JSON.parse(JSON.stringify(e))
     },
     collectData: function(e) {
       this.collectForm.collect_date = JSON.parse(JSON.stringify(e))
