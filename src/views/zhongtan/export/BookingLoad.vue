@@ -65,10 +65,18 @@
                       </a>
                       <Row>
                           <Col span="12">
-                          <p>ETD: {{item.export_vessel_etd}}</p>
+                            <p>ETD: {{item.export_vessel_etd}}</p>
                           </Col>
                           <Col span="12">
-                            B/C: {{item.bl_count}}/{{item.container_count}}
+                            <Tooltip placement="right" v-if="item.size_types">
+                              <span>B/C: {{item.bl_count}}/{{item.container_count}}</span>
+                              <div slot="content">
+                                  <p v-for="(con, conI) in item.size_types" :key="conI">
+                                      {{con.containers_size}} : {{con.containers_size_count}}
+                                  </p>
+                              </div>
+                            </Tooltip>
+                            <span v-else>B/C: {{item.bl_count}}/{{item.container_count}}</span>
                           </Col>
                       </Row>
                     </Card>

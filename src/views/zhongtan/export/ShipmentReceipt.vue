@@ -412,6 +412,7 @@ export default {
       collectForm: {
         carrier: '',
         receipt_party: '',
+        collect_etd: '',
         collect_date: ''
       }
     }
