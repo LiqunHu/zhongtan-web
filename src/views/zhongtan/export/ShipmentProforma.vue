@@ -31,6 +31,12 @@
             <div class="form-group m-r-2">
               <input type="text" class="form-control" v-model="search_data.masterbi_bl" placeholder="B/L No" style="width: 200px" />
             </div>
+            <div class="form-group m-r-2">
+              <input type="text" class="form-control" v-model="search_data.shipper_company" placeholder="Shipper Company" style="width: 200px" />
+            </div>
+            <div class="form-group m-r-2">
+              <input type="text" class="form-control" v-model="search_data.consignee_company" placeholder="Consignee Company" style="width: 200px" />
+            </div>
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="searchDataAct">
                 <i class="fa fa-search"></i>
@@ -106,7 +112,7 @@
                     </Tooltip>
                   </template>
                 </Table>
-                <Page class="m-t-10" :current="blTable.current" :total="blTable.total" :page-size="blTable.limit" @on-change="searchBlAct" />
+                <Page class="m-t-10" :current="blTable.current" :total="blTable.total" :page-size="blTable.limit" :pageSizeOpts = "blTable.pageSizeOpts" show-total show-sizer show-elevator @on-change="searchBlAct"  @on-page-size-change="changeBlPageSize"/>
               </TabPane>
               <TabPane label="Containers">
                 <Table stripe size="small" ref="containerTable" :columns="containerTable.columns" :data="containerTable.data" :height="containerTable.height">
@@ -120,7 +126,7 @@
                     {{row.export_container_cargo_volumn}} {{row.export_container_cargo_volumn_unit}}
                   </template>
                 </Table>
-                <Page class="m-t-10" :current="containerTable.current" :total="containerTable.total" :page-size="containerTable.limit" @on-change="searchContainerAct" />
+                <Page class="m-t-10" :current="containerTable.current" :total="containerTable.total" :page-size="containerTable.limit" :pageSizeOpts = "containerTable.pageSizeOpts" show-total show-sizer show-elevator @on-change="searchContainerAct" @on-page-size-change="changeContainerPageSize"/>
               </TabPane>
           </Tabs>
           </Col>
@@ -292,7 +298,9 @@ export default {
         etd_end_date: '',
         vessel_name: '',
         masterbi_bl: '',
-        export_vessel_id: ''
+        export_vessel_id: '',
+        shipper_company: '',
+        consignee_company: ''
       },
       workPara: {},
       files: {
@@ -387,9 +395,10 @@ export default {
         height: common.getTableHeight() - 90,
         data: [],
         unchanged:[],
-        limit: 10,
+        limit: 20,
         offset: 0,
-        total: 0
+        total: 0,
+        pageSizeOpts: [20, 40, 60, 80]
       },
       containerTable: {
         columns: [
@@ -433,9 +442,10 @@ export default {
         data: [],
         unchanged:[],
         current: 1,
-        limit: 10,
+        limit: 20,
         offset: 0,
-        total: 0
+        total: 0,
+        pageSizeOpts: [20, 40, 60, 80]
       },
       containerData: [],
       currentTab: 0,
@@ -542,6 +552,14 @@ export default {
       } catch (error) {
           this.$commonact.fault(error)
       }
+    },
+    changeBlPageSize: async function(pageSize) {
+      this.blTable.limit = pageSize
+      this.searchBlAct(1)
+    },
+    changeContainerPageSize: async function(pageSize) {
+      this.containerTable.limit = pageSize
+      this.searchContainerAct(1)
     },
     searchRangeAct: function(e) {
       this.search_data.date_range = JSON.parse(JSON.stringify(e))

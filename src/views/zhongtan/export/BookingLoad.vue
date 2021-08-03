@@ -91,9 +91,13 @@
               <TabPane label="MasterBl">
                 <Table stripe size="small" ref="masterbiTable" :columns="blTable.columns" :data="blTable.data" :height="blTable.height">
                   <template slot-scope="{ row, index }" slot="export_masterbl_firm_booking">
-                    <Checkbox v-model="row.export_masterbl_firm_booking" true-value="YES" false-value="NO" @on-change="changeFirmBooking(row)"></Checkbox>
+                    <Checkbox v-model="row.export_masterbl_firm_booking" true-value="YES" false-value="NO" @on-change="changeFirmBooking(row)" :disabled="row.export_masterbl_bl.indexOf('*') >= 0"></Checkbox>
                   </template>
-                  <template slot-scope="{ row, index }" slot="empty_release">
+                  <template slot-scope="{ row, index }" slot="export_masterbl_bl">
+                    <span v-if="row.export_masterbl_bl.indexOf('*') >= 0" style="color:red;">{{row.export_masterbl_bl}}</span>
+                    <span v-else>{{row.export_masterbl_bl}}</span>
+                  </template>
+                  <template slot-scope="{ row, index }" slot="empty_release" v-if="row.export_masterbl_bl.indexOf('*') < 0">
                     <Tooltip :content="row.export_masterbl_empty_release_approve_date" v-if="row.export_masterbl_empty_release_approve_date">
                       <a href="#" class="btn btn-green btn-icon btn-sm" v-on:click="emptyReleaseModalCheckAct(row)">
                         <i class="fa fa-money-bill-alt"></i>
@@ -110,7 +114,7 @@
                       </a>
                     </Tooltip>
                     <Tooltip content="EDIT">
-                      <a v-if="row.export_masterbl_empty_release_date" href="#" class="btn btn-primary btn-icon btn-sm" v-on:click="bookingEditCheckModalAct(row)">
+                      <a v-if="row.export_masterbl_empty_release_date || row.export_masterbl_forwarder_company_input || row.export_masterbl_cargo_type_input" href="#" class="btn btn-primary btn-icon btn-sm" v-on:click="bookingEditCheckModalAct(row)">
                         <i class="fa fa-edit"></i>
                       </a>
                       <a v-else href="#" class="btn btn-primary btn-icon btn-sm" v-on:click="bookingEditModalAct(row)">
@@ -131,12 +135,12 @@
                     </Tooltip>
                   </template>
                 </Table>
-                <Page class="m-t-10" :current="blTable.current" :total="blTable.total" :page-size="blTable.limit" @on-change="searchBlAct" />
+                <Page class="m-t-10" :current="blTable.current" :total="blTable.total" :page-size="blTable.limit" :pageSizeOpts = "blTable.pageSizeOpts" show-total show-sizer show-elevator @on-change="searchBlAct" @on-page-size-change="changeBlPageSize" />
               </TabPane>
               <TabPane label="Containers">
                 <Table stripe size="small" ref="containerTable" :columns="containerTable.columns" :data="containerTable.data" :height="containerTable.height">
                 </Table>
-                <Page class="m-t-10" :current="containerTable.current" :total="containerTable.total" :page-size="containerTable.limit" @on-change="searchContainerAct" />
+                <Page class="m-t-10" :current="containerTable.current" :total="containerTable.total" :page-size="containerTable.limit" :pageSizeOpts = "containerTable.pageSizeOpts" show-total show-sizer show-elevator @on-change="searchContainerAct" @on-page-size-change="changeContainerPageSize"/>
               </TabPane>
           </Tabs>
           </Col>
@@ -326,7 +330,7 @@ export default {
           },
           {
             title: '#M B/L No',
-            key: 'export_masterbl_bl',
+            slot: 'export_masterbl_bl',
             width: 220
           },
           {
@@ -398,10 +402,11 @@ export default {
         height: common.getTableHeight() - 90,
         data: [],
         unchanged:[],
-        limit: 10,
+        limit: 20,
         offset: 0,
         total: 0,
-        current: 1
+        current: 1,
+        pageSizeOpts: [20, 40, 60, 80]
       },
       containerTable: {
         columns: [
@@ -434,10 +439,11 @@ export default {
         height: common.getTableHeight() - 90,
         data: [],
         unchanged:[],
-        limit: 10,
+        limit: 20,
         offset: 0,
         total: 0,
-        current: 1
+        current: 1,
+        pageSizeOpts: [20, 40, 60, 80]
       },
       containerData: [],
       currentTab: 0,
@@ -558,6 +564,14 @@ export default {
       } catch (error) {
           this.$commonact.fault(error)
       }
+    },
+    changeBlPageSize: async function(pageSize) {
+      this.blTable.limit = pageSize
+      this.searchBlAct(1)
+    },
+    changeContainerPageSize: async function(pageSize) {
+      this.containerTable.limit = pageSize
+      this.searchContainerAct(1)
     },
     searchRangeAct: function(e) {
       this.search_data.date_range = JSON.parse(JSON.stringify(e))

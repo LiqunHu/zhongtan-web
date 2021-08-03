@@ -144,7 +144,7 @@
           </span>
         </template>
       </Table>
-      <Page class="m-t-10" :total="table.shipmentTable.total" :current="table.shipmentTable.current" :pageSizeOpts = "table.shipmentTable.pageSizeOpts" show-total show-sizer :page-size="table.shipmentTable.limit" @on-change="getFreightCollectionData"/>
+      <Page class="m-t-10" :total="table.shipmentTable.total" :current="table.shipmentTable.current" :pageSizeOpts = "table.shipmentTable.pageSizeOpts" show-total show-sizer show-elevator :page-size="table.shipmentTable.limit" @on-change="getFreightCollectionData" @on-page-size-change="changeFreightCollectionPageSize"/>
     </panel>
     <Modal v-model="modal.invoiceModal" title="Freight Invoice" width="1000">
       <Form ref="freightInvoiceForm" :model="freightInvoiceForm" :label-width="160">
@@ -729,6 +729,10 @@ export default {
       } catch (error) {
         this.$commonact.fault(error)
       }
+    },
+    changeFreightCollectionPageSize: async function(pageSize) {
+      this.table.shipmentTable.limit = pageSize
+      this.getFreightCollectionData(1)
     },
     freightCollectionHandleSpan: function({row, column, rowIndex, columnIndex}) {
       if(column.title === 'Act' || column.title === 'B/L#' || column.title === 'Files') {

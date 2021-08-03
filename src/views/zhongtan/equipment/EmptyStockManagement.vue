@@ -41,7 +41,7 @@
             </div>
           </div>
           <div class="form-inline" style="margin-top: 10px;">
-            <div class="form-group m-r-2">
+            <!-- <div class="form-group m-r-2">
               Storing Days&nbsp;&nbsp;
               <input type="number" class="form-control" v-model.number="search_data.storing_days_min" placeholder="MIN" style="width: 93px" />
               <input type="number" class="form-control" v-model.number="search_data.storing_days_max" placeholder="MAX" style="width: 93px" />
@@ -50,6 +50,13 @@
               Detention Days&nbsp;&nbsp;
               <input type="number" class="form-control" v-model.number="search_data.detention_days_min" placeholder="MIN" style="width: 93px" />
               <input type="number" class="form-control" v-model.number="search_data.detention_days_max" placeholder="MAX" style="width: 93px" />
+            </div> -->
+            <div class="form-group m-r-2">
+              Owner&nbsp;&nbsp;
+              <Select filterable clearable v-model="search_data.contaienr_owner" style="width:150px" placeholder="Owner">
+                <Option value="COSCO" key="COSCO">COSCO</Option>
+                <Option value="OOCL" key="OOCL">OOCL</Option>
+              </Select>
             </div>
             <div class="form-group m-r-2">
               Container No&nbsp;&nbsp;
@@ -85,7 +92,7 @@
           </div>
         </template>
       </Table>
-      <Page class="m-t-10" :current="table.containerTable.current" :total="table.containerTable.total" show-sizer :page-size="table.containerTable.limit" @on-change="getTableData" @on-page-size-change="resetTableSizer"/>
+      <Page class="m-t-10" :current="table.containerTable.current" :total="table.containerTable.total" :page-size="table.containerTable.limit" :pageSizeOpts = "table.containerTable.pageSizeOpts" show-total show-sizer show-elevator @on-change="getTableData" @on-page-size-change="resetTableSizer"/>
       <Modal v-model="modal.editModal" title="Overdue Calculation" width="600">
         <Form ref="containerForm" :model="containerForm" :label-width="200" style="padding-right: 80px;">
           <FormItem label="Gate Out Terminal Date">
@@ -201,11 +208,12 @@ export default {
           ],
           data: [],
           unchanged: [],
-          height: common.getTableHeight() - 80,
-          limit: 10,
+          height: common.getTableHeight() - 60,
+          limit: 20,
           offset: 0,
           total: 0,
-          current: 1
+          current: 1,
+          pageSizeOpts: [20, 40, 60, 80]
         }
       },
       search_data: {},
