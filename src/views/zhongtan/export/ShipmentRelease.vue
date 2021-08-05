@@ -211,7 +211,7 @@ export default {
       fullHeight: '',
       splitLeft: '280',
       splitBooking: '156',
-      splitShipment: 0.6,
+      splitShipment: 0.5,
       pagePara: {},
       searchData: {
         bookingNo: ''
@@ -383,20 +383,19 @@ export default {
     PageOptions.pageEmpty = false
   },
   mounted: async function() {
-    
     this.resizePanel()
     await this.initAct()
   },
   methods: {
     resizePanel() {
       if(this.$refs.shipmentPanel.expand) {
-        this.fullHeight = document.documentElement.clientHeight - 90
+        this.fullHeight = document.documentElement.clientHeight + 210
         this.$refs.displayLayout.style.height = this.fullHeight + 'px'
         this.$refs.shipmentLayout.style.height = (this.fullHeight - 140) + 'px'
         this.receivableTable.height = (this.fullHeight - 140) * this.splitShipment - 40
         this.payableTable.height = (this.fullHeight - 140) * (1-this.splitShipment) - 40
       } else {
-        this.fullHeight = document.documentElement.clientHeight - 230
+        this.fullHeight = document.documentElement.clientHeight
         this.$refs.displayLayout.style.height = this.fullHeight + 'px'
         this.$refs.shipmentLayout.style.height = (this.fullHeight - 140) + 'px'
         this.receivableTable.height = (this.fullHeight - 140) * this.splitShipment - 40
@@ -485,8 +484,8 @@ export default {
       return span
     },
     shipmentSplitMoveAct: async function() {
-      this.receivableTable.height = (this.fullHeight - 200) * this.splitShipment - 40
-      this.payableTable.height = (this.fullHeight - 200) * (1-this.splitShipment) - 40
+      this.receivableTable.height = (this.fullHeight - 140) * this.splitShipment - 40
+      this.payableTable.height = (this.fullHeight - 140) * (1-this.splitShipment) - 40
     },
     addReceivableAct: async function() {
       this.receivableTable.data.push({

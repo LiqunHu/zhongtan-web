@@ -317,13 +317,13 @@ export default {
           let actrow = JSON.parse(JSON.stringify(row))
           delete actrow._index
           delete actrow._rowKey     
-          this.workPara = JSON.parse(JSON.stringify(actrow))
+          this.workPara = actrow
           if(row.payment_advice_check) {
             this.checkPassword = ''
             this.checkPasswordType = 'unusualInvoiceDelete'
             this.modal.checkPasswordModal = true
           } else {
-            await this.$http.post(apiUrl + 'delete', { payment_advice_id: row.payment_advice_id })
+            await this.$http.post(apiUrl + 'delete', { unusual_invoice_id: row.unusual_invoice_id })
             this.$Message.success('delete success')
             this.getUnusualInvoiceData()
           }
@@ -347,7 +347,7 @@ export default {
           await this.$http.post(apiUrl + 'checkPassword', param)
           this.modal.checkPasswordModal = false
           if (this.checkPasswordType === 'unusualInvoiceDelete') {
-            await this.$http.post(apiUrl + 'delete', { payment_advice_id: this.workPara.payment_advice_id })
+            await this.$http.post(apiUrl + 'delete', { unusual_invoice_id: this.workPara.unusual_invoice_id })
             this.$Message.success('delete success')
             this.getUnusualInvoiceData()
           } else if (this.checkPasswordType === 'unusualInvoiceExport') {

@@ -211,7 +211,7 @@
       <Form ref="emptyReleaseForm" :model="emptyReleaseForm" :rules="emptyReleaseFormRule" :label-width="128">
         <FormItem label="Release Party" prop="export_masterbl_empty_release_agent">
           <Select v-model="emptyReleaseForm.export_masterbl_empty_release_agent" filterable :remote-method="remoteEmptyReleaseAgent">
-            <Option v-for="(item, index) in emptyReleaseAgent" :value="item.user_id" :key="index" :label="item.user_name">
+            <Option v-for="(item, index) in emptyReleaseAgent" :value="item.user_id" :key="index" :label="item.user_name" :disabled="item.user_blacklist === '1'">
               <span>{{item.user_name}}</span>
               <Tag color="success" v-if="item.user_customer_type === '1'" style="float: right;">AGEN</Tag>
               <Tag color="warning" v-if="item.user_customer_type === '2'" style="float: right;">CNEE</Tag>

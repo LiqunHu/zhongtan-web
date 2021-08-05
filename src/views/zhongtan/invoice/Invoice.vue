@@ -501,8 +501,14 @@
     <Form :model="workPara" :label-width="140">
         <FormItem label="Customer" prop="invoice_masterbi_customer_id" style="margin-bottom: 0px;">
             <Select ref="customer" v-model="workPara.invoice_masterbi_customer_id" filterable clearable remote :remote-method="searchCustomer" :loading="deposit.customer.loading" placeholder="Customer" @on-change="doChangeCustomer">
-            <Option v-for="item in deposit.customer.options" :value="item.id" :key="item.id">{{item.text}}<i v-if="item.balcklist === '1'" class="fa fa-ban" style="float: right; color: red;" title="Blacklist"></i><i v-if="item.fixed" class="fa fa-lock" style="float: right; margin-right: 10px;" title="Fixed"></i></Option>
-          </Select>
+                <Option v-for="item in deposit.customer.options" :value="item.id" :key="item.id" :label="item.text">
+                    {{item.text}}
+                    <Tag color="warning" v-if="item.type === '1'" style="float: right;">AGEN</Tag>
+                    <Tag color="warning" v-if="item.type === '2'" style="float: right;">CNEE</Tag>
+                    <Tag color="success" v-if="item.fixed" style="float: right;">FIXED</Tag>
+                    <Tag color="error" v-if="item.balcklist === '1'" style="float: right;">BLACK</Tag>
+                </Option>
+            </Select>
         </FormItem>
         <FormItem label="Carrier" prop="invoice_masterbi_carrier" style="margin-bottom: 0px;">
             <Select v-model="workPara.invoice_masterbi_carrier" :disabled="!!workPara.invoice_masterbi_carrier">
@@ -1308,27 +1314,6 @@
                     } else {
                         this.workPara.invoice_masterbi_do_fcl = 'FCL/FCL'
                     }
-                }
-
-                if (this.pagePara.DELIVER.ICD) {
-                    let defaultICD = false
-                    for (let i = 0; i < this.pagePara.DELIVER.ICD.length; i++) {
-                        if (this.pagePara.DELIVER.ICD[i].icd_name === 'TICTS TERMINAL') {
-                            defaultICD = true
-                            break
-                        }
-                    }
-                    if (!defaultICD) {
-                        this.pagePara.DELIVER.ICD.push({
-                            'icd_name': 'TICTS TERMINAL',
-                            'icd_code': 'WTTZDL002'
-                        })
-                    }
-                } else {
-                    this.pagePara.DELIVER.ICD = [{
-                        'icd_name': 'TICTS TERMINAL',
-                        'icd_code': 'WTTZDL002'
-                    }]
                 }
                 if (!this.workPara.invoice_masterbi_do_icd) {
                     this.workPara.invoice_masterbi_do_icd = 'TICTS TERMINAL'
