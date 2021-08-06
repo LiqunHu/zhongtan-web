@@ -50,7 +50,7 @@
             <Row style="margin-top:7px;">
               <div class="form-inline">
                 <div class="input-group m-r-10">
-                  <Select v-model="searchPara.shipment_list_payment_status" clearable placeholder="FREIGHT STATUS" style="width:199px; margin-right:7px;">
+                  <Select v-model="searchPara.shipment_list_receivable_status" clearable placeholder="FREIGHT STATUS" style="width:199px; margin-right:7px;">
                     <Option v-for="item in pagePara.RECEIVABLE_STATUS" :value="item.id" :key="item.id">{{ item.text }}</Option>
                   </Select>
                   <Select v-model="searchPara.shipment_list_business_type" clearable placeholder="BUSINESS TYPE" style="width:199px; margin-right:7px;">
@@ -795,6 +795,11 @@ export default {
       }
     },
     exportAct: async function() {
+      this.checkPassword = ''
+      this.checkPasswordType = 'FreightInvoiceExport'
+      this.modal.checkPasswordModal = true
+    },
+    doExportAct: async function() {
       try {
         let response = await this.$http.request({
             url: apiUrl + 'export',
@@ -983,7 +988,7 @@ export default {
         try {
           let action = ''
           if (this.checkPasswordType === 'FreightInvoiceUndo' || this.checkPasswordType === 'FreightInvoiceCustomer' 
-                || this.checkPasswordType === 'ExtraInvoiceCustomer') {
+                || this.checkPasswordType === 'ExtraInvoiceCustomer' || this.checkPasswordType == 'FreightInvoiceExport') {
             action = 'LOGISTICS_FREIGHT_COLLECTION_ACTION'
           }
           let param = {
@@ -1007,6 +1012,8 @@ export default {
             this.$Message.success('apply success')
             this.modal.extraModal = false
             this.getFreightCollectionData(1)
+          } else if (this.checkPasswordType == 'FreightInvoiceExport') {
+            this.doExportAct()
           }
         } catch (error) {
           this.$commonact.fault(error)

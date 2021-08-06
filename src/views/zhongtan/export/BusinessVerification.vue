@@ -183,13 +183,13 @@ export default {
               width: 150
             },
             {
-              title: 'RECEIVABLE',
-              key: 'export_verification_shipment_receivable',
+              title: 'ETD',
+              key: 'export_vessel_etd',
               width: 150
             },
             {
-              title: 'PAYABLE',
-              key: 'export_verification_shipment_payable',
+              title: 'Validity',
+              key: 'export_masterbl_empty_release_valid_to',
               width: 150
             },
             {

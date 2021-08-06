@@ -65,7 +65,8 @@
           </a>
         </template>
         <template slot-scope="{ row, index }" slot="unusual_invoice_no">
-          {{row.unusual_invoice_no}}
+          <span v-if="row.unusual_receipt_no" style="color:#19be6b;">{{row.unusual_invoice_no}}</span>
+          <span v-else>{{row.unusual_invoice_no}}</span>
           <a :href="row.unusual_files.uploadfile_url" class="btn btn-primary btn-icon btn-sm" target="_blank" v-if="row.unusual_files" title="unusual invoice">
             <i class="fa fa-download"></i>
           </a>
