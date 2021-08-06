@@ -61,6 +61,7 @@
                   </Select>
                   <DatePicker type="daterange" :value="searchPara.shipment_list_in_date" placeholder="DISCHARGE/GATE OUT" @on-change="searchInDateChange" format="yyyy-MM-dd" style="margin-right:7px;"></DatePicker>
                   <DatePicker type="daterange" :value="searchPara.shipment_list_out_date" placeholder="EMPTY RETURN/LOADING" @on-change="searchOutDateChange" format="yyyy-MM-dd"></DatePicker>
+                  <DatePicker type="daterange" :value="searchPara.shipment_list_invoice_date" placeholder="INVOICE" @on-change="searchInvoiceDateChange" format="yyyy-MM-dd"></DatePicker>
                 </div>
               </div>
             </Row>
@@ -646,6 +647,7 @@ export default {
         shipment_list_business_type: '',
         shipment_list_in_date: '',
         shipment_list_out_date: '',
+        shipment_list_invoice_date: '',
         shipment_list_vendor: ''
       },
       businessTypeFilter: [
@@ -763,6 +765,9 @@ export default {
     },
     searchOutDateChange: async function(e) {
       this.searchPara.shipment_list_out_date = JSON.parse(JSON.stringify(e))
+    },
+    searchInvoiceDateChange: async function(e) {
+      this.searchPara.shipment_list_invoice_date = JSON.parse(JSON.stringify(e))
     },
     paymentSelect: async function(selection, row) {
       if(this.table.shipmentTable.data) {

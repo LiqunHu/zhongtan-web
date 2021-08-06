@@ -70,6 +70,9 @@
           <a :href="row.unusual_files.uploadfile_url" class="btn btn-primary btn-icon btn-sm" target="_blank" v-if="row.unusual_files" title="unusual invoice">
             <i class="fa fa-download"></i>
           </a>
+          <a href="#" class="btn btn-danger btn-icon btn-sm" v-if="row.unusual_files && !row.unusual_receipt_no" title="delete unusual invoice" @click="deleteUnusualInvoiceNo(row)">
+            <i class="fa fa-times"></i>
+          </a>
         </template>
       </Table>
       <Page class="m-t-10" :total="table.unusualInvoice.total" :page-size="table.unusualInvoice.limit" @on-change="getUnusualInvoiceData"/>
@@ -158,7 +161,7 @@ export default {
             },
             {
               title: 'INVOICE NO.',
-              width: 180,
+              width: 200,
               slot: 'unusual_invoice_no',
             },
             {
@@ -333,12 +336,28 @@ export default {
         }
       })
     },
+    deleteUnusualInvoiceNo: function(row) {
+      this.$commonact.confirm('delete confirmed?', async () => {
+        try {
+          let actrow = JSON.parse(JSON.stringify(row))
+          delete actrow._index
+          delete actrow._rowKey     
+          this.workPara = actrow
+          this.checkPassword = ''
+          this.checkPasswordType = 'unusualInvoiceDeleteNo'
+          this.modal.checkPasswordModal = true
+        } catch (error) {
+          this.$commonact.fault(error)
+        }
+      })
+    },
     checkPasswordAct: async function() {
       if (this.checkPassword) {
         try {
           let act = ''
           if (this.checkPasswordType === 'unusualInvoiceDelete' 
-              || this.checkPasswordType === 'unusualInvoiceExport') {
+              || this.checkPasswordType === 'unusualInvoiceExport'
+              || this.checkPasswordType === 'unusualInvoiceDeleteNo') {
             act = 'PAYMENT_ADVICE_ACTION'
           }
           let param = {
@@ -369,6 +388,10 @@ export default {
               a.click()
               document.body.removeChild(a)
             }
+          }else if (this.checkPasswordType === 'unusualInvoiceDeleteNo') {
+            await this.$http.post(apiUrl + 'deleteInvoice', { unusual_invoice_id: this.workPara.unusual_invoice_id })
+            this.$Message.success('delete success')
+            this.getUnusualInvoiceData()
           }
         } catch (error) {
           this.$commonact.fault(error)
