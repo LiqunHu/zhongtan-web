@@ -69,6 +69,10 @@
           <Tabs :animated="true" @on-click="changeTabAct">
               <TabPane label="MasterBl">
                 <Table stripe size="small" ref="masterbiTable" :columns="blTable.columns" :data="blTable.data" :height="blTable.height">
+                  <template slot-scope="{ row, index }" slot="export_masterbl_bl">
+                    <span v-if="row.bk_cancellation_status === '1'">{{row.export_masterbl_bl}}<i class="fa fa-backward"></i></span>
+                    <span v-else>{{row.export_masterbl_bl}}</span>
+                  </template>
                   <template slot-scope="{ row, index }" slot="files">
                     <Poptip trigger="hover" placement="bottom-start" :transfer="true" v-if="row.files && row.files.length > 0">
                       <span>Files [{{row.files.length}}]</span>
@@ -237,7 +241,7 @@ export default {
         columns: [
           {
             title: '#M B/L No',
-            key: 'export_masterbl_bl',
+            slot: 'export_masterbl_bl',
             width: 220
           },
           {
