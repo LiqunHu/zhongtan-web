@@ -134,6 +134,13 @@
                       </a>
                     </Tooltip>
                   </template>
+                  <template slot-scope="{ row, index }" slot="attachments">
+                    <span v-if="row.attachments">
+                      <a v-for="(item, index) in row.attachments" v-bind:key="index" :href="item.uploadfile_url" class="btn btn-primary btn-icon btn-sm" target="_blank">
+                        <i class="fa fa-download"></i>
+                      </a>
+                    </span>
+                  </template>
                 </Table>
                 <Page class="m-t-10" :current="blTable.current" :total="blTable.total" :page-size="blTable.limit" :pageSizeOpts = "blTable.pageSizeOpts" show-total show-sizer show-elevator @on-change="searchBlAct" @on-page-size-change="changeBlPageSize" />
               </TabPane>
@@ -250,6 +257,24 @@
         <FormItem label="Valid To" prop="export_masterbl_empty_release_valid_to">
           <DatePicker type="date" placeholder="Select Vessel ETD" v-model="emptyReleaseForm.export_masterbl_empty_release_valid_to" format="yyyy-MM-dd" @on-change="releaseValidDateChange"></DatePicker>
         </FormItem>
+        <FormItem label="Guarantee" prop="export_masterbl_empty_release_guarantee_letter_list">
+            <Upload
+                ref="upload"
+                :headers="headers"
+                :on-success="handleUploadSuccess"
+                :on-remove="handleUploadRemove"
+                :format="['pdf', 'PDF']"
+                :max-size="4096"
+                :on-format-error="handleFormatError"
+                :on-exceeded-size="handleMaxSize"
+                type="drag"
+                action="/api/zhongtan/export/BookingLoad/upload">
+                <div style="padding: 20px 0">
+                    <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+                    <p>Click or drag files here to upload</p>
+                </div>
+            </Upload>
+        </FormItem>
       </Form>
       <div slot="footer">
         <Button type="text" size="large" @click="modal.emptyReleaseModal=false">Cancel</Button>
@@ -337,6 +362,11 @@ export default {
             title: 'ACT',
             slot: 'empty_release',
             width: 200
+          },
+          {
+            title: 'Attachments',
+            slot: 'attachments',
+            width: 100
           },
           {
             title: 'CSO/AGREEMENT NUMBER',
@@ -790,6 +820,10 @@ export default {
               this.$Message.error('Please input release quantity')
               return
             }
+            if(!this.emptyReleaseForm.export_masterbl_empty_release_guarantee_letter_list || this.emptyReleaseForm.export_masterbl_empty_release_guarantee_letter_list.length < 1) {
+              this.$Message.error('Please upload guarantee letter')
+              return
+            }
             let param = {
               ...this.emptyReleaseForm,
               agentStaff: this.emptyReleaseAgentStaff,
@@ -941,7 +975,16 @@ export default {
         a.click()
         document.body.removeChild(a)
       }
-    }
+    },
+    handleUploadSuccess(res, file, fileList) {
+      file.url = res.info.url
+      file.name = res.info.name
+      this.emptyReleaseForm.export_masterbl_empty_release_guarantee_letter_list = JSON.parse(JSON.stringify(this.$refs.upload.fileList))
+    },
+    handleUploadRemove(file, fileList) {
+        const index = this.emptyReleaseForm.export_masterbl_empty_release_guarantee_letter_list.indexOf(file)
+        this.emptyReleaseForm.export_masterbl_empty_release_guarantee_letter_list.splice(index, 1)
+    },
   }
 }
 </script>

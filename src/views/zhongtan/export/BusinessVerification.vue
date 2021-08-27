@@ -59,6 +59,13 @@
             <i class="fa fa-times"></i>
           </a>
         </template>
+        <template slot-scope="{ row, index }" slot="attachments">
+          <span v-if="row.attachments">
+            <a v-for="(item, index) in row.attachments" v-bind:key="index" :href="item.uploadfile_url" class="btn btn-primary btn-icon btn-sm" target="_blank">
+              <i class="fa fa-download"></i>
+            </a>
+          </span>
+        </template>
         <template slot-scope="{ row, index }" slot="export_vessel_voyage">
           {{row.export_vessel_name}} / {{row.export_vessel_voyage}}
         </template>
@@ -155,6 +162,11 @@ export default {
               title: 'Action',
               slot: 'action',
               width: 150
+            },
+            {
+              title: 'Attachments',
+              slot: 'attachments',
+              width: 100
             },
             {
               title: 'Vessel Voyage',
