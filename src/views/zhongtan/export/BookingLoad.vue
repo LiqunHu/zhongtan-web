@@ -259,7 +259,7 @@
         </FormItem>
         <FormItem label="Guarantee" prop="export_masterbl_empty_release_guarantee_letter_list">
             <Upload
-                ref="upload"
+                ref="releaseUpload"
                 :headers="headers"
                 :on-success="handleUploadSuccess"
                 :on-remove="handleUploadRemove"
@@ -780,6 +780,7 @@ export default {
         this.emptyReleaseAgent = data.agents ? JSON.parse(JSON.stringify(data.agents)) : []
         this.emptyReleaseDepot = data.depots ? JSON.parse(JSON.stringify(data.depots)) : []
         this.emptyReleaseAgentStaff = data.agent_staff ? JSON.parse(JSON.stringify(data.agent_staff)) : [{staff_name: '', staff_id: ''}, {staff_name: '', staff_id: ''}]
+        this.$refs.releaseUpload.clearFiles()
         this.modal.emptyReleaseModal = true
       })
     },
@@ -820,7 +821,8 @@ export default {
               this.$Message.error('Please input release quantity')
               return
             }
-            if(!this.emptyReleaseForm.export_masterbl_empty_release_guarantee_letter_list || this.emptyReleaseForm.export_masterbl_empty_release_guarantee_letter_list.length < 1) {
+            if(!this.emptyReleaseForm.export_masterbl_empty_release_date && !this.emptyReleaseForm.export_masterbl_empty_release_approve_date
+              && (!this.emptyReleaseForm.export_masterbl_empty_release_guarantee_letter_list || this.emptyReleaseForm.export_masterbl_empty_release_guarantee_letter_list.length < 1)) {
               this.$Message.error('Please upload guarantee letter')
               return
             }
@@ -979,7 +981,7 @@ export default {
     handleUploadSuccess(res, file, fileList) {
       file.url = res.info.url
       file.name = res.info.name
-      this.emptyReleaseForm.export_masterbl_empty_release_guarantee_letter_list = JSON.parse(JSON.stringify(this.$refs.upload.fileList))
+      this.emptyReleaseForm.export_masterbl_empty_release_guarantee_letter_list = JSON.parse(JSON.stringify(this.$refs.releaseUpload.fileList))
     },
     handleUploadRemove(file, fileList) {
         const index = this.emptyReleaseForm.export_masterbl_empty_release_guarantee_letter_list.indexOf(file)
