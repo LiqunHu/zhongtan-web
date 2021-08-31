@@ -79,9 +79,13 @@
                             B/C: {{item.bl_count}}/{{item.container_count}}
                           </Col>
                       </Row>
-                      <Row v-if="item.export_vessel_total_prepaid">
+                      <Row>
                           <Col span="12">
                           <p>Prepaid: {{item.export_vessel_total_prepaid}}</p>
+                          </Col>
+                          <Col span="12">
+                          <p v-if="item.export_total_units">Total Units: {{item.export_total_units}}</p>
+                          <p v-else>Total Units: <Input v-model="item.modify_export_total_units" clearable size="small" style="width: 70px;"></Input><Icon v-if="item.modify_export_total_units" type="md-checkmark" size="16" color="#19be6b" style="cursor: pointer; margin-left:7px;" v-on:click="modifyVesselTotalUnits(item)"/></p>
                           </Col>
                       </Row>
                     </Card>
@@ -231,7 +235,10 @@
             <Input placeholder="Vessel Voyage" v-model="vesselForm.export_vessel_voyage" clearable></Input>
         </FormItem>
         <FormItem label="Vessel ETD">
-            <DatePicker type="date" placeholder="Select Vessel ETD" v-model="vesselForm.export_vessel_etd" format="dd/MM/yyyy" @on-change="vesselEtdDateChange"></DatePicker>
+            <DatePicker type="date" placeholder="Select Vessel ETD" :value="vesselForm.export_vessel_etd" format="dd/MM/yyyy" @on-change="vesselEtdDateChange"></DatePicker>
+        </FormItem>
+        <FormItem label="Total Units" prop="export_total_units">
+            <Input placeholder="Total Units" v-model="vesselForm.export_total_units" clearable></Input>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -887,6 +894,19 @@ export default {
         return ''
       } else {
         return 'table-info-row'
+      }
+    },
+    modifyVesselTotalUnits: async function(item) {
+      try {
+        let param = {
+          modify_type: 'line',
+          export_vessel_id: item.export_vessel_id,
+          export_total_units: item.modify_export_total_units
+        }
+        await this.$http.post(apiUrl + 'modifyVessel', param)
+        this.searchDataAct()
+      }catch (error) {
+        this.$commonact.fault(error)
       }
     }
   }
