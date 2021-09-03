@@ -130,7 +130,7 @@
             <Tag type="dot">ATA {{overdueChargeForm.invoice_vessel_ata}}</Tag>
           </FormItem>
           <FormItem label="Return Date">
-            <DatePicker type="date" placeholder="Return Date" v-model="overdueChargeForm.invoice_containers_empty_return_date" format="dd/MM/yyyy" @on-change="returnDateChange"></DatePicker>
+            <DatePicker type="date" placeholder="Return Date" v-model="overdueChargeForm.invoice_containers_empty_return_date" format="dd/MM/yyyy" @on-change="returnDateChange" :disabled="overdueChargeForm.invoice_containers_empty_return_date_copy"></DatePicker>
             <Tag type="dot" v-if="overdueChargeForm.invoice_containers_empty_return_diff_days">Diff {{overdueChargeForm.invoice_containers_empty_return_diff_days}} Days</Tag>
           </FormItem>
           <FormItem label="Free Days">
@@ -566,6 +566,11 @@ export default {
       this.resetChageRuleForm()
       this.overdueChargeFormOld = Object.assign({}, row)
       this.overdueChargeForm = Object.assign({}, row) // copy obj
+      if(this.overdueChargeForm.invoice_containers_actually_return_date) {
+        this.overdueChargeForm.invoice_containers_empty_return_date = this.overdueChargeForm.invoice_containers_actually_return_date
+        this.overdueChargeForm.invoice_containers_empty_return_date_copy = this.overdueChargeForm.invoice_containers_actually_return_date
+        await this.calculationDiff()
+      }
       this.overdueChargeForm.invoice_containers_edi_discharge_date_disabled = this.overdueChargeForm.invoice_containers_edi_discharge_date
       this.returnOverdueDaysDisabled = true
       this.modal.calculationModal = true

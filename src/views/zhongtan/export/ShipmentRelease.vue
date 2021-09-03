@@ -670,7 +670,6 @@ export default {
       await this.getBookingShipmentAct(this.bookingShipment.export_masterbl_id)
     },
     resetShipmentAct: async function(){
-      
       this.$nextTick(function() {
         this.checkPassword = ''
         this.checkPasswordType = 'resetShipment'
