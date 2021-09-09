@@ -49,9 +49,9 @@
                   <Tag color="primary">{{bookingShipment.export_masterbl_cargo_type}}</Tag>
                 </Col>
                 <Col span="5"><font style="color:#17233D; font-size: 16px;">Vessel: </font>{{bookingShipment.vessel.export_vessel_name}}/{{bookingShipment.vessel.export_vessel_voyage}}</Col>
-                <Col span="4"><font style="color:#17233D; font-size: 16px;">ETD: </font>{{bookingShipment.vessel.export_vessel_etd}}</Col>
+                <Col span="3"><font style="color:#17233D; font-size: 16px;">ETD: </font>{{bookingShipment.vessel.export_vessel_etd}}</Col>
                 <Col span="3"><font style="color:#17233D; font-size: 16px;">Size/Type: </font>{{bookingShipment.size_type}}</Col>
-                <Col span="3"><font style="color:#17233D; font-size: 16px;">POL: </font>{{bookingShipment.export_masterbl_port_of_load}}</Col>
+                <Col span="4"><font style="color:#17233D; font-size: 16px;">POL: </font>{{bookingShipment.export_masterbl_port_of_load}}</Col>
                 <Col span="3"><font style="color:#17233D; font-size: 16px;">POD: </font>{{bookingShipment.export_masterbl_port_of_discharge}}</Col>
               </Row>
             </Card>
