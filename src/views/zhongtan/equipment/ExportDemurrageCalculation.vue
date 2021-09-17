@@ -32,18 +32,21 @@
               <DatePicker type="daterange" placeholder="Loading Date" v-model="search_data.loading_date" format="yyyy-MM-dd" @on-change="searchDataChange" style="width:200px"></DatePicker>
             </div>
             <div class="form-group m-r-10">
-              <button type="button" class="btn btn-info" @click="getTableData(1)">
-                <i class="fa fa-search"></i> Search
-              </button>
+              <button type="button" class="btn btn-info" @click="getTableData(1)"><i class="fa fa-search"></i> Search </button>
             </div>
             <div class="form-group m-r-10">
-              <button type="button" class="btn btn-info" @click="setDeductionData()" :disabled="deductionDisabled"> Deduction
-              </button>
+              <button type="button" class="btn btn-info" @click="setDeductionData()" :disabled="deductionDisabled"> Deduction </button>
+            </div>
+            <div class="form-group m-r-3">
+              <button type="button" class="btn btn-info" @click="demurrageExport">Export</button>
             </div>
           </div>
         </div>
       </template>
       <Table stripe size="small" ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data" :height="table.containerTable.height" :border="table.containerTable.data && table.containerTable.data.length > 0" @on-select-all="containerSelectedAll"  @on-select-all-cancel="containerSelectedAllCancel" @on-selection-change="containerSelectedChange" :span-method="handleSpan">
+        <template slot-scope="{ row, index }" slot="vessel_voyage">
+          {{row.export_vessel_name}} / {{row.export_vessel_voyage}}
+        </template>
         <template slot-scope="{ row, index }" slot="export_container_no">
           <i style="color: #FF9900; margin-right:10px;" class="fa fa-money-bill-alt" v-if="row.export_container_cal_deduction_amount && row.export_container_cal_deduction_amount > 0"></i>{{row.export_container_no}}<font color="#1890ff" style="margin-left:10px;" v-if="row.export_container_soc_type==='S'">SOC</font>
         </template>
@@ -63,22 +66,6 @@
           <span v-else>{{row.export_container_edi_depot_gate_out_date}}</span>
           <Row class="right-bottom-title" v-if="row.export_container_cal_receipt_date">
             <span>{{row.export_container_cal_receipt_date}}</span>
-          </Row>
-        </template>
-        <template slot-scope="{ row, index }" slot="export_container_cal_demurrage_days">
-          <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_days && row.invoice_containers_actually_return_overdue_days && row.invoice_containers_empty_return_overdue_days !== row.invoice_containers_actually_return_overdue_days"> {{row.invoice_containers_empty_return_overdue_days}} </span>
-          <span style="color: #ff9900;" v-else-if="row.invoice_containers_empty_return_overdue_days_receipt">{{row.invoice_containers_empty_return_overdue_days}}</span>
-          <span v-else>{{row.invoice_containers_empty_return_overdue_days}}</span>
-          <Row class="right-bottom-title" v-if="row.invoice_containers_empty_return_overdue_days_receipt">
-            <span>{{row.invoice_containers_empty_return_overdue_days_receipt}}</span>
-          </Row>
-        </template>
-        <template slot-scope="{ row, index }" slot="export_container_cal_demurrage_amount">
-          <span style="color: red;" v-if="row.invoice_containers_empty_return_overdue_amount && row.invoice_containers_actually_return_overdue_amount && row.invoice_containers_empty_return_overdue_amount !== row.invoice_containers_actually_return_overdue_amount"> {{row.invoice_containers_empty_return_overdue_amount}} </span>
-          <span style="color: #ff9900;" v-else-if="row.invoice_containers_empty_return_overdue_amount_receipt">{{row.invoice_containers_empty_return_overdue_amount}}</span>
-          <span v-else>{{row.invoice_containers_empty_return_overdue_amount}}</span>
-          <Row class="right-bottom-title" v-if="row.invoice_containers_empty_return_overdue_amount_receipt">
-            <span>{{row.invoice_containers_empty_return_overdue_amount_receipt}}</span>
           </Row>
         </template>
         <template slot-scope="{ row, index }" slot="export_container_cal_demurrage_days">
@@ -206,6 +193,12 @@ export default {
               align: 'center'
             },
             {
+              title: 'Vessel Voyage',
+              slot: 'vessel_voyage',
+              width: 200,
+              align: 'center'
+            },
+            {
               title: 'Container No',
               slot: 'export_container_no',
               width: 160,
@@ -310,7 +303,7 @@ export default {
       deductionForm: {
         total_demurrage_amount: '',
         deduction_amount: ''
-      }
+      },
     }
   },
   created() {
@@ -368,7 +361,7 @@ export default {
       this.getTableData(1)
     },
     handleSpan: function({row, column, rowIndex, columnIndex}) {
-      if(column.title === '#M B/L No' || column.title === 'Files') {
+      if(column.title === '#M B/L No' || column.title === 'Vessel Voyage' || column.title === 'Files') {
         return this.getLayout(row, rowIndex, columnIndex)
       }
     },
@@ -571,6 +564,8 @@ export default {
               this.$commonact.fault(error)
             }
           }
+        } else if(this.checkPasswordType === 'demurrageExport') {
+          this.demurrageExportAct()
         }
       } catch (error) {
         this.$commonact.fault(error)
@@ -602,7 +597,26 @@ export default {
     },
     searchDataChange: async function(date) {
       this.search_data.loading_date = JSON.parse(JSON.stringify(date))
-    }
+    },
+    demurrageExport: async function() {
+      this.checkPassword = ''
+      this.checkPasswordType = 'demurrageExport'
+      this.modal.checkPasswordModal = true
+    },
+    demurrageExportAct: async function() {
+      let response = await this.$http.request({url: apiUrl + 'demurrageExport', method: 'post', data: {search_data: this.search_data}, responseType: 'blob'})
+      let blob = response.data
+      let reader = new FileReader()
+      reader.readAsDataURL(blob)
+      reader.onload = e => {
+        let a = document.createElement('a')
+        a.download = 'Export Demurrage Calculation.xlsx'
+        a.href = e.target.result
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+      }
+    },
   }
 }
 </script>

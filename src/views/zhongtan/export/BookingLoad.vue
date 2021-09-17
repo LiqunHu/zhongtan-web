@@ -17,20 +17,31 @@
         <div class="panel-toolbar">
           <div class="form-inline">
             <div class="form-group m-r-2">
-              <DatePicker type="daterange" :value="search_data.date_range" placeholder="Vessel Date" style="width: 200px" @on-change="searchRangeAct"></DatePicker>
+              <DatePicker type="daterange" :value="search_data.date_range" placeholder="Vessel Date" style="width: 160px" @on-change="searchRangeAct"></DatePicker>
             </div>
             <div class="form-group m-r-2">
-              <Select clearable v-model="search_data.vessel_id" filterable placeholder="Vessel Voyage" style="width:180px">
+              <Select clearable v-model="search_data.vessel_id" filterable placeholder="Vessel Voyage" style="width:160px">
                 <Option v-for="item in pagePara.VESSEL_VOYAGES" :value="item.export_vessel_id" :key="item.export_vessel_id">{{ item.export_vessel_voyage }}</Option>
               </Select>
             </div>
             <div class="form-group m-r-2">
-              <Select clearable v-model="search_data.firm_booking" filterable placeholder="FIRM BK" style="width:180px">
+              <Select clearable v-model="search_data.firm_booking" filterable placeholder="FIRM BK" style="width:160px">
                 <Option v-for="item in firm_booking_filter" :value="item.id" :key="item.id">{{ item.text }}</Option>
               </Select>
             </div>
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.masterbi_bl" placeholder="B/L No" style="width: 200px" />
+              <input type="text" class="form-control" v-model="search_data.masterbi_bl" placeholder="B/L No" style="width: 160px" />
+            </div>
+            <div class="form-group m-r-2">
+              <Select v-model="search_data.forwarder" filterable clearable :remote-method="remoteEmptyReleaseAgent" placeholder="FORWARDER" style="width: 160px">
+                <Option v-for="(item, index) in emptyReleaseAgent" :value="item.user_name" :key="index" :label="item.user_name"></Option>
+              </Select>
+            </div>
+            <div class="form-group m-r-2">
+              <input type="text" class="form-control" v-model="search_data.shipper" placeholder="SHIPPER" style="width: 160px" />
+            </div>
+            <div class="form-group m-r-2">
+              <input type="text" class="form-control" v-model="search_data.consignee" placeholder="CONSIGNEE" style="width: 160px" />
             </div>
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="searchDataAct">
@@ -64,20 +75,25 @@
                           <i class="fa fa-times"></i>
                       </a>
                       <Row>
-                          <Col span="12">
-                            <p>ETD: {{item.export_vessel_etd}}</p>
-                          </Col>
-                          <Col span="12">
-                            <Tooltip placement="right" v-if="item.size_types">
-                              <span>B/C: {{item.bl_count}}/{{item.container_count}}</span>
-                              <div slot="content">
-                                  <p v-for="(con, conI) in item.size_types" :key="conI">
-                                      {{con.containers_size}} : {{con.containers_size_count}}
-                                  </p>
-                              </div>
-                            </Tooltip>
-                            <span v-else>B/C: {{item.bl_count}}/{{item.container_count}}</span>
-                          </Col>
+                        <Col span="12">
+                          <p>ETD: {{item.export_vessel_etd}}</p>
+                        </Col>
+                        <Col span="12">
+                          <Tooltip placement="right" v-if="item.size_types">
+                            <span>B/C: {{item.bl_count}}/{{item.container_count}}</span>
+                            <div slot="content">
+                                <p v-for="(con, conI) in item.size_types" :key="conI">
+                                    {{con.containers_size}} : {{con.containers_size_count}}
+                                </p>
+                            </div>
+                          </Tooltip>
+                          <span v-else>B/C: {{item.bl_count}}/{{item.container_count}}</span>
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col span="12">
+                          <p>Gross Weight: {{item.gross_weight}}</p>
+                        </Col>
                       </Row>
                     </Card>
                   </div>

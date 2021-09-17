@@ -18,18 +18,26 @@
         <div class="panel-toolbar">
           <div class="form-inline">
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.masterbl_bl" placeholder="#M B/L No" style="width: 200px" />
+              <input type="text" class="form-control" v-model="search_data.masterbl_bl" placeholder="#M B/L No" style="width: 160px" />
             </div>
             <div class="form-group m-r-2">
-              <Select v-model="search_data.vessel_id" placeholder="Select Vessel" clearable filterable style="width:200px">
+              <Select v-model="search_data.vessel_id" placeholder="Select Vessel" clearable filterable style="width:160px">
                 <Option v-for="item in pagePara.VESSELS" :value="item.export_vessel_id" :key="item.export_vessel_id">{{ item.export_vessel_name + '/' + item.export_vessel_voyage }}</Option>
               </Select>
             </div>
             <div class="form-group m-r-2">
-              <DatePicker type="daterange" :value="search_data.etd_date" placeholder="ETD Date" style="width: 200px" @on-change="searchETDData"></DatePicker>
+              <DatePicker type="daterange" :value="search_data.etd_date" placeholder="ETD Date" style="width: 160px" @on-change="searchETDData"></DatePicker>
             </div>
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.consignee" placeholder="Consignee" style="width: 200px" />
+              <Select v-model="search_data.forwarder" filterable clearable :remote-method="remoteSearchForwarder" placeholder="FORWARDER" style="width: 160px">
+                <Option v-for="(item, index) in searchForwarderList" :value="item.user_name" :key="index" :label="item.user_name"></Option>
+              </Select>
+            </div>
+            <div class="form-group m-r-2">
+              <input type="text" class="form-control" v-model="search_data.shipper" placeholder="SHIPPER" style="width: 160px" />
+            </div>
+            <div class="form-group m-r-2">
+              <input type="text" class="form-control" v-model="search_data.consignee" placeholder="Consignee" style="width: 160px" />
             </div>
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="getTableData(1)">
@@ -223,7 +231,8 @@ export default {
       },
       files: {
         fileList: []
-      }
+      },
+      searchForwarderList: []
     }
   },
   created() {
@@ -327,7 +336,19 @@ export default {
       } catch (error) {
         this.$commonact.fault(error)
       }
-    }
+    },
+    remoteSearchForwarder: async function(query) {
+      if(query) {
+        let param = {
+          query: query
+        }
+        let response = await this.$http.post(apiUrl + 'searchForwarder', param)
+        this.$nextTick(function() {
+          let data = response.data.info
+          this.searchForwarderList = data.agents ? JSON.parse(JSON.stringify(data.agents)) : []
+        })
+      }
+    },
   }
 }
 </script>
