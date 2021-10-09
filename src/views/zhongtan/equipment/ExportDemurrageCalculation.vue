@@ -58,11 +58,20 @@
             <span v-for="(item, index) in pagePara.CONTAINER_SIZE" :key="index" v-if="item.container_size_code === row.export_container_size_type">{{item.container_size_name}}</span> ]
         </template>
         <template slot-scope="{ row, index }" slot="export_container_edi_loading_date">
-          <span v-if="row.export_masterbl_bl_carrier === 'OOCL'">{{row.export_container_edi_loading_date}}</span>
-          <span v-if="row.export_masterbl_bl_carrier === 'COSCO'">{{row.export_container_edi_wharf_gate_in_date}}</span>
-          <Row class="right-bottom-title">
-            <span>ETD: {{row.export_vessel_etd}}</span>
-          </Row>
+          <div v-if="row.export_container_edi_loading_date_edit_enable" style="color:#ff3300">
+            <span v-if="row.export_masterbl_bl_carrier === 'OOCL'">{{row.export_container_edi_loading_date}}</span>
+            <span v-if="row.export_masterbl_bl_carrier === 'COSCO'">{{row.export_container_edi_wharf_gate_in_date}}</span>
+            <Row class="right-bottom-title">
+              <span>ETD: {{row.export_vessel_etd}}</span>
+            </Row>
+          </div>
+          <div v-else>
+            <span v-if="row.export_masterbl_bl_carrier === 'OOCL'">{{row.export_container_edi_loading_date}}</span>
+            <span v-if="row.export_masterbl_bl_carrier === 'COSCO'">{{row.export_container_edi_wharf_gate_in_date}}</span>
+            <Row class="right-bottom-title">
+              <span>ETD: {{row.export_vessel_etd}}</span>
+            </Row>
+          </div>
         </template>
         <template slot-scope="{ row, index }" slot="export_container_edi_depot_gate_out_date">
           <span>{{row.export_container_edi_depot_gate_out_date}}</span>
@@ -99,11 +108,11 @@
             <Tag type="dot" v-if="overdueChargeForm.demurrage_invoice_containers_diff_days">Diff {{overdueChargeForm.demurrage_invoice_containers_diff_days}} Days</Tag>
           </FormItem>
           <FormItem label="Loading Date" v-if="overdueChargeForm.export_masterbl_bl_carrier === 'OOCL'">
-            <DatePicker type="date" placeholder="Loading Date" v-model="overdueChargeForm.export_container_edi_loading_date" format="dd/MM/yyyy" @on-change="loadingDateChange" :disabled="!!overdueChargeForm.export_container_edi_loading_date && returnOverdueDaysDisabled"></DatePicker>
+            <DatePicker type="date" placeholder="Loading Date" v-model="overdueChargeForm.export_container_edi_loading_date" format="dd/MM/yyyy" @on-change="loadingDateChange" :disabled="!!overdueChargeForm.export_container_edi_loading_date && returnOverdueDaysDisabled && !overdueChargeForm.export_container_edi_loading_date_edit_enable"></DatePicker>
             <Tag type="dot">ETD {{overdueChargeForm.export_vessel_etd}}</Tag>
           </FormItem>
           <FormItem label="Get In Date" v-if="overdueChargeForm.export_masterbl_bl_carrier === 'COSCO'">
-            <DatePicker type="date" placeholder="Get In Date" v-model="overdueChargeForm.export_container_edi_wharf_gate_in_date" format="dd/MM/yyyy" @on-change="gateInDateChange" :disabled="!!overdueChargeForm.export_container_edi_wharf_gate_in_date && returnOverdueDaysDisabled"></DatePicker>
+            <DatePicker type="date" placeholder="Get In Date" v-model="overdueChargeForm.export_container_edi_wharf_gate_in_date" format="dd/MM/yyyy" @on-change="gateInDateChange" :disabled="!!overdueChargeForm.export_container_edi_wharf_gate_in_date && returnOverdueDaysDisabled && !overdueChargeForm.export_container_edi_loading_date_edit_enable"></DatePicker>
             <Tag type="dot">ETD {{overdueChargeForm.export_vessel_etd}}</Tag>
           </FormItem>
           <FormItem label="Free Days">
