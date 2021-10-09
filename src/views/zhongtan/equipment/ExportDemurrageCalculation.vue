@@ -48,7 +48,10 @@
           {{row.export_vessel_name}} / {{row.export_vessel_voyage}}
         </template>
         <template slot-scope="{ row, index }" slot="export_container_no">
-          <i style="color: #FF9900; margin-right:10px;" class="fa fa-money-bill-alt" v-if="row.export_container_cal_deduction_amount && row.export_container_cal_deduction_amount > 0"></i>{{row.export_container_no}}<font color="#1890ff" style="margin-left:10px;" v-if="row.export_container_soc_type==='S'">SOC</font>
+          <i style="color: #FF9900; margin-right:10px;" class="fa fa-money-bill-alt" v-if="row.export_container_cal_deduction_amount && row.export_container_cal_deduction_amount > 0"></i>
+          <span style="color: #00cc66" v-if="row.export_container_cal_receipt === '1'">{{row.export_container_no}}</span>
+          <span style="color: #3091f2" v-else>{{row.export_container_no}}</span>
+          <font color="#1890ff" style="margin-left:10px;" v-if="row.export_container_soc_type==='S'">SOC</font>
         </template>
          <template slot-scope="{ row, index }" slot="export_container_size_type">
             {{row.export_container_size_type}} [
@@ -62,20 +65,19 @@
           </Row>
         </template>
         <template slot-scope="{ row, index }" slot="export_container_edi_depot_gate_out_date">
-          <span style="color: #ff9900;" v-if="row.export_container_cal_receipt_date">{{row.export_container_edi_depot_gate_out_date}}</span>
-          <span v-else>{{row.export_container_edi_depot_gate_out_date}}</span>
-          <Row class="right-bottom-title" v-if="row.export_container_cal_receipt_date">
-            <span>{{row.export_container_cal_receipt_date}}</span>
-          </Row>
+          <span>{{row.export_container_edi_depot_gate_out_date}}</span>
         </template>
         <template slot-scope="{ row, index }" slot="export_container_cal_demurrage_days">
-          <span>{{row.export_container_cal_demurrage_days}}</span>
+          <span style="color: #00cc66" v-if="row.export_container_cal_receipt === '1'">{{row.export_container_cal_demurrage_days}}</span>
+          <span style="color: #3091f2" v-else>{{row.export_container_cal_demurrage_days}}</span>
         </template>
         <template slot-scope="{ row, index }" slot="export_container_cal_demurrage_amount">
-          <span>{{row.export_container_cal_demurrage_amount}}</span>
+          <span style="color: #00cc66" v-if="row.export_container_cal_receipt === '1'">{{row.export_container_cal_demurrage_amount}}</span>
+          <span style="color: #3091f2" v-else>{{row.export_container_cal_demurrage_amount}}</span>
         </template>
         <template slot-scope="{ row, index }" slot="export_container_cal_deduction_amount">
-          <span>{{row.export_container_cal_deduction_amount}}</span>
+          <span style="color: #00cc66" v-if="row.export_container_cal_receipt === '1'">{{row.export_container_cal_deduction_amount}}</span>
+          <span style="color: #3091f2" v-else>{{row.export_container_cal_deduction_amount}}</span>
         </template>
         <template slot-scope="{ row, index }" slot="cal_demurrage">
           <a href="#" class="btn btn-success btn-icon btn-sm" title="RECEIPT" v-if="row.export_container_cal_receipt === '1'" @click.prevent="demurrageCalculationModal(row)">

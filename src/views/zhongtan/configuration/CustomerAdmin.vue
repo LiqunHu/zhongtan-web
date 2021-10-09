@@ -42,6 +42,9 @@
             <Tag :color="item.color" v-if="row.user_customer_type == item.id">{{item.text}}</Tag>
           </div>
         </template>
+        <template slot-scope="{ row, index }" slot="user_rate">
+          <Rate v-model="row.user_rate" @on-change="changeUserRate(row)"></Rate>
+        </template>
         <template slot-scope="{ row, index }" slot="export_split_shipment">
           <Tag v-if="row.export_split_shipment" v-for="item in row.export_split_shipment" v-bind:key="item">{{item}}</Tag>
         </template>
@@ -83,6 +86,9 @@
           <Select v-model="workPara.user_customer_type">
             <Option v-for="item in pagePara.USER_CUSTOMER_TYPE" :value="item.id" :key="item.id">{{item.text}}</Option>
           </Select>
+        </FormItem>
+        <FormItem label="Rate" prop="user_rate" style="margin-bottom: 7px;">
+          <Rate v-model="workPara.user_rate"></Rate>
         </FormItem>
         <FormItem label="TIN" prop="user_tin" style="margin-bottom: 7px;">
           <Input placeholder="TIN" v-model="workPara.user_tin"/>
@@ -145,6 +151,11 @@ export default {
               title: 'Type',
               slot: 'user_customer_type',
               width: 150,
+            },
+            {
+              title: 'Rate',
+              slot: 'user_rate',
+              width: 180,
             },
             {
               title: 'Phone',
@@ -256,7 +267,8 @@ export default {
     },
     addUserModal: async function() {
       this.workPara = {
-        user_customer_type: '1'
+        user_customer_type: '1',
+        user_rate: 5
       }
       this.action = 'add'
       this.$refs.formUser.resetFields()
@@ -317,6 +329,14 @@ export default {
         } else {
           row.user_blacklist = '1'
         }
+        this.$commonact.fault(error)
+      }
+    },
+    changeUserRate: async function(row) {
+      try {
+        await this.$http.post(apiUrl + 'changeRate', row)
+        this.getUserData()
+      } catch (error) {
         this.$commonact.fault(error)
       }
     },

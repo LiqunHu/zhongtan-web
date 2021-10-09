@@ -44,6 +44,13 @@
             <i class="fa fa-times"></i>
           </a>
         </template>
+        <template slot-scope="{ row, index }" slot="files">
+          <span v-if="row.files">
+            <a v-for="(item, index) in row.files" v-bind:key="index" :href="item.url" class="btn btn-primary btn-icon btn-sm" target="_blank" @click.stop>
+              <i class="fa fa-download"></i>
+            </a>
+          </span>
+        </template>
       </Table>
       <Page class="m-t-10" :total="table.checkTable.total" :page-size="table.checkTable.limit" @on-change="getTableData" />
       <Drawer :closable="false" width="50%" inner v-model="verificationDetailModal">
@@ -235,6 +242,12 @@ export default {
               title: 'Amount',
               key: 'logistics_verification_amount',
               width: 120
+            },
+            {
+              title: 'ATTACHMENT',
+              slot: 'files',
+              width: 150,
+              align: 'center'
             },
             {
               title: 'Business Type',

@@ -264,7 +264,7 @@
         <FormItem label="Quantity">
           <Row>
             <Col v-for="(item, index) in emptyReleaseQuantitys" span="12" :key="index">
-              <InputNumber :max="item.quantity" :min="0" v-model="item.release_quantity">
+              <InputNumber :max="item.quantity" :min="0" v-model="item.release_quantity" disabled>
               </InputNumber>
               <Input v-model="item.container_type" style="width: 78px" disabled/>
             </Col>

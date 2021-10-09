@@ -34,6 +34,9 @@
             <Tag :color="item.color" v-if="row.user_customer_type == item.id">{{item.text}}</Tag>
           </div>
         </template>
+        <template slot-scope="{ row, index }" slot="user_rate">
+          <Rate v-model="row.user_rate" disabled></Rate>
+        </template>
         <template slot-scope="{ row, index }" slot="user_blacklist">
           <i-switch v-model="row.user_blacklist" @on-change="changeBlacklist(row)" size="large" true-value="1" false-value="0" disabled>
               <span slot="open">ON</span>
@@ -117,6 +120,11 @@ export default {
               title: 'Type',
               slot: 'user_customer_type',
               width: 150,
+            },
+            {
+              title: 'Rate',
+              slot: 'user_rate',
+              width: 180,
             },
             {
               title: 'Phone',

@@ -371,6 +371,62 @@
           <Button type="primary" size="large" @click="applyPaymentExtraAct">Submit</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.applyFullPaymentModal" title="Full Payment" width="800">
+      <Form ref="paymentFull" :model="paymentFullForm" :rules="paymentFullRules" :label-width="160" style="padding-right: 80px;">
+        <FormItem label="B/L#" prop="payment_full_bl_no">
+          {{paymentFullForm.payment_full_bl_no}}
+        </FormItem>
+        <FormItem label="Full Attachment" prop="payment_full_files">
+          <Upload
+            ref="uploadFull"
+            :headers="uploadHeaders"
+            :on-success="handleUploadFullSuccess"
+            :on-remove="handleUploadFullRemove"
+            type="drag"
+            action="/api/zhongtan/logistics/ShipmentNote/upload">
+            <div style="padding: 20px 0">
+                <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+                <p>Click or drag files here to upload</p>
+            </div>
+          </Upload>
+        </FormItem>
+        <FormItem label="Amount" prop="payment_full_amount">
+          {{paymentFullForm.payment_full_amount}}
+        </FormItem>
+      </Form>
+      <div slot="footer">
+          <Button type="text" size="large" @click="modal.applyFullPaymentModal=false">Cancel</Button>
+          <Button type="primary" size="large" @click="doApplyFullPaymentAct">Submit</Button>
+      </div>
+    </Modal>
+    <Modal v-model="modal.applyBalancePaymentModal" title="Balance Payment" width="800">
+      <Form ref="paymentBalance" :model="paymentBalanceForm" :rules="paymentBalanceRules" :label-width="200" style="padding-right: 80px;">
+        <FormItem label="B/L#" prop="payment_balance_bl_no">
+          {{paymentBalanceForm.payment_balance_bl_no}}
+        </FormItem>
+        <FormItem label="Balance Attachment" prop="payment_balance_files">
+          <Upload
+            ref="uploadBalance"
+            :headers="uploadHeaders"
+            :on-success="handleUploadBalanceSuccess"
+            :on-remove="handleUploadBalanceRemove"
+            type="drag"
+            action="/api/zhongtan/logistics/ShipmentNote/upload">
+            <div style="padding: 20px 0">
+                <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+                <p>Click or drag files here to upload</p>
+            </div>
+          </Upload>
+        </FormItem>
+        <FormItem label="Amount" prop="payment_balance_amount">
+          {{paymentBalanceForm.payment_balance_amount}}
+        </FormItem>
+      </Form>
+      <div slot="footer">
+          <Button type="text" size="large" @click="modal.applyBalancePaymentModal=false">Cancel</Button>
+          <Button type="primary" size="large" @click="doApplyBalancePaymentAct">Submit</Button>
+      </div>
+    </Modal>
     <Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :mask-closable="false">
       <Form :label-width="120">
         <FormItem v-show="false">
@@ -396,7 +452,7 @@ export default {
   name: 'ShipmentList',
   data: function() {
     return {
-      modal: { addShipmentModal: false, applyPaymentModal: false, applyPaymentExtraModal: false, checkPasswordModal: false },
+      modal: { addShipmentModal: false, applyPaymentModal: false, applyPaymentExtraModal: false, checkPasswordModal: false, applyFullPaymentModal: false, applyBalancePaymentModal: false },
       table: {
         shipmentTable: {
           rows: [
@@ -1085,7 +1141,29 @@ export default {
           { type: 'array', min: 1, required: true, trigger: 'change', message: 'upload extra Attachment'}
         ]
       },
-      uploadHeaders: common.uploadHeaders()
+      uploadHeaders: common.uploadHeaders(),
+      paymentFullForm: {
+        payment_full_bl_no: '',
+        applyData: [],
+        payment_full_files: [],
+        payment_full_amount: '',
+      },
+      paymentFullRules: {
+        payment_full_files: [
+          { type: 'array', min: 1, required: true, trigger: 'change', message: 'upload full Attachment'}
+        ]
+      },
+      paymentBalanceForm: {
+        payment_balance_bl_no: '',
+        applyData: [],
+        payment_balance_files: [],
+        payment_balance_amount: '',
+      },
+      paymentBalanceRules: {
+        payment_balance_files: [
+          { type: 'array', min: 1, required: true, trigger: 'change', message: 'upload balance Attachment'}
+        ]
+      },
     }
   },
   created() {
@@ -1342,29 +1420,65 @@ export default {
         selection = this.$refs.extraTable.getSelection()
       }
       if(selection && selection.length > 0) {
-        try {
-          await this.$http.post(apiUrl + 'applyPayment', { applyAction: this.applyPaymentAction, applyData: selection })
-          this.$Message.success('apply success')
-          this.getShipmentNoteData(1)
-          this.modal.applyPaymentModal = false
-        } catch (error) {
-          this.$commonact.fault(error)
-        }
-      } else {
-        return this.$Message.error('Please select apply payment')
-      }
-    },
-    applyFullPaymentAct: async function() {
-      if(this.applyPaymentAction === 'ADVANCE') {
-        let selection = this.$refs.advanceTable.getSelection()
-        if(selection && selection.length > 0) {
+        if(this.applyPaymentAction === 'BALANCE') {
+          this.modal.applyBalancePaymentModal = true
+          this.paymentBalanceForm.applyData = selection
+          this.$refs.uploadBalance.clearFiles()
+          this.paymentBalanceForm.payment_balance_files = []
+          for(let s of selection) {
+            this.paymentBalanceForm.payment_balance_bl_no = s.shipment_list_bill_no
+            this.paymentBalanceForm.payment_balance_amount = Number(this.paymentBalanceForm.payment_balance_amount) + Number(s.shipment_list_balance_payment)
+          }
+        } else {
           try {
-            await this.$http.post(apiUrl + 'applyFullPayment', { applyAction: this.applyPaymentAction, applyData: selection })
+            await this.$http.post(apiUrl + 'applyPayment', { applyAction: this.applyPaymentAction, applyData: selection })
             this.$Message.success('apply success')
             this.getShipmentNoteData(1)
             this.modal.applyPaymentModal = false
           } catch (error) {
             this.$commonact.fault(error)
+          }
+        }
+      } else {
+        return this.$Message.error('Please select apply payment')
+      }
+    },
+    doApplyBalancePaymentAct: async function() {
+      this.$refs['paymentBalance'].validate(async valid => {
+        if (valid) {
+          try {
+            this.paymentBalanceForm.applyAction = this.applyPaymentAction
+            await this.$http.post(apiUrl + 'applyPayment', this.paymentBalanceForm)
+            this.$Message.success('apply success')
+            this.getShipmentNoteData(1)
+            this.modal.applyBalancePaymentModal = false
+            this.modal.applyPaymentModal = false
+          } catch (error) {
+            this.$commonact.fault(error)
+          }
+        }
+      })
+    },
+    handleUploadBalanceSuccess(res, file, fileList) {
+      file.url = res.info.url
+      file.name = res.info.name
+      this.paymentBalanceForm.payment_balance_files = JSON.parse(JSON.stringify(this.$refs.uploadBalance.fileList))
+    },
+    handleUploadBalanceRemove(file, fileList) {
+      const index = this.paymentBalanceForm.payment_balance_files.indexOf(file)
+      this.paymentBalanceForm.payment_balance_files.splice(index, 1)
+    },
+    applyFullPaymentAct: async function() {
+      if(this.applyPaymentAction === 'ADVANCE') {
+        let selection = this.$refs.advanceTable.getSelection()
+        if(selection && selection.length > 0) {
+          this.modal.applyFullPaymentModal = true
+          this.paymentFullForm.applyData = selection
+          this.$refs.uploadFull.clearFiles()
+          this.paymentFullForm.payment_full_files = []
+          for(let s of selection) {
+            this.paymentFullForm.payment_full_bl_no = s.shipment_list_bill_no
+            this.paymentFullForm.payment_full_amount = Number(this.paymentFullForm.payment_full_amount) + Number(s.shipment_list_total_freight)
           }
         } else {
           return this.$Message.error('Please select apply payment')
@@ -1372,6 +1486,30 @@ export default {
       } else {
         return this.$Message.error('Please select advance payment list')
       }
+    },
+    doApplyFullPaymentAct: async function() {
+      this.$refs['paymentFull'].validate(async valid => {
+        if (valid) {
+          try {
+            await this.$http.post(apiUrl + 'applyFullPayment', this.paymentFullForm)
+            this.$Message.success('apply success')
+            this.getShipmentNoteData(1)
+            this.modal.applyFullPaymentModal = false
+            this.modal.applyPaymentModal = false
+          } catch (error) {
+            this.$commonact.fault(error)
+          }
+        }
+      })
+    },
+    handleUploadFullSuccess(res, file, fileList) {
+      file.url = res.info.url
+      file.name = res.info.name
+      this.paymentFullForm.payment_full_files = JSON.parse(JSON.stringify(this.$refs.uploadFull.fileList))
+    },
+    handleUploadFullRemove(file, fileList) {
+      const index = this.paymentFullForm.payment_full_files.indexOf(file)
+      this.paymentFullForm.payment_full_files.splice(index, 1)
     },
     deleteShipment: async function(row) {
       this.workPara = JSON.parse(JSON.stringify(row))
