@@ -16,40 +16,27 @@
     <panel title="Import Demurrage Invoice Statistics">
       <template slot="beforeBody">
         <div class="panel-toolbar">
-          <div class="form-inline">
-            <div class="form-group m-r-2">
-              ATA&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.ata_date" placeholder="ATA Date" style="width: 160px" @on-change="searchAtaDate"></DatePicker>
+          <Row>
+            <div class="form-inline">
+              <input type="text" class="form-control" v-model="search_data.invoice_containers_bl" placeholder="B/L#" style="width: 160px; margin-right: 7px;" />
+              <DatePicker type="daterange" :value="search_data.ata_date" placeholder="ATA Date" style="width: 160px; margin-right: 7px;" @on-change="searchAtaDate"></DatePicker>
+              <DatePicker type="daterange" :value="search_data.invoice_date" placeholder="Invoice Date" style="width: 160px; margin-right: 7px;" @on-change="searchInvoiceDate"></DatePicker>
+              <DatePicker type="daterange" :value="search_data.receipt_date" placeholder="Receipt Date" style="width: 160px; margin-right: 7px;" @on-change="searchReceiptDate"></DatePicker>
+              <button type="button" class="btn btn-info" @click="getTableData" style="margin-right: 7px;"><i class="fa fa-search"></i> Search</button>
+              <button type="button" class="btn btn-info" @click="exportDemurrageReport"><i class="fa fa-download"></i> Export</button>
             </div>
-            <div class="form-group m-r-2">
-              Invoice Date&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.invoice_date" placeholder="Invoice Date" style="width: 160px" @on-change="searchInvoiceDate"></DatePicker>
-            </div>
-            <div class="form-group m-r-2">
-              Receipt Date&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.receipt_date" placeholder="Receipt Date" style="width: 160px" @on-change="searchReceiptDate"></DatePicker>
-            </div>
-            <div class="form-group m-r-2">
-              <Select v-model="search_data.vessel_id" clearable filterable placeholder="VESSEL" style="width: 160px;">
+          </Row>
+          <Row style="margin-top:7px;">
+            <div class="form-inline">
+              <input type="text" class="form-control" v-model="search_data.invoice_containers_no" placeholder="Container No" style="width: 160px; margin-right: 7px;" />
+              <Select v-model="search_data.vessel_id" clearable filterable placeholder="VESSEL" style="width: 160px; margin-right: 7px;">
                 <Option v-for="item in pagePara.VESSEL" :value="item.invoice_vessel_id" :key="item.invoice_vessel_id">{{item.vessel_info}}</Option>
               </Select>
-            </div>
-            <div class="form-group m-r-2">
-              <Select v-model="search_data.customer_id" clearable filterable placeholder="MESSRS" style="width: 160px;">
+              <Select v-model="search_data.customer_id" clearable filterable placeholder="MESSRS" style="width: 160px; margin-right: 7px;">
                 <Option v-for="item in pagePara.CUSTOMER" :value="item.user_id" :key="item.user_id">{{item.user_name}}</Option>
               </Select>
             </div>
-            <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.invoice_containers_no" placeholder="Container No" style="width: 160px" />
-            </div>
-            <div class="form-group m-r-10">
-              <button type="button" class="btn btn-info" @click="getTableData">
-                <i class="fa fa-search"></i> Search
-              </button>
-            </div>
-            <div class="form-group m-r-10">
-              <button type="button" class="btn btn-info" @click="exportDemurrageReport">
-                <i class="fa fa-download"></i> Export
-              </button>
-            </div>
-          </div>
+          </Row>
         </div>
       </template>
       <Table stripe size="small" ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data" :height="table.containerTable.height" :border="table.containerTable.data && table.containerTable.data.length > 0">
@@ -270,7 +257,7 @@ export default {
           ],
           data: [],
           unchanged: [],
-          height: common.getTableHeight() - 80,
+          height: common.getNewTableHeight() - 100,
           limit: 10,
           offset: 0,
           total: 0

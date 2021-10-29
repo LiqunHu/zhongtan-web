@@ -19,15 +19,14 @@
             <Row>
               <div class="form-inline">
                 <div class="input-group m-r-10">
-                  <input type="text" placeholder="B/L#" v-model.trim="searchPara.shipment_list_bill_no" class="form-control" style="width:199px; margin-right:7px;">
-                  <input type="text" placeholder="CONTAINER#" v-model.trim="searchPara.shipment_list_container_no" class="form-control" style="width:199px; margin-right:7px;">
-                  <Select v-model="searchPara.shipment_list_cntr_owner" clearable placeholder="CNTR OWNER" style="width:199px; margin-right:7px;">
-                    <Option v-for="item in cntrOwnerFilter" :value="item.id" :key="item.id">{{ item.text }}</Option>
-                  </Select>
+                  <input type="text" placeholder="B/L#" v-model.trim="searchPara.shipment_list_bill_no" class="form-control" style="width:130px; margin-right:7px;">
+                  <input type="text" placeholder="CONTAINER#" v-model.trim="searchPara.shipment_list_container_no" class="form-control" style="width:130px; margin-right:7px;">
+                  <input type="text" placeholder="INVOICE No." v-model.trim="searchPara.shipment_list_invoice_no" class="form-control" style="width:130px; margin-right:7px;">
+                  <input type="text" placeholder="RECEIPT No." v-model.trim="searchPara.shipment_list_receipt_no" class="form-control" style="width:130px; margin-right:7px;">
                   <Select v-model="searchPara.shipment_list_vendor" clearable filterable placeholder="VENDOR" style="width:199px; margin-right:7px;">
                     <Option v-for="item in pagePara.VENDOR" :value="item.id" :key="item.id">{{ item.text }}</Option>
                   </Select>
-                  <Select v-model="searchPara.shipment_list_customer" clearable filterable placeholder="CUSTOMER" style="width:199px">
+                  <Select v-model="searchPara.shipment_list_customer" clearable filterable placeholder="CUSTOMER" style="width:199px; margin-right:7px;">
                     <Option v-for="item in pagePara.COMMON_CUSTOMER" :value="item.user_id" :key="item.user_id">{{ item.user_name }}</Option>
                   </Select>
                 </div>
@@ -44,13 +43,16 @@
             <Row style="margin-top:7px;">
               <div class="form-inline">
                 <div class="input-group m-r-10">
-                  <Select v-model="searchPara.shipment_list_payment_status" clearable placeholder="FREIGHT STATUS" style="width:199px; margin-right:7px;">
+                  <Select v-model="searchPara.shipment_list_cntr_owner" clearable placeholder="CNTR OWNER" style="width:130px; margin-right:7px;">
+                    <Option v-for="item in cntrOwnerFilter" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                  </Select>
+                  <Select v-model="searchPara.shipment_list_payment_status" clearable placeholder="FREIGHT STATUS" style="width:130px; margin-right:7px;">
                     <Option v-for="item in pagePara.RECEIVABLE_STATUS" :value="item.id" :key="item.id">{{ item.text }}</Option>
                   </Select>
-                  <Select v-model="searchPara.shipment_list_business_type" clearable placeholder="BUSINESS TYPE" style="width:199px; margin-right:7px;">
+                  <Select v-model="searchPara.shipment_list_business_type" clearable placeholder="BUSINESS TYPE" style="width:130px; margin-right:7px;">
                     <Option v-for="item in businessTypeFilter" :value="item.id" :key="item.id">{{ item.text }}</Option>
                   </Select>
-                  <Select v-model="searchPara.shipment_list_cargo_type" clearable placeholder="CARGO TYPE" style="width:199px; margin-right:7px;">
+                  <Select v-model="searchPara.shipment_list_cargo_type" clearable placeholder="CARGO TYPE" style="width:130px; margin-right:7px;">
                     <Option v-for="item in cargoTypeFilter" :value="item.id" :key="item.id">{{ item.text }}</Option>
                   </Select>
                   <DatePicker type="daterange" :value="searchPara.shipment_list_in_date" placeholder="DISCHARGE/GATE OUT" @on-change="searchInDateChange" format="yyyy-MM-dd" style="margin-right:7px;"></DatePicker>
@@ -380,7 +382,7 @@ export default {
             }
           ],
           pageSizeOpts: [40, 60, 80, 100],
-          height: common.getTableHeight(),
+          height: common.getNewTableHeight() - 100,
           data: [],
           limit: 40,
           offset: 0,

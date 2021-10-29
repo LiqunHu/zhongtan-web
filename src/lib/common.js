@@ -358,6 +358,12 @@ exports.getTableHeight = function() {
   return height
 }
 
+exports.getNewTableHeight = function() {
+  let height = window.innerHeight
+  height = height - 280
+  return height
+}
+
 exports.md52 = function(v) {
   return CryptoJS.MD5(v).toString()
 }
