@@ -148,6 +148,11 @@
                       <a href="#" class="btn btn-danger btn-icon btn-sm" v-else v-on:click="bkCancellationFeeModalAct(row)">
                         <i class="fa fa-backward"></i>
                       </a>
+                    </Tooltip> 
+                    <Tooltip content="DELETE">
+                      <a href="#" class="btn btn-warning btn-icon btn-sm" v-on:click="deleteBookingRelease(row)">
+                        <i class="fa fa-times"></i>
+                      </a>
                     </Tooltip>
                   </template>
                   <template slot-scope="{ row, index }" slot="attachments">
@@ -749,7 +754,7 @@ export default {
       if (this.checkPassword) {
         try {
           let action = ''
-          if (this.checkPasswordType === 'vesselModify' || this.checkPasswordType === 'vesselDelete') {
+          if (this.checkPasswordType === 'vesselModify' || this.checkPasswordType === 'vesselDelete' || this.checkPasswordType === 'deleteBooking') {
             action = 'EXPORT_VESSEL_EDIT'
           } else if (this.checkPasswordType === 'emptyRelease') {
             action = 'EXPORT_EMPORT_RELEASE'
@@ -776,6 +781,8 @@ export default {
             this.firmBookingAct()
           } else if (this.checkPasswordType === 'bookingExport') {
             this.bookingExportAct()
+          } else if (this.checkPasswordType === 'deleteBooking') {
+            this.doDeleteBookingRelease()
           }
         } catch (error) {
           this.$commonact.fault(error)
@@ -1003,6 +1010,29 @@ export default {
         const index = this.emptyReleaseForm.export_masterbl_empty_release_guarantee_letter_list.indexOf(file)
         this.emptyReleaseForm.export_masterbl_empty_release_guarantee_letter_list.splice(index, 1)
     },
+    deleteBookingRelease: async function(row) {
+      this.workPara = JSON.parse(JSON.stringify(row))
+      this.$commonact.confirm('Delete ' + row.export_masterbl_bl +'?', async() => {
+        try {
+          this.workPara = JSON.parse(JSON.stringify(row))
+          this.checkPassword = ''
+          this.checkPasswordType = 'deleteBooking'
+          this.modal.checkPasswordModal = true
+        }catch (error) {
+          this.$commonact.fault(error)
+        }
+      }, async() => {
+        this.searchDataAct()
+      })
+    },
+    doDeleteBookingRelease: async function(row) {
+      try {
+        await this.$http.post(apiUrl + 'deleteBooking', this.workPara)
+        this.searchDataAct()
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    }
   }
 }
 </script>

@@ -32,6 +32,16 @@
             <div class="form-group m-r-2">
               <input type="text" class="form-control" v-model="search_data.bl" placeholder="B/L No" style="width: 200px" />
             </div>
+            <div class="form-group m-r-2">
+              <Select v-model="search_data.release_party" clearable filterable :remote-method="remoteEmptyReleaseParty">
+                <Option v-for="(item, index) in emptyReleaseParty" :value="item.user_id" :key="index" :label="item.user_name" :disabled="item.user_blacklist === '1'">
+                  <span>{{item.user_name}}</span>
+                  <Tag color="success" v-if="item.user_customer_type === '1'" style="float: right;">AGEN</Tag>
+                  <Tag color="warning" v-if="item.user_customer_type === '2'" style="float: right;">CNEE</Tag>
+                  <Tag color="error" v-if="item.user_blacklist === '1'" style="float: right;">BLACK</Tag>
+                </Option>
+              </Select>
+            </div>
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="getTableData">
                 <i class="fa fa-search"></i>
@@ -308,7 +318,8 @@ export default {
       verificationTitle: '',
       timelinePara: [],
       verificationDetailModal: false,
-      verificationDetail: {}
+      verificationDetail: {},
+      emptyReleaseParty: []
     }
   },
   created() {
@@ -346,6 +357,7 @@ export default {
           verification_state: this.search_data.verification_state,
           verification_vessel_id: this.search_data.verification_vessel_id,
           bl: this.search_data.bl,
+          release_party: this.search_data.release_party,
           offset: this.table.checkTable.offset,
           limit: this.table.checkTable.limit
         }
@@ -390,7 +402,8 @@ export default {
           end_date: this.search_data.date[1],
           verification_state: this.search_data.verification_state,
           verification_vessel_id: this.search_data.verification_vessel_id,
-          bl: this.search_data.bl
+          bl: this.search_data.bl,
+          release_party: this.search_data.release_party
         }
         let response = await this.$http.request({
             url: apiUrl + 'export',
@@ -411,6 +424,18 @@ export default {
         }
       } catch (error) {
         this.$commonact.fault(error)
+      }
+    },
+    remoteEmptyReleaseParty: async function(query) {
+      if(query) {
+        let param = {
+          query: query
+        }
+        let response = await this.$http.post(apiUrl + 'getEmptyReleaseParty', param)
+        this.$nextTick(function() {
+          let data = response.data.info
+          this.emptyReleaseParty = data.agents ? JSON.parse(JSON.stringify(data.agents)) : []
+        })
       }
     },
   }
