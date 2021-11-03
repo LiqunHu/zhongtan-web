@@ -442,8 +442,10 @@ export default {
       if (this.checkPassword) {
         try {
           let action = ''
-          if (this.checkPasswordType === 'blPrint' || this.checkPasswordType === 'exportFreight') {
+          if (this.checkPasswordType === 'blPrint') {
             action = 'FRIGHT_CHARGE_ACTION'
+          } else if (this.checkPasswordType === 'exportFreight') {
+            action = 'FRIGHT_CHARGE_EXPORT_ACTION'
           }
           let param = {
             action: action,

@@ -116,6 +116,20 @@
         <Button type="primary" size="large" @click="submitUser">Submit</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :mask-closable="false">
+      <Form :label-width="120">
+          <FormItem v-show="false">
+              <Input type="password" style='width:0;opacity:0;'></Input>
+          </FormItem>
+          <FormItem label="Password" prop="checkPassword">
+              <Input type="password" placeholder="Password" v-model="checkPassword"></Input>
+          </FormItem>
+      </Form>
+      <div slot="footer">
+          <Button type="text" size="large" @click="checkPasswordCancel">Cancel</Button>
+          <Button type="primary" size="large" @click="checkPasswordAct">Submit</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -128,7 +142,7 @@ export default {
   name: 'CustomerAdmin',
   data: function() {
     return {
-      modal: { userModal: false },
+      modal: { userModal: false, checkPasswordModal: false },
       table: {
         userTable: {
           rows: [
@@ -220,6 +234,7 @@ export default {
         ruleUserModal: {
           user_username: [{ required: true, trigger: 'change', message: 'Enter Username' }],
           user_name: [{ required: true, trigger: 'change', message: 'Enter Name' }],
+          user_phone: [{ required: true, trigger: 'change', message: 'Enter Phone' }],
           user_email: [{ required: true, type: 'email', rigger: 'change', message: 'Enter Email' }],
           user_address: [{ required: true, rigger: 'change', message: 'Enter Address' }]
         }
@@ -227,7 +242,9 @@ export default {
       pagePara: {},
       oldPara: {},
       workPara: {},
-      action: ''
+      action: '',
+      checkPassword: '',
+      checkPasswordType: '',
     }
   },
   created() {
@@ -268,7 +285,7 @@ export default {
     addUserModal: async function() {
       this.workPara = {
         user_customer_type: '1',
-        user_rate: 5
+        user_rate: 1
       }
       this.action = 'add'
       this.$refs.formUser.resetFields()
@@ -305,14 +322,20 @@ export default {
     },
     deleteUser: function(row) {
       this.$commonact.confirm('Delete Customer?', async () => {
-        try {
-          await this.$http.post(apiUrl + 'delete', { user_id: row.user_id })
-          this.$Message.success('Delete Success')
-          this.getUserData()
-        } catch (error) {
-          this.$commonact.fault(error)
-        }
+        this.workPara = JSON.parse(JSON.stringify(row))
+        this.checkPassword = ''
+        this.checkPasswordType = 'customerDelete'
+        this.modal.checkPasswordModal = true
       })
+    },
+    doDeleteUser: async function() {
+      try {
+        await this.$http.post(apiUrl + 'delete', { user_id: this.workPara.user_id })
+        this.$Message.success('Delete Success')
+        this.getUserData()
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
     },
     changeBlacklist: async function(row) {
       try {
@@ -362,7 +385,33 @@ export default {
       } catch (error) {
         this.$commonact.fault(error)
       }
-    }
+    },
+    checkPasswordCancel: async function() {
+      this.modal.checkPasswordModal = false
+    },
+    checkPasswordAct: async function() {
+      if (this.checkPassword) {
+        try {
+          let action = ''
+          if (this.checkPasswordType === 'customerDelete') {
+            action = 'CUSTOMER_ADMIN_OPERATE'
+          }
+          let param = {
+            action: action,
+            checkPassword: common.md52(this.checkPassword)
+          }
+          await this.$http.post(apiUrl + 'checkPassword', param)
+          this.modal.checkPasswordModal = false
+          if (this.checkPasswordType === 'customerDelete') {
+            this.doDeleteUser()
+          }
+        } catch (error) {
+          this.$commonact.fault(error)
+        }
+      } else {
+        return this.$Message.error('Please enter right password')
+      }
+    },
   }
 }
 </script>

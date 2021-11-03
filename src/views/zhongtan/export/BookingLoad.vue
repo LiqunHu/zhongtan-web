@@ -1013,19 +1013,23 @@ export default {
     deleteBookingRelease: async function(row) {
       this.workPara = JSON.parse(JSON.stringify(row))
       this.$commonact.confirm('Delete ' + row.export_masterbl_bl +'?', async() => {
-        try {
-          this.workPara = JSON.parse(JSON.stringify(row))
-          this.checkPassword = ''
-          this.checkPasswordType = 'deleteBooking'
-          this.modal.checkPasswordModal = true
-        }catch (error) {
-          this.$commonact.fault(error)
+        if(row.export_masterbl_empty_release_approve_date) {
+          try {
+            this.workPara = JSON.parse(JSON.stringify(row))
+            this.checkPassword = ''
+            this.checkPasswordType = 'deleteBooking'
+            this.modal.checkPasswordModal = true
+          }catch (error) {
+            this.$commonact.fault(error)
+          }
+        } else {
+          this.doDeleteBookingRelease()
         }
       }, async() => {
         this.searchDataAct()
       })
     },
-    doDeleteBookingRelease: async function(row) {
+    doDeleteBookingRelease: async function() {
       try {
         await this.$http.post(apiUrl + 'deleteBooking', this.workPara)
         this.searchDataAct()
