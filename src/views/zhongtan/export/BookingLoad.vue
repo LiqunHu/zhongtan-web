@@ -94,6 +94,9 @@
                         <Col span="12">
                           <p>Gross Weight: {{item.gross_weight}}</p>
                         </Col>
+                        <Col span="12">
+                          <p>Tare Weight: {{item.tare_weight}}</p>
+                        </Col>
                       </Row>
                     </Card>
                   </div>
