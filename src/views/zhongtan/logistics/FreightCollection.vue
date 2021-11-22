@@ -19,8 +19,8 @@
             <Row>
               <div class="form-inline">
                 <div class="input-group m-r-10">
-                  <input type="text" placeholder="B/L#" v-model.trim="searchPara.shipment_list_bill_no" class="form-control" style="width:199px; margin-right:7px;">
-                  <input type="text" placeholder="CONTAINER#" v-model.trim="searchPara.shipment_list_container_no" class="form-control" style="width:199px; margin-right:7px;">
+                  <input type="text" placeholder="B/L#" clearable v-model.trim="searchPara.shipment_list_bill_no" class="form-control" style="width:199px; margin-right:7px;">
+                  <input type="text" placeholder="CONTAINER#" clearable v-model.trim="searchPara.shipment_list_container_no" class="form-control" style="width:199px; margin-right:7px;">
                   <Select v-model="searchPara.shipment_list_cntr_owner" clearable placeholder="CNTR OWNER" style="width:199px; margin-right:7px;">
                     <Option v-for="item in cntrOwnerFilter" :value="item.id" :key="item.id">{{ item.text }}</Option>
                   </Select>
@@ -68,6 +68,9 @@
         </div>
       </template>
       <Table stripe ref="shipmentTable" :columns="table.shipmentTable.rows" :data="table.shipmentTable.data" :height="table.shipmentTable.height" @on-select="paymentSelect" @on-select-cancel="paymentSelectCancel" @on-selection-change="paymentSelectedChange" :span-method="freightCollectionHandleSpan">
+        <template slot-scope="{ row, index }" slot="action">
+          <Button type="primary" size="small" v-on:click="handleEditFreight(row)">Edit</Button>
+        </template>
         <template slot-scope="{ row, index }" slot="files">
           <Poptip trigger="hover" placement="bottom" :transfer="true" width="690" v-if="row.files && row.files.length > 0">
             <Button type="text" style="text-decoration:underline">Files [{{row.files.length}}]</Button>
@@ -150,7 +153,7 @@
     <Modal v-model="modal.invoiceModal" title="Freight Invoice" width="1000">
       <Form ref="freightInvoiceForm" :model="freightInvoiceForm" :label-width="160">
         <FormItem label="Customer#" prop="shipment_list_customer" style="padding-right: 80px;">
-          <Select v-model="freightInvoiceForm.shipment_list_customer" clearable filterable placeholder="select Customer" style="width:720px;" @on-change="changeInvoiceCustomer">
+          <Select v-model="freightInvoiceForm.shipment_list_customer" clearable filterable placeholder="select Customer" style="width:720px;" @on-change="changeInvoiceCustomer" disabled>
             <Option v-for="item in pagePara.COMMON_CUSTOMER" :value="item.user_id" :key="item.user_id">{{ item.user_name }}</Option>
           </Select>
         </FormItem>
@@ -246,6 +249,19 @@
         <Button type="primary" size="large" @click="checkPasswordAct">Submit</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.editFreightModal" title="Edit Freight" width="800">
+      <Form ref="editfreightForm" :model="editfreightForm" :rules="editfreightRules" :label-width="160" style="padding-right: 80px;">
+        <FormItem label="Customer#" style="padding-right: 80px;">
+          <Select v-model="editfreightForm.shipment_list_customer" filterable placeholder="select Customer" style="width:530px;">
+            <Option v-for="item in pagePara.COMMON_CUSTOMER" :value="item.user_id" :key="item.user_id">{{ item.user_name }}</Option>
+          </Select>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+          <Button type="text" size="large" @click="modal.editFreightModal=false">Cancel</Button>
+          <Button type="primary" size="large" @click="handleEditFreightAct">Submit</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -257,7 +273,7 @@ export default {
   name: 'ShipmentList',
   data: function() {
     return {
-      modal: { invoiceModal: false, extraModal: false, checkPasswordModal: false },
+      modal: { invoiceModal: false, extraModal: false, checkPasswordModal: false, editFreightModal: false },
       table: {
         shipmentTable: {
           rows: [
@@ -270,6 +286,11 @@ export default {
               type: 'index',
               width: 60,
               align: 'center'
+            },
+            {
+              title: 'Act',
+              slot: 'action',
+              width: 100
             },
             {
               title: 'Files',
@@ -695,7 +716,16 @@ export default {
       freightInvoiceRules: {
         shipment_list_customer: [
           { required: true, message: 'The customer cannot be empty', trigger: 'blur'} ],
-      }
+      },
+      editfreightForm: {
+        shipment_list_id: '',
+        shipment_list_bill_no: '',
+        shipment_list_customer: ''
+      },
+      editfreightRules: {
+        shipment_list_customer: [
+          { required: true, message: 'The customer cannot be empty', trigger: 'blur'} ]
+      },
     }
   },
   created() {
@@ -993,7 +1023,8 @@ export default {
         try {
           let action = ''
           if (this.checkPasswordType === 'FreightInvoiceUndo' || this.checkPasswordType === 'FreightInvoiceCustomer' 
-                || this.checkPasswordType === 'ExtraInvoiceCustomer' || this.checkPasswordType == 'FreightInvoiceExport') {
+                || this.checkPasswordType === 'ExtraInvoiceCustomer' || this.checkPasswordType == 'FreightInvoiceExport'
+                || this.checkPasswordType == 'FreightEdit') {
             action = 'LOGISTICS_FREIGHT_COLLECTION_ACTION'
           }
           let param = {
@@ -1019,12 +1050,35 @@ export default {
             this.getFreightCollectionData(1)
           } else if (this.checkPasswordType == 'FreightInvoiceExport') {
             this.doExportAct()
+          } else if (this.checkPasswordType == 'FreightEdit') {
+            this.modal.editFreightModal = true
           }
         } catch (error) {
           this.$commonact.fault(error)
         }
       } else {
         return this.$Message.error('Please enter right password')
+      }
+    },
+    handleEditFreight: async function(row) {
+      this.editfreightForm = Object.assign(this.editfreightForm, row)
+      if(row.shipment_list_receivable_status === '0') {
+        this.modal.editFreightModal = true
+      } else {
+        // 已开票
+        this.checkPassword = ''
+        this.checkPasswordType = 'FreightEdit'
+        this.modal.checkPasswordModal = true
+      }
+    },
+    handleEditFreightAct: async function() {
+      try {
+        await this.$http.post(apiUrl + 'editFreight', this.editfreightForm)
+        this.getFreightCollectionData(this.table.shipmentTable.current)
+        this.modal.editFreightModal = false
+      } catch (error) {
+        this.freightInvoiceForm.invoice_submit_disabled = true
+        this.$commonact.fault(error)
       }
     }
   }
