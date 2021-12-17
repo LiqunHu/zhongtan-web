@@ -105,8 +105,22 @@
               <Tag color="success" v-else-if="item.shipment_fee_status === 'AP'">APPROVE ${{item.total_amount}}</Tag>
               <Tag color="error" v-else-if="item.shipment_fee_status === 'DE'">DECLINE ${{item.total_amount}}</Tag>
               <Tag color="error" v-else-if="item.shipment_fee_status === 'UN'">UNDO ${{item.total_amount}}</Tag>
-              <Tag color="success" v-else-if="item.shipment_fee_status === 'IN'">INVOICE ${{item.total_amount}}</Tag>
-              <Tag color="success" v-else-if="item.shipment_fee_status === 'RE'">RECEIPT ${{item.total_amount}}</Tag>
+              <span v-else-if="item.shipment_fee_status === 'IN'">
+                <Poptip trigger="hover" placement="right" transfer="" width="500">
+                  <Tag color="success" >INVOICE ${{item.total_amount}}</Tag>
+                  <div slot="content">
+                    <Table stripe :columns="table.invoiceTable.columns" :data="item.invoice_detail"></Table>
+                  </div>
+                </Poptip>
+              </span>
+              <span v-else-if="item.shipment_fee_status === 'RE'">
+                <Poptip trigger="hover" placement="right" transfer="" width="500">
+                  <Tag color="success" >RECEIPT ${{item.total_amount}}</Tag>
+                  <div class="api" slot="content">
+                    <Table stripe :columns="table.invoiceTable.columns" :data="item.invoice_detail"></Table>
+                  </div>
+                </Poptip>
+              </span>
               <Tag color="warning" v-else-if="item.shipment_fee_status === 'BA'">BALANCE ${{item.total_amount}}</Tag>
             </ListItem>
           </List>
@@ -285,6 +299,25 @@ export default {
           limit: 10,
           offset: 0,
           total: 0
+        },
+        invoiceTable: {
+          columns: [
+            {
+              title: 'Invoice No#',
+              key: 'shipment_fee_invoice_no',
+              align: 'center'
+            },
+            {
+              title: 'Fee Code',
+              key: 'fee_data_code',
+              align: 'center'
+            },
+            {
+              title: 'Fee Amount',
+              key: 'shipment_fee_amount',
+              align: 'center'
+            }
+          ]
         }
       },
       search_data: {

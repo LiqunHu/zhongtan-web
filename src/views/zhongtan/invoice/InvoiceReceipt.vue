@@ -1026,7 +1026,11 @@ export default {
         reader.readAsDataURL(blob)
         reader.onload = e => {
           let a = document.createElement('a')
-          a.download = this.workPara.carrier + '- receipt from.xlsx'
+          if(this.workPara.carrier) {
+            a.download = this.workPara.carrier + '- receipt from.xlsx'
+          } else {
+            a.download = 'receipt from.xlsx'
+          }
           a.href = e.target.result
           document.body.appendChild(a)
           a.click()
