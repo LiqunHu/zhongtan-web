@@ -109,7 +109,7 @@
                 <Poptip trigger="hover" placement="right" transfer="" width="500">
                   <Tag color="success" >INVOICE ${{item.total_amount}}</Tag>
                   <div slot="content">
-                    <Table stripe :columns="table.invoiceTable.columns" :data="item.invoice_detail" max-height="600"></Table>
+                    <Table stripe :columns="table.invoiceTable.columns" :data="item.invoice_detail" height="300"></Table>
                   </div>
                 </Poptip>
               </span>
@@ -117,7 +117,7 @@
                 <Poptip trigger="hover" placement="right" transfer="" width="500">
                   <Tag color="success" >RECEIPT ${{item.total_amount}}</Tag>
                   <div class="api" slot="content">
-                    <Table stripe :columns="table.invoiceTable.columns" :data="item.invoice_detail" max-height="600"></Table>
+                    <Table stripe :columns="table.invoiceTable.columns" :data="item.invoice_detail" height="300"></Table>
                   </div>
                 </Poptip>
               </span>
