@@ -152,6 +152,19 @@
                         <i class="fa fa-backward"></i>
                       </a>
                     </Tooltip> 
+                    <Tooltip content="ROLLOVER CHARGE/SPACE LOSS">
+                      <a href="#" class="btn btn-danger btn-icon btn-sm" v-if="row.export_masterbl_rollover_charge === '1'" v-on:click="countRolloverChargeAct(row)">
+                        <i class="fa fa-ship"></i>
+                      </a>
+                      <a href="#" class="btn btn-danger btn-icon btn-sm" v-else v-on:click="countRolloverChargeAct(row)">
+                        <i class="fa fa-ship"></i>
+                      </a>
+                    </Tooltip>
+                    <Tooltip content="REMOVE ROLLOVER CHARGE/SPACE LOSS">
+                      <a href="#" class="btn btn-danger btn-icon btn-sm" v-on:click="deleteRolloverChargeAct(row)">
+                        <i class="fa fa-undo"></i>
+                      </a>
+                    </Tooltip>
                     <Tooltip content="DELETE">
                       <a href="#" class="btn btn-warning btn-icon btn-sm" v-on:click="deleteBookingRelease(row)">
                         <i class="fa fa-times"></i>
@@ -765,6 +778,8 @@ export default {
             action = 'EXPORT_BOOKING_EDIT'
           } else if (this.checkPasswordType === 'bookingExport') {
             action = 'EXPORT_BOOKING_EXPORT'
+          } else if (this.checkPasswordType === 'deleteRolloverCharge') {
+            action = 'EXPORT_BOOKING_DELETE_ROLLOVER_CHARGE'
           } 
           let param = {
             action: action,
@@ -786,6 +801,8 @@ export default {
             this.bookingExportAct()
           } else if (this.checkPasswordType === 'deleteBooking') {
             this.doDeleteBookingRelease()
+          } else if (this.checkPasswordType === 'deleteRolloverCharge') {
+            this.doDeleteRolloverChargeAct()
           }
         } catch (error) {
           this.$commonact.fault(error)
@@ -1014,7 +1031,6 @@ export default {
         this.emptyReleaseForm.export_masterbl_empty_release_guarantee_letter_list.splice(index, 1)
     },
     deleteBookingRelease: async function(row) {
-      this.workPara = JSON.parse(JSON.stringify(row))
       this.$commonact.confirm('Delete ' + row.export_masterbl_bl +'?', async() => {
         if(row.export_masterbl_empty_release_approve_date) {
           try {
@@ -1035,6 +1051,32 @@ export default {
     doDeleteBookingRelease: async function() {
       try {
         await this.$http.post(apiUrl + 'deleteBooking', this.workPara)
+        this.searchDataAct()
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
+    countRolloverChargeAct: async function(row) {
+      try {
+        await this.$http.post(apiUrl + 'countRolloverCharge', row)
+        this.searchDataAct()
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
+    deleteRolloverChargeAct: async function(row) {
+      try {
+        this.workPara = JSON.parse(JSON.stringify(row))
+        this.checkPassword = ''
+        this.checkPasswordType = 'deleteRolloverCharge'
+        this.modal.checkPasswordModal = true
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
+    doDeleteRolloverChargeAct: async function() {
+      try {
+        await this.$http.post(apiUrl + 'deleteRolloverCharge', this.workPara)
         this.searchDataAct()
       } catch (error) {
         this.$commonact.fault(error)
