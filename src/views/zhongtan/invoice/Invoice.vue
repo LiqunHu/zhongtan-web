@@ -225,6 +225,11 @@
             </template>
             </Poptip>
             </template>
+            <template slot-scope="{ row, index }" slot="deposit_attachment">
+                <a :href="row.invoice_masterbi_deposit_file" class="btn btn-primary btn-icon btn-sm" target="_blank" v-if="row.invoice_masterbi_deposit_file">
+                    <i class="fa fa-download"></i>
+                </a>
+            </template>
             <template slot-scope="{ row, index }" slot="invoice_masterbi_cargo_type">
                   <Input v-model="table.masterbiTable.data[index].invoice_masterbi_cargo_type" size="small" :disabled="tableEdit"/>
                 </template>
@@ -561,11 +566,25 @@
             <Tab-pane :label="containerDepositFeeLabel" name="Container Deposit" key="Container Deposit" :disabled="workPara.invoice_masterbi_vessel_type === 'Bulk'">
                 <FormItem label="Deposit Amount" prop="invoice_masterbi_deposit" style="margin-bottom: 0px;">
                     <Input placeholder="Deposit Amount" v-model="workPara.invoice_masterbi_deposit" :disabled="!!workPara.invoice_masterbi_deposit_disabled && !depositEdit" @keyup.native='keyupNumberFormat($event, "invoice_masterbi_deposit")'>
-                    <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_deposit_necessary" :disabled="workPara.invoice_masterbi_deposit_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_deposit')">Fixed</Checkbox>
-                    <Select slot="append" v-model="workPara.invoice_container_deposit_currency" style="width: 80px" maxlength=10 show-word-limit :disabled="!!workPara.invoice_masterbi_deposit_disabled && !depositEdit">
-                  <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
-                </Select>
+                        <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_deposit_necessary" :disabled="workPara.invoice_masterbi_deposit_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_deposit')">Fixed</Checkbox>
+                        <Select slot="append" v-model="workPara.invoice_container_deposit_currency" style="width: 80px" maxlength=10 show-word-limit :disabled="!!workPara.invoice_masterbi_deposit_disabled && !depositEdit">
+                            <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                        </Select>
                     </Input>
+                </FormItem>
+                <FormItem label="Deposit Attachment" prop="invoice_masterbi_deposit_file">
+                    <Upload
+                        ref="uploadDeposit"
+                        :headers="headers"
+                        :on-success="handleUploadDepositSuccess"
+                        :on-remove="handleUploadDepositRemove"
+                        type="drag"
+                        action="/api/zhongtan/invoice/Invoice/upload">
+                        <div style="padding: 20px 0">
+                            <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+                            <p>Click or drag files here to upload</p>
+                        </div>
+                    </Upload>
                 </FormItem>
                 <FormItem label="Comment" prop="invoice_masterbi_deposit_comment" style="margin-bottom: 0px;">
                     <Input v-model="workPara.invoice_masterbi_deposit_comment" type="textarea" :maxlength="200" :autosize="{ minRows: 2, maxRows: 6 }" placeholder="Deposit Amount Comment" />
@@ -779,6 +798,10 @@
                         }, {
                             title: 'Files',
                             slot: 'files',
+                            width: 100
+                        }, {
+                            title: 'Deposit Attachment',
+                            slot: 'deposit_attachment',
                             width: 100
                         }, {
                             title: 'Cargo Classification',
@@ -1466,10 +1489,14 @@
                     if (!this.workPara.invoice_masterbi_carrier) {
                         return this.$Message.error('Please choose carrier')
                     }
+                    if(this.deposit.depositType=='Container Deposit') {
+                        if(!this.workPara.invoice_masterbi_deposit_file) {
+                            return this.$Message.error('Please upload deposit attachment')
+                        }
+                    }
                     let param = _.extend(this.workPara, this.deposit)
                     param.depositEdit = this.depositEdit
                     await this.$http.post(apiUrl + 'depositDo', param)
-                        // printJS(response.data.info.url)
                     this.$Message.success('deposit success')
                     this.modal.depositModal = false
                     this.refreshTableData()
@@ -1995,6 +2022,20 @@
                 } else {
                     this.workPara[key] = ''
                 }
+            },
+            handleUploadDepositSuccess(res, file, fileList) {
+                file.url = res.info.url
+                file.name = res.info.name
+                if(this.$refs.uploadDeposit.fileList && this.$refs.uploadDeposit.fileList.length > 1) {
+                    this.$refs.uploadDeposit.fileList.splice(0, 1)
+                }
+                this.workPara.invoice_masterbi_deposit_file = file
+            },
+            handleUploadDepositRemove(file, fileList) {
+                if(this.$refs.uploadDeposit.fileList && this.$refs.uploadDeposit.fileList.length > 1) {
+                    this.$refs.uploadDeposit.fileList.splice(0, 1)
+                }
+                this.workPara.invoice_masterbi_deposit_file = ''
             }
         }
     }

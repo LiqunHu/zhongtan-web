@@ -153,7 +153,7 @@
                       </a>
                     </Tooltip> 
                     <Tooltip content="ROLLOVER CHARGE/SPACE LOSS">
-                      <a href="#" class="btn btn-danger btn-icon btn-sm" v-if="row.export_masterbl_rollover_charge === '1'" v-on:click="countRolloverChargeAct(row)">
+                      <a href="#" class="btn btn-green btn-icon btn-sm" v-if="row.export_masterbl_rollover_charge === '1'" v-on:click="countRolloverChargeAct(row)">
                         <i class="fa fa-ship"></i>
                       </a>
                       <a href="#" class="btn btn-danger btn-icon btn-sm" v-else v-on:click="countRolloverChargeAct(row)">
@@ -1032,9 +1032,9 @@ export default {
     },
     deleteBookingRelease: async function(row) {
       this.$commonact.confirm('Delete ' + row.export_masterbl_bl +'?', async() => {
+        this.workPara = JSON.parse(JSON.stringify(row))
         if(row.export_masterbl_empty_release_approve_date) {
           try {
-            this.workPara = JSON.parse(JSON.stringify(row))
             this.checkPassword = ''
             this.checkPasswordType = 'deleteBooking'
             this.modal.checkPasswordModal = true

@@ -107,6 +107,11 @@
             <Icon type="md-options" />
           </a>
         </template>
+        <template slot-scope="{ row, index }" slot="deposit_attachment">
+          <a :href="row.deposit_attachment" class="btn btn-primary btn-icon btn-sm" target="_blank" v-if="row.deposit_attachment">
+              <i class="fa fa-download"></i>
+          </a>
+        </template>
       </Table>
       <Page class="m-t-10" :total="table.checkTable.total" :page-size="table.checkTable.limit" @on-change="getTableData" />
     </panel>
@@ -228,6 +233,11 @@ export default {
             {
               title: 'Amount',
               slot: 'amount',
+              width: 150
+            },
+            {
+              title: 'Attachment',
+              slot: 'deposit_attachment',
               width: 150
             },
             {
