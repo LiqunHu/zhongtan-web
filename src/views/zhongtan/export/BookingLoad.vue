@@ -875,11 +875,11 @@ export default {
               quantitys: this.emptyReleaseQuantitys
             }
             await this.$http.post(apiUrl + 'emptyRelease', param)
+            this.modal.emptyReleaseModal = false
             this.searchDataAct()
           }catch (error) {
             this.$commonact.fault(error)
           }
-          this.modal.emptyReleaseModal = false
         }
       })
     },
