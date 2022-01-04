@@ -455,7 +455,7 @@ export default {
       }
     },
     handleReceivableSpan: function({row, column, rowIndex, columnIndex}) {
-      if(column.title === 'Invoice') {
+      if(column.title === 'Invoice' && row.shipment_fee_invoice_id) {
         return this.getReceivableLayout(row, rowIndex, columnIndex)
       }
     },
