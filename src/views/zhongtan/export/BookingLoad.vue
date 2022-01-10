@@ -152,18 +152,18 @@
                         <i class="fa fa-backward"></i>
                       </a>
                     </Tooltip> 
-                    <Tooltip content="ROLLOVER CHARGE/SPACE LOSS">
-                      <a href="#" class="btn btn-green btn-icon btn-sm" v-if="row.export_masterbl_rollover_charge === '1'" v-on:click="countRolloverChargeAct(row)">
-                        <i class="fa fa-ship"></i>
-                      </a>
-                      <a href="#" class="btn btn-danger btn-icon btn-sm" v-else v-on:click="countRolloverChargeAct(row)">
-                        <i class="fa fa-ship"></i>
-                      </a>
-                    </Tooltip>
-                    <Tooltip content="REMOVE ROLLOVER CHARGE/SPACE LOSS">
+                    <Tooltip content="REMOVE ROLLOVER CHARGE/SPACE LOSS" v-if="row.export_masterbl_rollover_charge === '1'">
                       <a href="#" class="btn btn-danger btn-icon btn-sm" v-on:click="deleteRolloverChargeAct(row)">
                         <i class="fa fa-undo"></i>
                       </a>
+                    </Tooltip>
+                    <Tooltip content="ROLLOVER CHARGE/SPACE LOSS" v-else>
+                      <a href="#" class="btn btn-danger btn-icon btn-sm" v-on:click="countRolloverChargeAct(row)">
+                        <i class="fa fa-ship"></i>
+                      </a>
+                      <!-- <a href="#" class="btn btn-danger btn-icon btn-sm" v-else v-on:click="countRolloverChargeAct(row)">
+                        <i class="fa fa-ship"></i>
+                      </a> -->
                     </Tooltip>
                     <Tooltip content="DELETE">
                       <a href="#" class="btn btn-warning btn-icon btn-sm" v-on:click="deleteBookingRelease(row)">

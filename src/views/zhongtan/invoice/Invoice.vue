@@ -1708,6 +1708,9 @@
                     }
                     this.workPara.invoice_masterbi_of_type = fixedDeposit['invoice_masterbi_of_type']
                     this.workPara.invoice_masterbi_of_necessary = fixedDeposit['invoice_masterbi_of_necessary'] === '1' ? true : false
+                } else if(fixedDeposit['invoice_masterbi_of']) {
+                    this.workPara.invoice_masterbi_of = fixedDeposit['invoice_masterbi_of']
+                    this.workPara.invoice_masterbi_of_necessary = false
                 } else {
                     this.workPara.invoice_masterbi_of_necessary = false
                 }
