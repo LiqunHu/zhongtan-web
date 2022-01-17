@@ -164,6 +164,11 @@ export default {
               width: 150
             },
             {
+              title: 'Cargo Descriptions',
+              key: 'export_masterbl_cargo_descriptions',
+              width: 200
+            },
+            {
               title: 'Release Party',
               slot: 'release_party',
               width: 300

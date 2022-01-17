@@ -124,7 +124,8 @@
                     <i class="fa fa-ship" v-if="row.invoice_masterbi_vessel_type === 'Bulk'"></i>
                     <i class="fa fa-cubes" v-else></i>
                     <font color="#1890ff" style="margin-left:5px; margin-right:5px;" v-if="row.container_has_soc">SOC</font>
-                    {{row.invoice_masterbi_bl}}
+                    <font color="#19be6b" v-if="row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_bl">{{row.invoice_masterbi_bl}}</font>
+                    <font v-else>{{row.invoice_masterbi_bl}}</font>
                     <a href="#" style="color: red; margin-left: 5px;" @click="deleteMasterbl(row)">
                         <i class="fa fa-times"></i>
                     </a>
@@ -176,177 +177,177 @@
                   <a href="#" class="btn btn-indigo btn-xs" @click="showChangeCollectModal(row, 'COLLECT')" v-if="row.invoice_masterbi_freight !== 'COLLECT'">Prepaid</a>
                 </template>
                 <template slot-scope="{ row, index }" slot="files">
-                  <Poptip trigger="hover" placement="bottom" :transfer="true" width="555" v-if="row.files && row.files.length > 0">
-                    <Button type="text" style="text-decoration:underline">Files [{{row.files.length}}]</Button>
-                    <template slot="content">
-                      <Table stripe size="small" :columns="table.filesTable.columns" :data="row.files">
-                        <template slot-scope="{ row, index }" slot="act">
-                          <template v-if="row.filetype === 'DO'">
-                            <Tooltip content="Download">
-                              <a :href="row.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
-                                <i class="fa fa-download"></i>
-                              </a>
-                            </Tooltip>
-                            <Tooltip content="Release" v-if="!row.release_date">
-                              <a href="#" class="btn btn-primary btn-icon btn-sm" @click="doRealse(row, index)">
-                                <i class="fa fa-share-square"></i>
-                              </a>
-                            </Tooltip>
-                            <Tooltip content="Send EDI" placement="right" v-if="row.release_date && (!row.edi_state || row.edi_state === '1' )">
-                              <a href="#" class="btn btn-success btn-icon btn-sm" @click="doCreateEdi(row, index)">
-                                <i class="fa fa-envelope"></i>
-                              </a>
-                            </Tooltip>
-                            <Tooltip content="Replace EDI" placement="right" v-if="row.edi_state && row.edi_state != '1'">
-                              <a href="#" class="btn btn-success btn-icon btn-sm" @click="doReplaceEdi(row, index)">
-                                <i class="fa fa-envelope-open"></i>
-                              </a>
-                            </Tooltip>
-                            <Tooltip content="Cancel EDI" placement="right" v-if="row.edi_state && row.edi_state != '1'">
-                              <a href="#" class="btn btn-danger btn-icon btn-sm" @click="doCancelEdi(row, index)">
-                                <i class="fa fa-envelope-open"></i>
-                              </a>
-                            </Tooltip>
-                          </template>
-                            <template v-else-if="row.state === 'AP'">
-                                <Tooltip content="Download">
-                                <a :href="row.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
-                                    <i class="fa fa-download"></i>
-                                </a>
-                                </Tooltip>
-                            <!-- <Tooltip content="Release" v-if="!row.release_date && (row.filetype === 'Deposit' || row.filetype === 'Fee' || row.filetype === 'DO' || row.filetype === 'Freight')">
-                              <a href="#" class="btn btn-primary btn-icon btn-sm" @click="doRealse(row, index)">
-                                <i class="fa fa-share-square"></i>
-                              </a>
-                            </Tooltip> -->
-                          </template>
+                    <Poptip trigger="hover" placement="bottom" :transfer="true" width="555" v-if="row.files && row.files.length > 0">
+                        <Button type="text" style="text-decoration:underline">Files [{{row.files.length}}]</Button>
+                        <template slot="content">
+                            <Table stripe size="small" :columns="table.filesTable.columns" :data="row.files">
+                                <template slot-scope="{ row, index }" slot="act">
+                                    <template v-if="row.filetype === 'DO'">
+                                        <Tooltip content="Download">
+                                        <a :href="row.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
+                                            <i class="fa fa-download"></i>
+                                        </a>
+                                        </Tooltip>
+                                        <Tooltip content="Release" v-if="!row.release_date">
+                                        <a href="#" class="btn btn-primary btn-icon btn-sm" @click="doRealse(row, index)">
+                                            <i class="fa fa-share-square"></i>
+                                        </a>
+                                        </Tooltip>
+                                        <Tooltip content="Send EDI" placement="right" v-if="row.release_date && (!row.edi_state || row.edi_state === '1' )">
+                                        <a href="#" class="btn btn-success btn-icon btn-sm" @click="doCreateEdi(row, index)">
+                                            <i class="fa fa-envelope"></i>
+                                        </a>
+                                        </Tooltip>
+                                        <Tooltip content="Replace EDI" placement="right" v-if="row.edi_state && row.edi_state != '1'">
+                                        <a href="#" class="btn btn-success btn-icon btn-sm" @click="doReplaceEdi(row, index)">
+                                            <i class="fa fa-envelope-open"></i>
+                                        </a>
+                                        </Tooltip>
+                                        <Tooltip content="Cancel EDI" placement="right" v-if="row.edi_state && row.edi_state != '1'">
+                                        <a href="#" class="btn btn-danger btn-icon btn-sm" @click="doCancelEdi(row, index)">
+                                            <i class="fa fa-envelope-open"></i>
+                                        </a>
+                                        </Tooltip>
+                                    </template>
+                                    <template v-else-if="row.state === 'AP'">
+                                            <Tooltip content="Download">
+                                            <a :href="row.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
+                                                <i class="fa fa-download"></i>
+                                            </a>
+                                            </Tooltip>
+                                        <!-- <Tooltip content="Release" v-if="!row.release_date && (row.filetype === 'Deposit' || row.filetype === 'Fee' || row.filetype === 'DO' || row.filetype === 'Freight')">
+                                        <a href="#" class="btn btn-primary btn-icon btn-sm" @click="doRealse(row, index)">
+                                            <i class="fa fa-share-square"></i>
+                                        </a>
+                                        </Tooltip> -->
+                                    </template>
+                                </template>
+                            </Table>
+                        </template>
+                    </Poptip>
                 </template>
-            </Table>
-            </template>
-            </Poptip>
-            </template>
-            <template slot-scope="{ row, index }" slot="deposit_attachment">
-                <a :href="row.invoice_masterbi_deposit_file" class="btn btn-primary btn-icon btn-sm" target="_blank" v-if="row.invoice_masterbi_deposit_file">
-                    <i class="fa fa-download"></i>
-                </a>
-            </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_cargo_type">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_cargo_type" size="small" :disabled="tableEdit"/>
+                <template slot-scope="{ row, index }" slot="deposit_attachment">
+                    <a :href="row.invoice_masterbi_deposit_file" class="btn btn-primary btn-icon btn-sm" target="_blank" v-if="row.invoice_masterbi_deposit_file">
+                        <i class="fa fa-download"></i>
+                    </a>
                 </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_bl_type">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_bl_type" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_destination">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_destination" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_delivery">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_delivery" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_loading">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_loading" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_container_no">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_container_no" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_goods_description">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_goods_description" type="textarea" :disabled="tableEdit" style="margin-top:4px; margin-bottom:4px;"></Input>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_package_no">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_package_no" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_package_unit">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_package_unit" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_gross_weight">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_gross_weight" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_gross_weight_unit">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_gross_weight_unit" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_gross_volume">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_gross_volume" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_gross_volume_unit">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_gross_volume_unit" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_invoice_value">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_invoice_value" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_invoice_currency">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_invoice_currency" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_freight_charge">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_freight_charge" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_freight_currency">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_freight_currency" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_imdg">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_imdg" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_packing_type">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_packing_type" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_forwarder_code">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_forwarder_code" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_forwarder_name">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_forwarder_name" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_forwarder_tel">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_forwarder_tel" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_exporter_name">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_exporter_name" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_exporter_tel">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_exporter_tel" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_exporter_address">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_exporter_address" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_exporter_tin">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_exporter_tin" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_consignee_name">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_consignee_name" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_consignee_tel">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_consignee_tel" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_consignee_address">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_consignee_address" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_consignee_tin">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_consignee_tin" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_notify_name">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_notify_name" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_notify_tel">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_notify_tel" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_notify_address">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_notify_address" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_notify_tin">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_notify_tin" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_shipping_mark">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_shipping_mark" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_net_weight">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_net_weight" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_net_weight_unit">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_net_weight_unit" size="small" :disabled="tableEdit"/>
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_line_code">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_line_code" size="small" />
-                </template>
-            <template slot-scope="{ row, index }" slot="invoice_masterbi_terminal_code">
-                  <Input v-model="table.masterbiTable.data[index].invoice_masterbi_terminal_code" size="small" />
-                </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_cargo_type">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_cargo_type}" v-model="table.masterbiTable.data[index].invoice_masterbi_cargo_type" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_bl_type">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_bl_type}" v-model="table.masterbiTable.data[index].invoice_masterbi_bl_type" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_destination">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_destination}" v-model="table.masterbiTable.data[index].invoice_masterbi_destination" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_delivery">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_delivery}" v-model="table.masterbiTable.data[index].invoice_masterbi_delivery" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_loading">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_loading}" v-model="table.masterbiTable.data[index].invoice_masterbi_loading" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_container_no">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_container_no}" v-model="table.masterbiTable.data[index].invoice_masterbi_container_no" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_goods_description">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_goods_description}" v-model="table.masterbiTable.data[index].invoice_masterbi_goods_description" type="textarea" :disabled="tableEdit" style="margin-top:4px; margin-bottom:4px;"></Input>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_package_no">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_package_no}" v-model="table.masterbiTable.data[index].invoice_masterbi_package_no" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_package_unit">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_package_unit}" v-model="table.masterbiTable.data[index].invoice_masterbi_package_unit" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_gross_weight">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_gross_weight}" v-model="table.masterbiTable.data[index].invoice_masterbi_gross_weight" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_gross_weight_unit">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_gross_weight_unit}" v-model="table.masterbiTable.data[index].invoice_masterbi_gross_weight_unit" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_gross_volume">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_gross_volume}" v-model="table.masterbiTable.data[index].invoice_masterbi_gross_volume" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_gross_volume_unit">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_gross_volume_unit}" v-model="table.masterbiTable.data[index].invoice_masterbi_gross_volume_unit" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_invoice_value">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_invoice_value}" v-model="table.masterbiTable.data[index].invoice_masterbi_invoice_value" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_invoice_currency">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_invoice_currency}" v-model="table.masterbiTable.data[index].invoice_masterbi_invoice_currency" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_freight_charge">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_freight_charge}" v-model="table.masterbiTable.data[index].invoice_masterbi_freight_charge" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_freight_currency">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_freight_currency}" v-model="table.masterbiTable.data[index].invoice_masterbi_freight_currency" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_imdg">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_imdg}" v-model="table.masterbiTable.data[index].invoice_masterbi_imdg" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_packing_type">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_packing_type}" v-model="table.masterbiTable.data[index].invoice_masterbi_packing_type" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_forwarder_code">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_forwarder_code}" v-model="table.masterbiTable.data[index].invoice_masterbi_forwarder_code" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_forwarder_name">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_forwarder_name}" v-model="table.masterbiTable.data[index].invoice_masterbi_forwarder_name" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_forwarder_tel">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_forwarder_tel}" v-model="table.masterbiTable.data[index].invoice_masterbi_forwarder_tel" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_exporter_name">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_exporter_name}" v-model="table.masterbiTable.data[index].invoice_masterbi_exporter_name" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_exporter_tel">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_exporter_tel}" v-model="table.masterbiTable.data[index].invoice_masterbi_exporter_tel" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_exporter_address">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_exporter_address}" v-model="table.masterbiTable.data[index].invoice_masterbi_exporter_address" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_exporter_tin">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_exporter_tin}" v-model="table.masterbiTable.data[index].invoice_masterbi_exporter_tin" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_consignee_name">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_consignee_name}" v-model="table.masterbiTable.data[index].invoice_masterbi_consignee_name" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_consignee_tel">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_consignee_tel}" v-model="table.masterbiTable.data[index].invoice_masterbi_consignee_tel" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_consignee_address">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_consignee_address}" v-model="table.masterbiTable.data[index].invoice_masterbi_consignee_address" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_consignee_tin">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_consignee_tin}" v-model="table.masterbiTable.data[index].invoice_masterbi_consignee_tin" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_notify_name">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_notify_name}" v-model="table.masterbiTable.data[index].invoice_masterbi_notify_name" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_notify_tel">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_notify_tel}" v-model="table.masterbiTable.data[index].invoice_masterbi_notify_tel" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_notify_address">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_notify_address}" v-model="table.masterbiTable.data[index].invoice_masterbi_notify_address" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_notify_tin">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_notify_tin}" v-model="table.masterbiTable.data[index].invoice_masterbi_notify_tin" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_shipping_mark">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_shipping_mark}" v-model="table.masterbiTable.data[index].invoice_masterbi_shipping_mark" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_net_weight">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_net_weight}" v-model="table.masterbiTable.data[index].invoice_masterbi_net_weight" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_net_weight_unit">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_net_weight_unit}" v-model="table.masterbiTable.data[index].invoice_masterbi_net_weight_unit" size="small" :disabled="tableEdit"/>
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_line_code">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_line_code}" v-model="table.masterbiTable.data[index].invoice_masterbi_line_code" size="small" />
+                    </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_terminal_code">
+                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_terminal_code}" v-model="table.masterbiTable.data[index].invoice_masterbi_terminal_code" size="small" />
+                    </template>
             </Table>
             <Page class="m-t-10" :current="table.masterbiTable.current" :total="table.masterbiTable.total" :page-size="table.masterbiTable.limit" @on-change="getMasterbiData" />
         </TabPane>
@@ -354,7 +355,8 @@
             <Table stripe size="small" ref="containersTable" :columns="table.containersTable.columns" :data="table.containersTable.data" :height="table.containersTable.height">
                 <template slot-scope="{ row, index }" slot="invoice_containers_bl">
                     <i class="fa fa-bell" v-if="row.has_same_container_no" style="color:green;"></i>
-                    {{row.invoice_containers_bl}}
+                    <font color="#19be6b" v-if="row.invoice_containers_edit_info && row.invoice_containers_edit_info.invoice_containers_bl">{{row.invoice_containers_bl}}</font>
+                    <font v-else>{{row.invoice_containers_bl}}</font>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_containers_type">
                   <i-switch v-model="row.invoice_containers_type" @on-change="changeContainersType(row)" size="large" true-value="S" false-value="C">
@@ -363,49 +365,49 @@
                   </i-switch>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_containers_no">
-                  <Input v-model="table.containersTable.data[index].invoice_containers_no" size="small" :disabled="tableEdit"/>
+                  <Input :class="{'input-edited': row.invoice_containers_edit_info && row.invoice_containers_edit_info.invoice_containers_no}" v-model="table.containersTable.data[index].invoice_containers_no" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_containers_size">
-                  <Input v-model="table.containersTable.data[index].invoice_containers_size" size="small" :disabled="tableEdit"/>
+                  <Input :class="{'input-edited': row.invoice_containers_edit_info && row.invoice_containers_edit_info.invoice_containers_size}" v-model="table.containersTable.data[index].invoice_containers_size" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_containers_seal1">
-                  <Input v-model="table.containersTable.data[index].invoice_containers_seal1" size="small" :disabled="tableEdit"/>
+                  <Input :class="{'input-edited': row.invoice_containers_edit_info && row.invoice_containers_edit_info.invoice_containers_seal1}" v-model="table.containersTable.data[index].invoice_containers_seal1" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_containers_seal2">
-                  <Input v-model="table.containersTable.data[index].invoice_containers_seal2" size="small" :disabled="tableEdit"/>
+                  <Input :class="{'input-edited': row.invoice_containers_edit_info && row.invoice_containers_edit_info.invoice_containers_seal2}" v-model="table.containersTable.data[index].invoice_containers_seal2" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_containers_seal3">
-                  <Input v-model="table.containersTable.data[index].invoice_containers_seal3" size="small" :disabled="tableEdit"/>
+                  <Input :class="{'input-edited': row.invoice_containers_edit_info && row.invoice_containers_edit_info.invoice_containers_seal3}" v-model="table.containersTable.data[index].invoice_containers_seal3" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_containers_freight_indicator">
-                  <Input v-model="table.containersTable.data[index].invoice_containers_freight_indicator" size="small" :disabled="tableEdit"/>
+                  <Input :class="{'input-edited': row.invoice_containers_edit_info && row.invoice_containers_edit_info.invoice_containers_freight_indicator}" v-model="table.containersTable.data[index].invoice_containers_freight_indicator" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_containers_package_no">
-                  <Input v-model="table.containersTable.data[index].invoice_containers_package_no" size="small" :disabled="tableEdit"/>
+                  <Input :class="{'input-edited': row.invoice_containers_edit_info && row.invoice_containers_edit_info.invoice_containers_package_no}" v-model="table.containersTable.data[index].invoice_containers_package_no" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_containers_package_unit">
-                  <Input v-model="table.containersTable.data[index].invoice_containers_package_unit" size="small" :disabled="tableEdit"/>
+                  <Input :class="{'input-edited': row.invoice_containers_edit_info && row.invoice_containers_edit_info.invoice_containers_package_unit}" v-model="table.containersTable.data[index].invoice_containers_package_unit" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_containers_volumn">
-                  <Input v-model="table.containersTable.data[index].invoice_containers_volumn" size="small" :disabled="tableEdit"/>
+                  <Input :class="{'input-edited': row.invoice_containers_edit_info && row.invoice_containers_edit_info.invoice_containers_volumn}" v-model="table.containersTable.data[index].invoice_containers_volumn" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_containers_volumn_unit">
-                  <Input v-model="table.containersTable.data[index].invoice_containers_volumn_unit" size="small" :disabled="tableEdit"/>
+                  <Input :class="{'input-edited': row.invoice_containers_edit_info && row.invoice_containers_edit_info.invoice_containers_volumn_unit}" v-model="table.containersTable.data[index].invoice_containers_volumn_unit" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_containers_weight">
-                  <Input v-model="table.containersTable.data[index].invoice_containers_weight" size="small" :disabled="tableEdit"/>
+                  <Input :class="{'input-edited': row.invoice_containers_edit_info && row.invoice_containers_edit_info.invoice_containers_weight}" v-model="table.containersTable.data[index].invoice_containers_weight" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_containers_weight_unit">
-                  <Input v-model="table.containersTable.data[index].invoice_containers_weight_unit" size="small" :disabled="tableEdit"/>
+                  <Input :class="{'input-edited': row.invoice_containers_edit_info && row.invoice_containers_edit_info.invoice_containers_weight_unit}" v-model="table.containersTable.data[index].invoice_containers_weight_unit" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_containers_plug_reefer">
-                  <Input v-model="table.containersTable.data[index].invoice_containers_plug_reefer" size="small" :disabled="tableEdit"/>
+                  <Input :class="{'input-edited': row.invoice_containers_edit_info && row.invoice_containers_edit_info.invoice_containers_plug_reefer}" v-model="table.containersTable.data[index].invoice_containers_plug_reefer" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_containers_min_temperature">
-                  <Input v-model="table.containersTable.data[index].invoice_containers_min_temperature" size="small" :disabled="tableEdit"/>
+                  <Input :class="{'input-edited': row.invoice_containers_edit_info && row.invoice_containers_edit_info.invoice_containers_min_temperature}" v-model="table.containersTable.data[index].invoice_containers_min_temperature" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_containers_max_temperature">
-                  <Input v-model="table.containersTable.data[index].invoice_containers_max_temperature" size="small" :disabled="tableEdit"/>
+                  <Input :class="{'input-edited': row.invoice_containers_edit_info && row.invoice_containers_edit_info.invoice_containers_max_temperature}" v-model="table.containersTable.data[index].invoice_containers_max_temperature" size="small" :disabled="tableEdit"/>
                 </template>
             </Table>
             <Page class="m-t-10" :current="table.containersTable.current" :total="table.containersTable.total" :page-size="table.containersTable.limit" @on-change="getContainersData" />
@@ -2043,3 +2045,8 @@
         }
     }
 </script>
+<style>
+    .input-edited :nth-last-child(1){       
+        color: #19be6b !important;      
+    }
+</style>

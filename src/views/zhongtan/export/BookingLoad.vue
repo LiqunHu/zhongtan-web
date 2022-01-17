@@ -140,7 +140,7 @@
                         <i class="fa fa-edit"></i>
                       </a>
                     </Tooltip>
-                    <Tooltip content="BK Cancellation Fee" v-if="row.bk_cancellation && row.bk_cancellation === '1'">
+                    <Tooltip content="Booking Guarantee Fee" v-if="row.bk_cancellation && row.bk_cancellation === '1'">
                       <a href="#" class="btn btn-success btn-icon btn-sm" v-if="row.bk_cancellation_disabled" v-on:click="bkCancellationFeeModalAct(row)">
                         <i class="fa fa-backward"></i>
                       </a>
@@ -342,15 +342,15 @@
         <Button type="primary" size="large" @click="submitBookingAct">Submit</Button>
       </div>
     </Modal>
-    <Modal v-model="modal.bkCancellationFeeModal" title="BK Cancellation Fee" width="640">
-      <Form ref="bkCancellationFeeForm" :model="bkCancellationFeeForm" :label-width="200">
+    <Modal v-model="modal.bkCancellationFeeModal" title="Booking Guarantee Fee" width="640">
+      <Form ref="bkCancellationFeeForm" :model="bkCancellationFeeForm" :label-width="240">
         <FormItem v-if="bkCancellationFeeForm && bkCancellationFeeForm.cancellationFee && bkCancellationFeeForm.cancellationFee.length"  v-for="(item, index) in bkCancellationFeeForm.cancellationFee" :key="index" :label="item.fee_data_code + '(' + item.fee_data_name + ')'">
-          <InputNumber :min="1" v-model="item.fee_data_amount" style="width: 200px;" :disabled="bkCancellationFeeForm.bk_cancellation_disabled"></InputNumber>
+          <InputNumber :min="1" v-model="item.fee_data_amount" style="width: 200px;" :disabled="item.fee_data_code === 'BGF'"></InputNumber>
         </FormItem>
       </Form>
       <div slot="footer">
         <Button type="text" size="large" @click="modal.bkCancellationFeeModal=false">Cancel</Button>
-        <Button type="primary" size="large" @click="submitBkCancellationFeeAct" :disabled="bkCancellationFeeForm.bk_cancellation_disabled">Submit</Button>
+        <Button type="primary" size="large" @click="submitBkCancellationFeeAct">Submit</Button>
       </div>
     </Modal>
   </div>
@@ -930,7 +930,6 @@ export default {
               if(bcf.fee_data_code === cf.fee_data_code) {
                 bcf.fee_data_name = cf.fee_data_name
                 exist = true
-                this.bkCancellationFeeForm.
                 break
               }
             }
@@ -938,14 +937,14 @@ export default {
               this.bkCancellationFeeForm.cancellationFee.push({
                 fee_data_code: cf.fee_data_code,
                 fee_data_name: cf.fee_data_name,
-                fee_data_amount: null
+                fee_data_amount: cf.fee_data_receivable_amount
               }) 
             }
           } else {
             this.bkCancellationFeeForm.cancellationFee.push({
               fee_data_code: cf.fee_data_code,
               fee_data_name: cf.fee_data_name,
-              fee_data_amount: null
+              fee_data_amount: cf.fee_data_receivable_amount
             })
           }
         }
