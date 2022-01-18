@@ -215,7 +215,7 @@
           <Button type="primary" size="large" @click="updateAct" v-if="act_type === 'update'">Submit</Button>
         </div>
       </Modal>
-      <Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :mask-closable="false">
+      <Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :mask-closable="false" :closable="false">
         <Form :label-width="120">
             <FormItem v-show="false">
                 <Input type="password" style='width:0;opacity:0;'></Input>

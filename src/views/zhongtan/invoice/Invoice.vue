@@ -710,7 +710,7 @@
         <Button type="primary" size="large" @click="actChangeCollectFlag">Submit</Button>
     </div>
 </Modal>
-<Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :mask-closable="false">
+<Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :mask-closable="false" :closable="false">
     <Form :label-width="120">
         <FormItem v-show="false">
             <Input type="password" style='width:0;opacity:0;'></Input>
@@ -1423,9 +1423,7 @@
                     } else {
                         this.deposit.depositType = 'Container Deposit'
                         this.$refs.depositTabs.activeKey = 'Container Deposit'
-                        // if(!this.workPara.invoice_masterbi_deposit_date) {
-                        //     this.searchFixedDeposit()
-                        // }
+                        this.$refs.uploadDeposit.fileList = []
                     }
                     if (this.workPara.invoice_masterbi_deposit_state) {
                         this.containerDepositFeeLabel = h => {
@@ -1838,6 +1836,7 @@
                     await this.$http.post(apiUrl + 'checkPassword', param)
                     this.modal.checkPasswordModal = false
                     if (this.checkPasswordType === 'depositEdit') {
+                        console.log('##############')
                         this.depositEdit = true
                     } if (this.checkPasswordType === 'invoiceFeeEdit') {
                         this.invoiceFeeEdit = true

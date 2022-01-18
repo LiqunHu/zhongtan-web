@@ -144,7 +144,7 @@
       </Table>
       <Page class="m-t-10" :total="table.containerTable.total" show-sizer show-total :page-size="table.containerTable.limit" @on-change="getTableData" @on-page-size-change="resetTableSizer"/>
     </panel>
-    <Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :mask-closable="false">
+    <Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :mask-closable="false" :closable="false">
       <Form :label-width="120">
         <FormItem v-show="false">
             <Input type="password" style='width:0;opacity:0;'></Input>
