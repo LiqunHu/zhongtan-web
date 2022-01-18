@@ -266,23 +266,7 @@ export default {
           await this.$http.post(apiUrl + 'checkPassword', param)
           this.modal.checkPasswordModal = false
           if (this.checkPasswordType === 'unusualReceiptExport') {
-            let response = await this.$http.request({
-                url: apiUrl + 'export',
-                method: 'post',
-                data: {search_data: this.search_data},
-                responseType: 'blob'
-              })
-            let blob = response.data
-            let reader = new FileReader()
-            reader.readAsDataURL(blob)
-            reader.onload = e => {
-              let a = document.createElement('a')
-              a.download = 'Unusual Receipt.xlsx'
-              a.href = e.target.result
-              document.body.appendChild(a)
-              a.click()
-              document.body.removeChild(a)
-            }
+            await this.doExportAct()
           }
         } catch (error) {
           this.$commonact.fault(error)
@@ -292,9 +276,29 @@ export default {
       }
     },
     exportAct: async function() {
-      this.checkPassword = ''
-      this.checkPasswordType = 'unusualReceiptExport'
-      this.modal.checkPasswordModal = true
+      // this.checkPassword = ''
+      // this.checkPasswordType = 'unusualReceiptExport'
+      // this.modal.checkPasswordModal = true
+      await this.doExportAct()
+    },
+    doExportAct: async function() {
+      let response = await this.$http.request({
+          url: apiUrl + 'export',
+          method: 'post',
+          data: {search_data: this.search_data},
+          responseType: 'blob'
+        })
+      let blob = response.data
+      let reader = new FileReader()
+      reader.readAsDataURL(blob)
+      reader.onload = e => {
+        let a = document.createElement('a')
+        a.download = 'Unusual Receipt.xlsx'
+        a.href = e.target.result
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+      }
     }
   }
 }
