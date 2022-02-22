@@ -83,6 +83,7 @@ const routes = [
   { path: '/admin/zhongtan/logistics/LogisticsSectionManager', component: resolve => require(['@/views/zhongtan/logistics/LogisticsSectionManager'], resolve) },
 
   { path: '/admin/zhongtan/payment/PaymentAdvice', component: resolve => require(['@/views/zhongtan/payment/PaymentAdvice'], resolve) },
+  { path: '/admin/zhongtan/payment/PaymentAdviceAdmin', component: resolve => require(['@/views/zhongtan/payment/PaymentAdviceAdmin'], resolve) },
   { path: '/admin/zhongtan/payment/PaymentSectionManager', component: resolve => require(['@/views/zhongtan/payment/PaymentSectionManager'], resolve) },
   { path: '/admin/zhongtan/payment/PaymentBusinessVerification', component: resolve => require(['@/views/zhongtan/payment/PaymentBusinessVerification'], resolve) },
   { path: '/admin/zhongtan/payment/PaymentShippingVerification', component: resolve => require(['@/views/zhongtan/payment/PaymentShippingVerification'], resolve) },

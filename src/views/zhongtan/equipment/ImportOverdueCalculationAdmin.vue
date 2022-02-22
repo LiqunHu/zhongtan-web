@@ -198,6 +198,11 @@
               <span slot="append" style="display:block; width: 40px">USD</span>
             </Input>
           </FormItem>
+          <FormItem label="Depot">
+            <Select v-model="overdueChargeForm.invoice_containers_actually_return_edi_depot_name" filterable clearable placeholder="SELECT DEPOT" :disabled="overdueChargeForm.invoice_containers_actually_return_edi_depot_name">
+              <Option v-for="item in pagePara.EDI_DEPOT" :value="item.edi_depot_name" :key="item.edi_depot_name">{{item.edi_depot_name}}</Option>
+            </Select>
+          </FormItem>
         </Form>
         <div slot="footer">
           <Button type="text" size="large" @click="modal.ediCalculationModal = false">Cancel</Button>
@@ -282,7 +287,7 @@
       <Modal v-model="modal.storingOrderModal" title="Storing Order" width="600">
         <Form ref="storingOrderForm" :model="storingOrderForm" :rules="storingOrderRules" :label-width="150" style="padding-right: 80px;">
           <FormItem label="Depot Name" prop="invoice_containers_depot_name" style="margin-bottom: 0px;">
-            <Select v-model="storingOrderForm.invoice_containers_depot_name" filterable clearable placeholder="Customer">
+            <Select v-model="storingOrderForm.invoice_containers_depot_name" filterable clearable placeholder="SELECT DEPOT">
               <Option v-for="item in pagePara.EDI_DEPOT" :value="item.edi_depot_name" :key="item.edi_depot_name">{{item.edi_depot_name}}</Option>
             </Select>
           </FormItem>

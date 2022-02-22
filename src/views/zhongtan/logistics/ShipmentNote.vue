@@ -441,6 +441,34 @@
         <Button type="primary" size="large" @click="checkPasswordAct">Submit</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.applyAdvancePaymentModal" title="Advance Payment" width="800">
+      <Form ref="paymentAdvance" :model="paymentAdvanceForm" :rules="paymentAdvanceRules" :label-width="200" style="padding-right: 80px;">
+        <FormItem label="B/L#" prop="payment_advance_bl_no">
+          {{paymentAdvanceForm.payment_advance_bl_no}}
+        </FormItem>
+        <FormItem label="Advance Attachment" prop="payment_advance_files">
+          <Upload
+            ref="uploadAdvance"
+            :headers="uploadHeaders"
+            :on-success="handleUploadAdvanceSuccess"
+            :on-remove="handleUploadAdvanceRemove"
+            type="drag"
+            action="/api/zhongtan/logistics/ShipmentNote/upload">
+            <div style="padding: 20px 0">
+                <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+                <p>Click or drag files here to upload</p>
+            </div>
+          </Upload>
+        </FormItem>
+        <FormItem label="Amount" prop="payment_advance_amount">
+          {{paymentAdvanceForm.payment_advance_amount}}
+        </FormItem>
+      </Form>
+      <div slot="footer">
+          <Button type="text" size="large" @click="modal.applyAdvancePaymentModal=false">Cancel</Button>
+          <Button type="primary" size="large" @click="doApplyAdvancePaymentAct">Submit</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -452,7 +480,7 @@ export default {
   name: 'ShipmentList',
   data: function() {
     return {
-      modal: { addShipmentModal: false, applyPaymentModal: false, applyPaymentExtraModal: false, checkPasswordModal: false, applyFullPaymentModal: false, applyBalancePaymentModal: false },
+      modal: { addShipmentModal: false, applyPaymentModal: false, applyPaymentExtraModal: false, checkPasswordModal: false, applyFullPaymentModal: false, applyBalancePaymentModal: false, applyAdvancePaymentModal : false },
       table: {
         shipmentTable: {
           rows: [
@@ -1164,6 +1192,17 @@ export default {
           { type: 'array', min: 1, required: true, trigger: 'change', message: 'upload balance Attachment'}
         ]
       },
+      paymentAdvanceForm: {
+        payment_advance_bl_no: '',
+        applyData: [],
+        payment_advance_files: [],
+        payment_advance_amount: '',
+      },
+      paymentAdvanceRules: {
+        payment_advance_files: [
+          { type: 'array', min: 1, required: true, trigger: 'change', message: 'upload advance Attachment'}
+        ]
+      },
     }
   },
   created() {
@@ -1420,11 +1459,22 @@ export default {
         selection = this.$refs.extraTable.getSelection()
       }
       if(selection && selection.length > 0) {
-        if(this.applyPaymentAction === 'BALANCE') {
+        if(this.applyPaymentAction === 'ADVANCE') {
+          this.modal.applyAdvancePaymentModal = true
+          this.paymentAdvanceForm.applyData = selection
+          this.$refs.uploadAdvance.clearFiles()
+          this.paymentAdvanceForm.payment_advance_amount = 0
+          this.paymentAdvanceForm.payment_advance_files = []
+          for(let s of selection) {
+            this.paymentAdvanceForm.payment_advance_bl_no = s.shipment_list_bill_no
+            this.paymentAdvanceForm.payment_advance_amount = Number(this.paymentAdvanceForm.payment_advance_amount) + Number(s.shipment_list_advance_payment)
+          }
+        } else if(this.applyPaymentAction === 'BALANCE') {
           this.modal.applyBalancePaymentModal = true
           this.paymentBalanceForm.applyData = selection
           this.$refs.uploadBalance.clearFiles()
           this.paymentBalanceForm.payment_balance_files = []
+          this.paymentBalanceForm.payment_balance_amount = 0
           for(let s of selection) {
             this.paymentBalanceForm.payment_balance_bl_no = s.shipment_list_bill_no
             this.paymentBalanceForm.payment_balance_amount = Number(this.paymentBalanceForm.payment_balance_amount) + Number(s.shipment_list_balance_payment)
@@ -1442,6 +1492,31 @@ export default {
       } else {
         return this.$Message.error('Please select apply payment')
       }
+    },
+    doApplyAdvancePaymentAct: async function() {
+      this.$refs['paymentAdvance'].validate(async valid => {
+        if (valid) {
+          try {
+            this.paymentAdvanceForm.applyAction = this.applyPaymentAction
+            await this.$http.post(apiUrl + 'applyPayment', this.paymentAdvanceForm)
+            this.$Message.success('apply success')
+            this.getShipmentNoteData(1)
+            this.modal.applyAdvancePaymentModal = false
+            this.modal.applyPaymentModal = false
+          } catch (error) {
+            this.$commonact.fault(error)
+          }
+        }
+      })
+    },
+    handleUploadAdvanceSuccess(res, file, fileList) {
+      file.url = res.info.url
+      file.name = res.info.name
+      this.paymentAdvanceForm.payment_advance_files = JSON.parse(JSON.stringify(this.$refs.uploadAdvance.fileList))
+    },
+    handleUploadAdvanceRemove(file, fileList) {
+      const index = this.paymentAdvanceForm.payment_advance_files.indexOf(file)
+      this.paymentAdvanceForm.payment_advance_files.splice(index, 1)
     },
     doApplyBalancePaymentAct: async function() {
       this.$refs['paymentBalance'].validate(async valid => {

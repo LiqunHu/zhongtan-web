@@ -18,25 +18,28 @@
         <div class="panel-toolbar">
           <div class="form-inline">
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.masterbl_bl" placeholder="#M B/L No" style="width: 200px" />
+              <input type="text" class="form-control" v-model="search_data.masterbl_bl" placeholder="#M B/L No" style="width: 140px" />
             </div>
             <div class="form-group m-r-2">
-              <Select v-model="search_data.charge_status" placeholder="Charge Status" clearable style="width:200px">
+              <Select v-model="search_data.charge_status" placeholder="Charge Status" clearable style="width:140px">
                 <Option v-for="item in chargeStatus" :value="item.id" :key="item.id">{{ item.text }}</Option>
               </Select>
             </div>
             <div class="form-group m-r-2">
-              <Select v-model="search_data.vessel_id" placeholder="Select Vessel" clearable filterable style="width:200px">
+              <Select v-model="search_data.vessel_id" placeholder="Select Vessel" clearable filterable style="width:140px">
                 <Option v-for="item in pagePara.VESSELS" :value="item.export_vessel_id" :key="item.export_vessel_id">{{ item.export_vessel_name + '/' + item.export_vessel_voyage }}</Option>
               </Select>
             </div>
             <div class="form-group m-r-2">
-              <DatePicker type="daterange" :value="search_data.etd_date" placeholder="ETD Date" style="width: 200px" @on-change="searchETDData"></DatePicker>
+              <DatePicker type="daterange" :value="search_data.etd_date" placeholder="ETD Date" style="width: 140px" @on-change="searchETDData"></DatePicker>
             </div>
             <div class="form-group m-r-2">
-              <Select v-model="search_data.receivable_agent" placeholder="Select Agent" clearable filterable style="width:200px">
+              <Select v-model="search_data.receivable_agent" placeholder="Select Agent" clearable filterable style="width:140px">
                 <Option v-for="item in pagePara.AGENTS" :value="item.user_id" :key="item.user_id">{{ item.user_name }}</Option>
               </Select>
+            </div>
+            <div class="form-group m-r-2">
+              <Checkbox v-model="search_data.bgf_flg">BGF</Checkbox>
             </div>
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="getTableData(1)">
@@ -81,7 +84,8 @@
           {{row.export_masterbl_bl}}
         </template>
         <template slot-scope="{ row, index }" slot="export_charge_status">
-          <Tag color="success" v-if="row.charge_status === 'RELEASE'">RELEASE</Tag>
+          <Tag color="error" v-if="row.blacklist === '1'"><Icon type="md-lock" />HOLD</Tag>
+          <Tag color="success" v-else-if="row.charge_status === 'RELEASE'">RELEASE</Tag>
           <Tag color="error" v-else>HOLD</Tag>
         </template>
         <template slot-scope="{ row, index }" slot="export_vessel">
@@ -222,7 +226,7 @@ export default {
             {
               title: 'B/L Status',
               slot: 'export_charge_status',
-              width: 100,
+              width: 120,
               align: 'center'
             },
             {
@@ -325,7 +329,8 @@ export default {
         charge_status: '',
         vessel_id: '',
         etd_date: '',
-        receivable_agent: ''
+        receivable_agent: '',
+        bgf_flg: false
       },
       files: {
         fileList: []
