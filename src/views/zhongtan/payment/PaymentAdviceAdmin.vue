@@ -9,7 +9,7 @@
     <!-- end breadcrumb -->
     <!-- begin page-header -->
     <h1 class="page-header">
-      Payment Admin Advice
+      Payment Advice Admin
       <small></small>
     </h1>
     <!-- end page-header -->
@@ -61,13 +61,21 @@
         </div>
       </template>
       <Table stripe ref="paymentAdvice" :columns="table.paymentAdvice.rows" :data="table.paymentAdvice.data" :border="table.paymentAdvice.data && table.paymentAdvice.data.length > 0" :height="table.paymentAdvice.height">
-        <template slot-scope="{ row, index }" slot="action" v-if="row.payment_advice_status === '1'">
-          <a href="#" class="btn btn-info btn-icon btn-sm" @click="modifyPaymentAdviceModal(row)">
-            <i class="fa fa-edit"></i>
-          </a>
-          <a href="#" class="btn btn-danger btn-icon btn-sm" @click="deletePaymentAdvice(row)">
-            <i class="fa fa-times"></i>
-          </a>
+        <template slot-scope="{ row, index }" slot="action">
+          <Tag color="green" v-if="row.payment_advice_status === '2'">COMPLETED</Tag>
+          <div v-else>
+            <Tag v-if="row.payment_verification_status === 'PE'">Edit</Tag>
+            <Tag color="blue" v-if="row.payment_verification_status === 'PS'">Section Manager</Tag>
+            <Tag color="magenta" v-if="row.payment_verification_status === 'PB'">Commercial</Tag>
+            <Tag color="volcano" v-if="row.payment_verification_status === 'PSM'">Shipping Manager</Tag>
+            <Tag color="orange" v-if="row.payment_verification_status === 'PM'">Financial Manager</Tag>
+            <a href="#" class="btn btn-info btn-icon btn-sm" @click="modifyPaymentAdviceModal(row)">
+              <i class="fa fa-edit"></i>
+            </a>
+            <a href="#" class="btn btn-danger btn-icon btn-sm" @click="deletePaymentAdvice(row)">
+              <i class="fa fa-times"></i>
+            </a>
+          </div>
         </template>
         <template slot-scope="{ row, index }" slot="payment_advice_no">
           {{row.payment_advice_no}}
@@ -162,7 +170,7 @@
         <Button type="primary" size="large" @click="submitPaymentAdvicePort">Submit</Button>
       </div>
     </Modal>
-    <Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :mask-closable="false">
+    <Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :mask-closable="false" :closable="false">
       <Form :label-width="120">
         <FormItem v-show="false">
             <Input type="password" style='width:0;opacity:0;'></Input>
@@ -184,7 +192,7 @@ const common = require('@/lib/common')
 const apiUrl = '/api/zhongtan/payment/PaymentAdviceAdmin/'
 
 export default {
-  name: 'PaymentAdvice',
+  name: 'PaymentAdviceAdmin',
   data: function() {
     return {
       modal: { paymentAdviceModal: false, checkPasswordModal: false },
@@ -198,7 +206,7 @@ export default {
             },
             {
               title: 'Action',
-              width: 100,
+              width: 220,
               slot: 'action'
             },
             {
