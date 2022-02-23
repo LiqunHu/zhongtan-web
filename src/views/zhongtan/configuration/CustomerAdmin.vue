@@ -184,8 +184,7 @@ export default {
             {
               title: 'Address',
               key: 'user_address',
-              render: common.tooltipRender(),
-              width: 150,
+              width: 300,
             },
             {
               title: 'TIN',
@@ -235,7 +234,7 @@ export default {
           user_username: [{ required: true, trigger: 'change', message: 'Enter Username' }],
           user_name: [{ required: true, trigger: 'change', message: 'Enter Name' }],
           user_phone: [{ required: true, trigger: 'change', message: 'Enter Phone' }],
-          user_email: [{ required: true, type: 'email', rigger: 'change', message: 'Enter Email' }],
+          user_email: [{ required: true, rigger: 'change', message: 'Enter Email' }],
           user_address: [{ required: true, rigger: 'change', message: 'Enter Address' }]
         }
       },
