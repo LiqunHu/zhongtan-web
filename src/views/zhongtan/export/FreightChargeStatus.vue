@@ -39,7 +39,10 @@
               </Select>
             </div>
             <div class="form-group m-r-2">
-              <Checkbox v-model="search_data.bgf_flg">BGF</Checkbox>
+              <Select v-model="search_data.bgf_flg" placeholder="Select BGF" clearable filterable style="width:140px">
+                <Option value="1" key="1">BGF</Option>
+                <Option value="2" key="2">NON BGF</Option>
+              </Select>
             </div>
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="getTableData(1)">
