@@ -241,7 +241,12 @@
                     <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_destination}" v-model="table.masterbiTable.data[index].invoice_masterbi_destination" size="small" :disabled="tableEdit"/>
                     </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_delivery">
-                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_delivery}" v-model="table.masterbiTable.data[index].invoice_masterbi_delivery" size="small" :disabled="tableEdit"/>
+                    <i-select v-model="table.masterbiTable.data[index].invoice_masterbi_delivery" :disabled="tableEdit">
+                        <i-option v-for="item in pagePara.ICD" :value="item.icd_code" :key="item.icd_code" :label="item.icd_code">
+                            <span>{{item.icd_code}}</span>
+                            <span style="float:right;color:#ccc">{{item.icd_name}}</span>
+                        </i-option>
+                    </i-select>
                     </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_loading">
                     <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_loading}" v-model="table.masterbiTable.data[index].invoice_masterbi_loading" size="small" :disabled="tableEdit"/>
@@ -820,7 +825,7 @@
                         }, {
                             title: 'Place of Delivery',
                             slot: 'invoice_masterbi_delivery',
-                            width: 130
+                            width: 150
                         }, {
                             title: 'Port of Loading',
                             slot: 'invoice_masterbi_loading',
