@@ -329,12 +329,12 @@ export default {
     },
     refreshSizeType: async function() {
       try {
-        await this.$http.post(apiUrl + 'refreshEmptyStockSizeType', {})
+        await this.$http.post(apiUrl + 'refreshEmptyStockSizeType', this.containerForm)
         this.getTableData(1)
       } catch (error) {
         this.$commonact.fault(error)
       }
-    },
+    }
   }
 }
 </script>
