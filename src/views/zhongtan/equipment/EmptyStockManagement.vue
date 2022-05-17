@@ -119,7 +119,6 @@
   </div>
 </template>
 <script>
-import func from 'vue-editor-bridge'
 import PageOptions from '../../../config/PageOptions.vue'
 const moment = require('moment')
 const common = require('@/lib/common')
@@ -329,7 +328,8 @@ export default {
     },
     refreshSizeType: async function() {
       try {
-        await this.$http.post(apiUrl + 'refreshEmptyStockSizeType', {})
+        await this.$http.post(apiUrl + 'refreshSizeType', {})
+        this.modal.editModal = false
         this.getTableData(1)
       } catch (error) {
         this.$commonact.fault(error)
