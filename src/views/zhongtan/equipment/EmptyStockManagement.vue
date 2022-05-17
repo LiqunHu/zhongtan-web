@@ -39,6 +39,11 @@
                 <i class="fa fa-download"></i> Export
               </button>
             </div>
+            <div class="form-group m-r-10">
+              <button type="button" class="btn btn-info" @click="refreshSizeType">
+                <i class="fa fa-download"></i> Refresh Size/Type
+              </button>
+            </div>
           </div>
           <div class="form-inline" style="margin-top: 10px;">
             <!-- <div class="form-group m-r-2">
@@ -114,6 +119,7 @@
   </div>
 </template>
 <script>
+import func from 'vue-editor-bridge'
 import PageOptions from '../../../config/PageOptions.vue'
 const moment = require('moment')
 const common = require('@/lib/common')
@@ -320,7 +326,15 @@ export default {
       } catch (error) {
         this.$commonact.fault(error)
       }
-    }
+    },
+    refreshSizeType: async function() {
+      try {
+        await this.$http.post(apiUrl + 'refreshEmptyStockSizeType', {})
+        this.getTableData(1)
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
   }
 }
 </script>
