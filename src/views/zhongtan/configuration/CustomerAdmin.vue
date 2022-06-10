@@ -71,7 +71,11 @@
           <Input placeholder="Username" v-model="workPara.user_username" :disabled="action === 'modify'"/>
         </FormItem>
         <FormItem label="Name" prop="user_name" style="margin-bottom: 7px;">
-          <Input placeholder="Name" v-model="workPara.user_name"/>
+          <Input v-if="action === 'add'" placeholder="Name" v-model="workPara.user_name"> </Input>
+          <Input v-else placeholder="Name" v-model="workPara.user_name" :disabled="!editCustomerName"> 
+            <Button v-if="editCustomerName" slot="append" icon="ios-unlock" @click="cancelEditCustomerName"></Button>
+            <Button v-else slot="append" icon="ios-lock" @click="authEditCustomerName"></Button>
+          </Input>
         </FormItem>
         <FormItem label="Email" prop="user_email" style="margin-bottom: 7px;">
           <Input placeholder="Email" v-model="workPara.user_email"/>
@@ -220,6 +224,7 @@ export default {
               title: 'Action',
               slot: 'action',
               width: 100,
+              fixed: 'right'
             }
           ],
           data: [],
@@ -244,6 +249,7 @@ export default {
       action: '',
       checkPassword: '',
       checkPasswordType: '',
+      editCustomerName: false
     }
   },
   created() {
@@ -298,6 +304,7 @@ export default {
       this.workPara = JSON.parse(JSON.stringify(actrow))
       this.action = 'modify'
       this.$refs.formUser.resetFields()
+      this.cancelEditCustomerName()
       this.modal.userModal = true
     },
     submitUser: function() {
@@ -392,7 +399,7 @@ export default {
       if (this.checkPassword) {
         try {
           let action = ''
-          if (this.checkPasswordType === 'customerDelete') {
+          if (this.checkPasswordType === 'customerDelete' || this.checkPasswordType === 'customerNameEdit') {
             action = 'CUSTOMER_ADMIN_OPERATE'
           }
           let param = {
@@ -403,6 +410,8 @@ export default {
           this.modal.checkPasswordModal = false
           if (this.checkPasswordType === 'customerDelete') {
             this.doDeleteUser()
+          } else if (this.checkPasswordType === 'customerNameEdit') {
+            this.editCustomerName = true
           }
         } catch (error) {
           this.$commonact.fault(error)
@@ -411,6 +420,14 @@ export default {
         return this.$Message.error('Please enter right password')
       }
     },
+    authEditCustomerName: async function() {
+      this.checkPassword = ''
+      this.checkPasswordType = 'customerNameEdit'
+      this.modal.checkPasswordModal = true
+    },
+    cancelEditCustomerName: async function() {
+      this.editCustomerName = false
+    }
   }
 }
 </script>
