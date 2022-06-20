@@ -44,12 +44,10 @@
           <div style="border: 1px solid #dcdee2;">
             <Scroll :height="vesselHeight">
               <Row v-for="item in vesselData" v-bind:key="item.export_vessel_id">
-                <Col>
+                <Col :span="24">
                   <div :class="{vessel_selected: item.active}" @click="vesselSelectedAct(item)">
                     <Card>
-                      <p slot="title">
-                        {{item.export_vessel_name}}({{item.export_vessel_code}})-{{item.export_vessel_voyage}}
-                      </p>
+                      <span slot="title">{{item.export_vessel_name}}({{item.export_vessel_code}})-{{item.export_vessel_voyage}}</span>
                       <Row>
                           <Col span="12">
                           <p>ETD: {{item.export_vessel_etd}}</p>

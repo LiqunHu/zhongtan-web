@@ -37,17 +37,58 @@
             <template slot-scope="{ row, index }" slot="fee_data_transit">
                 <Tag color="error" v-if="row.fee_data_transit === '1'">TRANSIT $0</Tag>
             </template>
+            <template slot-scope="{ row, index }" slot="fee_data_enabled_date">
+                {{ row.fee_data_enabled_start_date }} - {{ row.fee_data_enabled_end_date }}
+            </template>
             <template slot-scope="{ row, index }" slot="fee_data_config">
-                <Tag color="success" v-if="row.fee_data_receivable && row.fee_data_receivable === '1'">
-                    Receivable
-                    <span v-if="row.fee_data_receivable_fixed === '1'">/Fixed</span>
-                    <span v-if="row.fee_data_receivable_amount">/{{row.fee_data_receivable_amount}}{{row.fee_data_receivable_amount_currency}}</span>
-                </Tag><br/>
-                <Tag color="primary" v-if="row.fee_data_payable && row.fee_data_payable === '1'">
-                    Payable
-                    <span v-if="row.fee_data_payable_fixed === '1'">/Fixed</span>
-                    <span v-if="row.fee_data_payable_amount">/{{row.fee_data_payable_amount}}{{row.fee_data_payable_amount_currency}}</span>
-                </Tag>
+                <Row v-if="row.fee_data_receivable && row.fee_data_receivable === '1'" style="color:#00cc66;">
+                    <Col span="12">
+                        Receivable
+                        <span v-if="row.fee_data_receivable_fixed === '1'">/Fixed</span>
+                        <span v-if="row.fee_data_receivable_amount">/{{row.fee_data_receivable_amount}}{{row.fee_data_receivable_amount_currency}}</span>
+                    </Col>
+                    <Col span="12">
+                        <Row v-if="row.fee_data_receivable_common_party">
+                            <Col span="24">
+                            DEFAULT PARTY: {{row.fee_data_receivable_common_party_name}}
+                            </Col>
+                        </Row>
+                        <Row v-if="row.fee_data_receivable_cosco_party">
+                            <Col span="24">
+                            COSCO PARTY: {{row.fee_data_receivable_cosco_party_name}}
+                            </Col>
+                        </Row>
+                        <Row v-if="row.fee_data_receivable_oocl_party">
+                            <Col span="24">
+                            OOCL PARTY: {{row.fee_data_receivable_oocl_party_name}}
+                            </Col>
+                        </Row>
+                    </Col>
+                </Row>
+                <Row v-if="row.fee_data_payable && row.fee_data_payable === '1'" style="color:#3091f2;">
+                    <Col span="12">
+                        Receivable
+                        <span v-if="row.fee_data_payable_fixed === '1'">/Fixed</span>
+                        <span v-if="row.fee_data_payable_amount">/{{row.fee_data_payable_amount}}{{row.fee_data_payable_amount_currency}}</span>
+                    </Col>
+                    <Col span="12">
+                        <Row v-if="row.fee_data_payable_common_party">
+                            <Col span="24">
+                            DEFAULT PARTY: {{row.fee_data_payable_common_party_name}}
+                            </Col>
+                        </Row>
+                        <Row v-if="row.fee_data_payable_cosco_party">
+                            <Col span="24">
+                            COSCO PARTY: {{row.fee_data_payable_cosco_party_name}}
+                            </Col>
+                        </Row>
+                        <Row v-if="row.fee_data_payable_oocl_party">
+                            <Col span="24">
+                            OOCL PARTY: {{row.fee_data_payable_oocl_party_name}}
+                            </Col>
+                        </Row>
+                    </Col>
+                </Row>
             </template>
             <template slot-scope="{ row, index }" slot="action">
                 <a href="#" class="btn btn-primary btn-icon btn-sm" @click="updateFeeDataModal(row)">
@@ -60,8 +101,8 @@
         </Table>
         <Page class="m-t-10" :total="table.checkTable.total" :page-size="table.checkTable.limit" @on-change="getTableData" />
     </panel>
-    <Modal v-model="modal.addOrUpdateFee" :title="textMap[dialogStatus]" width="600">
-        <Form ref="feeForm" :model="feeForm" :rules="feeRule" :label-width="100" style="padding-right: 40px;">
+    <Modal v-model="modal.addOrUpdateFee" :title="textMap[dialogStatus]" width="70%">
+        <Form ref="feeForm" :model="feeForm" :rules="feeRule" :label-width="120" style="padding-right: 40px;">
             <FormItem label="Code" prop="fee_data_code">
                 <Input v-model="feeForm.fee_data_code" placeholder="Enter Fee Code" :disabled="dialogStatus === 'update'"/>
             </FormItem>
@@ -76,6 +117,16 @@
                     <Radio v-for="item in pagePara.FEE_TYPE" v-bind:key="item.id" :label="item.id" style="margin-right: 50px;" :disabled ="dialogStatus === 'update'">{{item.text}}</Radio>
                 </RadioGroup>
             </FormItem>
+            <FormItem label="Enabled Date">
+                <Row>
+                    <Col span="12">
+                        <DatePicker type="date" placeholder="Select Start Date" v-model="feeForm.fee_data_enabled_start_date" format="yyyy-MM-dd" @on-change="enabledStartDataChange"></DatePicker>
+                    </Col>
+                    <Col span="12">
+                        <DatePicker type="date" placeholder="Select End Date" v-model="feeForm.fee_data_enabled_end_date" format="yyyy-MM-dd" @on-change="enabledEndDataChange"></DatePicker>
+                    </Col>
+                </Row>
+            </FormItem>
             <FormItem label="Size&Type" prop="fee_data_container_size_create" v-if="feeForm.fee_data_type === 'CON' && dialogStatus === 'create'">
                 <CheckboxGroup v-model="feeForm.fee_data_container_size_create">
                     <Checkbox v-for="item in pagePara.CONTAINER_SIZE" :label="item.container_size_code" :key="item.container_size_code">{{item.container_size_code}}[{{item.container_size_name}}]</Checkbox>
@@ -88,40 +139,105 @@
             </FormItem>
             <FormItem label="Config">
                <Row :gutter="16">
-                    <Col span="8">Receivable/Payable</Col>
-                    <Col span="6">Fixed</Col>
-                    <Col span="9">Amount</Col>
+                    <Col span="4">Receivable/Payable</Col>
+                    <Col span="4">Fixed</Col>
+                    <Col span="6">Amount</Col>
+                    <Col span="10">Party</Col>
                 </Row>
                 <Row :gutter="16">
-                    <Col span="8"><Checkbox v-model="feeForm.fee_data_receivable" true-value="1" false-value="0">Receivable</Checkbox></Col>
-                    <Col span="6">
+                    <Col span="4"><Checkbox v-model="feeForm.fee_data_receivable" true-value="1" false-value="0">Receivable</Checkbox></Col>
+                    <Col span="4">
                         <i-switch v-model="feeForm.fee_data_receivable_fixed" size="large" true-value="1" false-value="0">
                             <span slot="open">ON</span>
                             <span slot="close">OFF</span>
                         </i-switch>
                     </Col>
-                    <Col span="9">
+                    <Col span="6">
                         <Input v-model="feeForm.fee_data_receivable_amount" placeholder="Enter Default Amount">
                             <Select slot="append" v-model="feeForm.fee_data_receivable_amount_currency" style="width: 80px" :disabled ="dialogStatus === 'update'">
                                 <Option v-for="item in pagePara.FEE_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
                             </Select>
                         </Input>
                     </Col>
+                    <Col span="10">
+                        <Row>
+                            <Col span="6">
+                                DEFAULT
+                            </Col>
+                            <Col span="18">
+                                <Select v-model="feeForm.fee_data_receivable_common_party" clearable filterable>
+                                    <Option v-for="item in pagePara.CUSTOMER" :value="item.user_id" :key="item.user_id">{{ item.user_name }}</Option>
+                                </Select>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span="6">
+                                COSCO
+                            </Col>
+                            <Col span="18">
+                                <Select v-model="feeForm.fee_data_receivable_cosco_party" clearable filterable>
+                                    <Option v-for="item in pagePara.CUSTOMER" :value="item.user_id" :key="item.user_id">{{ item.user_name }}</Option>
+                                </Select>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span="6">
+                                OOCL
+                            </Col>
+                            <Col span="18">
+                                <Select v-model="feeForm.fee_data_receivable_oocl_party" clearable filterable>
+                                    <Option v-for="item in pagePara.CUSTOMER" :value="item.user_id" :key="item.user_id">{{ item.user_name }}</Option>
+                                </Select>
+                            </Col>
+                        </Row>
+                    </Col>
                 </Row>
                 <Row :gutter="16">
-                    <Col span="8"><Checkbox v-model="feeForm.fee_data_payable" true-value="1" false-value="0">Payable</Checkbox></Col>
-                    <Col span="6">
+                    <Col span="4"><Checkbox v-model="feeForm.fee_data_payable" true-value="1" false-value="0">Payable</Checkbox></Col>
+                    <Col span="4">
                         <i-switch v-model="feeForm.fee_data_payable_fixed" size="large" true-value="1" false-value="0">
                             <span slot="open">ON</span>
                             <span slot="close">OFF</span>
                         </i-switch>
                     </Col>
-                    <Col span="9">
+                    <Col span="6">
                         <Input v-model="feeForm.fee_data_payable_amount" placeholder="Enter Default Amount">
                             <Select slot="append" v-model="feeForm.fee_data_payable_amount_currency" style="width: 80px" :disabled ="dialogStatus === 'update'">
                                 <Option v-for="item in pagePara.FEE_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
                             </Select>
                         </Input>
+                    </Col>
+                    <Col span="10">
+                        <Row>
+                            <Col span="6">
+                                DEFAULT
+                            </Col>
+                            <Col span="18">
+                                <Select v-model="feeForm.fee_data_payable_common_party" clearable filterable>
+                                    <Option v-for="item in pagePara.CUSTOMER" :value="item.user_id" :key="item.user_id">{{ item.user_name }}</Option>
+                                </Select>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span="6">
+                                COSCO
+                            </Col>
+                            <Col span="18">
+                                <Select v-model="feeForm.fee_data_payable_cosco_party" clearable filterable>
+                                    <Option v-for="item in pagePara.CUSTOMER" :value="item.user_id" :key="item.user_id">{{ item.user_name }}</Option>
+                                </Select>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span="6">
+                                OOCL
+                            </Col>
+                            <Col span="18">
+                                <Select v-model="feeForm.fee_data_payable_oocl_party" clearable filterable>
+                                    <Option v-for="item in pagePara.CUSTOMER" :value="item.user_id" :key="item.user_id">{{ item.user_name }}</Option>
+                                </Select>
+                            </Col>
+                        </Row>
                     </Col>
                 </Row>
             </FormItem>
@@ -148,32 +264,44 @@ export default {
                 {
                     title: 'Code',
                     key: 'fee_data_code',
+                    width: 100
                 },
                 {
                     title: 'Name',
                     key: 'fee_data_name',
+                    width: 200
                 },
                 {
                     title: 'Type',
                     key: 'fee_data_type',
                     render: common.selectRender(this, 'FEE_TYPE'),
+                    width: 100
                 },
                 {
                     title: 'Size&Type',
                     key: 'fee_data_container_size',
+                    width: 100
                 },
                 {
                     title: 'Transit',
                     slot: 'fee_data_transit',
+                    width: 100
+                },
+                {
+                    title: 'Enabled Date',
+                    slot: 'fee_data_enabled_date',
+                    width: 200
                 },
                 {
                     title: 'Config',
                     slot: 'fee_data_config',
+                    width: 400
                 },
                 {
                     title: 'Action',
                     slot: 'action',
-                    width: 150
+                    width: 150,
+                    fixed: 'right'
                 }
             ],
             data: [],
@@ -350,6 +478,12 @@ export default {
         } catch (error) {
             this.$commonact.fault(error)
         }
+    },
+    enabledStartDataChange: async function(date) {
+      this.feeForm.fee_data_enabled_start_date = date
+    },
+    enabledEndDataChange: async function(date) {
+      this.feeForm.fee_data_enabled_end_date = date
     }
   }
 }

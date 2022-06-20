@@ -118,17 +118,17 @@
                   </template>
                   <template slot-scope="{ row, index }" slot="empty_release" v-if="row.export_masterbl_bl.indexOf('*') < 0">
                     <Tooltip :content="row.export_masterbl_empty_release_approve_date" v-if="row.export_masterbl_empty_release_approve_date">
-                      <a href="#" class="btn btn-green btn-icon btn-sm" v-on:click="emptyReleaseModalCheckAct(row)">
+                      <a href="#" class="btn btn-green btn-icon btn-sm" v-on:click="emptyReleaseModalCheckAct(row)" :disabled ="row.disabled_empty_release">
                         <i class="fa fa-money-bill-alt"></i>
                       </a>
                     </Tooltip>
                     <Tooltip :content="row.export_masterbl_empty_release_date" v-else-if="row.export_masterbl_empty_release_date">
-                      <a href="#" class="btn btn-primary btn-icon btn-sm" v-on:click="emptyReleaseModalAct(row)">
+                      <a href="#" class="btn btn-primary btn-icon btn-sm" v-on:click="emptyReleaseModalAct(row)" :disabled ="row.disabled_empty_release">
                         <i class="fa fa-money-bill-alt"></i>
                       </a>
                     </Tooltip>
                     <Tooltip content="EMPTY RELEASE" v-else>
-                      <a href="#" class="btn btn-info btn-icon btn-sm" v-on:click="emptyReleaseModalAct(row)">
+                      <a href="#" class="btn btn-info btn-icon btn-sm" v-on:click="emptyReleaseModalAct(row)" :disabled ="row.disabled_empty_release">
                         <i class="fa fa-money-bill-alt"></i>
                       </a>
                     </Tooltip>

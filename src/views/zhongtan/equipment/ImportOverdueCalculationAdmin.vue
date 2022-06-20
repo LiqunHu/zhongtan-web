@@ -18,7 +18,9 @@
         <div class="panel-toolbar">
           <div class="form-inline">
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.invoice_vessel_name" placeholder="Vessel Name" style="width: 200px" />
+              <Select v-model="search_data.invoice_vessel_id" filterable clearable placeholder="SELECT VESSEL">
+                <Option v-for="item in pagePara.VESSEL_VOYAGE" :value="item.invoice_vessel_id" :key="item.invoice_vessel_id">{{item.vessel_voyage}}</Option>
+              </Select>
             </div>
             <div class="form-group m-r-2">
               <input type="text" class="form-control" v-model="search_data.invoice_containers_bl" placeholder="#M B/L No" style="width: 200px" />
@@ -50,6 +52,9 @@
         </div>
       </template>
       <Table stripe size="small" ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data" :height="table.containerTable.height" :border="table.containerTable.data && table.containerTable.data.length > 0" @on-select-all="containerSelectedAll"  @on-select-all-cancel="containerSelectedAllCancel" @on-selection-change="containerSelectedChange" :span-method="handleSpan">
+        <template slot="invoice_vessel_voyage" slot-scope="{ row }">
+          {{row.invoice_vessel_name}}/{{row.invoice_vessel_voyage}}
+        </template>
         <template slot-scope="{ row, index }" slot="files">
           <Poptip trigger="hover" placement="bottom-start" :transfer="true" v-if="row.files && row.files.length > 0">
             <span>Files [{{row.files.length}}]</span>
@@ -329,6 +334,12 @@ export default {
               width: 60
             },
             {
+              title: 'VESSEL_VOYAGE',
+              slot: 'invoice_vessel_voyage',
+              width: 200,
+              align: 'center'
+            },
+            {
               title: '#M B/L No',
               key: 'invoice_containers_bl',
               width: 150,
@@ -499,6 +510,7 @@ export default {
       },
       search_data: {
         invoice_vessel_name: '',
+        invoice_vessel_id: '',
         invoice_containers_bl: '',
         invoice_containers_no: ''
       },
