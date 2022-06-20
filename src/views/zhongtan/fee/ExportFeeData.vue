@@ -268,8 +268,7 @@ export default {
                 },
                 {
                     title: 'Name',
-                    key: 'fee_data_name',
-                    width: 200
+                    key: 'fee_data_name'
                 },
                 {
                     title: 'Type',
@@ -289,8 +288,7 @@ export default {
                 },
                 {
                     title: 'Enabled Date',
-                    slot: 'fee_data_enabled_date',
-                    width: 200
+                    slot: 'fee_data_enabled_date'
                 },
                 {
                     title: 'Config',
