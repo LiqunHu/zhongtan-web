@@ -67,7 +67,7 @@
                 </Row>
                 <Row v-if="row.fee_data_payable && row.fee_data_payable === '1'" style="color:#3091f2;">
                     <Col span="12">
-                        Receivable
+                        Payable
                         <span v-if="row.fee_data_payable_fixed === '1'">/Fixed</span>
                         <span v-if="row.fee_data_payable_amount">/{{row.fee_data_payable_amount}}{{row.fee_data_payable_amount_currency}}</span>
                     </Col>
