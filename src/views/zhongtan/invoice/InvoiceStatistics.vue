@@ -44,6 +44,9 @@
             <div class="form-group m-r-2">
               <input clearable type="text" class="form-control" v-model="search_data.bl" placeholder="B/L No" style="width: 140px" />
             </div>
+            <div class="form-group m-r-2">
+              <input clearable type="text" class="form-control" v-model="search_data.delivery_order_no" placeholder="Delivery Order No." style="width: 140px" />
+            </div>
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="getData(1)">
                 <i class="fa fa-search"></i> Search
@@ -479,7 +482,8 @@ export default {
         do_status: '',
         do_date: '',
         invoice_date: '',
-        receipt_date: ''
+        receipt_date: '',
+        delivery_order_no: '',
       },
     }
   },
