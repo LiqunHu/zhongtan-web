@@ -105,7 +105,7 @@
       </Table>
       <Page class="m-t-10" :total="table.paymentAdvice.total" :current="table.paymentAdvice.current" :pageSizeOpts = "table.paymentAdvice.pageSizeOpts" :page-size="table.paymentAdvice.limit" @on-change="getPaymentAdviceData"/>
     </panel>
-    <Modal v-model="modal.paymentAdviceModal" title="Payment Advice" width="600px;">
+    <Modal v-model="modal.paymentAdviceModal" :title="action==='add' ? 'Add Payment Advice' : 'Edit Payment Advice'" width="600px;">
       <Form :model="workPara" :label-width="160" :rules="formRule.rulePaymentAdviceModal" ref="formPaymentAdvice" style="padding-right: 50px;">
         <FormItem label="PAYMENT METHOD" prop="payment_advice_method">
           <Select placeholder="PAYMENT METHOD" clearable filterable v-model="workPara.payment_advice_method">
@@ -163,6 +163,19 @@
                 <p>Click or drag files here to upload</p>
             </div>
           </Upload>
+          <Row v-if="action === 'modify'" type="flex" justify="start" v-for="item in workPara.atta_files" :key="item.uploadfile_id" style="background-color:#f8f8f9">
+            <Col span="20">
+              {{item.uploadfile_name}}
+            </Col>
+            <Col span="4">
+              <a :href="item.uploadfile_url" target="_blank">
+                <i class="fa fa-download"></i>
+              </a>
+              <a href="#" style="color:red; margin-left: 10px;" @click="removeAttachment(item)">
+                <i class="fa fa-times"></i>
+              </a>
+            </Col>
+          </Row>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -476,7 +489,7 @@ export default {
             this.getPaymentAdviceData()
           } else if (this.checkPasswordType === 'paymentAdviceExport') {
             let response = await this.$http.request({
-                url: apiUrl + 'export',
+                url: apiUrl + 'exportAdmin',
                 method: 'post',
                 data: {search_data: this.search_data},
                 responseType: 'blob'
@@ -529,6 +542,15 @@ export default {
     handleUploadRemove(file, fileList) {
       const index = this.workPara.payment_atta_files.indexOf(file)
       this.workPara.payment_atta_files.splice(index, 1)
+    },
+    removeAttachment: async function(item) {
+      try {
+        let response = await this.$http.post(apiUrl + 'removeAttachment', item)
+        this.$Message.success('delete success')
+        this.workPara.atta_files = JSON.parse(JSON.stringify(response.data.info.atta_files))
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
     },
   }
 }
