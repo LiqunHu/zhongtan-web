@@ -56,6 +56,9 @@
                   <Select v-model="searchPara.shipment_list_cargo_type" clearable placeholder="CARGO TYPE" style="width:199px; margin-right:7px;">
                     <Option v-for="item in cargoTypeFilter" :value="item.id" :key="item.id">{{ item.text }}</Option>
                   </Select>
+                  <Select v-model="searchPara.paid_status" clearable placeholder="PAID STATUS" style="width:199px; margin-right:7px;">
+                    <Option v-for="item in pagePara.LOGISTICS_PAID_STATE" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                  </Select>
                   <DatePicker type="daterange" :value="searchPara.shipment_list_in_date" placeholder="DISCHARGE/GATE OUT" @on-change="searchInDateChange" format="yyyy-MM-dd" style="margin-right:7px;"></DatePicker>
                   <DatePicker type="daterange" :value="searchPara.shipment_list_out_date" placeholder="EMPTY RETURN/LOADING" @on-change="searchOutDateChange" format="yyyy-MM-dd"></DatePicker>
                 </div>
@@ -90,6 +93,24 @@
             </template>
           </Poptip>
         </template>
+        <template slot-scope="{ row, index }" slot="attachments">
+          <Poptip trigger="hover" placement="bottom" :transfer="true" width="690" v-if="row.attachments && row.attachments.length > 0">
+            <Button type="text" style="text-decoration:underline">Attachments [{{row.attachments.length}}]</Button>
+            <template slot="content">
+              <Table stripe size="small" :columns="table.attachmentsTable.columns" :data="row.attachments">
+                <template slot-scope="{ row, index }" slot="act">
+                  <template>
+                    <Tooltip content="Download">
+                      <a :href="row.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
+                        <i class="fa fa-download"></i>
+                      </a>
+                    </Tooltip>
+                  </template>
+                </template>
+              </Table>
+            </template>
+          </Poptip>
+        </template>
         <template slot-scope="{ row, index }" slot="shipment_list_payment_status">
           <Tag color="default" v-if="row.shipment_list_payment_status === '1'">NEW PAYMENT NOTE</Tag>
           <Tag color="warning" v-if="row.shipment_list_payment_status === '2'">APPLY ADVANCE</Tag>
@@ -99,6 +120,13 @@
           <Tag color="warning" v-if="row.shipment_list_payment_status === '6'">EXTRA CHARGES</Tag>
           <Tag color="success" v-if="row.shipment_list_payment_status === '7'">EXTRA PAYMENT</Tag>
           <Tag color="warning" v-if="row.shipment_list_payment_status === '8'">APPLY FULL</Tag>
+        </template>
+        <template slot-scope="{ row, index }" slot="shipment_list_paid_status">
+          <Tag color="warning" v-if="!row.shipment_list_paid_status || row.shipment_list_paid_status === '0'">UNPAID</Tag>
+          <Tag color="primary" v-if="row.shipment_list_paid_status === '1'">ADVANCE PAID</Tag>
+          <Tag color="primary" v-if="row.shipment_list_paid_status === '2'">BALANCE PAID</Tag>
+          <Tag color="success" v-if="row.shipment_list_paid_status === '3'">EXTRA PAID</Tag>
+          <Tag color="success" v-if="row.shipment_list_paid_status === '4'">FULL PAYMENT PAID</Tag>
         </template>
         <template slot-scope="{ row, index }" slot="shipment_list_advance_payment">
           {{row.shipment_list_advance_payment}}({{row.shipment_list_advance_percent}}%)
@@ -151,6 +179,9 @@
         <template slot-scope="{ row, index }" slot="action">
           <a href="#" class="btn btn-danger btn-icon btn-sm" @click="deleteShipment(row)" v-if="row.shipment_list_payment_status === '1'">
             <i class="fa fa-times"></i>
+          </a>
+          <a href="#" class="btn btn-icon btn-sm" style="color:#00cc66;" @click="searchPaidStatusAct(row)" v-if="row.shipment_list_payment_status !== '1'">
+            <i class="fa fa-check"></i>
           </a>
         </template>
       </Table>
@@ -469,6 +500,32 @@
           <Button type="primary" size="large" @click="doApplyAdvancePaymentAct">Submit</Button>
       </div>
     </Modal>
+    <Modal v-model="modal.updatePaidModal" title="Ediit Paid Status" width="800" @on-cancel="closeUpdatePaidModal">
+    <!-- paidStatusForm.paid_status -->
+      <Steps :current="paidStatusForm.paid_status" v-if="paidStatusForm.shipment_list_payment_status === '8'">
+          <Step title="UNPAID"></Step>
+          <Step title="FULL PAYMENT PAID"></Step>
+      </Steps>
+      <Steps :current="paidStatusForm.paid_status" v-else>
+          <Step title="UNPAID"></Step>
+          <Step title="ADVANCE PAID"></Step>
+          <Step title="BALANCE PAID"></Step>
+          <Step title="EXTRA PAID"></Step>
+      </Steps>
+      <div style="margin-top: 20px; float: right;">
+        <Button type="warning" @click="previousAct">上一步</Button>
+        <Button type="primary" @click="nextAct">下一步</Button>
+        <Button type="success" @click="updatePaidStatus">保存</Button>
+      </div>
+      <Timeline v-if="paidStatusForm.paid_status_records" style="margin-top: 80px;">
+        <Timeline-item v-for="item in paidStatusForm.paid_status_records" :key="item.logistics_paid_id">
+            <p class="time" v-for="status in pagePara.LOGISTICS_PAID_STATE" :key="status.id" v-if="status.id === item.logistics_paid_status">{{status.text}}</p>
+            <p class="content">{{item.user_name}} {{item.created_time}}</p>
+        </Timeline-item>
+      </Timeline>
+      <div slot="footer">
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -480,7 +537,7 @@ export default {
   name: 'ShipmentList',
   data: function() {
     return {
-      modal: { addShipmentModal: false, applyPaymentModal: false, applyPaymentExtraModal: false, checkPasswordModal: false, applyFullPaymentModal: false, applyBalancePaymentModal: false, applyAdvancePaymentModal : false },
+      modal: { addShipmentModal: false, applyPaymentModal: false, applyPaymentExtraModal: false, checkPasswordModal: false, applyFullPaymentModal: false, applyBalancePaymentModal: false, applyAdvancePaymentModal : false, updatePaidModal: false },
       table: {
         shipmentTable: {
           rows: [
@@ -505,8 +562,19 @@ export default {
               width: 100
             },
             {
+              title: 'Attachment',
+              slot: 'attachments',
+              width: 150
+            },
+            {
               title: 'STATUS',
               slot: 'shipment_list_payment_status',
+              width: 180,
+              align: 'center'
+            },
+            {
+              title: 'PAID STATUS',
+              slot: 'shipment_list_paid_status',
               width: 180,
               align: 'center'
             },
@@ -685,28 +753,58 @@ export default {
         filesTable: {
           columns: [
             {
-              title: 'Action',
+              title: 'ACTION',
               slot: 'act',
               width: 100
             },
             {
-              title: 'Type',
+              title: 'TYPE',
               key: 'filetype',
               width: 150
             }, 
             {
-              title: 'Amount',
+              title: 'AMOUNT',
               slot: 'amount',
               width: 150
             }, 
             {
-              title: 'Create By',
-              key: 'creater',
-              width: 100
+              title: 'PREPARED BY',
+              key: 'prepared_by',
+              width: 150
             },
             {
-              title: 'Create Date',
-              key: 'date',
+              title: 'PREPARED DATE',
+              key: 'prepared_time',
+              width: 150
+            },
+            {
+              title: 'SECTION MANAGER',
+              key: 'section_by',
+              width: 150
+            },
+            {
+              title: 'SECTION MANAGER DATE',
+              key: 'section_time',
+              width: 150
+            },
+            {
+              title: 'CHECKED BY',
+              key: 'checked_by',
+              width: 150
+            },
+            {
+              title: 'CHECKED DATE',
+              key: 'checked_time',
+              width: 150
+            },
+            {
+              title: 'SHIPPING MANAGER',
+              key: 'approve_by',
+              width: 150
+            },
+            {
+              title: 'SHIPPING DATE',
+              key: 'approve_time',
               width: 150
             }
           ]
@@ -1111,7 +1209,25 @@ export default {
               width: 150
             }
           ]
-        }
+        },
+        attachmentsTable: {
+          columns: [
+            {
+              title: 'Action',
+              slot: 'act',
+              width: 100
+            },
+            {
+              title: 'Type',
+              key: 'filetype'
+            },
+            {
+              title: 'Create Date',
+              key: 'date',
+              width: 150
+            }
+          ]
+        },
       },
       pagePara: {},
       searchPara: {
@@ -1202,6 +1318,12 @@ export default {
         payment_advance_files: [
           { type: 'array', min: 1, required: true, trigger: 'change', message: 'upload advance Attachment'}
         ]
+      },
+      paidStatusForm: {
+        shipment_list_id: '',
+        shipment_list_payment_status: '',
+        paid_status: 1,
+        paid_status_records: [],
       },
     }
   },
@@ -1709,7 +1831,52 @@ export default {
       } else {
         return this.$Message.error('Please enter right password')
       }
-    }
+    },
+    searchPaidStatusAct: async function(row) {
+      this.paidStatusForm = {
+        shipment_list_id: row.shipment_list_id,
+        shipment_list_payment_status: row.shipment_list_payment_status,
+        paid_status: 0,
+        paid_status_records: [],
+      }
+      let param = {shipment_list_id: row.shipment_list_id}
+      let response = await this.$http.post(apiUrl + 'searchPaidStatus', param)
+      let data = response.data.info
+      if(data && data.length > 0) {
+        this.paidStatusForm.paid_status = parseInt(data[0].logistics_paid_status)
+        this.paidStatusForm.paid_status_records = data
+      }
+      this.modal.updatePaidModal = true
+    },
+    previousAct: async function() {
+      if(this.paidStatusForm.shipment_list_payment_status === '8') {
+        this.paidStatusForm.paid_status = 0
+      } else {
+        if(this.paidStatusForm.paid_status > 0) {
+          this.paidStatusForm.paid_status -= 1 
+        }
+      }
+    },
+    nextAct: async function() {
+      if(this.paidStatusForm.shipment_list_payment_status === '8') {
+        this.paidStatusForm.paid_status = 4
+      } else {
+        if(this.paidStatusForm.paid_status < 3) {
+          this.paidStatusForm.paid_status += 1 
+        }
+      }
+    },
+    updatePaidStatus: async function() {
+      let response = await this.$http.post(apiUrl + 'updatePaidStatus', this.paidStatusForm)
+      let data = response.data.info
+      if(data && data.length > 0) {
+        this.paidStatusForm.paid_status = parseInt(data[0].logistics_paid_status)
+        this.paidStatusForm.paid_status_records = data
+      }
+    },
+    closeUpdatePaidModal: async function() {
+      this.getShipmentNoteData()
+    },
   }
 }
 </script>

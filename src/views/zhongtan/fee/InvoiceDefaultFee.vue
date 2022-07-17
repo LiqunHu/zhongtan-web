@@ -83,7 +83,11 @@
             <FormItem label="POL Mark" prop="fee_pol_mark" v-if="feeForm.fee_type === 'CON'">
                 <Input v-model="feeForm.fee_pol_mark" placeholder="Enter your POL mark, Comma separated"></Input>
             </FormItem>
-            
+            <FormItem label="POD" prop="fee_pod" v-if="feeForm.fee_type === 'CON'">
+                <Select clearable v-model="feeForm.fee_pod">
+                    <Option v-for="item in pagePara.POD" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                </Select>
+            </FormItem>
             <FormItem label="Amount" prop="fee_amount">
                 <Input v-model="feeForm.fee_amount" placeholder="Enter your amount">
                     <Select slot="append" v-model="feeForm.fee_currency" style="width: 100px" :disabled ="dialogStatus === 'update'">
@@ -136,6 +140,10 @@ export default {
                 {
                     title: 'POL Mark',
                     key: 'fee_pol_mark',
+                },
+                {
+                    title: 'POD',
+                    key: 'fee_pod',
                 },
                 {
                     title: 'Amount',
