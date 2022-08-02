@@ -130,6 +130,12 @@
                         <i class="fa fa-times"></i>
                     </a>
                 </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_nomination">
+                  <i-switch v-model="row.invoice_masterbi_nomination" @on-change="changeNomination(row)" size="large" true-value="1" false-value="0">
+                      <span slot="open">YES</span>
+                      <span slot="close">NO</span>
+                  </i-switch>
+                </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_do_disabled">
                   <i-switch v-model="row.invoice_masterbi_do_disabled" @on-change="changeDoDisabled(row)" size="large" true-value="1" false-value="0">
                       <span slot="open">ON</span>
@@ -786,7 +792,13 @@
                             title: '#M B/L No',
                             slot: 'invoice_masterbi_bl',
                             width: 220
-                        }, {
+                        }, 
+                        {
+                            title: 'Nomination',
+                            slot: 'invoice_masterbi_nomination',
+                            width: 120
+                        },
+                        {
                             title: 'D/O Disabled',
                             slot: 'invoice_masterbi_do_disabled',
                             width: 120
@@ -1824,7 +1836,7 @@
                         action = 'IMPORT_VESSEL_EDIT'
                     } else if (this.checkPasswordType === 'doTableEdit') {
                         action = 'IMPORT_RELEASE_EDIT'
-                    } else if (this.checkPasswordType === 'doDisabledChange') {
+                    } else if (this.checkPasswordType === 'doDisabledChange' || this.checkPasswordType === 'nomination') {
                         action = 'IMPORT_DO_STATE_EDIT'
                     } else if (this.checkPasswordType === 'downLoadDoModalCheck' || this.checkPasswordType === 'doDeliverValidToEdit' 
                                 || this.checkPasswordType === 'downLoadDoDeliveryCheck') {
@@ -1854,6 +1866,8 @@
                         this.doDeliverValidToEdit = true
                     } else if (this.checkPasswordType === 'downLoadDoModalCheck') {
                         this.actDownLoadDoModal(this.workPara)
+                    } else if (this.checkPasswordType === 'nomination') {
+                        this.changeNominationAct(this.workPara)
                     } else if (this.checkPasswordType === 'doDisabledChange') {
                         this.changeDoDisabledAct(this.workPara)
                     } else if (this.checkPasswordType === 'depositModalCheck') {
@@ -1928,6 +1942,34 @@
             },
             vesselAtdDateChange: async function(date) {
                 this.vesselForm.invoice_vessel_atd = date
+            },
+            changeNomination: function(item) {
+                try {
+                    this.workPara = JSON.parse(JSON.stringify(item))
+                    this.checkPassword = ''
+                    this.modal.checkPasswordModal = true
+                    this.checkPasswordType = 'nomination'
+                } catch (error) {
+                    this.$commonact.fault(error)
+                }
+            },
+            changeNominationAct: async function(row) {
+                try {
+                    await this.$http.post(apiUrl + 'changeNomination', row)
+                    if (row.invoice_masterbi_nomination === '1') {
+                        this.$Message.success('Change Nomination Yes')
+                    } else {
+                        this.$Message.success('Change Nomination No')
+                    }
+                    this.refreshTableData()
+                } catch (error) {
+                    if (row.invoice_masterbi_nomination === '1') {
+                        row.invoice_masterbi_nomination = '0'
+                    } else {
+                        row.invoice_masterbi_nomination = '1'
+                    }
+                    this.$commonact.fault(error)
+                }
             },
             changeDoDisabled: function(item) {
                 try {
