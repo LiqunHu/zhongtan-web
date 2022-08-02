@@ -1946,9 +1946,13 @@
             changeNomination: function(item) {
                 try {
                     this.workPara = JSON.parse(JSON.stringify(item))
-                    this.checkPassword = ''
-                    this.modal.checkPasswordModal = true
-                    this.checkPasswordType = 'nomination'
+                    if(item.invoice_masterbi_nomination === '1') {
+                        this.changeNominationAct(item)
+                    } else {
+                        this.checkPassword = ''
+                        this.modal.checkPasswordModal = true
+                        this.checkPasswordType = 'nomination'
+                    }
                 } catch (error) {
                     this.$commonact.fault(error)
                 }
