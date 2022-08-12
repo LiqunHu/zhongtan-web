@@ -21,19 +21,19 @@
             <nuxt-link to="/">Home</nuxt-link>
           </li>
           <li>
-            <nuxt-link to="/schedule">Sail Schedule</nuxt-link>
+            <nuxt-link to="/schedule?v=20220811">Sail Schedule</nuxt-link>
           </li>
           <li>
-            <nuxt-link to="/messages">Messages</nuxt-link>
+            <nuxt-link to="/messages?v=20220811">Messages</nuxt-link>
           </li>
           <li>
-            <nuxt-link to="/scope">Scope</nuxt-link>
+            <nuxt-link to="/scope?v=20220811">Scope</nuxt-link>
           </li>
           <li>
-            <nuxt-link to="/about">About</nuxt-link>
+            <nuxt-link to="/about?v=20220811">About</nuxt-link>
           </li>
           <li>
-            <nuxt-link to="/contact">Contract</nuxt-link>
+            <nuxt-link to="/contact?v=20220811">Contract</nuxt-link>
           </li>
           <li>
             <a href="/admin/">Login</a>

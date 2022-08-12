@@ -22,19 +22,19 @@
               <a href="/">Home</a>
             </li>
             <li>
-              <a href="/schedule">Sail Schedule</a>
+              <a href="/schedule?v=20220811">Sail Schedule</a>
             </li>
             <li>
-              <a href="/messages">Messages</a>
+              <a href="/messages?v=20220811">Messages</a>
             </li>
             <li>
-              <a href="/scope">Scope</a>
+              <a href="/scope?v=20220811">Scope</a>
             </li>
             <li>
-              <a href="/about">About</a>
+              <a href="/about?v=20220811">About</a>
             </li>
             <li>
-              <a href="/contact">Contract</a>
+              <a href="/contact?v=20220811">Contract</a>
             </li>
             <li>
               <a href="/admin/">Login</a>
