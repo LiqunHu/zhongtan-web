@@ -26,9 +26,11 @@
               <br>We appreciate your opinions.
             </p>
             <p>
-              <span class="phone">+255 757 033 978</span>
+              <span class="phone">+255 22 211 3389</span>
               <br>
-              <a href="mailto:sg.chen@sinotaship.com">sg.chen@sinotaship.com</a>
+              <a href="mailto:export@sinotaship.com">export@sinotaship.com</a>
+              <br>
+              <a href="mailto:operations@sinotaship.com">operations@sinotaship.com</a>
             </p>
           </div>
           <!-- end col-6 -->
