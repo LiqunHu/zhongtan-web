@@ -29,7 +29,7 @@
               <input type="text" class="form-control" v-model="search_data.export_container_no" placeholder="Container No" style="width: 200px" />
             </div>
             <div class="form-group m-r-2">
-              <DatePicker type="daterange" placeholder="Loading Date" v-model="search_data.loading_date" format="yyyy-MM-dd" @on-change="searchDataChange" style="width:200px"></DatePicker>
+              <DatePicker type="daterange" placeholder="ETD Date" v-model="search_data.etd_date" format="yyyy-MM-dd" @on-change="searchDataChange" style="width:200px"></DatePicker>
             </div>
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="getTableData(1)"><i class="fa fa-search"></i> Search </button>
@@ -59,15 +59,15 @@
         </template>
         <template slot-scope="{ row, index }" slot="export_container_edi_loading_date">
           <div v-if="row.export_container_edi_loading_date_edit_enable" style="color:#ff3300">
-            <span v-if="row.export_masterbl_bl_carrier === 'OOCL'">{{row.export_container_edi_loading_date}}</span>
-            <span v-if="row.export_masterbl_bl_carrier === 'COSCO'">{{row.export_container_edi_wharf_gate_in_date}}</span>
+            <span v-if="row.end_date_title === 'Loading'">{{row.end_date_title}}: {{row.export_container_edi_loading_date}}</span>
+            <span v-else>{{row.end_date_title}}: {{row.export_container_edi_wharf_gate_in_date}}</span>
             <Row class="right-bottom-title">
               <span>ETD: {{row.export_vessel_etd}}</span>
             </Row>
           </div>
           <div v-else>
-            <span v-if="row.export_masterbl_bl_carrier === 'OOCL'">{{row.export_container_edi_loading_date}}</span>
-            <span v-if="row.export_masterbl_bl_carrier === 'COSCO'">{{row.export_container_edi_wharf_gate_in_date}}</span>
+            <span v-if="row.end_date_title === 'Loading'">{{row.end_date_title}}: {{row.export_container_edi_loading_date}}</span>
+            <span v-else>{{row.end_date_title}}: {{row.export_container_edi_wharf_gate_in_date}}</span>
             <Row class="right-bottom-title">
               <span>ETD: {{row.export_vessel_etd}}</span>
             </Row>
@@ -107,11 +107,11 @@
             <DatePicker type="date" placeholder="Gate Out Date" v-model="overdueChargeForm.export_container_edi_depot_gate_out_date" format="dd/MM/yyyy" @on-change="gateOutDateChange" :disabled="!!overdueChargeForm.export_container_edi_depot_gate_out_date && returnOverdueDaysDisabled"></DatePicker>
             <Tag type="dot" v-if="overdueChargeForm.demurrage_invoice_containers_diff_days">Diff {{overdueChargeForm.demurrage_invoice_containers_diff_days}} Days</Tag>
           </FormItem>
-          <FormItem label="Loading Date" v-if="overdueChargeForm.export_masterbl_bl_carrier === 'OOCL'">
+          <!-- <FormItem label="Loading Date" v-if="overdueChargeForm.export_masterbl_bl_carrier === 'OOCL'">
             <DatePicker type="date" placeholder="Loading Date" v-model="overdueChargeForm.export_container_edi_loading_date" format="dd/MM/yyyy" @on-change="loadingDateChange" :disabled="!!overdueChargeForm.export_container_edi_loading_date && returnOverdueDaysDisabled && !overdueChargeForm.export_container_edi_loading_date_edit_enable"></DatePicker>
             <Tag type="dot">ETD {{overdueChargeForm.export_vessel_etd}}</Tag>
-          </FormItem>
-          <FormItem label="Get In Date" v-if="overdueChargeForm.export_masterbl_bl_carrier === 'COSCO'">
+          </FormItem> -->
+          <FormItem label="Get In Date">
             <DatePicker type="date" placeholder="Get In Date" v-model="overdueChargeForm.export_container_edi_wharf_gate_in_date" format="dd/MM/yyyy" @on-change="gateInDateChange" :disabled="!!overdueChargeForm.export_container_edi_wharf_gate_in_date && returnOverdueDaysDisabled && !overdueChargeForm.export_container_edi_loading_date_edit_enable"></DatePicker>
             <Tag type="dot">ETD {{overdueChargeForm.export_vessel_etd}}</Tag>
           </FormItem>
@@ -246,9 +246,9 @@ export default {
               align: 'center',
             },
             {
-              title: 'Loading / Gate In',
+              title: 'Gate In',
               slot: 'export_container_edi_loading_date',
-              width: 140,
+              width: 160,
               align: 'center'
             },
             {
@@ -289,7 +289,7 @@ export default {
         export_vessel_id: '',
         export_container_bl: '',
         export_container_no: '',
-        loading_date: []
+        etd_date: []
       },
       overdueChargeFormOld: {},
       overdueChargeForm: {},
