@@ -44,6 +44,14 @@
                 <Option value="2" key="2">NON BGF</Option>
               </Select>
             </div>
+            <div class="form-group m-r-2">
+              <Select v-model="search_data.sales_code" placeholder="Sales Code" filterable clearable>
+                <Option v-for="(item, index) in pagePara.SALES_CODE" :value="item.user_code" :key="index" :label="item.user_code">
+                  <span>{{item.user_code}}</span>
+                  <span style="float: right;">{{item.user_name}}</span>
+                </Option>
+              </Select>
+            </div>
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="getTableData(1)">
                 <i class="fa fa-search"></i> Search
@@ -295,6 +303,12 @@ export default {
             {
               title: 'Shipper',
               key: 'export_masterbl_shipper_company',
+              width: 160,
+              align: 'center'
+            },
+            {
+              title: 'Sales Code',
+              key: 'export_masterbl_sales_code',
               width: 160,
               align: 'center'
             }

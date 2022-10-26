@@ -22,6 +22,8 @@
               <DatePicker type="daterange" :value="search_data.ata_date" placeholder="ATA Date" style="width: 160px; margin-right: 7px;" @on-change="searchAtaDate"></DatePicker>
               <DatePicker type="daterange" :value="search_data.invoice_date" placeholder="Invoice Date" style="width: 160px; margin-right: 7px;" @on-change="searchInvoiceDate"></DatePicker>
               <DatePicker type="daterange" :value="search_data.receipt_date" placeholder="Receipt Date" style="width: 160px; margin-right: 7px;" @on-change="searchReceiptDate"></DatePicker>
+              <input type="text" class="form-control" v-model="search_data.invoice_no" placeholder="Invoice No" style="width: 160px" />
+              <input type="text" class="form-control" v-model="search_data.receipt_no" placeholder="Receipt No" style="width: 160px" />
               <button type="button" class="btn btn-info" @click="getTableData" style="margin-right: 7px;"><i class="fa fa-search"></i> Search</button>
               <button type="button" class="btn btn-info" @click="exportDemurrageReport"><i class="fa fa-download"></i> Export</button>
             </div>
@@ -269,7 +271,9 @@ export default {
         receipt_date: [],
         invoice_vessel_name: '',
         invoice_containers_bl: '',
-        invoice_containers_no: ''
+        invoice_containers_no: '',
+        invoice_no: '',
+        receipt_no: ''
       }
     }
   },

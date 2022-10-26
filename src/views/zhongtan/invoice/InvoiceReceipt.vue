@@ -29,6 +29,9 @@
             <div class="form-group m-r-2">
               <input type="text" class="form-control" v-model="vessel.search_data.invoice_no" placeholder="Invoice No" style="width: 200px" />
             </div>
+            <div class="form-group m-r-2">
+              <input type="text" class="form-control" v-model="vessel.search_data.receipt_no" placeholder="Receipt No" style="width: 200px" />
+            </div>
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="getVoyageData">
                 <i class="fa fa-search"></i>
@@ -804,6 +807,7 @@ export default {
           vesselName: this.vessel.search_data.vesselName,
           bl: this.vessel.search_data.bl,
           invoice_no: this.vessel.search_data.invoice_no,
+          receipt_no: this.vessel.search_data.receipt_no,
           limit: 10,
           offset: 0
         }
@@ -846,6 +850,7 @@ export default {
         invoice_vessel_id: this.vessel.current,
         bl: this.vessel.search_data.bl,
         invoice_no: this.vessel.search_data.invoice_no,
+        receipt_no: this.vessel.search_data.receipt_no,
         offset: this.table.masterbiTable.offset,
         limit: this.table.masterbiTable.limit
       }

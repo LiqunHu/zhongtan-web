@@ -56,11 +56,14 @@
         <FormItem label="姓名" prop="user_name">
           <Input placeholder="姓名" v-model="workPara.user_name"/>
         </FormItem>
+        <FormItem label="电话" prop="user_phone">
+          <Input placeholder="电话" v-model="workPara.user_phone"/>
+        </FormItem>
         <FormItem label="邮箱" prop="user_email">
           <Input placeholder="邮箱" v-model="workPara.user_email"/>
         </FormItem>
-        <FormItem label="电话" prop="user_phone">
-          <Input placeholder="电话" v-model="workPara.user_phone"/>
+        <FormItem label="代码" prop="user_code">
+          <Input placeholder="代码" v-model="workPara.user_code"/>
         </FormItem>
         <FormItem label="用户组" prop="user_groups">
           <Select multiple v-model="workPara.user_groups">
@@ -107,6 +110,10 @@ export default {
             {
               title: '邮箱',
               key: 'user_email'
+            },
+            {
+              title: '代码',
+              key: 'user_code'
             },
             {
               title: '用户组',

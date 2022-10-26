@@ -31,7 +31,7 @@
           </div>
         </div>
       </template>
-      <Table stripe ref="icdTable" :columns="table.icdTable.rows" :data="table.icdTable.data">
+      <Table stripe ref="icdTable" :columns="table.icdTable.rows" :data="table.icdTable.data" :height="mainTableHeight">
         <template slot-scope="{ row, index }" slot="action">
           <a href="#" class="btn btn-info btn-icon btn-sm" @click="modifyIcdModal(row)">
             <i class="fa fa-edit"></i>
@@ -72,6 +72,7 @@
 </template>
 <script>
 import PageOptions from '../../../config/PageOptions.vue'
+const common = require('@/lib/common')
 const apiUrl = '/api/zhongtan/configuration/IcdConfig/'
 
 export default {
@@ -79,6 +80,7 @@ export default {
   data: function() {
     return {
       modal: { icdModal: false },
+      mainTableHeight: common.getTableHeight(),
       table: {
         icdTable: {
           rows: [

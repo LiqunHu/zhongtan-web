@@ -18,14 +18,20 @@
         <div class="panel-toolbar">
           <div class="form-inline">
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.invoice_vessel_name" placeholder="Vessel Name" style="width: 200px" />
+              <input type="text" class="form-control" v-model="search_data.invoice_vessel_name" placeholder="Vessel Name" style="width: 160px" />
             </div>
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.invoice_containers_bl" placeholder="#M B/L No" style="width: 200px" />
+              <input type="text" class="form-control" v-model="search_data.invoice_containers_bl" placeholder="#M B/L No" style="width: 160px" />
             </div>
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.invoice_containers_no" placeholder="Container No" style="width: 200px" />
+              <input type="text" class="form-control" v-model="search_data.invoice_containers_no" placeholder="Container No" style="width: 160px" />
             </div>
+            <div class="form-group m-r-2">
+                <input type="text" class="form-control" v-model="search_data.invoice_no" placeholder="Invoice No" style="width: 160px" />
+              </div>
+              <div class="form-group m-r-2">
+                <input type="text" class="form-control" v-model="search_data.receipt_no" placeholder="Receipt No" style="width: 160px" />
+              </div>
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="getTableData">
                 <i class="fa fa-search"></i> Search

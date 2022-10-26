@@ -336,6 +336,14 @@
             <Radio label="LOCAL"></Radio>
           </RadioGroup>
         </FormItem>
+        <FormItem label="SALES CODE" v-if="pagePara.SALES_CODE">
+          <Select v-model="bookingEditForm.export_masterbl_sales_code" filterable clearable :disabled="bookingEditForm.old_export_masterbl_sales_code">
+            <Option v-for="(item, index) in pagePara.SALES_CODE" :value="item.user_code" :key="index" :label="item.user_code">
+              <span>{{item.user_code}}</span>
+              <span style="float: right;">{{item.user_name}}</span>
+            </Option>
+          </Select>
+        </FormItem>
       </Form>
       <div slot="footer">
         <Button type="text" size="large" @click="modal.bookingEditModal=false">Cancel</Button>
@@ -463,6 +471,11 @@ export default {
           {
             title: 'CARGO DESCRIPTIONS',
             key: 'export_masterbl_cargo_descriptions',
+            width: 200
+          },
+          {
+            title: 'SALES CODE',
+            key: 'export_masterbl_sales_code',
             width: 200
           }
         ],

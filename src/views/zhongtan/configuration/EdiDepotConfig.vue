@@ -31,7 +31,7 @@
           </div>
         </div>
       </template>
-      <Table stripe ref="ediDepotTable" :columns="table.ediDepotTable.rows" :data="table.ediDepotTable.data" :border="table.ediDepotTable.data && table.ediDepotTable.data.length > 0">
+      <Table stripe ref="ediDepotTable" :columns="table.ediDepotTable.rows" :data="table.ediDepotTable.data" :border="table.ediDepotTable.data && table.ediDepotTable.data.length > 0" :height="mainTableHeight">
         <template slot-scope="{ row, index }" slot="edi_depot_send_edi">
           <i-switch v-model="row.edi_depot_send_edi" size="large" true-value="1" false-value="0" disabled>
               <span slot="open">ON</span>
@@ -114,6 +114,9 @@
               <span slot="close">OFF</span>
           </i-switch>
         </FormItem>
+        <FormItem label="Depot Address" style="margin-bottom: 0px;">
+          <Input placeholder="Depot Address" type="textarea" v-model="workPara.edi_depot_address"/>
+        </FormItem>
       </Form>
       <div slot="footer">
         <Button type="text" size="large" @click="modal.ediDepotModal=false">Cancel</Button>
@@ -124,6 +127,7 @@
 </template>
 <script>
 import PageOptions from '../../../config/PageOptions.vue'
+const common = require('@/lib/common')
 const apiUrl = '/api/zhongtan/configuration/EdiDepotConfig/'
 
 export default {
@@ -131,6 +135,7 @@ export default {
   data: function() {
     return {
       modal: { ediDepotModal: false },
+      mainTableHeight: common.getTableHeight(),
       table: {
         ediDepotTable: {
           rows: [
@@ -220,6 +225,12 @@ export default {
             {
               title: 'Wharf',
               slot: 'edi_depot_is_wharf',
+              width: 200,
+              align: 'center'
+            },
+            {
+              title: 'Depot Address',
+              key: 'edi_depot_address',
               width: 200,
               align: 'center'
             },

@@ -252,6 +252,16 @@ export default {
               title: 'Create At',
               key: 'created_at',
               width: 200
+            },
+            {
+              title: 'Review By',
+              key: 'review_user',
+              width: 200
+            },
+            {
+              title: 'Review At',
+              key: 'review_at',
+              width: 200
             }
           ],
           data: [],

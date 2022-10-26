@@ -151,6 +151,20 @@
       </Table>
       <Page class="m-t-10" :total="table.masterbiTable.total" :page-size="table.masterbiTable.limit" @on-change="getData" show-total/>
     </panel>
+    <Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :mask-closable="false" :closable="false">
+      <Form :label-width="120">
+        <FormItem v-show="false">
+            <Input type="password" style='width:0;opacity:0;'></Input>
+        </FormItem>
+        <FormItem label="Password" prop="checkPassword">
+            <Input type="password" placeholder="Password" v-model="checkPassword"></Input>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.checkPasswordModal = false">Cancel</Button>
+        <Button type="primary" size="large" @click="checkPasswordAct">Submit</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -162,7 +176,7 @@ const apiUrl = '/api/zhongtan/invoice/InvoiceStatistics/'
 export default {
   data: function() {
     return {
-      modal: {},
+      modal: {checkPasswordModal: false },
       table: {
         masterbiTable: {
           columns: [
@@ -532,6 +546,11 @@ export default {
       this.search_data.receipt_date = JSON.parse(JSON.stringify(e))
     },
     exportData: async function() {
+      this.checkPassword = ''
+      this.checkPasswordType = 'invoiceStatisticsExport'
+      this.modal.checkPasswordModal = true
+    },
+    doExportData: async function() {
       try {
         let response = await this.$http.request({
           url: apiUrl + 'export',
@@ -552,6 +571,29 @@ export default {
         }
       } catch (error) {
         this.$commonact.fault(error)
+      }
+    },
+    checkPasswordAct: async function() {
+      if (this.checkPassword) {
+        try {
+          let act = ''
+          if (this.checkPasswordType === 'invoiceStatisticsExport' ) {
+            act = 'INVOICE_STATISTICS_ACTION'
+          }
+          let param = {
+            action: act,
+            checkPassword: common.md52(this.checkPassword)
+          }
+          await this.$http.post(apiUrl + 'checkPassword', param)
+          this.modal.checkPasswordModal = false
+          if (this.checkPasswordType === 'invoiceStatisticsExport') {
+            this.doExportData()
+          }
+        } catch (error) {
+          this.$commonact.fault(error)
+        }
+      } else {
+        return this.$Message.error('Please enter right password')
       }
     },
   }

@@ -266,7 +266,7 @@
           <Button type="primary" size="large" @click="checkPasswordAct">Submit</Button>
       </div>
     </Modal>
-    <Modal v-model="modal.bookingEditModal" title="BOOKING EDIT" width="640">
+    <Modal v-model="modal.bookingEditModal" title="SHIPMENT PROFORMA EDIT" width="640">
       <Form ref="bookingEditForm" :model="bookingEditForm" :label-width="128">
         <FormItem label="FORWARDER" prop="export_masterbl_empty_release_agent">
           <Select v-model="bookingEditForm.export_masterbl_empty_release_agent" filterable :remote-method="remoteEmptyReleaseAgent">
@@ -283,6 +283,14 @@
             <Radio label="TRANSIT"></Radio>
             <Radio label="LOCAL"></Radio>
           </RadioGroup>
+        </FormItem>
+        <FormItem label="SALES CODE" v-if="pagePara.SALES_CODE">
+          <Select v-model="bookingEditForm.export_masterbl_sales_code" filterable clearable :disabled="bookingEditForm.old_export_masterbl_sales_code">
+            <Option v-for="(item, index) in pagePara.SALES_CODE" :value="item.user_code" :key="index" :label="item.user_code">
+              <span>{{item.user_code}}</span>
+              <span style="float: right;">{{item.user_name}}</span>
+            </Option>
+          </Select>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -315,6 +323,7 @@ export default {
         shipper_company: '',
         consignee_company: ''
       },
+      pagePara: {},
       workPara: {},
       files: {
         fileList: [],
@@ -403,6 +412,11 @@ export default {
             title: 'CARGO DESCRIPTIONS',
             key: 'export_masterbl_cargo_descriptions',
             width: 200
+          },
+          {
+            title: 'SALES CODE',
+            key: 'export_masterbl_sales_code',
+            width: 200
           }
         ],
         height: common.getTableHeight() - 90,
@@ -485,9 +499,18 @@ export default {
     PageOptions.pageEmpty = false
   },
   mounted: function() {
+    this.initPage()
     this.searchDataAct()
   },
   methods: {
+    initPage: async function() {
+      try {
+        let response = await this.$http.post(apiUrl + 'init', {})
+        this.pagePara = JSON.parse(JSON.stringify(response.data.info))
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
+    },
     searchDataAct: async function() {
       try {
         let searchPara = {

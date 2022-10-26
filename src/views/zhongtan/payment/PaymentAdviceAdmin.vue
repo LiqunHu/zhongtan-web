@@ -46,6 +46,11 @@
                 <Option v-for="item in pagePara.COMMON_CUSTOMER" :value="item.user_id" :key="item.user_id">{{ item.user_name }}</Option>
               </Select>
             </div>
+            <div class="input-group m-r-2">
+              <Select placeholder="VESSEL VOYAGE" clearable filterable v-model="search_data.payment_advice_vessel_voyage">
+                <Option v-for="item in pagePara.VESSELS" :value="item.vessel_voyage" :key="item.vessel_voyage">{{ item.vessel_voyage }}</Option>
+              </Select>
+            </div>
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="getPaymentAdviceData(1)">
                 <i class="fa fa-search"></i>

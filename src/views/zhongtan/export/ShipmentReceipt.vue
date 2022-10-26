@@ -23,10 +23,13 @@
               <input type="text" class="form-control" v-model="search_data.vessel_name" placeholder="Vessel Name" style="width: 200px" />
             </div>
             <div class="form-group m-r-2">
+              <input type="text" class="form-control" v-model="search_data.masterbi_bl" placeholder="B/L No" style="width: 200px" />
+            </div>
+            <div class="form-group m-r-2">
               <input type="text" class="form-control" v-model="search_data.invoice_no" placeholder="INVOICE No" style="width: 200px" />
             </div>
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.masterbi_bl" placeholder="B/L No" style="width: 200px" />
+              <input type="text" class="form-control" v-model="search_data.receipt_no" placeholder="RECEIPT No" style="width: 200px" />
             </div>
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="searchDataAct">

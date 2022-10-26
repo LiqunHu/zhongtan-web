@@ -1673,6 +1673,7 @@ export default {
           this.paymentFullForm.applyData = selection
           this.$refs.uploadFull.clearFiles()
           this.paymentFullForm.payment_full_files = []
+          this.paymentFullForm.payment_full_amount = 0
           for(let s of selection) {
             this.paymentFullForm.payment_full_bl_no = s.shipment_list_bill_no
             this.paymentFullForm.payment_full_amount = Number(this.paymentFullForm.payment_full_amount) + Number(s.shipment_list_total_freight)

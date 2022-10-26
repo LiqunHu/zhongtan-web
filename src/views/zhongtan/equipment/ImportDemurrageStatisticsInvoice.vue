@@ -16,40 +16,52 @@
     <panel title="Import Demurrage Invoice Statistics">
       <template slot="beforeBody">
         <div class="panel-toolbar">
-          <div class="form-inline">
-            <div class="form-group m-r-2">
-              ATA&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.ata_date" placeholder="ATA Date" style="width: 160px" @on-change="searchAtaDate"></DatePicker>
+          <row>
+            <div class="form-inline">
+              <div class="form-group m-r-2">
+                ATA&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.ata_date" placeholder="ATA Date" style="width: 160px" @on-change="searchAtaDate"></DatePicker>
+              </div>
+              <div class="form-group m-r-2">
+                Invoice Date&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.invoice_date" placeholder="Invoice Date" style="width: 160px" @on-change="searchInvoiceDate"></DatePicker>
+              </div>
+              <div class="form-group m-r-2">
+                Receipt Date&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.receipt_date" placeholder="Receipt Date" style="width: 160px" @on-change="searchReceiptDate"></DatePicker>
+              </div>
+              <div class="form-group m-r-2">
+                <input type="text" class="form-control" v-model="search_data.invoice_no" placeholder="Invoice No" style="width: 160px" />
+              </div>
+              <div class="form-group m-r-2">
+                <input type="text" class="form-control" v-model="search_data.receipt_no" placeholder="Receipt No" style="width: 160px" />
+              </div>
+              <div class="form-group m-r-10">
+                <button type="button" class="btn btn-info" @click="getTableData">
+                  <i class="fa fa-search"></i> Search
+                </button>
+              </div>
+              <div class="form-group m-r-10">
+                <button type="button" class="btn btn-info" @click="exportDemurrageReport">
+                  <i class="fa fa-download"></i> Export
+                </button>
+              </div>
             </div>
-            <div class="form-group m-r-2">
-              Invoice Date&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.invoice_date" placeholder="Invoice Date" style="width: 160px" @on-change="searchInvoiceDate"></DatePicker>
+          </row>
+          <row style="margin-top:7px;">
+            <div class="form-inline">
+              <div class="form-group m-r-2">
+                <Select v-model="search_data.vessel_id" clearable filterable placeholder="VESSEL" style="width: 160px;">
+                  <Option v-for="item in pagePara.VESSEL" :value="item.invoice_vessel_id" :key="item.invoice_vessel_id">{{item.vessel_info}}</Option>
+                </Select>
+              </div>
+              <div class="form-group m-r-2">
+                <Select v-model="search_data.customer_id" clearable filterable placeholder="MESSRS" style="width: 160px;">
+                  <Option v-for="item in pagePara.CUSTOMER" :value="item.user_id" :key="item.user_id">{{item.user_name}}</Option>
+                </Select>
+              </div>
+              <div class="form-group m-r-2">
+                <input type="text" class="form-control" v-model="search_data.invoice_containers_no" placeholder="Container No" style="width: 160px" />
+              </div>
             </div>
-            <div class="form-group m-r-2">
-              Receipt Date&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.receipt_date" placeholder="Receipt Date" style="width: 160px" @on-change="searchReceiptDate"></DatePicker>
-            </div>
-            <div class="form-group m-r-2">
-              <Select v-model="search_data.vessel_id" clearable filterable placeholder="VESSEL" style="width: 160px;">
-                <Option v-for="item in pagePara.VESSEL" :value="item.invoice_vessel_id" :key="item.invoice_vessel_id">{{item.vessel_info}}</Option>
-              </Select>
-            </div>
-            <div class="form-group m-r-2">
-              <Select v-model="search_data.customer_id" clearable filterable placeholder="MESSRS" style="width: 160px;">
-                <Option v-for="item in pagePara.CUSTOMER" :value="item.user_id" :key="item.user_id">{{item.user_name}}</Option>
-              </Select>
-            </div>
-            <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.invoice_containers_no" placeholder="Container No" style="width: 160px" />
-            </div>
-            <div class="form-group m-r-10">
-              <button type="button" class="btn btn-info" @click="getTableData">
-                <i class="fa fa-search"></i> Search
-              </button>
-            </div>
-            <div class="form-group m-r-10">
-              <button type="button" class="btn btn-info" @click="exportDemurrageReport">
-                <i class="fa fa-download"></i> Export
-              </button>
-            </div>
-          </div>
+          </row>
         </div>
       </template>
       <Table stripe size="small" ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data" :height="table.containerTable.height" :border="table.containerTable.data && table.containerTable.data.length > 0">
@@ -258,7 +270,9 @@ export default {
         receipt_date: [],
         invoice_vessel_name: '',
         invoice_containers_bl: '',
-        invoice_containers_no: ''
+        invoice_containers_no: '',
+        invoice_no: '',
+        receipt_no: ''
       }
     }
   },

@@ -16,57 +16,67 @@
     <panel title="Import Demurrage Statistics">
       <template slot="beforeBody">
         <div class="panel-toolbar">
-          <div class="form-inline">
+          <row>
+            <div class="form-inline">
+              <div class="form-group m-r-2">
+                ATA&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.ata_date" placeholder="ATA Date" style="width: 200px" @on-change="searchAtaDate"></DatePicker>
+              </div>
+              <div class="form-group m-r-2">
+                RETURN&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.return_date" placeholder="RETURN Date" style="width: 200px" @on-change="searchReturnDate"></DatePicker>
+              </div>
+              <div class="form-group m-r-2">
+                <Select v-model="search_data.vessel_id" clearable filterable placeholder="VESSEL" style="width: 120px;">
+                  <Option v-for="item in pagePara.VESSEL" :value="item.invoice_vessel_id" :key="item.invoice_vessel_id">{{item.vessel_info}}</Option>
+                </Select>
+              </div>
+              <div class="form-group m-r-2">
+                <Select v-model="search_data.customer_id" clearable filterable placeholder="MESSRS" style="width: 120px;">
+                  <Option v-for="item in pagePara.CUSTOMER" :value="item.user_id" :key="item.user_id">{{item.user_name}}</Option>
+                </Select>
+              </div>
+              <div class="form-group m-r-2">
+                <input type="text" class="form-control" v-model="search_data.invoice_containers_bl" placeholder="B/L#" style="width: 120px" />
+              </div>
+              <div class="form-group m-r-2">
+                <input type="text" class="form-control" v-model="search_data.invoice_containers_no" placeholder="Container#" style="width: 120px" />
+              </div>
+              <div class="form-group m-r-10">
+                <button type="button" class="btn btn-info" @click="getTableData">
+                  <i class="fa fa-search"></i> Search
+                </button>
+              </div>
+              <div class="form-group m-r-10">
+                <button type="button" class="btn btn-info" @click="exportData">
+                  <i class="fa fa-download"></i> Export
+                </button>
+              </div>
+            </div>
+          </row>
+          <row style="margin-top:7px;">
             <div class="form-group m-r-2">
-              ATA&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.ata_date" placeholder="ATA Date" style="width: 200px" @on-change="searchAtaDate"></DatePicker>
-            </div>
-            <div class="form-group m-r-2">
-              RETURN&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.return_date" placeholder="RETURN Date" style="width: 200px" @on-change="searchReturnDate"></DatePicker>
-            </div>
-            <div class="form-group m-r-2">
-              <Select v-model="search_data.vessel_id" clearable filterable placeholder="VESSEL" style="width: 120px;">
-                <Option v-for="item in pagePara.VESSEL" :value="item.invoice_vessel_id" :key="item.invoice_vessel_id">{{item.vessel_info}}</Option>
-              </Select>
-            </div>
-            <div class="form-group m-r-2">
-              <Select v-model="search_data.customer_id" clearable filterable placeholder="MESSRS" style="width: 120px;">
-                <Option v-for="item in pagePara.CUSTOMER" :value="item.user_id" :key="item.user_id">{{item.user_name}}</Option>
-              </Select>
-            </div>
-            <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.invoice_containers_bl" placeholder="B/L#" style="width: 120px" />
-            </div>
-            <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.invoice_containers_no" placeholder="Container#" style="width: 120px" />
-            </div>
-            <div class="form-group m-r-2">
-              <Select v-model="search_data.free_days_range" clearable placeholder="Free Days" style="width: 120px;">
-                <Option v-for="item in pagePara.FREE_DAYS_RANGE" :value="item" :key="item">{{item}}</Option>
-              </Select>
-            </div>
-            <div class="form-group m-r-2">
-              <Select v-model="search_data.is_overdue" clearable placeholder="OVERDUE" style="width: 120px;">
-                <Option value="1">OVERDUE</Option>
-                <Option value="0">FREE</Option>
-              </Select>
-            </div>
-            <div class="form-group m-r-2">
-              <Select v-model="search_data.is_invoice" clearable placeholder="INVOICE" style="width: 120px;">
-                <Option value="1">INVOICE</Option>
-                <Option value="0">UN INVOICE</Option>
-              </Select>
-            </div>
-            <div class="form-group m-r-10">
-              <button type="button" class="btn btn-info" @click="getTableData">
-                <i class="fa fa-search"></i> Search
-              </button>
-            </div>
-            <div class="form-group m-r-10">
-              <button type="button" class="btn btn-info" @click="exportData">
-                <i class="fa fa-download"></i> Export
-              </button>
-            </div>
-          </div>
+                <Select v-model="search_data.free_days_range" clearable placeholder="Free Days" style="width: 120px;">
+                  <Option v-for="item in pagePara.FREE_DAYS_RANGE" :value="item" :key="item">{{item}}</Option>
+                </Select>
+              </div>
+              <div class="form-group m-r-2">
+                <Select v-model="search_data.is_overdue" clearable placeholder="OVERDUE" style="width: 120px;">
+                  <Option value="1">OVERDUE</Option>
+                  <Option value="0">FREE</Option>
+                </Select>
+              </div>
+              <div class="form-group m-r-2">
+                <Select v-model="search_data.is_invoice" clearable placeholder="INVOICE" style="width: 120px;">
+                  <Option value="1">INVOICE</Option>
+                  <Option value="0">UN INVOICE</Option>
+                </Select>
+              </div>
+              <div class="form-group m-r-2">
+                <input type="text" class="form-control" v-model="search_data.invoice_no" placeholder="Invoice No" style="width: 160px" />
+              </div>
+              <div class="form-group m-r-2">
+                <input type="text" class="form-control" v-model="search_data.receipt_no" placeholder="Receipt No" style="width: 160px" />
+              </div>
+          </row>
         </div>
       </template>
       <Table stripe size="small" ref="containerTable" :columns="table.containerTable.columns" :data="table.containerTable.data" :height="table.containerTable.height" :border="table.containerTable.data && table.containerTable.data.length > 0">
@@ -284,7 +294,9 @@ export default {
         ata_date: [moment().subtract(30, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
         invoice_vessel_name: '',
         invoice_containers_bl: '',
-        invoice_containers_no: ''
+        invoice_containers_no: '',
+        invoice_no: '',
+        receipt_no: ''
       }
     }
   },
