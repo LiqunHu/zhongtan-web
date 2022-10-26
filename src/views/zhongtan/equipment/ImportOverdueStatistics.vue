@@ -280,6 +280,12 @@ export default {
               key: 'invoice_masterbi_deposit_party',
               width: 260,
               align: 'center'
+            },
+            {
+              title: 'Consignee Name',
+              key: 'invoice_masterbi_consignee_name',
+              width: 260,
+              align: 'center'
             }
           ],
           data: [],
