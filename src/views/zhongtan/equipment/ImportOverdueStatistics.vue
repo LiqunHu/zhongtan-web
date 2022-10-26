@@ -53,7 +53,8 @@
             </div>
           </row>
           <row style="margin-top:7px;">
-            <div class="form-group m-r-2">
+            <div class="form-inline">
+              <div class="form-group m-r-2">
                 <Select v-model="search_data.free_days_range" clearable placeholder="Free Days" style="width: 120px;">
                   <Option v-for="item in pagePara.FREE_DAYS_RANGE" :value="item" :key="item">{{item}}</Option>
                 </Select>
@@ -76,6 +77,7 @@
               <div class="form-group m-r-2">
                 <input type="text" class="form-control" v-model="search_data.receipt_no" placeholder="Receipt No" style="width: 160px" />
               </div>
+            </div>
           </row>
         </div>
       </template>
