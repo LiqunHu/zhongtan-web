@@ -464,13 +464,14 @@ export default {
     },
     calculationDiff: async function() {
       let loading_date = this.overdueChargeForm.export_vessel_etd
-      if(this.overdueChargeForm.export_masterbl_bl_carrier === 'OOCL' && this.overdueChargeForm.export_container_edi_loading_date) {
-        loading_date = this.overdueChargeForm.export_container_edi_loading_date
-      }
-      if(this.overdueChargeForm.export_masterbl_bl_carrier === 'COSCO' && this.overdueChargeForm.export_container_edi_wharf_gate_in_date) {
+      // if(this.overdueChargeForm.export_masterbl_bl_carrier === 'OOCL' && this.overdueChargeForm.export_container_edi_loading_date) {
+      //   loading_date = this.overdueChargeForm.export_container_edi_loading_date
+      // }
+      if(this.overdueChargeForm.export_container_edi_wharf_gate_in_date) {
         loading_date = this.overdueChargeForm.export_container_edi_wharf_gate_in_date
       }
       let gate_out_date = this.overdueChargeForm.export_container_edi_depot_gate_out_date
+      
       if(loading_date && gate_out_date) {
         if(typeof loading_date === 'object') {
           loading_date = moment(loading_date).local().format('DD/MM/YYYY')

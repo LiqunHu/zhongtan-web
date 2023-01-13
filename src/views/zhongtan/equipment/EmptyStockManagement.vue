@@ -27,22 +27,10 @@
               GATE OUT&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.gate_out_depot_date" placeholder="GATE OUT Date" style="width: 180px" @on-change="searchGateOutDate"></DatePicker>
             </div>
             <div class="form-group m-r-2">
+              GATEIN TERMINAL&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.gate_in_terminal_date" placeholder="GATEIN TERMINAL Date" style="width: 180px" @on-change="searchGateInTerminalDate"></DatePicker>
+            </div>
+            <div class="form-group m-r-2">
               Loading Date&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.loading_date" placeholder="Loading Date" style="width: 180px" @on-change="searchLoadingDate"></DatePicker>
-            </div>
-            <div class="form-group m-r-10">
-              <button type="button" class="btn btn-info" @click="getTableData(1)">
-                <i class="fa fa-search"></i> Search
-              </button>
-            </div>
-            <div class="form-group m-r-10">
-              <button type="button" class="btn btn-info" @click="exportTableData">
-                <i class="fa fa-download"></i> Export
-              </button>
-            </div>
-            <div class="form-group m-r-10">
-              <button type="button" class="btn btn-info" @click="refreshSizeType">
-                <i class="fa fa-download"></i> Refresh Size/Type
-              </button>
             </div>
           </div>
           <div class="form-inline" style="margin-top: 10px;">
@@ -78,6 +66,21 @@
               <Select filterable clearable v-model="search_data.depot" style="width:150px" placeholder="Depot">
                 <Option v-for="item in pagePara.DEPOT" :value="item.edi_depot_name" :key="item.edi_depot_name">{{ item.edi_depot_name }}</Option>
               </Select>
+            </div>
+            <div class="form-group m-r-10">
+              <button type="button" class="btn btn-info" @click="getTableData(1)">
+                <i class="fa fa-search"></i> Search
+              </button>
+            </div>
+            <div class="form-group m-r-10">
+              <button type="button" class="btn btn-info" @click="exportTableData">
+                <i class="fa fa-download"></i> Export
+              </button>
+            </div>
+            <div class="form-group m-r-10">
+              <button type="button" class="btn btn-info" @click="refreshSizeType">
+                <i class="fa fa-download"></i> Refresh Size/Type
+              </button>
             </div>
           </div>
         </div>
@@ -254,6 +257,10 @@ export default {
     searchGateOutDate: function(e) {
       this.search_data.gate_out_depot_date = JSON.parse(JSON.stringify(e))
     },
+    searchGateInTerminalDate: function(e) {
+      this.search_data.gate_in_terminal_date = JSON.parse(JSON.stringify(e))
+    },
+    
     searchLoadingDate: function(e) {
       this.search_data.loading_date = JSON.parse(JSON.stringify(e))
     },

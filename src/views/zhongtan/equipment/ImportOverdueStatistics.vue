@@ -77,6 +77,11 @@
               <div class="form-group m-r-2">
                 <input type="text" class="form-control" v-model="search_data.receipt_no" placeholder="Receipt No" style="width: 160px" />
               </div>
+              <div class="form-group m-r-2">
+                <Select v-model="search_data.consignee" filterable clearable :remote-method="remoteConsignee" placeholder="Consignee" style="width: 160px">
+                  <Option v-for="(item, index) in consigneeList" :value="item.name" :key="index" :label="item.name"></Option>
+                </Select>
+              </div>
             </div>
           </row>
         </div>
@@ -304,8 +309,11 @@ export default {
         invoice_containers_bl: '',
         invoice_containers_no: '',
         invoice_no: '',
-        receipt_no: ''
-      }
+        receipt_no: '',
+        consignee: ''
+      },
+      consigneeList: [],
+      checkPassword: ''
     }
   },
   created() {
@@ -407,6 +415,18 @@ export default {
         }
       } else {
         return this.$Message.error('Please enter right password')
+      }
+    },
+    remoteConsignee: async function(query) {
+      if(query) {
+        let param = {
+          query: query
+        }
+        let response = await this.$http.post(apiUrl + 'getConsignee', param)
+        this.$nextTick(function() {
+          let data = response.data.info
+          this.consigneeList = data.consignees ? JSON.parse(JSON.stringify(data.consignees)) : []
+        })
       }
     },
   }

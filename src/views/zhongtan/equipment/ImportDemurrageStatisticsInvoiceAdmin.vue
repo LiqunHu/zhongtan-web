@@ -37,6 +37,9 @@
               <Select v-model="search_data.customer_id" clearable filterable placeholder="MESSRS" style="width: 160px; margin-right: 7px;">
                 <Option v-for="item in pagePara.CUSTOMER" :value="item.user_id" :key="item.user_id">{{item.user_name}}</Option>
               </Select>
+              <Select v-model="search_data.consignee" filterable clearable :remote-method="remoteConsignee" placeholder="Consignee" style="width: 160px">
+                <Option v-for="(item, index) in consigneeList" :value="item.name" :key="index" :label="item.name"></Option>
+              </Select>
             </div>
           </Row>
         </div>
@@ -273,8 +276,10 @@ export default {
         invoice_containers_bl: '',
         invoice_containers_no: '',
         invoice_no: '',
-        receipt_no: ''
-      }
+        receipt_no: '',
+        consignee: ''
+      },
+      consigneeList: []
     }
   },
   created() {
@@ -359,7 +364,19 @@ export default {
       } catch (error) {
         this.$commonact.fault(error)
       }
-    }
+    },
+    remoteConsignee: async function(query) {
+      if(query) {
+        let param = {
+          query: query
+        }
+        let response = await this.$http.post(apiUrl + 'getConsignee', param)
+        this.$nextTick(function() {
+          let data = response.data.info
+          this.consigneeList = data.consignees ? JSON.parse(JSON.stringify(data.consignees)) : []
+        })
+      }
+    },
   }
 }
 </script>
