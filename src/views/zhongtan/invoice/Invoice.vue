@@ -238,14 +238,21 @@
                     </a>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_cargo_type">
-                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_cargo_type}" v-model="table.masterbiTable.data[index].invoice_masterbi_cargo_type" size="small" :disabled="tableEdit"/>
-                    </template>
+                    <!-- <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_cargo_type}" v-model="table.masterbiTable.data[index].invoice_masterbi_cargo_type" size="small" :disabled="tableEdit"/> -->
+                    <i-select v-model="table.masterbiTable.data[index].invoice_masterbi_cargo_type" :disabled="tableEdit">
+                        <i-option v-for="item in pagePara.CARGO" :value="item" :key="item" :label="item"></i-option>
+                    </i-select>
+                </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_bl_type">
                     <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_bl_type}" v-model="table.masterbiTable.data[index].invoice_masterbi_bl_type" size="small" :disabled="tableEdit"/>
                     </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_destination">
-                    <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_destination}" v-model="table.masterbiTable.data[index].invoice_masterbi_destination" size="small" :disabled="tableEdit"/>
-                    </template>
+                    <span v-if="tableEdit">{{ table.masterbiTable.data[index].invoice_masterbi_destination }}</span> 
+                    <!-- <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_destination}" v-model="table.masterbiTable.data[index].invoice_masterbi_destination" size="small" :disabled="tableEdit"/> -->
+                    <i-select v-else v-model="table.masterbiTable.data[index].invoice_masterbi_destination" >
+                        <i-option v-for="item in pagePara.POD" :value="item.id" :key="item.id" :label="item.id"></i-option>
+                    </i-select>
+                </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_delivery">
                     <i-select v-model="table.masterbiTable.data[index].invoice_masterbi_delivery" :disabled="tableEdit">
                         <i-option v-for="item in pagePara.ICD" :value="item.icd_code" :key="item.icd_code" :label="item.icd_code">

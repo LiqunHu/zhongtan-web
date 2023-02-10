@@ -52,6 +52,9 @@
                 </Option>
               </Select>
             </div>
+            <div class="form-group m-r-2">
+              <input type="text" class="form-control" v-model="search_data.shipper" placeholder="Shipper" style="width: 140px" />
+            </div>
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="getTableData(1)">
                 <i class="fa fa-search"></i> Search
@@ -155,7 +158,10 @@
           </List>
         </template>
       </Table>
-      <Page class="m-t-10" :current="table.containerTable.current" :total="table.containerTable.total" show-sizer show-total :page-size="table.containerTable.limit" @on-change="getTableData" @on-page-size-change="resetTableSizer"/>
+      <Row>
+        <Page class="m-t-10" :current="table.containerTable.current" :total="table.containerTable.total" show-sizer show-total :page-size="table.containerTable.limit" @on-change="getTableData" @on-page-size-change="resetTableSizer"/>
+        <div style="margin-top: 20px;" v-if="table.containerTable.sum">Total Container {{ table.containerTable.sum.container_quantity_sum }} items</div>
+      </Row>
     </panel>
     <Modal v-model="modal.loadingListModal" title="Loading List">
       <Form :label-width="100">
@@ -319,7 +325,8 @@ export default {
           current: 1,
           limit: 10,
           offset: 0,
-          total: 0
+          total: 0,
+          sum: ''
         },
         invoiceTable: {
           columns: [
@@ -393,6 +400,7 @@ export default {
         let data = response.data.info
         this.table.containerTable.total = data.total
         this.table.containerTable.data = JSON.parse(JSON.stringify(data.rows))
+        this.table.containerTable.sum = JSON.parse(JSON.stringify(data.sum))
         if(this.table.containerTable.data) {
           for(let d of this.table.containerTable.data) {
             if(d.export_container_cal_demurrage_amount && d.export_container_cal_receipt_amount && parseInt(d.export_container_cal_demurrage_amount) === parseInt(d.export_container_cal_receipt_amount)) {
