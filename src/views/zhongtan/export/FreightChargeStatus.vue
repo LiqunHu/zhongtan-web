@@ -159,8 +159,12 @@
         </template>
       </Table>
       <Row>
-        <Page class="m-t-10" :current="table.containerTable.current" :total="table.containerTable.total" show-sizer show-total :page-size="table.containerTable.limit" @on-change="getTableData" @on-page-size-change="resetTableSizer"/>
-        <div style="margin-top: 20px;" v-if="table.containerTable.sum">Total Container {{ table.containerTable.sum.container_quantity_sum }} items</div>
+        <Col span="8">
+          <Page class="m-t-10" :current="table.containerTable.current" :total="table.containerTable.total" show-sizer show-total :page-size="table.containerTable.limit" @on-change="getTableData" @on-page-size-change="resetTableSizer"/>
+        </Col>
+        <Col span="6"> 
+          <div style="margin-top: 20px;" v-if="table.containerTable.sum">Total Container {{ table.containerTable.sum.container_quantity_sum }} items</div>
+        </Col>
       </Row>
     </panel>
     <Modal v-model="modal.loadingListModal" title="Loading List">
