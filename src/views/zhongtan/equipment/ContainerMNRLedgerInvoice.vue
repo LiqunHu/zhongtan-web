@@ -681,10 +681,10 @@ export default {
     },
     doDeleteMNRInvoie: async function(row){
       this.workPara = JSON.parse(JSON.stringify(row))
-      // this.checkPassword = ''
-      // this.checkPasswordType = 'MNRInvoieDelete'
-      // this.modal.checkPasswordModal = true
-      this.doDeleteMNRInvoieAct()
+      this.checkPassword = ''
+      this.checkPasswordType = 'MNRInvoieDelete'
+      this.modal.checkPasswordModal = true
+      // this.doDeleteMNRInvoieAct()
     },
     doDeleteMNRInvoieAct: async function(){
       this.$commonact.confirm(`Delete the invoice file?`, async() => {
@@ -701,9 +701,10 @@ export default {
     },
     doDeleteMNR: async function(row){
       this.workPara = JSON.parse(JSON.stringify(row))
-      this.checkPassword = ''
-      this.checkPasswordType = 'MNRDelete'
-      this.modal.checkPasswordModal = true
+      // this.checkPassword = ''
+      // this.checkPasswordType = 'MNRDelete'
+      // this.modal.checkPasswordModal = true
+      this.doDeleteMNRAct()
     },
     doDeleteMNRAct: async function(){
       this.$commonact.confirm(`Delete the MNR?`, async() => {

@@ -161,22 +161,31 @@
                   </Tooltip>
                 </template>
                 <template slot-scope="{ row, index }" slot="Do">
-                  <Tooltip content="Generate Do" v-if="!row.invoice_masterbi_do_release_date">
-                    <a href="#" class="btn btn-green btn-icon btn-sm" @click="actDownLoadDoModal(row)" v-if="row.invoice_masterbi_do_state">
-                      <i class="fa fa-object-ungroup"></i>
-                    </a>
-                    <a href="#" class="btn btn-info btn-icon btn-sm" @click="actDownLoadDoModalCheck(row)" v-else :title="row.invoice_masterbi_do_state_message">
-                      <i class="fa fa-object-ungroup"></i>
-                    </a>
-                  </Tooltip>
-                  <Tooltip :content="row.invoice_masterbi_do_release_date_fmt" v-if="row.invoice_masterbi_do_release_date">
-                    <a href="#" class="btn btn-pink btn-icon btn-sm" @click="actDownLoadDoModal(row)" v-if="row.invoice_masterbi_do_state">
-                      <i class="fa fa-object-ungroup"></i>
-                    </a>
-                    <a href="#" class="btn btn-pink btn-icon btn-sm" @click="actDownLoadDoModalCheck(row)" v-else :title="row.invoice_masterbi_do_state_message">
-                      <i class="fa fa-object-ungroup"></i>
-                    </a>
-                  </Tooltip>
+                    <span v-if="row.invoice_masterbi_vessel_type === 'Bulk' && row.bulkFileCount <= 0">
+                        <Tooltip content="please upload file">
+                            <a href="#" class="btn btn-warning btn-icon btn-sm" @click="actDownLoadDoModalCheck(row)">
+                            <i class="fa fa-object-ungroup"></i>
+                            </a>
+                        </Tooltip>
+                    </span>
+                    <span v-else>
+                        <Tooltip content="Generate Do" v-if="!row.invoice_masterbi_do_release_date">
+                            <a href="#" class="btn btn-green btn-icon btn-sm" @click="actDownLoadDoModal(row)" v-if="row.invoice_masterbi_do_state">
+                            <i class="fa fa-object-ungroup"></i>
+                            </a>
+                            <a href="#" class="btn btn-info btn-icon btn-sm" @click="actDownLoadDoModalCheck(row)" v-else :title="row.invoice_masterbi_do_state_message">
+                            <i class="fa fa-object-ungroup"></i>
+                            </a>
+                        </Tooltip>
+                        <Tooltip :content="row.invoice_masterbi_do_release_date_fmt" v-if="row.invoice_masterbi_do_release_date">
+                            <a href="#" class="btn btn-pink btn-icon btn-sm" @click="actDownLoadDoModal(row)" v-if="row.invoice_masterbi_do_state">
+                            <i class="fa fa-object-ungroup"></i>
+                            </a>
+                            <a href="#" class="btn btn-pink btn-icon btn-sm" @click="actDownLoadDoModalCheck(row)" v-else :title="row.invoice_masterbi_do_state_message">
+                            <i class="fa fa-object-ungroup"></i>
+                            </a>
+                        </Tooltip>
+                    </span>
                 </template>
                 <template slot-scope="{ row, index }" slot="Collect">
                   <a href="#" class="btn btn-info btn-xs" @click="showChangeCollectModal(row, 'PREPAID')" v-if="row.invoice_masterbi_freight == 'COLLECT'">Collect</a>
@@ -226,6 +235,13 @@
                                             <i class="fa fa-share-square"></i>
                                         </a>
                                         </Tooltip> -->
+                                    </template>
+                                    <template v-else-if="row.filetype === 'bulkFile'">
+                                            <Tooltip content="Download">
+                                            <a :href="row.url" class="btn btn-primary btn-icon btn-sm" target="_blank">
+                                                <i class="fa fa-download"></i>
+                                            </a>
+                                            </Tooltip>
                                     </template>
                                 </template>
                             </Table>
@@ -610,6 +626,21 @@
                     <Input v-model="workPara.invoice_masterbi_deposit_comment" type="textarea" :maxlength="200" :autosize="{ minRows: 2, maxRows: 6 }" placeholder="Deposit Amount Comment" />
                 </FormItem>
             </Tab-pane>
+            <Tab-pane label="File Upload" name="File Upload" key="File Upload" :disabled="workPara.invoice_masterbi_vessel_type !== 'Bulk'">
+                <Upload
+                        ref="uploadBulkFile"
+                        multiple
+                        :headers="headers"
+                        :on-success="handleUploadBulkFileSuccess"
+                        :on-remove="handleUploadBulkFileRemove"
+                        type="drag"
+                        action="/api/zhongtan/invoice/Invoice/upload">
+                        <div style="padding: 20px 0">
+                            <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+                            <p>Click or drag files here to upload</p>
+                        </div>
+                    </Upload>
+            </Tab-pane>
             <Tab-pane :label="invoiceFeeLabel" name="Invoice Fee" key="Invoice Fee">
                 <FormItem label="Ocean Freight" prop="invoice_masterbi_of" style="margin-bottom: 0px;">
                     <Input placeholder="Ocean Freight Fee" v-model="workPara.invoice_masterbi_of" @keyup.native='keyupNumberFormat($event, "invoice_masterbi_of")' :disabled="!!workPara.invoice_masterbi_of_disabled && !invoiceFeeEdit">
@@ -701,6 +732,7 @@
         <Button type="text" size="large" @click="modal.depositModal=false">Cancel</Button>
         <Button type="primary" size="large" @click="depositDo" v-if="deposit.depositType=='Container Deposit'" :disabled="!depositEdit && (workPara.invoice_masterbi_customer_blacklist || (workPara.invoice_masterbi_deposit_fixed == '1' && !!workPara.invoice_masterbi_deposit_release_date)) && !changeCustomer">Submit</Button>
         <Button type="primary" size="large" @click="depositDo" v-if="deposit.depositType=='Invoice Fee'" :disabled="!invoiceFeeEdit && workPara.invoice_masterbi_customer_blacklist && !changeCustomer">Submit</Button>
+        <Button type="primary" size="large" @click="saveBulkFiles" v-if="deposit.depositType=='File Upload'">Save File</Button>
     </div>
 </Modal>
 <Modal v-model="modal.deleteVoyageModal" title="Delete Voyage" width="600" :mask-closable="false">
@@ -1503,6 +1535,9 @@
                 if(this.workPara.invoice_masterbi_customer_id) {
                     this.searchFixedDeposit()
                 }
+                if(name === 'File Upload') {
+                    this.$refs.uploadBulkFile.clearFiles()
+                }
             },
             depositDo: async function(depositType) {
                 try {
@@ -2097,6 +2132,38 @@
                     this.$refs.uploadDeposit.fileList.splice(0, 1)
                 }
                 this.workPara.invoice_masterbi_deposit_file = ''
+            },
+            handleUploadBulkFileSuccess(res, file, fileList) {
+                file.url = res.info.url
+                file.name = res.info.name
+                // if(this.$refs.uploadBulkFile.fileList && this.$refs.uploadBulkFile.fileList.length > 1) {
+                //     this.$refs.uploadBulkFile.fileList.splice(0, 1)
+                // }
+            },
+            handleUploadBulkFileRemove(file, fileList) {
+                // if(this.$refs.uploadBulkFile.fileList && this.$refs.uploadBulkFile.fileList.length > 1) {
+                //     this.$refs.uploadBulkFile.fileList.splice(0, 1)
+                // }
+            },
+            saveBulkFiles: async function() {
+                if(this.$refs.uploadBulkFile.fileList && this.$refs.uploadBulkFile.fileList.length > 0) {
+                    try {
+                        let files = []
+                        for(let f of this.$refs.uploadBulkFile.fileList) {
+                            if(f.response && f.response.info && f.response.info.path) {
+                                files.push(f.response.info.path)
+                            }
+                        }
+                        await this.$http.post(apiUrl + 'saveBulkFiles', {invoice_masterbi_id: this.workPara.invoice_masterbi_id, files: files})
+                        this.$Message.success('save upload files success')
+                        this.modal.depositModal = false
+                        this.refreshTableData()
+                    } catch (error) {
+                        this.$commonact.fault(error)
+                    }
+                } else {
+                    return this.$Message.error('Please upload file')
+                }
             }
         }
     }
