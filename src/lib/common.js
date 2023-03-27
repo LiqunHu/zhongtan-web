@@ -92,11 +92,13 @@ exports.treeIconRender = (h, { root, node, data }, _self, treeRef, folderIcon, m
               },
               on: {
                 click: e => {
-                  let nodes = treeRef.$el.querySelectorAll('.treenode')
-                  for (let i = 0; i < nodes.length; i++) {
-                    nodes[i].style.backgroundColor = '#fff'
-                  }
-                  e.path[0].style.backgroundColor = '#2d8cf0' // 当前点击的元素
+                  // let nodes = treeRef.$el.querySelectorAll('.treenode')
+                  // for (let i = 0; i < nodes.length; i++) {
+                  //   nodes[i].style.backgroundColor = '#fff'
+                  // }
+                  // if(e.path && e.path.length > 0) {
+                  //   e.path[0].style.backgroundColor = '#2d8cf0' // 当前点击的元素
+                  // }
                   _self.actNode = JSON.parse(JSON.stringify(node.node))
                 }
               }
@@ -137,11 +139,13 @@ exports.treeIconRender = (h, { root, node, data }, _self, treeRef, folderIcon, m
               },
               on: {
                 click: e => {
-                  let nodes = treeRef.$el.querySelectorAll('.treenode')
-                  for (let i = 0; i < nodes.length; i++) {
-                    nodes[i].style.backgroundColor = '#fff'
-                  }
-                  e.path[0].style.backgroundColor = '#2d8cf0' // 当前点击的元素
+                  // let nodes = treeRef.$el.querySelectorAll('.treenode')
+                  // for (let i = 0; i < nodes.length; i++) {
+                  //   nodes[i].style.backgroundColor = '#fff'
+                  // }
+                  // if(e.path && e.path.length > 0) {
+                  //   e.path[0].style.backgroundColor = '#2d8cf0' // 当前点击的元素
+                  // }
                   _self.actNode = JSON.parse(JSON.stringify(node.node))
                 }
               }

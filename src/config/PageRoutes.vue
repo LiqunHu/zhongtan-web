@@ -1,7 +1,13 @@
 <script>
 const routes = [
   { path: '*', component: resolve => require(['@/components/error404'], resolve) },
+  // { path: '/', component: resolve => require(['../../web/pages/index'], resolve) },
   { path: '/admin', component: resolve => require(['@/views/login'], resolve) },
+  // { path: '/contact', component: resolve => require(['../../web/pages/contact'], resolve) },
+  // { path: '/about', component: resolve => require(['../../web/pages/about'], resolve) },
+  // { path: '/scope', component: resolve => require(['../../web/pages/scope'], resolve) },
+  // { path: '/messages', component: resolve => require(['../../web/pages/messages'], resolve) },
+  // { path: '/schedule', component: resolve => require(['../../web/pages/schedule'], resolve) },
   { path: '/error', component: resolve => require(['@/components/error'], resolve) },
   { path: '/error404', component: resolve => require(['@/components/error404'], resolve) },
   { path: '/admin/dashboard/home', component: resolve => require(['@/views/home'], resolve) },
@@ -92,6 +98,9 @@ const routes = [
   { path: '/admin/zhongtan/payment/UnusualInvoice', component: resolve => require(['@/views/zhongtan/payment/UnusualInvoice'], resolve) },
   { path: '/admin/zhongtan/payment/UnusualReceipt', component: resolve => require(['@/views/zhongtan/payment/UnusualReceipt'], resolve) },
   { path: '/admin/zhongtan/payment/UnusualCommercial', component: resolve => require(['@/views/zhongtan/payment/UnusualCommercial'], resolve) },
+
+  { path: '/admin/zhongtan/file/FileControl', component: resolve => require(['@/views/zhongtan/file/FileControl'], resolve) },
+  { path: '/admin/zhongtan/file/FileAdminControl', component: resolve => require(['@/views/zhongtan/file/FileAdminControl'], resolve) },
 ]
 
 export default routes
