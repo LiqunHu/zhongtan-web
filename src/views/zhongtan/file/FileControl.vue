@@ -187,7 +187,6 @@ export default {
                     ... this.searchData
                 }
                 if(this.breadcrumb && this.breadcrumb.length > 1) {
-                    console.log(this.breadcrumb[this.breadcrumb.length - 1])
                     param.file_root_id = this.breadcrumb[this.breadcrumb.length - 1].data.file_id
                 }
                 let response = await this.$http.post(apiUrl + 'search', param)
@@ -300,7 +299,6 @@ export default {
                     data: row,
                     responseType: 'blob'
                 })
-                console.log('response', response)
                 let blob = response.data
                 let reader = new FileReader()
                 reader.readAsDataURL(blob)
@@ -314,7 +312,6 @@ export default {
                 }
                 this.$Message.success('download success')
             } catch (error) {
-                console.log('error', error)
                 this.$commonact.fault(error)
             }
         },
@@ -342,7 +339,6 @@ export default {
                 this.modal.createFolderModal = false
                 this.handleSearch()
             } catch (error) {
-                console.log('error', error)
                 this.$commonact.fault(error)
             }
         },
