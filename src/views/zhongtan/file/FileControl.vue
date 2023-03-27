@@ -344,7 +344,6 @@ export default {
         },
         handleChangeAuth :async function(row) {
             try {
-                console.log('handleChangeAuth', row)
                 await this.$http.post(apiUrl + 'changeAuth', row)
                 this.$Message.success('change auth success')
                 if(this.breadcrumb && this.breadcrumb.length > 0) {
@@ -353,7 +352,6 @@ export default {
                     this.handleLoadFiles()
                 }
             } catch (error) {
-                console.log('error', error)
                 this.$commonact.fault(error)
             }
         }
