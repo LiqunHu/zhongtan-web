@@ -548,8 +548,12 @@ export default {
         if(!this.checkPassword) {
           return this.$Message.error('Please enter right password')
         }
+        let action = 'EXPORT_DEMURRAGE'
+        if(this.checkPasswordType === 'deductionDemurrage') {
+          action = 'EXPORT_DEMURRAGE_DEDUCTION'
+        }
         let param = {
-          action: 'EXPORT_DEMURRAGE',
+          action: action,
           checkPassword: common.md52(this.checkPassword)
         }
         await this.$http.post(apiUrl + 'checkPassword', param)
