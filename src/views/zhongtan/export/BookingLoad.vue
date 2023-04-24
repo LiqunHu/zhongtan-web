@@ -947,18 +947,48 @@ export default {
               }
             }
             if(!exist) {
+              if(cf.fee_data_code === 'BGF') {
+                let param = {
+                  export_masterbl_id: item.export_masterbl_id
+                }
+                let response = await this.$http.post(apiUrl + 'bkCancellationFeeCount', param)
+                let bgf_data = response.data.info
+                if(bgf_data && bgf_data.fee_data_amount) {
+                  this.bkCancellationFeeForm.cancellationFee.push({
+                    fee_data_code: bgf_data.fee_data_code,
+                    fee_data_name: bgf_data.fee_data_name,
+                    fee_data_amount: bgf_data.fee_data_amount
+                  }) 
+                }
+              } else {
+                this.bkCancellationFeeForm.cancellationFee.push({
+                  fee_data_code: cf.fee_data_code,
+                  fee_data_name: cf.fee_data_name,
+                  fee_data_amount: cf.fee_data_receivable_amount
+                }) 
+              }
+            }
+          } else {
+            if(cf.fee_data_code === 'BGF') {
+              let param = {
+                export_masterbl_id: item.export_masterbl_id
+              }
+              let response = await this.$http.post(apiUrl + 'bkCancellationFeeCount', param)
+              let bgf_data = response.data.info
+              if(bgf_data && bgf_data.fee_data_amount) {
+                this.bkCancellationFeeForm.cancellationFee.push({
+                  fee_data_code: bgf_data.fee_data_code,
+                  fee_data_name: bgf_data.fee_data_name,
+                  fee_data_amount: bgf_data.fee_data_amount
+                }) 
+              }
+            } else {
               this.bkCancellationFeeForm.cancellationFee.push({
                 fee_data_code: cf.fee_data_code,
                 fee_data_name: cf.fee_data_name,
                 fee_data_amount: cf.fee_data_receivable_amount
-              }) 
+              })
             }
-          } else {
-            this.bkCancellationFeeForm.cancellationFee.push({
-              fee_data_code: cf.fee_data_code,
-              fee_data_name: cf.fee_data_name,
-              fee_data_amount: cf.fee_data_receivable_amount
-            })
           }
         }
       }
