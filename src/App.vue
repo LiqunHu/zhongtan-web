@@ -74,7 +74,6 @@ export default {
   },
   mounted() {
     this.$insProgress.finish()
-    console.log('isMobile', this.isMobile())
   },
   created() {
     PageOptions.pageBodyScrollTop = window.scrollY
