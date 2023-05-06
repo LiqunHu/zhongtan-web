@@ -402,7 +402,10 @@
                   <Input :class="{'input-edited': row.invoice_containers_edit_info && row.invoice_containers_edit_info.invoice_containers_no}" v-model="table.containersTable.data[index].invoice_containers_no" size="small" :disabled="tableEdit"/>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_containers_size">
-                  <Input :class="{'input-edited': row.invoice_containers_edit_info && row.invoice_containers_edit_info.invoice_containers_size}" v-model="table.containersTable.data[index].invoice_containers_size" size="small" :disabled="tableEdit"/>
+                  <!-- <Input :class="{'input-edited': row.invoice_containers_edit_info && row.invoice_containers_edit_info.invoice_containers_size}" v-model="table.containersTable.data[index].invoice_containers_size" size="small" :disabled="tableEdit"/> -->
+                  <i-select v-model="table.containersTable.data[index].invoice_containers_size" size="small" :disabled="tableEdit">
+                        <i-option v-for="item in pagePara.SIZE_TYPE" :value="item.container_size_code" :key="item.container_size_code" :label="item.container_size_code"></i-option>
+                    </i-select>
                 </template>
                 <template slot-scope="{ row, index }" slot="invoice_containers_seal1">
                   <Input :class="{'input-edited': row.invoice_containers_edit_info && row.invoice_containers_edit_info.invoice_containers_seal1}" v-model="table.containersTable.data[index].invoice_containers_seal1" size="small" :disabled="tableEdit"/>
@@ -1043,7 +1046,7 @@
                         }, {
                             title: 'Container Size',
                             slot: 'invoice_containers_size',
-                            width: 100
+                            width: 130
                         }, {
                             title: 'Seal No.1',
                             slot: 'invoice_containers_seal1',
