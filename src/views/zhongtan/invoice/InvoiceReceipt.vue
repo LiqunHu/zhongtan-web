@@ -897,6 +897,9 @@ export default {
             this.workPara.invoice_masterbi_received_from = row.invoice_masterbi_invoice_received_from
           }
           this.workPara.invoice_masterbi_receipt_amount = 0
+          if (row.invoice_masterbi_do_fee) {
+            this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_do_fee)
+          }
           if (row.invoice_masterbi_of) {
             this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_of)
           }
