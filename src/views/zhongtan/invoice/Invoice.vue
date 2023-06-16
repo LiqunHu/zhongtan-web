@@ -648,7 +648,7 @@
                 <FormItem label="D/O Fee" prop="invoice_masterbi_do_fee" style="margin-bottom: 0px;">
                     <Input placeholder="D/O Fee" v-model="workPara.invoice_masterbi_do_fee" @keyup.native='keyupNumberFormat($event, "invoice_masterbi_do_fee")' :disabled="!!workPara.invoice_masterbi_do_fee_disabled && !invoiceFeeEdit">
                     <Checkbox slot="prepend" v-model="workPara.invoice_masterbi_do_fee_necessary" :disabled="workPara.invoice_masterbi_do_fee_necessary_disabled" style="margin-bottom: 0px;" @on-change="changeFixedAct('invoice_masterbi_do_fee')">Fixed</Checkbox>
-                    <Select slot="append" v-model="workPara.invoice_masterbi_do_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_masterbi_do_fee_currency_disabled && !invoiceFeeEdit">
+                    <Select slot="append" v-model="workPara.invoice_fee_currency" style="width: 80px" :disabled="!!workPara.invoice_fee_currency_disabled && !invoiceFeeEdit">
                   <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
                 </Select>
                     </Input>
