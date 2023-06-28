@@ -984,9 +984,9 @@ export default {
         }
         this.workPara.invoice_masterbi_receipt_currency = this.workPara.invoice_fee_currency
         this.workPara.invoice_masterbi_receipt_amount = 0
-        if (row.invoice_masterbi_do_fee) {
-            this.workPara.invoice_masterbi_receipt_amount += parseFloat(row.invoice_masterbi_do_fee)
-          }
+        if (this.workPara.invoice_masterbi_do_fee) {
+          this.workPara.invoice_masterbi_receipt_amount += parseFloat(this.workPara.invoice_masterbi_do_fee)
+        }
         if (this.workPara.invoice_masterbi_of) {
           this.workPara.invoice_masterbi_receipt_amount += parseFloat(this.workPara.invoice_masterbi_of)
         }
