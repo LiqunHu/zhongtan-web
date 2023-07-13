@@ -18,7 +18,7 @@
         <div class="panel-toolbar">
           <div class="form-inline">
             <div class="form-group m-r-2">
-              <DatePicker type="daterange" :value="search_data.date" placeholder="Verification Date" style="width: 200px" @on-change="getPaymentVerificationData"></DatePicker>
+              <DatePicker type="daterange" :value="search_data.date" placeholder="Verification Date" style="width: 200px" @on-change="searchRangeAct"></DatePicker>
             </div>
             <div class="form-group m-r-2">
               <Select v-model="search_data.verification_state" style="width:180px" @on-change="getPaymentVerificationData">
@@ -182,6 +182,10 @@ export default {
     initPage()
   },
   methods: {
+    searchRangeAct: function(e) {
+      this.search_data.date = JSON.parse(JSON.stringify(e))
+      this.getPaymentVerificationData(1)
+    },
     getPaymentVerificationData: async function(index) {
       try {
         if (index) {
