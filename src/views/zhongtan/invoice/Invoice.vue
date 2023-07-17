@@ -2078,7 +2078,7 @@
             },
             refreshTableData() {
                 if (this.currentTab === 0) {
-                    if (this.vessel.search_data.vesselName || this.vessel.search_data.bl) {
+                    if (this.vessel.search_data.bl) {
                         this.getVoyageData()
                     } else {
                         this.getMasterbiData(1)
