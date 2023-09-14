@@ -47,11 +47,11 @@
         <template slot-scope="{ row, index }" slot="files">
           <span v-if="row.files">
             <a v-for="(item, index) in row.files" v-bind:key="index" :href="item.url" target="_blank" @click.stop>
-              <i class="fa fa-file-pdf" style="color:purple; font-size: 18px;" v-if="getFileExtension(item.url) === 'PDF'"></i>
-              <i class="fa fa-file-excel" style="color:blue; font-size: 18px;" v-else-if="getFileExtension(item.url) === 'XLS' || getFileExtension(item.url) === 'XLSX'"></i>
-              <i class="fa fa-file-word" style="color:aqua; font-size: 18px;" v-else-if="getFileExtension(item.url) === 'DOC' || getFileExtension(item.url) === 'DOCX'"></i>
-              <i class="fa fa-envelope" style="color:green; font-size: 18px;" v-else-if="getFileExtension(item.url) === 'EML'"></i>
-              <i class="fa fa-download" style="color:orange; font-size: 18px;" v-else></i>
+              <i class="fa fa-file-pdf" style="color:purple; font-size: 18px; margin-right: 7px;" v-if="getFileExtension(item.url) === 'PDF'"></i>
+              <i class="fa fa-file-excel" style="color:blue; font-size: 18px; margin-right: 7px;" v-else-if="getFileExtension(item.url) === 'XLS' || getFileExtension(item.url) === 'XLSX'"></i>
+              <i class="fa fa-file-word" style="color:aqua; font-size: 18px; margin-right: 7px;" v-else-if="getFileExtension(item.url) === 'DOC' || getFileExtension(item.url) === 'DOCX'"></i>
+              <i class="fa fa-envelope" style="color:green; font-size: 18px; margin-right: 7px;" v-else-if="getFileExtension(item.url) === 'EML'"></i>
+              <i class="fa fa-download" style="color:orange; font-size: 18px; margin-right: 7px;" v-else></i>
             </a>
           </span>
         </template>
@@ -118,11 +118,11 @@
             <template slot-scope="{ row, index }" slot="files">
               <span v-if="row.files">
                 <a v-for="(item, index) in row.files" v-bind:key="index" :href="item.url" target="_blank">
-                  <i class="fa fa-file-pdf" style="color:purple; font-size: 18px;" v-if="getFileExtension(item.url) === 'PDF'"></i>
-                  <i class="fa fa-file-excel" style="color:blue; font-size: 18px;" v-else-if="getFileExtension(item.url) === 'XLS' || getFileExtension(item.url) === 'XLSX'"></i>
-                  <i class="fa fa-file-word" style="color:aqua; font-size: 18px;" v-else-if="getFileExtension(item.url) === 'DOC' || getFileExtension(item.url) === 'DOCX'"></i>
-                  <i class="fa fa-envelope" style="color:green; font-size: 18px;" v-else-if="getFileExtension(item.url) === 'EML'"></i>
-                  <i class="fa fa-download" style="color:orange; font-size: 18px;" v-else></i>
+                  <i class="fa fa-file-pdf" style="color:purple; font-size: 18px; margin-right: 7px;" v-if="getFileExtension(item.url) === 'PDF'"></i>
+                  <i class="fa fa-file-excel" style="color:blue; font-size: 18px; margin-right: 7px;" v-else-if="getFileExtension(item.url) === 'XLS' || getFileExtension(item.url) === 'XLSX'"></i>
+                  <i class="fa fa-file-word" style="color:aqua; font-size: 18px; margin-right: 7px;" v-else-if="getFileExtension(item.url) === 'DOC' || getFileExtension(item.url) === 'DOCX'"></i>
+                  <i class="fa fa-envelope" style="color:green; font-size: 18px; margin-right: 7px;" v-else-if="getFileExtension(item.url) === 'EML'"></i>
+                  <i class="fa fa-download" style="color:orange; font-size: 18px; margin-right: 7px;" v-else></i>
                 </a>
               </span>
             </template>
@@ -165,11 +165,11 @@
             <template slot-scope="{ row, index }" slot="files">
               <span v-if="row.files">
                 <a v-for="(item, index) in row.files" v-bind:key="index" :href="item.url" target="_blank">
-                  <i class="fa fa-file-pdf" style="color:purple; font-size: 18px;" v-if="getFileExtension(item.url) === 'PDF'"></i>
-                  <i class="fa fa-file-excel" style="color:blue; font-size: 18px;" v-else-if="getFileExtension(item.url) === 'XLS' || getFileExtension(item.url) === 'XLSX'"></i>
-                  <i class="fa fa-file-word" style="color:aqua; font-size: 18px;" v-else-if="getFileExtension(item.url) === 'DOC' || getFileExtension(item.url) === 'DOCX'"></i>
-                  <i class="fa fa-envelope" style="color:green; font-size: 18px;" v-else-if="getFileExtension(item.url) === 'EML'"></i>
-                  <i class="fa fa-download" style="color:orange; font-size: 18px;" v-else></i>
+                  <i class="fa fa-file-pdf" style="color:purple; font-size: 18px; margin-right: 7px;" v-if="getFileExtension(item.url) === 'PDF'"></i>
+                  <i class="fa fa-file-excel" style="color:blue; font-size: 18px; margin-right: 7px;" v-else-if="getFileExtension(item.url) === 'XLS' || getFileExtension(item.url) === 'XLSX'"></i>
+                  <i class="fa fa-file-word" style="color:aqua; font-size: 18px; margin-right: 7px;" v-else-if="getFileExtension(item.url) === 'DOC' || getFileExtension(item.url) === 'DOCX'"></i>
+                  <i class="fa fa-envelope" style="color:green; font-size: 18px; margin-right: 7px;" v-else-if="getFileExtension(item.url) === 'EML'"></i>
+                  <i class="fa fa-download" style="color:orange; font-size: 18px; margin-right: 7px;" v-else></i>
                 </a>
               </span>
             </template>
