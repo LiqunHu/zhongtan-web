@@ -154,7 +154,7 @@
             :show-upload-list="false"
             :on-success="handleSuccess"
             :format="['pdf', 'PDF']"
-            :max-size="4096"
+            :max-size="5120"
             :on-format-error="handleFormatError"
             :on-exceeded-size="handleMaxSize"
             type="drag"
@@ -184,7 +184,7 @@
             :show-upload-list="false"
             :on-success="handleSuccessFreight"
             :format="['xlsx', 'xls', 'XLSX', 'XLS']"
-            :max-size="4096"
+            :max-size="5120"
             :on-format-error="handleFormatErrorFreight"
             :on-exceeded-size="handleMaxSizeFreight"
             type="drag"
@@ -214,7 +214,7 @@
             :show-upload-list="false"
             :on-success="handleShipmentSuccess"
             :format="['xls', 'XLS', 'xlsx', 'XLSX']"
-            :max-size="4096"
+            :max-size="5120"
             :on-format-error="handleShipmentFormatError"
             :on-exceeded-size="handleShipmentMaxSize"
             type="drag"
@@ -725,19 +725,19 @@ export default {
     handleMaxSize(file) {
       this.$Notice.warning({
         title: 'Exceeding file size limit',
-        desc: 'File  ' + file.name + ' is too large, no more than 4M.'
+        desc: 'File  ' + file.name + ' is too large, no more than 5M.'
       })
     },
     handleMaxSizeFreight(file) {
       this.$Notice.warning({
         title: 'Exceeding file size limit',
-        desc: 'File  ' + file.name + ' is too large, no more than 4M.'
+        desc: 'File  ' + file.name + ' is too large, no more than 5M.'
       })
     },
     handleShipmentMaxSize(file) {
       this.$Notice.warning({
         title: 'Exceeding file size limit',
-        desc: 'File  ' + file.name + ' is too large, no more than 4M.'
+        desc: 'File  ' + file.name + ' is too large, no more than 5M.'
       })
     },
     bookingData: async function() {

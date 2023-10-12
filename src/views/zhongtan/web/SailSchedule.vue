@@ -65,7 +65,7 @@
             :show-upload-list="false"
             :on-success="handleSuccess"
             :format="['xls','xlsx']"
-            :max-size="4096"
+            :max-size="5120"
             :on-format-error="handleFormatError"
             :on-exceeded-size="handleMaxSize"
             type="drag"
@@ -247,7 +247,7 @@ export default {
     handleMaxSize(file) {
       this.$Notice.warning({
         title: 'Exceeding file size limit',
-        desc: 'File  ' + file.name + ' is too large, no more than 4M.'
+        desc: 'File  ' + file.name + ' is too large, no more than 5M.'
       })
     }
   }

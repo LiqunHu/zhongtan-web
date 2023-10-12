@@ -55,7 +55,7 @@
                 :show-upload-list="false"
                 :headers="headers"
                 :format="['xml']"
-                :max-size="4096"
+                :max-size="5120"
                 :before-upload="handleImportbefore"
                 :on-success="handleImportSuccess"
                 :on-error="handleImportError"
@@ -139,7 +139,7 @@
             :show-upload-list="false"
             :on-success="handleSuccess"
             :format="['xml']"
-            :max-size="4096"
+            :max-size="5120"
             :on-format-error="handleFormatError"
             :on-exceeded-size="handleMaxSize"
             type="drag"
@@ -604,7 +604,7 @@ export default {
     handleMaxSize(file) {
       this.$Notice.warning({
         title: 'Exceeding file size limit',
-        desc: 'File  ' + file.name + ' is too large, no more than 4M.'
+        desc: 'File  ' + file.name + ' is too large, no more than 5M.'
       })
     },
     importData: async function() {

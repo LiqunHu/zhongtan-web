@@ -459,7 +459,7 @@
             <div v-for="f in files.fileList" v-bind:key="f.name" class="upload-list">
                 <Icon type="ios-document" size="60" />
             </div>
-            <Upload ref="upload" :headers="headers" :show-upload-list="false" :on-success="handleSuccess" :format="['xlsx']" :max-size="4096" :on-format-error="handleFormatError" :on-exceeded-size="handleMaxSize" type="drag" action="/api/zhongtan/invoice/Invoice/upload"
+            <Upload ref="upload" :headers="headers" :show-upload-list="false" :on-success="handleSuccess" :format="['xlsx']" :max-size="5120" :on-format-error="handleFormatError" :on-exceeded-size="handleMaxSize" type="drag" action="/api/zhongtan/invoice/Invoice/upload"
                 style="display: inline-block;width:58px;">
                 <div style="width: 58px;height:58px;line-height: 58px;">
                     <Icon type="md-add" size="20"></Icon>
@@ -1286,7 +1286,7 @@
             handleMaxSize(file) {
                 this.$Notice.warning({
                     title: 'Exceeding file size limit',
-                    desc: 'File  ' + file.name + ' is too large, no more than 4M.'
+                    desc: 'File  ' + file.name + ' is too large, no more than 5M.'
                 })
             },
             importData: async function() {
