@@ -82,6 +82,11 @@
                 <button type="button" class="btn btn-info" @click="exportCBL()">CBL</button>
               </div>
             </div>
+            <div class="form-group m-r-3">
+              <div class="input-group-append">
+                <button type="button" class="btn btn-info" @click="exportSWO()">SingleWindow output</button>
+              </div>
+            </div>
           </div>
         </div>
       </template>
@@ -855,6 +860,45 @@ export default {
           this.$commonact.fault(error)
         }
       })
+    },
+    exportSWO: async function() {
+      try {
+        let searchPara = {
+          start_date: this.table.importTable.search_data.date[0],
+          end_date: this.table.importTable.search_data.date[1],
+          vessel: this.table.importTable.search_data.vessel,
+          voyage: this.table.importTable.search_data.voyage,
+          bl: this.table.importTable.search_data.bl,
+          search_text: this.table.importTable.search_text,
+          offset: this.table.importTable.offset,
+          limit: this.table.importTable.limit
+        }
+
+        if (this.table.importTable.search_data.customer.value) {
+          searchPara.customer = this.table.importTable.search_data.customer.value
+        }
+
+        let response = await this.$http.request({
+          url: apiUrl + 'exportSWO',
+          method: 'post',
+          data: searchPara,
+          responseType: 'blob'
+        })
+
+        let blob = response.data
+        let reader = new FileReader()
+        reader.readAsDataURL(blob)
+        reader.onload = e => {
+          let a = document.createElement('a')
+          a.download = 'SINGLE_WINDOW_OUTPUT_' + moment().format('YYYYMMDDHHmmSS') + '.xlsx'
+          a.href = e.target.result
+          document.body.appendChild(a)
+          a.click()
+          document.body.removeChild(a)
+        }
+      } catch (error) {
+        this.$commonact.fault(error)
+      }
     }
   }
 }
