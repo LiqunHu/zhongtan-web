@@ -103,10 +103,10 @@
         <template slot-scope="{ row, index }" slot="atta_files">
           <span v-if="row.atta_files">
             <a v-for="(item, index) in row.atta_files" v-bind:key="index" :href="item.uploadfile_url" class="btn btn-primary btn-icon btn-sm" target="_blank">
-              <i class="fa fa-file-pdf" style="color:purple; font-size: 18px; margin-right: 7px;" v-if="getFileExtension(item.url) === 'PDF'"></i>
-              <i class="fa fa-file-excel" style="color:blue; font-size: 18px; margin-right: 7px;" v-else-if="getFileExtension(item.url) === 'XLS' || getFileExtension(item.url) === 'XLSX'"></i>
-              <i class="fa fa-file-word" style="color:aqua; font-size: 18px; margin-right: 7px;" v-else-if="getFileExtension(item.url) === 'DOC' || getFileExtension(item.url) === 'DOCX'"></i>
-              <i class="fa fa-envelope" style="color:green; font-size: 18px; margin-right: 7px;" v-else-if="getFileExtension(item.url) === 'EML'"></i>
+              <i class="fa fa-file-pdf" style="color:purple; font-size: 18px; margin-right: 7px;" v-if="getFileExtension(item.uploadfile_url) === 'PDF'"></i>
+              <i class="fa fa-file-excel" style="color:blue; font-size: 18px; margin-right: 7px;" v-else-if="getFileExtension(item.uploadfile_url) === 'XLS' || getFileExtension(item.uploadfile_url) === 'XLSX'"></i>
+              <i class="fa fa-file-word" style="color:aqua; font-size: 18px; margin-right: 7px;" v-else-if="getFileExtension(item.uploadfile_url) === 'DOC' || getFileExtension(item.uploadfile_url) === 'DOCX'"></i>
+              <i class="fa fa-envelope" style="color:green; font-size: 18px; margin-right: 7px;" v-else-if="getFileExtension(item.uploadfile_url) === 'EML'"></i>
               <i class="fa fa-download" style="color:orange; font-size: 18px; margin-right: 7px;" v-else></i>
             </a>
           </span>
