@@ -65,7 +65,6 @@
 </template>
 <script>
 import PageOptions from '../../../config/PageOptions.vue'
-const common = require('@/lib/common')
 const apiUrl = '/api/zhongtan/configuration/ExchangeRateConfigControl/'
 
 export default {
