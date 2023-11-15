@@ -23,6 +23,9 @@ const routes = [
   { path: '/admin/zhongtan/configuration/VendorControl', component: resolve => require(['@/views/zhongtan/configuration/VendorControl'], resolve)},
   { path: '/admin/zhongtan/configuration/FreightPlace', component: resolve => require(['@/views/zhongtan/configuration/FreightPlace'], resolve)},
 
+  { path: '/admin/zhongtan/configuration/ExchangeRateConfig', component: resolve => require(['@/views/zhongtan/configuration/ExchangeRateConfig'], resolve) },
+
+
   { path: '/admin/zhongtan/export/Booking', component: resolve => require(['@/views/zhongtan/export/Booking'], resolve) },
   { path: '/admin/zhongtan/export/BookingWork', component: resolve => require(['@/views/zhongtan/export/BookingWork'], resolve) },
   { path: '/admin/zhongtan/export/Receipt', component: resolve => require(['@/views/zhongtan/export/Receipt'], resolve) },

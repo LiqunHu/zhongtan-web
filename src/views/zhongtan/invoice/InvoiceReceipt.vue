@@ -184,7 +184,8 @@
             <FormItem label="Currency" prop="invoice_masterbi_receipt_currency">
               <Select
                 v-model="workPara.invoice_masterbi_receipt_currency"
-                :disabled="!!workPara.invoice_masterbi_receipt_release_date || !!workPara.invoice_masterbi_deposit_date || !!workPara.invoice_masterbi_fee_date"
+                :disabled="(!!workPara.invoice_masterbi_receipt_release_date || !!workPara.invoice_masterbi_deposit_date || !!workPara.invoice_masterbi_fee_date) && checkType !== 'fee'"
+                @on-change="changeReceiptCurrency"
               >
                 <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
               </Select>
@@ -193,10 +194,10 @@
         </Row>
         <Row>
           <Col>
-            <FormItem label="Amount" prop="invoice_masterbi_receipt_amount">
+            <FormItem label="Amount" prop="invoice_masterbi_receipt_amount_rate">
               <Input
                 placeholder="Amount"
-                v-model="workPara.invoice_masterbi_receipt_amount"
+                v-model="workPara.invoice_masterbi_receipt_amount_rate"
                 :disabled="!!workPara.invoice_masterbi_receipt_release_date || !!workPara.invoice_masterbi_deposit_date || !!workPara.invoice_masterbi_fee_date"
               />
             </FormItem>
@@ -878,9 +879,7 @@ export default {
     actReceiptModal: function(row) {
       this.$nextTick(function() {
         this.workPara = JSON.parse(JSON.stringify(row))
-        if (!row.invoice_masterbi_receipt_currency) {
-            this.workPara.invoice_masterbi_receipt_currency = 'USD'
-        }
+        this.workPara.invoice_masterbi_receipt_currency = 'USD'
         if (!row.invoice_masterbi_check_cash) {
           this.workPara.invoice_masterbi_check_cash = 'TRANSFER'
         }
@@ -932,6 +931,7 @@ export default {
           }
           this.workPara.invoice_masterbi_receipt_amount = formatCurrency(this.workPara.invoice_masterbi_receipt_amount)
         }
+        this.workPara.invoice_masterbi_receipt_amount_rate = this.workPara.invoice_masterbi_receipt_amount
         this.$forceUpdate()
         this.modal.receiptModal = true
       })
@@ -973,10 +973,10 @@ export default {
         if(this.workPara.invoice_masterbi_deposit_received_from) {
           this.workPara.invoice_masterbi_received_from = this.workPara.invoice_masterbi_deposit_received_from
         }
-        this.workPara.invoice_masterbi_receipt_currency = this.workPara.invoice_container_deposit_currency
+        this.workPara.invoice_masterbi_receipt_currency = 'USD'
         this.workPara.invoice_masterbi_receipt_amount = formatCurrency(parseFloat(this.workPara.invoice_masterbi_deposit))
       } else if (this.checkType === 'freight') {
-        this.workPara.invoice_masterbi_receipt_currency = this.workPara.invoice_ocean_freight_fee_currency
+        this.workPara.invoice_masterbi_receipt_currency = 'USD'
         this.workPara.invoice_masterbi_receipt_amount = formatCurrency(parseFloat(this.workPara.invoice_masterbi_of))
       } else {
         if(this.workPara.invoice_masterbi_invoice_received_from) {
@@ -1018,6 +1018,24 @@ export default {
           this.workPara.invoice_masterbi_receipt_amount += parseFloat(this.workPara.invoice_masterbi_others)
         }
         this.workPara.invoice_masterbi_receipt_amount = formatCurrency(this.workPara.invoice_masterbi_receipt_amount)
+      }
+      this.workPara.invoice_masterbi_receipt_amount_rate = this.workPara.invoice_masterbi_receipt_amount
+    },
+    changeReceiptCurrency: async function() {
+      if(this.workPara.invoice_masterbi_receipt_amount) {
+        if(this.workPara.invoice_masterbi_receipt_currency === 'USD') {
+          this.workPara.invoice_masterbi_receipt_amount_rate = this.workPara.invoice_masterbi_receipt_amount
+        } else {
+          try {
+            let response = await this.$http.post(apiUrl + 'changeReceiptCurrency', { usd_amount: this.workPara.invoice_masterbi_receipt_amount })
+            if(response.data.info) {
+              this.workPara.invoice_masterbi_receipt_amount_rate = formatCurrency(response.data.info)
+            }
+          } catch (error) {
+            this.$commonact.fault(error)
+          }
+        }
+        this.$forceUpdate()
       }
     },
     actCollectModal: function() {

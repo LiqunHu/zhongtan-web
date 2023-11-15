@@ -82,6 +82,22 @@
                   <Option v-for="(item, index) in consigneeList" :value="item.name" :key="index" :label="item.name"></Option>
                 </Select>
               </div>
+              <div class="form-group m-r-2">
+                <Select v-model="search_data.is_paid" clearable placeholder="PAID" style="width: 120px;">
+                  <Option value="1">DND PAID</Option>
+                  <Option value="0">DND UNPAID</Option>
+                </Select>
+              </div>
+              <div class="form-group m-r-2">
+                <Select v-model="search_data.sizeType" clearable placeholder="Size Type" style="width: 120px;">
+                  <Option v-for="(item, index)  in pagePara.CONTAINER_SIZE" :value="item.container_size_code" :key="index">
+                    {{item.container_size_code }}
+                    <span style="color: #a6a3a3;">[{{ item.container_size_name }}]</span>
+                  </Option>
+                </Select>
+              </div>
+
+              
             </div>
           </row>
         </div>
