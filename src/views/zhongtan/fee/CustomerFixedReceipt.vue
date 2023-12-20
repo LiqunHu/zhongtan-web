@@ -146,6 +146,14 @@
             <FormItem label="Check No." v-if="receiptForm.deposit_check_cash === 'CHEQUE'">
                 <Input v-model="receiptForm.deposit_check_cash_no"></Input>
             </FormItem>
+            <FormItem label="Bank Info"  v-if="receiptForm.deposit_check_cash === 'TRANSFER'">
+              <Select v-model="receiptForm.deposit_bank_info">
+                <Option v-for="item in pagePara.BANK_INFOS" :value="item.bank_code" :key="item.bank_code">
+                  {{ item.bank_code }}
+                  <span style="float:right;">{{ item.bank_name }}</span>
+                </Option>
+              </Select>
+            </FormItem>
             <FormItem label="Bank Reference" v-if="receiptForm.deposit_check_cash === 'TRANSFER'">
                 <Input v-model="receiptForm.deposit_bank_reference_no"></Input>
             </FormItem>
@@ -313,7 +321,8 @@ export default {
             deposit_amount: '',
             deposit_check_cash: 'CASH',
             deposit_check_cash_no: '',
-            deposit_currency: 'USD'
+            deposit_currency: 'USD',
+            deposit_bank_info: ''
         },
         workPara: {},
         checkPassword: '',
@@ -376,7 +385,8 @@ export default {
             deposit_amount: '',
             deposit_check_cash: 'CASH',
             deposit_check_cash_no: '',
-            deposit_currency: 'USD'
+            deposit_currency: 'USD',
+            deposit_bank_info: ''
         }
     },
     receiptFixedDepositModal: async function(row) {

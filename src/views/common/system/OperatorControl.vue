@@ -65,6 +65,12 @@
         <FormItem label="代码" prop="user_code">
           <Input placeholder="代码" v-model="workPara.user_code"/>
         </FormItem>
+        <FormItem label="U8代码" prop="u8_code">
+          <Input placeholder="代码" v-model="workPara.u8_code"/>
+        </FormItem>
+        <FormItem label="U8别称" prop="u8_alias">
+          <Input placeholder="U8别称" v-model="workPara.u8_alias"/>
+        </FormItem>
         <FormItem label="用户组" prop="user_groups">
           <Select multiple v-model="workPara.user_groups">
             <Option v-for="item in pagePara.groupInfo" :value="item.id" :key="item.id" :disabled="item.disabled">{{ item.text }}</Option>
@@ -114,6 +120,15 @@ export default {
             {
               title: '代码',
               key: 'user_code'
+            },
+            
+            {
+              title: 'U8代码',
+              key: 'u8_code'
+            },
+            {
+              title: 'U8别称',
+              key: 'u8_alias'
             },
             {
               title: '用户组',

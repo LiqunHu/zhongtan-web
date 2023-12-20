@@ -184,7 +184,6 @@
             <FormItem label="Currency" prop="invoice_masterbi_receipt_currency">
               <Select
                 v-model="workPara.invoice_masterbi_receipt_currency"
-                :disabled="(!!workPara.invoice_masterbi_receipt_release_date || !!workPara.invoice_masterbi_deposit_date || !!workPara.invoice_masterbi_fee_date) && checkType !== 'fee'"
                 @on-change="changeReceiptCurrency"
               >
                 <Option v-for="item in pagePara.RECEIPT_CURRENCY" :value="item.id" :key="item.id">{{ item.text }}</Option>
@@ -208,6 +207,18 @@
             <FormItem label="Cash/Cheque" prop="invoice_masterbi_check_cash">
               <Select v-model="workPara.invoice_masterbi_check_cash">
                 <Option v-for="item in pagePara.CASH_BANK_INFO" :value="item.id" :key="item.id" :disabled = "item.id === 'CASH'">{{ item.text }}</Option>
+              </Select>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row v-if="workPara.invoice_masterbi_check_cash === 'TRANSFER'">
+          <Col>
+            <FormItem label="Bank Info" prop="receipt_bank_info">
+              <Select v-model="workPara.receipt_bank_info">
+                <Option v-for="item in pagePara.BANK_INFOS" :value="item.bank_code" :key="item.bank_code">
+                  {{ item.bank_code }}
+                  <span style="float:right;">{{ item.bank_name }}</span>
+                </Option>
               </Select>
             </FormItem>
           </Col>

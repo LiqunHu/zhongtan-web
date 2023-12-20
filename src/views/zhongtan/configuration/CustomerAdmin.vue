@@ -114,6 +114,12 @@
             </Option>
           </Select>
         </FormItem>
+        <FormItem label="U8 CODE" prop="u8_code" style="margin-bottom: 7px;">
+          <Input placeholder="U8 CODE" v-model="workPara.u8_code"/>
+        </FormItem>
+        <FormItem label="U8 ALIAS" prop="u8_alias" style="margin-bottom: 7px;">
+          <Input placeholder="U8 ALIAS" v-model="workPara.u8_alias"/>
+        </FormItem>
       </Form>
       <div slot="footer">
         <Button type="text" size="large" @click="modal.userModal=false">Cancel</Button>
@@ -219,6 +225,16 @@ export default {
               title: 'Blacklist',
               slot: 'user_blacklist',
               width: 100,
+            },
+            {
+              title: 'U8 Code',
+              key: 'u8_code',
+              width: 100,
+            },
+            {
+              title: 'U8 Alias',
+              key: 'u8_alias',
+              width: 200,
             },
             {
               title: 'Action',

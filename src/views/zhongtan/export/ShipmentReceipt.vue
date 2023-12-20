@@ -130,6 +130,18 @@
         </FormItem>
         <Row v-if="receiptForm.shipment_receipt_check_cash === 'TRANSFER'">
           <Col>
+            <FormItem label="Bank Info" prop="receipt_bank_info">
+              <Select v-model="receiptForm.shipment_receipt_bank_info">
+                <Option v-for="item in pagePara.BANK_INFOS" :value="item.bank_code" :key="item.bank_code">
+                  {{ item.bank_code }}
+                  <span style="float:right;">{{ item.bank_name }}</span>
+                </Option>
+              </Select>
+            </FormItem>
+          </Col>
+        </Row>
+        <Row v-if="receiptForm.shipment_receipt_check_cash === 'TRANSFER'">
+          <Col>
             <FormItem label="Bank Reference No" prop="overdue_invoice_bank_reference_no" >
               <Input placeholder="Bank Reference No" v-model="receiptForm.shipment_receipt_bank_reference_no"/>
             </FormItem>
