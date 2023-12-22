@@ -109,20 +109,20 @@
             <Option v-for="item in pagePara.CASH_BANK_INFO" :value="item.id" :key="item.id" :disabled = "item.id === 'CASH'">{{ item.text }}</Option>
           </Select>
         </FormItem>
-        <Row v-if="receiptForm.overdue_invoice_check_cash === 'TRANSFER'">
-          <Col>
-            <FormItem label="Bank Reference No" prop="overdue_invoice_bank_reference_no" >
-              <Input placeholder="Bank Reference No" v-model="receiptForm.overdue_invoice_bank_reference_no"/>
-            </FormItem>
-          </Col>
-        </Row>
-        <Row v-if="receiptForm.overdue_invoice_check_cash === 'CHEQUE'">
-          <Col>
-            <FormItem label="Check No" prop="overdue_invoice_check_no" >
-              <Input placeholder="Check No" v-model="receiptForm.overdue_invoice_check_no"/>
-            </FormItem>
-          </Col>
-        </Row>
+        <FormItem label="Bank Info" prop="receipt_bank_info" v-if="receiptForm.overdue_invoice_check_cash === 'TRANSFER'">
+          <Select v-model="receiptForm.receipt_bank_info">
+            <Option v-for="item in pagePara.BANK_INFOS" :value="item.bank_code" :key="item.bank_code">
+              {{ item.bank_code }}
+              <span style="float:right;">{{ item.bank_name }}</span>
+            </Option>
+          </Select>
+        </FormItem>
+        <FormItem label="Bank Reference No" prop="overdue_invoice_bank_reference_no" v-if="receiptForm.overdue_invoice_check_cash === 'TRANSFER'">
+          <Input placeholder="Bank Reference No" v-model="receiptForm.overdue_invoice_bank_reference_no"/>
+        </FormItem>
+        <FormItem label="Check No" prop="overdue_invoice_check_no" v-if="receiptForm.overdue_invoice_check_cash === 'CHEQUE'">
+          <Input placeholder="Check No" v-model="receiptForm.overdue_invoice_check_no"/>
+        </FormItem>
       </Form>
       <div slot="footer">
         <Button type="text" size="large" @click="modal.receiptModal = false">Cancel</Button>
