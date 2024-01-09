@@ -296,6 +296,7 @@ export default {
       },
       receiptForm: {
         received_from_id: '',
+        uploadfile_id: '',
         uploadfile_amount: '',
         mnr_invoice_check_cash: 'CHEQUE',
         receipt_bank_info: '',
@@ -374,6 +375,7 @@ export default {
       // this.receiptForm = Object.assign({}, row.receipts)
         this.receiptForm.received_from_id =  row.receipts.customers[0].user_id
         this.receiptForm.received_from =  row.receipts.customers[0].user_name
+        this.receiptForm.uploadfile_id = row.receipts.uploadfile_id
         this.receiptForm.uploadfile_amount = row.receipts.uploadfile_amount
         this.receiptForm.mnr_invoice_check_cash = 'CHEQUE'
       })
