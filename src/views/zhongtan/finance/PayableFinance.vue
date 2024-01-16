@@ -296,7 +296,7 @@
             receivedBankEditModal: false, u8OughtPayModal: false, u8PaymnetModal: false
         },
         search_data: {
-            receipt_date: [moment().subtract(6, 'month').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
+            receipt_date: [moment().subtract(7, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
             items_type: ''
         },
         payableTable: {
