@@ -296,7 +296,7 @@
             receivedBankEditModal: false, u8OughtPayModal: false, u8PaymnetModal: false
         },
         search_data: {
-            receipt_date: [moment().subtract(7, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
+            receipt_date: [moment().startOf('month').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
             items_type: ''
         },
         payableTable: {
@@ -372,7 +372,7 @@
             sendPayable: true, sendPayment: true
         },
         payment_search_data: {
-            payable_date: [moment().subtract(7, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
+            payable_date: [moment().startOf('month').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
         },
         paymentTable: {
             columns: [
@@ -478,8 +478,8 @@
             ]
         },
         complete_search_data: {
-            payable_date: [moment().subtract(7, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
-            payment_date: [moment().subtract(7, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
+            payable_date: [moment().startOf('month').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
+            payment_date: [moment().startOf('month').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
         },
         completeTable: {
             columns: [

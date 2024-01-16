@@ -402,7 +402,7 @@
             receivedBankEditModal: false, u8OughtReceiveModal: false, u8ReceivedModal: false, splitReceivedModal: false
         },
         search_data: {
-            receipt_date: [moment().subtract(7, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
+            receipt_date: [moment().startOf('month').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
             receipt_type: ''
         },
         receivableTable: {
@@ -472,7 +472,7 @@
             sendReceivable: true, sendReceived: true, receivedEdit: true
         },
         received_search_data: {
-            receivable_date: [moment().subtract(7, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
+            receivable_date: [moment().startOf('month').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
         },
         receivedTable: {
             columns: [
@@ -575,8 +575,8 @@
             ]
         },
         complete_search_data: {
-            receivable_date: [moment().subtract(7, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
-            received_date: [moment().subtract(7, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
+            receivable_date: [moment().startOf('month').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
+            received_date: [moment().startOf('month').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
         },
         completeTable: {
             columns: [
