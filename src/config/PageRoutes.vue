@@ -94,6 +94,10 @@ const routes = [
 
   { path: '/admin/zhongtan/file/FileControl', component: resolve => require(['@/views/zhongtan/file/FileControl'], resolve) },
   { path: '/admin/zhongtan/file/FileAdminControl', component: resolve => require(['@/views/zhongtan/file/FileAdminControl'], resolve) },
+
+
+  { path: '/admin/zhongtan/finance/ReceivableFinance', component: resolve => require(['@/views/zhongtan/finance/ReceivableFinance'], resolve) },
+  { path: '/admin/zhongtan/finance/PayableFinance', component: resolve => require(['@/views/zhongtan/finance/PayableFinance'], resolve) },
 ]
 
 export default routes

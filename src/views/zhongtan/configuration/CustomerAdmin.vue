@@ -114,11 +114,17 @@
             </Option>
           </Select>
         </FormItem>
-        <FormItem label="U8 CODE" prop="u8_code" style="margin-bottom: 7px;">
-          <Input placeholder="U8 CODE" v-model="workPara.u8_code"/>
+        <FormItem label="U8 CUSTOMER CODE" prop="u8_code" style="margin-bottom: 7px;">
+          <Input placeholder="U8 CUSTOMER CODE" v-model="workPara.u8_code"/>
         </FormItem>
-        <FormItem label="U8 ALIAS" prop="u8_alias" style="margin-bottom: 7px;">
-          <Input placeholder="U8 ALIAS" v-model="workPara.u8_alias"/>
+        <FormItem label="U8 CUSTOMER ALIAS" prop="u8_alias" style="margin-bottom: 7px;">
+          <Input placeholder="U8 CUSTOMER ALIAS" v-model="workPara.u8_alias"/>
+        </FormItem>
+        <FormItem label="U8 VENDOR CODE" prop="u8_code" style="margin-bottom: 7px;">
+          <Input placeholder="U8 VENDOR CODE" v-model="workPara.u8_vendor_code"/>
+        </FormItem>
+        <FormItem label="U8 VENDOR ALIAS" prop="u8_alias" style="margin-bottom: 7px;">
+          <Input placeholder="U8 VENDOR ALIAS" v-model="workPara.u8_vendor_alias"/>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -227,13 +233,23 @@ export default {
               width: 100,
             },
             {
-              title: 'U8 Code',
+              title: 'U8 Customer Code',
               key: 'u8_code',
+              width: 200,
+            },
+            {
+              title: 'U8 Customer Alias',
+              key: 'u8_alias',
+              width: 200,
+            },
+            {
+              title: 'U8 Vendor Code',
+              key: 'u8_vendor_code',
               width: 100,
             },
             {
-              title: 'U8 Alias',
-              key: 'u8_alias',
+              title: 'U8 Vendor Alias',
+              key: 'u8_vendor_alias',
               width: 200,
             },
             {

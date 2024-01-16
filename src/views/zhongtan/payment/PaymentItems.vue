@@ -40,16 +40,91 @@
             <i class="fa fa-times"></i>
           </a>
         </template>
+        <template slot-scope="{ row, index }" slot="payment_items_type">
+          <template v-if="row.payment_items_type">
+            {{ row.payment_items_type_name }} ({{ row.payment_items_type }})
+          </template>
+        </template>
       </Table>
       <Page class="m-t-10" :total="table.paymentItems.total" :page-size="table.paymentItems.limit" @on-change="getPaymentItemsData"/>
     </panel>
-    <Modal v-model="modal.paymentItemsModal" title="Freight Place">
+    <Modal v-model="modal.paymentItemsModal" title="Freight Place" width="1000">
       <Form :model="workPara" :label-width="120" :rules="formRule.rulePaymentItemsModal" ref="formPaymentItems">
         <FormItem label="Code" prop="payment_items_code">
           <Input placeholder="Discharge Port Code" maxlength="20" v-model="workPara.payment_items_code"/>
         </FormItem>
         <FormItem label="Name" prop="payment_items_name">
           <Input placeholder="Discharge Port Name" maxlength="100" v-model="workPara.payment_items_name"/>
+        </FormItem>
+        <FormItem label="Type" prop="payment_items_type">
+          <Select v-model="workPara.payment_items_type">
+              <Option v-for="item in pagePara.PAYMENT_ITEM_TYPE" :value="item.id" :key="item.id">
+                {{ item.text }}({{ item.id }})
+              </Option>
+          </Select>
+        </FormItem>
+        <FormItem label="Payable">
+          <Row>
+            <Col :span="12">
+              <Card title="Debit" dis-hover>
+                <Row>
+                  <Col :span="8">
+                    <Input placeholder="subject code" maxlength="20" v-model="workPara.item_code_payable_debit_1"/>
+                  </Col>
+                  <Col :span="16">
+                    <Select placeholder="carrier" v-model="workPara.item_code_payable_debit_carrier_1" filterable clearable multiple>
+                        <Option v-for="item in pagePara.COMMON_CUSTOMER" :value="item.user_id" :key="item.user_id">
+                          {{ item.user_name }}
+                        </Option>
+                    </Select>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col :span="8">
+                    <Input placeholder="subject code" maxlength="20" v-model="workPara.item_code_payable_debit_2"/>
+                  </Col>
+                  <Col :span="16">
+                    <Select placeholder="carrier" v-model="workPara.item_code_payable_debit_carrier_2" filterable clearable multiple>
+                        <Option v-for="item in pagePara.COMMON_CUSTOMER" :value="item.user_id" :key="item.user_id">
+                          {{ item.user_name }}
+                        </Option>
+                    </Select>
+                  </Col>
+                </Row>
+              </Card>
+            </Col>
+            <Col :span="12">
+              <Card title="Credit" dis-hover>
+                <Row>
+                  <Col :span="24">
+                    <Input placeholder="subject code" maxlength="20" v-model="workPara.item_code_payable_credit"/>
+                  </Col>
+                </Row>
+              </Card>
+            </Col>
+          </Row>
+        </FormItem>
+        <FormItem label="Payment">
+          <Row>
+            <Col :span="12">
+              <Card title="Debit" dis-hover>
+                <Row>
+                  <Col :span="24">
+                    <Input placeholder="subject code" maxlength="20" v-model="workPara.item_code_payment_debit"/>
+                  </Col>
+                </Row>
+              </Card>
+            </Col>
+            <Col :span="12">
+              <Card title="Credit" dis-hover>
+                <Row>
+                  <Col :span="24">
+                    <Input placeholder="item_code_payment_credit" maxlength="20" v-model="workPara.item_code_payment_credit"/>
+                  </Col>
+                </Row>
+              </Card>
+            </Col>
+          </Row>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -61,6 +136,7 @@
 </template>
 <script>
 import PageOptions from '../../../config/PageOptions.vue'
+import PaymentItemsExpand from './PaymentItemsExpand.vue'
 const apiUrl = '/api/zhongtan/payment/PaymentItems/'
 
 export default {
@@ -77,12 +153,25 @@ export default {
               align: 'center'
             },
             {
+              type: 'expand',
+              width: 50,
+              render: (h, params) => {
+                  return h(PaymentItemsExpand, {
+                      props: {  row: params.row  }
+                  })
+              }
+            },
+            {
               title: 'Code',
               key: 'payment_items_code'
             },
             {
               title: 'Name',
               key: 'payment_items_name'
+            },
+            {
+              title: 'Type',
+              slot: 'payment_items_type'
             },
             {
               title: 'Action',

@@ -126,6 +126,11 @@
             <Option v-for="item in pagePara.VESSELS" :value="item.vessel_voyage" :key="item.vessel_voyage">{{ item.vessel_voyage }}</Option>
           </Select>
         </FormItem>
+        <FormItem label="VESSEL TYPE" prop="payment_vessel_type">
+          <Select placeholder="VESSEL TYPE" clearable filterable v-model="workPara.payment_vessel_type">
+            <Option v-for="item in pagePara.PAYMENT_VESSEL_TYPE" :value="item.id" :key="item.id">{{ item.text }}</Option>
+          </Select>
+        </FormItem>
         <FormItem label="ITEMS" prop="payment_advice_items">
           <Select placeholder="ITEMS" clearable filterable v-model="workPara.payment_advice_items">
             <Option v-for="item in pagePara.PAYMENT_ITEMS" :value="item.payment_items_code" :key="item.payment_items_code" :label="item.payment_items_name">

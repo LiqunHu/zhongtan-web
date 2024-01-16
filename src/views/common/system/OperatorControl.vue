@@ -71,6 +71,9 @@
         <FormItem label="U8别称" prop="u8_alias">
           <Input placeholder="U8别称" v-model="workPara.u8_alias"/>
         </FormItem>
+        <FormItem label="U8部门编码" prop="u8_department_code">
+          <Input placeholder="U8部门编码" v-model="workPara.u8_department_code"/>
+        </FormItem>
         <FormItem label="用户组" prop="user_groups">
           <Select multiple v-model="workPara.user_groups">
             <Option v-for="item in pagePara.groupInfo" :value="item.id" :key="item.id" :disabled="item.disabled">{{ item.text }}</Option>
@@ -129,6 +132,10 @@ export default {
             {
               title: 'U8别称',
               key: 'u8_alias'
+            },
+            {
+              title: 'U8部门编码',
+              key: 'u8_department_code'
             },
             {
               title: '用户组',

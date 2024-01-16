@@ -166,6 +166,26 @@ export default {
               title: 'Blacklist',
               slot: 'user_blacklist',
               width: 100,
+            },
+            {
+              title: 'U8 Customer Code',
+              key: 'u8_code',
+              width: 200,
+            },
+            {
+              title: 'U8 Customer Alias',
+              key: 'u8_alias',
+              width: 200,
+            },
+            {
+              title: 'U8 Vendor Code',
+              key: 'u8_vendor_code',
+              width: 100,
+            },
+            {
+              title: 'U8 Vendor Alias',
+              key: 'u8_vendor_alias',
+              width: 200,
             }
           ],
           data: [],

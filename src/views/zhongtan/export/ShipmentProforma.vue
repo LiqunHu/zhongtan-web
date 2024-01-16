@@ -719,7 +719,7 @@ export default {
     handleShipmentFormatError(file) {
       this.$Notice.warning({
         title: 'The file format is incorrect',
-        desc: 'File format of ' + file.name + ' is incorrect, please select pdf.'
+        desc: 'File format of ' + file.name + ' is incorrect, please select excel.'
       })
     },
     handleMaxSize(file) {
