@@ -27,6 +27,11 @@
                             </Select>
                         </div>
                         <div class="form-group m-r-2">
+                            <Select clearable v-model="search_data.receipt_carrier" style="width:200px"  @on-change="getReceivableData(1)">
+                                <Option v-for="item in pagePara.RECEIPT_CARRIER" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                            </Select>
+                        </div>
+                        <div class="form-group m-r-2">
                             <button type="button" class="btn btn-info" @click="getReceivableData(1)"><i class="fa fa-search"></i> Search</button>
                         </div>
                         <div class="form-group m-r-2">
@@ -95,6 +100,11 @@
                     <div class="form-inline">
                         <div class="form-group m-r-2">
                             Receivable Date: <DatePicker type="daterange" :value="received_search_data.receivable_date" style="width:200px"  placeholder="Receivable Date" @on-change="changeReceivedReceivableDate"></DatePicker>
+                        </div>
+                        <div class="form-group m-r-2">
+                            <Select clearable v-model="received_search_data.receipt_carrier" style="width:200px"  @on-change="getReceivedData(1)">
+                                <Option v-for="item in pagePara.RECEIPT_CARRIER" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                            </Select>
                         </div>
                         <div class="form-group m-r-2">
                             <button type="button" class="btn btn-info" @click="getReceivedData(1)"><i class="fa fa-search"></i> Search</button>
@@ -177,6 +187,11 @@
                         </div>
                         <div class="form-group m-r-2">
                             Received Date: <DatePicker type="daterange" :value="complete_search_data.received_date" style="width:200px"  placeholder="Received Date" @on-change="changeCompleteReceivedDate"></DatePicker>
+                        </div>
+                        <div class="form-group m-r-2">
+                            <Select clearable v-model="complete_search_data.receipt_carrier" style="width:200px"  @on-change="getCompleteData(1)">
+                                <Option v-for="item in pagePara.RECEIPT_CARRIER" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                            </Select>
                         </div>
                         <div class="form-group m-r-2">
                             <button type="button" class="btn btn-info" @click="getCompleteData(1)"><i class="fa fa-search"></i> Search</button>
