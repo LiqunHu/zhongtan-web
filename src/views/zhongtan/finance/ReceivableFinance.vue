@@ -701,7 +701,6 @@
         }
       },
       changeTabAct: function(name) {
-        console.log('name', name)
         if(name === 'ReceivableTab') {
             this.getReceivableData()
         } else if (name === 'ReceivedTab'){
@@ -946,7 +945,6 @@
                 return this.$Message.error(sr.ought_receive_no + ' received amount not balance')
             }
         }
-        console.log(this.splitReceivedList)
         this.$commonact.confirm('Confirm Send Received to U8 System?', async () => {
             try {
                 let response = await this.$http.post(apiUrl + 'submitSplitReceived', {split_received_list: this.splitReceivedList})

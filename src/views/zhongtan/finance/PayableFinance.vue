@@ -604,7 +604,6 @@
         }
       },
       changeTabAct: function(name) {
-        console.log('name', name)
         if(name === 'PayableTab') {
             this.getPayableData()
         } else if (name === 'PaymentTab'){
