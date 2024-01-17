@@ -43,6 +43,11 @@
                     <template slot-scope="{ row, index }" slot="receipt_no">
                         <span style="float: left;">{{ row.receipt_no }}</span>
                         <span style="float: right;">
+                            <Tooltip content="SYNC">
+                                <a href="#" class="btn btn-warning btn-icon btn-sm" @click="syncU8Receivable(row)">
+                                    <i class="fa fa-sync "/>
+                                </a>
+                            </Tooltip>
                             <Tooltip content="RECEIPT">
                                 <a  :href="row.receipt_url" class="btn btn-green btn-icon btn-sm" target="_blank">
                                     <i class="fa fa-money-bill-alt "/>
@@ -777,6 +782,15 @@
             })
         } else {
             return this.$Message.error('Please select receivable order')
+        }
+      },
+      syncU8Receivable: async function(row) {
+        try {
+            await this.$http.post(apiUrl + 'syncU8Receivable', {sync_data: row})
+            this.getReceivableData()
+            this.$Message.success('Sync Recievable success')
+        } catch (error) {
+            this.$commonact.fault(error)
         }
       },
       changeReceivedReceivableDate: function(e) {
