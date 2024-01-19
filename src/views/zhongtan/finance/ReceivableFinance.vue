@@ -37,6 +37,12 @@
                         <div class="form-group m-r-2">
                             <button type="button" class="btn btn-success" @click="submitReceivable()" :disabled="buttonAuth.sendReceivable"><i class="fa fa-check"></i> Send Receivable</button>
                         </div>
+                        <!-- <div class="form-group m-r-2">
+                            <button type="button" class="btn btn-success" @click="splitReceivable()" :disabled="buttonAuth.sendReceivable"><i class="fa fa-check"></i> Split Send Receivable</button>
+                        </div>
+                        <div class="form-group m-r-2">
+                            <button type="button" class="btn btn-success" @click="skip2Received()" :disabled="buttonAuth.sendReceivable"><i class="fa fa-angle-right"></i> Skip To Received</button>
+                        </div> -->
                     </div>
                 </div>
                 <Table stripe size="small" ref="receivableTable" :columns="receivableTable.columns" :data="receivableTable.data" :height="receivableTable.height" :border="receivableTable.data && receivableTable.data.length > 0" @on-selection-change="selectReceivableAct">
@@ -129,7 +135,7 @@
                     <template slot-scope="{ row, index }" slot="ought_receive_no">
                         <span style="float: left;">{{ row.ought_receive_no }}</span>
                         <span style="float: right;">
-                            <Tooltip content="RECEIVABLE">
+                            <Tooltip content="RECEIVABLE" v-if="row.ought_receive_u8_id !== 'SKIP'">
                                 <a  href="#" class="btn btn-info btn-icon btn-sm" @click="watchU8Receviable(row)">
                                     <i class="fa fa-eye "/>
                                 </a>
@@ -207,7 +213,7 @@
                     <template slot-scope="{ row, index }" slot="ought_receive_no">
                         <span style="float: left;">{{ row.ought_receive_no }}</span>
                         <span style="float: right;">
-                            <Tooltip content="RECEIVABLE">
+                            <Tooltip content="RECEIVABLE" v-if="row.ought_receive_u8_id !== 'SKIP'">
                                 <a  href="#" class="btn btn-info btn-icon btn-sm" @click="watchU8Receviable(row)">
                                     <i class="fa fa-eye "/>
                                 </a>
@@ -364,6 +370,9 @@
             <!-- {{ item.split_detail }} -->
             <Card v-for="(sItem, sIndex) in item.split_detail" :key="sIndex" style="margin-bottom: 12px;">
                 <Row>
+                    <Col span="6">
+                        item code<Input placeholder="Item Code" v-model="sItem.custom_header_subject_code" style="width: 160px;"></Input>
+                    </Col>
                     <Col span="8">
                         Bank: 
                         <Select v-model="sItem.split_bank" style="width: 300px;">
@@ -373,11 +382,11 @@
                             </Option>
                         </Select>
                     </Col>
-                    <Col span="8">
+                    <Col span="4">
                         {{ sItem.split_currency }}
                         <span style="color:green; font-weight: bold;" v-if="item.received_balance">{{ sItem.split_amount }}</span> <span style="color:red; font-weight: bold;" v-else>{{ sItem.split_amount }}</span> 
                     </Col>
-                    <Col span="8">
+                    <Col span="6">
                         Reference No.: {{ sItem.split_reference_no }}
                     </Col>
                 </Row>
@@ -404,7 +413,60 @@
             <Button type="text" size="large" @click="modal.splitReceivedModal=false">Cancel</Button>
             <Button type="primary" size="large" @click="submitSplitReceived">Submit</Button>
         </div>
-    </Modal>
+      </Modal>
+      <Modal v-model="modal.splitReceivableModal" title="Split Receivable" width="1200" >
+        <Card v-for="(item, index) in splitReceivableList" :key="index" style="margin-bottom: 12px;">
+            <template slot="title">
+                <Row>
+                    <Col span="6">
+                        {{ item.receipt_no }}
+                    </Col>
+                    <Col span="4">
+                        {{ item.receipt_type }}
+                    </Col>
+                    <Col span="4">
+                        {{ item.receipt_currency }} <span style="color:green; font-weight: bold;" v-if="item.received_balance">{{ item.receipt_amount }}</span>
+                    </Col>
+                    <Col span="10">
+                        Reference No.: {{ item.receipt_reference_no }}
+                    </Col>
+                </Row>
+            </template>
+            <!-- {{ item.split_detail }} -->
+            <Card v-for="(sItem, sIndex) in item.split_detail" :key="sIndex" style="margin-bottom: 12px;">
+                <Row>
+                    <Col span="8">
+                        {{ sItem.split_currency }}
+                        <span style="color:green; font-weight: bold;" v-if="item.received_balance">{{ sItem.split_amount }}</span> <span style="color:red; font-weight: bold;" v-else>{{ sItem.split_amount }}</span> 
+                    </Col>
+                    <Col span="8">
+                        Reference No.: {{ sItem.split_reference_no }}
+                    </Col>
+                </Row>
+                <Divider />
+                <List border>
+                    <ListItem v-for="(sdItem, sdIndex) in sItem.split_fees" :key="sdIndex">
+                        <Row style="width: 100%;">
+                            <Col span="8">
+                                {{ sdItem.fee_name }}
+                            </Col>
+                            <Col span="8">
+                                <InputNumber v-model="sdItem.split_detail_amount" @on-change="changeSplitDetailAmount($event, index, sIndex, sdIndex)"></InputNumber>
+                            </Col>
+                            <Col span="8">
+                                <span style="color:green; font-weight: bold;">{{ sdItem.fee_amount }}</span>
+                                <i style="color:#2D8CF0; margin-left: 7px; cursor: pointer;" class="fa fa-check" @click="inputSplitDetailAmount($event, index, sIndex, sdIndex)"></i>
+                            </Col>
+                        </Row>
+                    </ListItem>
+                </List>
+            </Card>
+        </Card>
+        <div slot="footer">
+            <Button type="text" size="large" @click="modal.splitReceivedModal=false">Cancel</Button>
+            <Button type="primary" size="large" @click="submitSplitReceived">Submit</Button>
+        </div>
+      </Modal>
     </div>
   </template>
   <script>
@@ -419,7 +481,7 @@
       return {
         pagePara: {},
         modal: {
-            receivedBankEditModal: false, u8OughtReceiveModal: false, u8ReceivedModal: false, splitReceivedModal: false
+            receivedBankEditModal: false, u8OughtReceiveModal: false, u8ReceivedModal: false, splitReceivedModal: false, splitReceivableModal: false
         },
         search_data: {
             receipt_date: [moment().startOf('month').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
@@ -701,7 +763,8 @@
                 },
             ]
         },
-        splitReceivedList: []
+        splitReceivedList: [],
+        splitReceivableList: []
       }
     },
     created() {
@@ -772,12 +835,72 @@
                     let data = response.data.info
                     this.getReceivableData()
                     if(data.code === '1') {
-                        this.$Message.success('Submit Recievable success')
+                        return this.$Message.success('Submit Recievable success')
                     } else {
-                        this.$Message.error(data.errMessage)
+                        return this.$Message.error(data.errMessage)
                     }
                 } catch (error) {
-                    this.$commonact.fault(error)
+                    return this.$commonact.fault(error)
+                }
+            })
+        } else {
+            return this.$Message.error('Please select receivable order')
+        }
+      },
+      splitReceivable: async function() {
+        this.splitReceivableList = this.$refs.receivableTable.getSelection()
+        let regex = '/\\s*([0-9]+)/i'
+        for(let sr of this.splitReceivableList) {
+            let splitDetail = []
+            let split_fees = JSON.parse(JSON.stringify(sr.receipt_detail))
+            if(sr.receipt_reference_no.indexOf('/') > 0) {
+                for(let sf of split_fees) {
+                    sf.split_detail_amount = 0
+                }
+                let reference_nos = sr.receipt_reference_no.split('/')
+                for(let rn of reference_nos) {
+                    let split_amount = 0
+                    let rn_amounts = regex.exec(rn)
+                    if(rn_amounts && rn_amounts.length > 1) {
+                        split_amount = rn_amounts[1]
+                    }
+                    splitDetail.push({
+                        split_currency: sr.receipt_currency,
+                        split_amount: split_amount,
+                        split_reference_no: rn,
+                        split_fees: JSON.parse(JSON.stringify(split_fees))
+                    })
+                }
+            } else {
+                for(let sf of split_fees) {
+                    sf.split_detail_amount = sf.fee_amount
+                }
+                splitDetail.push({
+                    split_currency: sr.receipt_currency,
+                    split_amount: sr.receipt_amount,
+                    split_reference_no: sr.receipt_reference_no,
+                    split_fees: JSON.parse(JSON.stringify(split_fees))
+                })
+            }
+            sr.split_detail = splitDetail
+        }
+        this.modal.splitReceivableModal = true
+      },
+      skip2Received: async function() {
+        let submit_receivable_list = this.$refs.receivableTable.getSelection()
+        if(submit_receivable_list && submit_receivable_list.length > 0) {
+            this.$commonact.confirm('Confirm Skip To Received?', async () => {
+                try {
+                    let response = await this.$http.post(apiUrl + 'skip2Received', {receivable_list: submit_receivable_list})
+                    let data = response.data.info
+                    this.getReceivableData()
+                    if(data.code === '1') {
+                        return this.$Message.success('Skip To Received success')
+                    } else {
+                        return this.$Message.error(data.errMessage)
+                    }
+                } catch (error) {
+                    return this.$commonact.fault(error)
                 }
             })
         } else {
@@ -844,9 +967,9 @@
                 await this.$http.post(apiUrl + 'submitReceivedBankInfo', {received_list: submit_received_list, submit_data: this.receivedBankForm})
                 this.modal.receivedBankEditModal = false
                 this.getReceivedData()
-                this.$Message.success('Edit Bank success')
+                return this.$Message.success('Edit Bank success')
             } catch (error) {
-                this.$commonact.fault(error)
+                return this.$commonact.fault(error)
             }
         } else {
             return this.$Message.error('Please select received order')
@@ -870,12 +993,12 @@
                     let data = response.data.info
                     this.getReceivedData()
                     if(data.code === '1') {
-                        this.$Message.success('Submit Recieived success')
+                        return this.$Message.success('Submit Recieived success')
                     } else {
-                        this.$Message.error(data.errMessage)
+                        return this.$Message.error(data.errMessage)
                     }
                 } catch (error) {
-                    this.$commonact.fault(error)
+                    return this.$commonact.fault(error)
                 }
             })
         } else {
@@ -944,6 +1067,7 @@
                 let reference_nos = sr.ought_receive_reference_no.split('/')
                 for(let rn of reference_nos) {
                     splitDetail.push({
+                        custom_header_subject_code: '',
                         split_bank: sr.ought_receive_bank,
                         split_currency: sr.ought_receive_currency,
                         split_amount: 0,
@@ -957,6 +1081,7 @@
                 }
                 sr.received_balance = true
                 splitDetail.push({
+                    custom_header_subject_code: '',
                     split_bank: sr.ought_receive_bank,
                     split_currency: sr.ought_receive_currency,
                     split_amount: sr.ought_receive_amount,
@@ -967,6 +1092,9 @@
             sr.split_detail = splitDetail
         }
         this.modal.splitReceivedModal = true
+      },
+      changeSplitRollover: async function(row) {
+
       },
       submitSplitReceived: async function() {
         for(let sr of this.splitReceivedList) {
@@ -980,12 +1108,12 @@
                 let data = response.data.info
                 this.getReceivedData()
                 if(data.code === '1') {
-                    this.$Message.success('Submit Recieived success')
+                    return this.$Message.success('Submit Recieived success')
                 } else {
-                    this.$Message.error(data.errMessage)
+                    return this.$Message.error(data.errMessage)
                 }
             } catch (error) {
-                this.$commonact.fault(error)
+                return this.$commonact.fault(error)
             }
         })
       },
