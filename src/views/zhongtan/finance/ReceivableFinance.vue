@@ -370,24 +370,35 @@
             <!-- {{ item.split_detail }} -->
             <Card v-for="(sItem, sIndex) in item.split_detail" :key="sIndex" style="margin-bottom: 12px;">
                 <Row>
-                    <Col span="6">
-                        item code<Input placeholder="Item Code" v-model="sItem.custom_header_subject_code" style="width: 160px;"></Input>
+                    <Col span="10">
+                        <Row>
+                            Item Code<Input placeholder="Item Code" v-model="sItem.custom_header_subject_code" style="width: 160px;"></Input>
+                        </Row>
+                        <Row style="margin-top: 7px;">
+                            <Col span="12">
+                                Project Code<Input placeholder="Project Code" v-model="sItem.custom_header_project_code" style="width: 143px;"></Input>
+                            </Col>
+                            <Col span="12">
+                                Name<Input placeholder="Project Name" v-model="sItem.custom_header_project_name" style="width: 140px;"></Input>
+                            </Col>
+                            
+                        </Row>
                     </Col>
-                    <Col span="8">
+                    <Col span="6">
                         Bank: 
-                        <Select v-model="sItem.split_bank" style="width: 300px;">
+                        <Select v-model="sItem.split_bank" style="width: 200px;">
                             <Option v-for="item in pagePara.BANK_INFOS" :value="item.bank_code" :key="item.bank_code">
                                 {{ item.bank_code }}
                                 <span style="float:right;">{{ item.bank_name }}</span>
                             </Option>
                         </Select>
                     </Col>
-                    <Col span="4">
+                    <Col span="3">
                         {{ sItem.split_currency }}
                         <span style="color:green; font-weight: bold;" v-if="item.received_balance">{{ sItem.split_amount }}</span> <span style="color:red; font-weight: bold;" v-else>{{ sItem.split_amount }}</span> 
                     </Col>
-                    <Col span="6">
-                        Reference No.: {{ sItem.split_reference_no }}
+                    <Col span="5">
+                        Ref No.: {{ sItem.split_reference_no }}
                     </Col>
                 </Row>
                 <Divider />
@@ -1066,8 +1077,16 @@
                 }
                 let reference_nos = sr.ought_receive_reference_no.split('/')
                 for(let rn of reference_nos) {
+                    let subject_code = ''
+                    if(rn.indexOf('B.') >= 0) {
+                        subject_code = '224107'
+                    } else if(rn.indexOf('DDCT') >= 0 || rn.indexOf('CHARGING OFF DND') >= 0) {
+                        subject_code = '22410502'
+                    }
                     splitDetail.push({
-                        custom_header_subject_code: '',
+                        custom_header_subject_code: subject_code,
+                        custom_header_project_code: '',
+                        custom_header_project_name: '',
                         split_bank: sr.ought_receive_bank,
                         split_currency: sr.ought_receive_currency,
                         split_amount: 0,
@@ -1080,8 +1099,16 @@
                     sf.split_detail_amount = sf.ought_receive_detail_amount
                 }
                 sr.received_balance = true
+                let subject_code = ''
+                if(sr.ought_receive_reference_no.indexOf('B.') >= 0) {
+                    subject_code = '224107'
+                } else if(sr.ought_receive_reference_no.indexOf('DDCT') >= 0 || sr.ought_receive_reference_no.indexOf('CHARGING OFF DND') >= 0) {
+                    subject_code = '22410502'
+                }
                 splitDetail.push({
-                    custom_header_subject_code: '',
+                    custom_header_subject_code: subject_code,
+                    custom_header_project_code: '',
+                    custom_header_project_name: '',
                     split_bank: sr.ought_receive_bank,
                     split_currency: sr.ought_receive_currency,
                     split_amount: sr.ought_receive_amount,
