@@ -30,6 +30,9 @@
                             </Select>
                         </div>
                         <div class="form-group m-r-2">
+                            Inv/Cntrl: <Input v-model="search_data.inv_cntrl" style="width:200px"  placeholder="Inv/Cntrl"></Input>
+                        </div>
+                        <div class="form-group m-r-2">
                             <button type="button" class="btn btn-info" @click="getPayableData(1)"><i class="fa fa-search"></i> Search</button>
                         </div>
                         <div class="form-group m-r-2">
@@ -98,6 +101,9 @@
                     <div class="form-inline">
                         <div class="form-group m-r-2">
                             Payable Date: <DatePicker type="daterange" :value="payment_search_data.payable_date" style="width:200px"  placeholder="Payable Date" @on-change="changePaymentPayableDate"></DatePicker>
+                        </div>
+                        <div class="form-group m-r-2">
+                            Inv/Cntrl: <Input v-model="payment_search_data.inv_cntrl" style="width:200px"  placeholder="Inv/Cntrl"></Input>
                         </div>
                         <div class="form-group m-r-2">
                             <button type="button" class="btn btn-info" @click="getPaymentData(1)"><i class="fa fa-search"></i> Search</button>
@@ -175,6 +181,9 @@
                         </div>
                         <div class="form-group m-r-2">
                             Payment Date: <DatePicker type="daterange" :value="complete_search_data.payment_date" style="width:200px"  placeholder="Payment Date" @on-change="changeCompletePaymentDate"></DatePicker>
+                        </div>
+                        <div class="form-group m-r-2">
+                            Inv/Cntrl: <Input v-model="complete_search_data.inv_cntrl" style="width:200px"  placeholder="Inv/Cntrl"></Input>
                         </div>
                         <div class="form-group m-r-2">
                             <button type="button" class="btn btn-info" @click="getCompleteData(1)"><i class="fa fa-search"></i> Search</button>
@@ -297,7 +306,8 @@
         },
         search_data: {
             receipt_date: [moment().startOf('month').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
-            items_type: ''
+            items_type: '',
+            inv_cntrl: ''
         },
         payableTable: {
             columns: [
@@ -373,6 +383,7 @@
         },
         payment_search_data: {
             payable_date: [moment().startOf('month').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
+            inv_cntrl: ''
         },
         paymentTable: {
             columns: [
@@ -480,6 +491,7 @@
         complete_search_data: {
             payable_date: [moment().startOf('month').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
             payment_date: [moment().startOf('month').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
+            inv_cntrl: ''
         },
         completeTable: {
             columns: [
