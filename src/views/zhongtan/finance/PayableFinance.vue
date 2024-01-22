@@ -73,12 +73,12 @@
                             <span style="color:green; font-weight: bold;">{{ row.payment_advice_amount }}</span> 
                         </span>
                         <span style="float: right;">
-                            <span v-if="row.payment_advice_currency === 'TZS'">[{{ row.payment_advice_amount_rate }}]</span>
+                            <span v-if="row.payment_advice_currency === 'TZS'">[{{ row.payment_advice_rate }}]</span>
                             {{ row.payment_advice_method }}
                         </span>
                     </template>
                     <template slot-scope="{ row, index }" slot="payment_advice_beneficiary">
-                        <span style="color:green; font-weight: bold;" v-if="row.payment_advice_beneficiary_u8_customerr_code">C:{{row.payment_advice_beneficiary_u8_customerr_code}}</span> 
+                        <span style="color:green; font-weight: bold;" v-if="row.payment_advice_beneficiary_u8_vendor_code">V:{{row.payment_advice_beneficiary_u8_vendor_code}}</span> 
                         {{ row.payment_advice_beneficiary_name }}
                     </template>
                     <template slot-scope="{ row, index }" slot="payment_remark">
