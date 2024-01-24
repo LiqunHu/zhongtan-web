@@ -153,7 +153,7 @@
                             <span style="color:green; font-weight: bold;">{{ row.payment_advice_amount }}</span> 
                         </span>
                         <span style="float: right;">
-                            <span v-if="row.payment_advice_currency === 'TZS'">[{{ row.payment_advice_amount_rate }}]</span>
+                            <span v-if="row.payment_advice_currency === 'TZS'">[{{ row.payment_advice_rate }}]</span>
                             {{ row.payment_advice_method }}
                         </span>
                     </template>
@@ -229,7 +229,7 @@
                             <span style="color:green; font-weight: bold;">{{ row.payment_advice_amount }}</span> 
                         </span>
                         <span style="float: right;">
-                            <span v-if="row.payment_advice_currency === 'TZS'">[{{ row.payment_advice_amount_rate }}]</span>
+                            <span v-if="row.payment_advice_currency === 'TZS'">[{{ row.payment_advice_rate }}]</span>
                             {{ row.payment_advice_method }}
                         </span>
                     </template>
