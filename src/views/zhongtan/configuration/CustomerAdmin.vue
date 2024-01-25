@@ -115,16 +115,20 @@
           </Select>
         </FormItem>
         <FormItem label="U8 CUSTOMER CODE" prop="u8_code" style="margin-bottom: 7px;">
-          <Input placeholder="U8 CUSTOMER CODE" v-model="workPara.u8_code"/>
+          <Input v-if="action === 'add'" placeholder="U8 CUSTOMER CODE" v-model="workPara.u8_code"/>
+          <Input v-else placeholder="U8 CUSTOMER CODE" v-model="workPara.u8_code" :disabled="!editCustomerName"/>
         </FormItem>
         <FormItem label="U8 CUSTOMER ALIAS" prop="u8_alias" style="margin-bottom: 7px;">
-          <Input placeholder="U8 CUSTOMER ALIAS" v-model="workPara.u8_alias"/>
+          <Input v-if="action === 'add'" placeholder="U8 CUSTOMER ALIAS" v-model="workPara.u8_alias"/>
+          <Input v-else placeholder="U8 CUSTOMER ALIAS" v-model="workPara.u8_alias" :disabled="!editCustomerName"/>
         </FormItem>
         <FormItem label="U8 VENDOR CODE" prop="u8_code" style="margin-bottom: 7px;">
-          <Input placeholder="U8 VENDOR CODE" v-model="workPara.u8_vendor_code"/>
+          <Input v-if="action === 'add'" placeholder="U8 VENDOR CODE" v-model="workPara.u8_vendor_code"/>
+          <Input v-else placeholder="U8 VENDOR CODE" v-model="workPara.u8_vendor_code" :disabled="!editCustomerName"/>
         </FormItem>
         <FormItem label="U8 VENDOR ALIAS" prop="u8_alias" style="margin-bottom: 7px;">
-          <Input placeholder="U8 VENDOR ALIAS" v-model="workPara.u8_vendor_alias"/>
+          <Input v-if="action === 'add'" placeholder="U8 VENDOR ALIAS" v-model="workPara.u8_vendor_alias"/>
+          <Input v-else placeholder="U8 VENDOR ALIAS" v-model="workPara.u8_vendor_alias" :disabled="!editCustomerName"/>
         </FormItem>
       </Form>
       <div slot="footer">

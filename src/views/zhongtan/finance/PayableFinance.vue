@@ -36,6 +36,9 @@
                             <button type="button" class="btn btn-info" @click="getPayableData(1)"><i class="fa fa-search"></i> Search</button>
                         </div>
                         <div class="form-group m-r-2">
+                            <button type="button" class="btn btn-info" @click="showPayableVesselEdit(1)" :disabled="buttonAuth.sendPayable"><i class="fa fa-edit"></i> Vessel Edit</button>
+                        </div>
+                        <div class="form-group m-r-2">
                             <button type="button" class="btn btn-success" @click="submitPayable()" :disabled="buttonAuth.sendPayable"><i class="fa fa-check"></i> Send Payable</button>
                         </div>
                     </div>
@@ -56,7 +59,9 @@
                     </template>
                     <template slot-scope="{ row, index }" slot="vessel_voyage">
                         <span style="float: left;">
-                            {{ row.payment_advice_vessel }}/{{ row.payment_advice_voyage }}
+                            <span v-if="row.payment_vessel_type === '1'" style="color:green; font-weight: bold;">{{ row.payment_advice_vessel }}/{{ row.payment_advice_voyage }}</span>
+                            <span v-else-if="row.payment_vessel_type === '2'" style="color:blue; font-weight: bold;">{{ row.payment_advice_vessel }}/{{ row.payment_advice_voyage }}</span>
+                            <span v-else>{{ row.payment_advice_vessel }}/{{ row.payment_advice_voyage }}</span>
                         </span>
                         <span style="float: right; color:black;">
                             {{ row.payment_advice_vessel_date }}
@@ -288,6 +293,27 @@
             <Button type="text" size="large" @click="modal.u8PaymnetModal=false">Cancel</Button>
         </div>
       </Modal>
+      <Modal v-model="modal.payableVesselEditModal" title="Payable Vessel Edit">
+        <Form ref="payableVesselForm" :model="payableVesselForm" :label-width="120">
+            <FormItem label="VESSEL INFO" prop="payable_vessel">
+                <Select clearable filterable v-model="payableVesselForm.payable_vessel_info">
+                    <Option v-for="(item, index) in pagePara.VESSELS" :value="item.vessel_voyage" :label="item.vessel_voyage" :key="index">
+                        {{ item.vessel_voyage }}
+                        <span style="float:right;">{{ item.vessel_date }}</span>
+                    </Option>
+                </Select>
+            </FormItem>
+            <FormItem label="VESSEL TYPE" prop="payment_vessel_type">
+                <Select clearable filterable v-model="payableVesselForm.payable_vessel_type">
+                    <Option v-for="item in pagePara.PAYMENT_VESSEL_TYPE" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                </Select>
+            </FormItem>
+        </Form>
+        <div slot="footer">
+            <Button type="text" size="large" @click="modal.payableVesselEditModal=false">Cancel</Button>
+            <Button type="primary" size="large" @click="submitPayableVesselEdit">Submit</Button>
+        </div>
+      </Modal>
     </div>
   </template>
   <script>
@@ -302,7 +328,7 @@
       return {
         pagePara: {},
         modal: {
-            receivedBankEditModal: false, u8OughtPayModal: false, u8PaymnetModal: false
+            payableVesselEditModal: false, u8OughtPayModal: false, u8PaymnetModal: false
         },
         search_data: {
             receipt_date: [moment().startOf('month').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
@@ -596,7 +622,11 @@
                 },
             ]
         },
-        splitReceivedList: []
+        splitReceivedList: [],
+        payableVesselForm: {
+            payable_vessel_info: '',
+            payable_vessel_type: ''
+        }
       }
     },
     created() {
@@ -785,6 +815,26 @@
             this.modal.u8PaymnetModal = true
         } catch (error) {
             this.$commonact.fault(error)
+        }
+      },
+      showPayableVesselEdit: async function() {
+        this.payableVesselForm.payable_vessel_info = ''
+        this.payableVesselForm.payable_vessel_type = ''
+        this.modal.payableVesselEditModal = true
+      },
+      submitPayableVesselEdit: async function() {
+        let submit_payable_list = this.$refs.payableTable.getSelection()
+        if(submit_payable_list && submit_payable_list.length > 0) {
+            try {
+                await this.$http.post(apiUrl + 'submitPayableVesselInfo', {payable_list: submit_payable_list, submit_data: this.payableVesselForm})
+                this.modal.payableVesselEditModal = false
+                this.getPayableData()
+                return this.$Message.success('Edit Vessel success')
+            } catch (error) {
+                return this.$commonact.fault(error)
+            }
+        } else {
+            return this.$Message.error('Please select received order')
         }
       },
     }
