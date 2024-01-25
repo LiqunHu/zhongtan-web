@@ -36,7 +36,7 @@
                             <button type="button" class="btn btn-info" @click="getPayableData(1)"><i class="fa fa-search"></i> Search</button>
                         </div>
                         <div class="form-group m-r-2">
-                            <button type="button" class="btn btn-info" @click="showPayableVesselEdit(1)" :disabled="buttonAuth.sendPayable"><i class="fa fa-edit"></i> Vessel Edit</button>
+                            <button type="button" class="btn btn-info" @click="showPayableVesselEdit(1)" :disabled="buttonAuth.editPayable"><i class="fa fa-edit"></i> Vessel Edit</button>
                         </div>
                         <div class="form-group m-r-2">
                             <button type="button" class="btn btn-success" @click="submitPayable()" :disabled="buttonAuth.sendPayable"><i class="fa fa-check"></i> Send Payable</button>
@@ -47,7 +47,7 @@
                     <template slot-scope="{ row, index }" slot="payment_advice_no">
                         <span style="float: left;">{{ row.payment_advice_no }}</span>
                         <span style="float: right;">
-                            <Poptip v-if="row._disabled" word-wrap trigger="hover" placement="right" width="300" :content="row._disabled_message">
+                            <Poptip v-if="row._disabled_payable" word-wrap trigger="hover" placement="right" width="300" :content="row._disabled_message">
                                 <i class="fa fa-question" style="color:red; margin-right: 7px;"/>
                             </Poptip>
                             <Tooltip content="PAYMENT">
@@ -405,7 +405,7 @@
             current: 1
         },
         buttonAuth: {
-            sendPayable: true, sendPayment: true
+            sendPayable: true, sendPayment: true, editPayable: true
         },
         payment_search_data: {
             payable_date: [moment().startOf('month').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
@@ -683,9 +683,15 @@
       },
       selectReceivableAct: async function(selection) {
         if(selection && selection.length > 0) {
-            this.buttonAuth.sendPayable = false
+            let _disabled = true
+            for(let s of selection) {
+                _disabled = _disabled && !s._disabled_payable
+            }
+            this.buttonAuth.sendPayable = !_disabled
+            this.buttonAuth.editPayable = false
         } else {
             this.buttonAuth.sendPayable = true
+            this.buttonAuth.editPayable = true
         }
       },
       submitPayable: async function() {
