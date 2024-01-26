@@ -135,6 +135,11 @@
                                     <i class="fa fa-money-bill-alt "/>
                                 </a>
                             </Tooltip>
+                            <Tooltip content="REMOVE">
+                                <a class="btn btn-danger btn-icon btn-sm" target="_blank" @click="removePayable(row)">
+                                    <i class="fa fa-trash "/>
+                                </a>
+                            </Tooltip>
                         </span>
                     </template>
                     <template slot-scope="{ row, index }" slot="vessel_voyage">
@@ -212,6 +217,11 @@
                             <Tooltip content="PAYMENT">
                                 <a :href="row.payment_advice_file_url" class="btn btn-green btn-icon btn-sm" target="_blank">
                                     <i class="fa fa-money-bill-alt "/>
+                                </a>
+                            </Tooltip>
+                            <Tooltip content="REMOVE">
+                                <a class="btn btn-danger btn-icon btn-sm" target="_blank" @click="removePayment(row)">
+                                    <i class="fa fa-trash "/>
                                 </a>
                             </Tooltip>
                         </span>
@@ -314,6 +324,20 @@
             <Button type="primary" size="large" @click="submitPayableVesselEdit">Submit</Button>
         </div>
       </Modal>
+      <Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :mask-closable="false" :closable="false">
+        <Form :label-width="120">
+            <FormItem v-show="false">
+                <Input type="password" style='width:0;opacity:0;'></Input>
+            </FormItem>
+            <FormItem label="Password" prop="checkPassword">
+                <Input type="password" placeholder="Password" v-model="checkPassword"></Input>
+            </FormItem>
+        </Form>
+        <div slot="footer">
+            <Button type="text" size="large" @click="modal.checkPasswordModal = false">Cancel</Button>
+            <Button type="primary" size="large" @click="checkPasswordAct">Submit</Button>
+        </div>
+      </Modal>
     </div>
   </template>
   <script>
@@ -328,7 +352,7 @@
       return {
         pagePara: {},
         modal: {
-            payableVesselEditModal: false, u8OughtPayModal: false, u8PaymnetModal: false
+            payableVesselEditModal: false, u8OughtPayModal: false, u8PaymnetModal: false, checkPasswordModal: false
         },
         search_data: {
             receipt_date: [moment().startOf('month').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
@@ -421,7 +445,7 @@
                 {
                     title: 'Payment No.',
                     slot: 'payment_advice_no',
-                    width: 200,
+                    width: 240,
                     align: 'center'
                 },
                 {
@@ -529,7 +553,7 @@
                 {
                     title: 'Payment No.',
                     slot: 'payment_advice_no',
-                    width: 200,
+                    width: 240,
                     align: 'center'
                 },
                 {
@@ -626,7 +650,10 @@
         payableVesselForm: {
             payable_vessel_info: '',
             payable_vessel_type: ''
-        }
+        },
+        checkPassword: '',
+        checkPasswordType: '',
+        removeRow: {}
       }
     },
     created() {
@@ -841,6 +868,47 @@
             }
         } else {
             return this.$Message.error('Please select received order')
+        }
+      },
+      removePayable: async function(row) {
+        this.removeRow = JSON.parse(JSON.stringify(row))
+        this.checkPassword = ''
+        this.checkPasswordType = 'removePayable'
+        this.modal.checkPasswordModal = true
+      },
+      removePayment: async function(row) {
+        this.removeRow = JSON.parse(JSON.stringify(row))
+        this.checkPassword = ''
+        this.checkPasswordType = 'removePayment'
+        this.modal.checkPasswordModal = true
+      },
+      checkPasswordAct: async function() {
+        if (this.checkPassword) {
+            try {
+                let act = ''
+                if (this.checkPasswordType === 'removePayable' || this.checkPasswordType === 'removePayment' ) {
+                    act = 'FINANCE_U8_REMOVE'
+                }
+                let param = {
+                    action: act,
+                    checkPassword: common.md52(this.checkPassword)
+                }
+                await this.$http.post(apiUrl + 'checkPassword', param)
+                this.modal.checkPasswordModal = false
+                if (this.checkPasswordType === 'removePayable') {
+                    await this.$http.post(apiUrl + 'removePayable', this.removeRow)
+                    this.$Message.success('remove payable success')
+                    this.getPaymentData()
+                } else if (this.checkPasswordType === 'removePayment') {
+                    await this.$http.post(apiUrl + 'removePayment', this.removeRow)
+                    this.$Message.success('remove payment success')
+                    this.getCompleteData()
+                }
+            } catch (error) {
+                this.$commonact.fault(error)
+            }
+        } else {
+            return this.$Message.error('Please enter right password')
         }
       },
     }

@@ -145,6 +145,11 @@
                                     <i class="fa fa-money-bill-alt "/>
                                 </a>
                             </Tooltip>
+                            <Tooltip content="REMOVE">
+                                <a class="btn btn-danger btn-icon btn-sm" target="_blank" @click="removeReceivable(row)">
+                                    <i class="fa fa-trash "/>
+                                </a>
+                            </Tooltip>
                         </span>
                     </template>
                     <template slot-scope="{ row, index }" slot="ought_receive_type">
@@ -248,6 +253,11 @@
                             <Tooltip content="RECEIPT">
                                 <a  :href="row.receipt_url" class="btn btn-green btn-icon btn-sm" target="_blank">
                                     <i class="fa fa-money-bill-alt "/>
+                                </a>
+                            </Tooltip>
+                            <Tooltip content="REMOVE">
+                                <a class="btn btn-danger btn-icon btn-sm" target="_blank" @click="removeReceived(row)">
+                                    <i class="fa fa-trash "/>
                                 </a>
                             </Tooltip>
                         </span>
@@ -478,6 +488,20 @@
             <Button type="primary" size="large" @click="submitSplitReceived">Submit</Button>
         </div>
       </Modal>
+      <Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :mask-closable="false" :closable="false">
+        <Form :label-width="120">
+            <FormItem v-show="false">
+                <Input type="password" style='width:0;opacity:0;'></Input>
+            </FormItem>
+            <FormItem label="Password" prop="checkPassword">
+                <Input type="password" placeholder="Password" v-model="checkPassword"></Input>
+            </FormItem>
+        </Form>
+        <div slot="footer">
+            <Button type="text" size="large" @click="modal.checkPasswordModal = false">Cancel</Button>
+            <Button type="primary" size="large" @click="checkPasswordAct">Submit</Button>
+        </div>
+      </Modal>
     </div>
   </template>
   <script>
@@ -492,7 +516,7 @@
       return {
         pagePara: {},
         modal: {
-            receivedBankEditModal: false, u8OughtReceiveModal: false, u8ReceivedModal: false, splitReceivedModal: false, splitReceivableModal: false
+            receivedBankEditModal: false, u8OughtReceiveModal: false, u8ReceivedModal: false, splitReceivedModal: false, splitReceivableModal: false, checkPasswordModal: false
         },
         search_data: {
             receipt_date: [moment().startOf('month').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
@@ -681,7 +705,7 @@
                 {
                     title: 'Receivable No.',
                     slot: 'ought_receive_no',
-                    width: 240,
+                    width: 280,
                     align: 'center'
                 },
                 {
@@ -775,7 +799,10 @@
             ]
         },
         splitReceivedList: [],
-        splitReceivableList: []
+        splitReceivableList: [],
+        checkPassword: '',
+        checkPasswordType: '',
+        removeRow: {}
       }
     },
     created() {
@@ -1120,9 +1147,6 @@
         }
         this.modal.splitReceivedModal = true
       },
-      changeSplitRollover: async function(row) {
-
-      },
       submitSplitReceived: async function() {
         for(let sr of this.splitReceivedList) {
             if(!sr.received_balance) {
@@ -1185,6 +1209,47 @@
             item.received_balance = false
         }
         this.$forceUpdate()
+      },
+      removeReceivable: async function(row) {
+        this.removeRow = JSON.parse(JSON.stringify(row))
+        this.checkPassword = ''
+        this.checkPasswordType = 'removeReceivable'
+        this.modal.checkPasswordModal = true
+      },
+      removeReceived: async function(row) {
+        this.removeRow = JSON.parse(JSON.stringify(row))
+        this.checkPassword = ''
+        this.checkPasswordType = 'removeReceived'
+        this.modal.checkPasswordModal = true
+      },
+      checkPasswordAct: async function() {
+        if (this.checkPassword) {
+            try {
+                let act = ''
+                if (this.checkPasswordType === 'removeReceivable' || this.checkPasswordType === 'removeReceived' ) {
+                    act = 'FINANCE_U8_REMOVE'
+                }
+                let param = {
+                    action: act,
+                    checkPassword: common.md52(this.checkPassword)
+                }
+                await this.$http.post(apiUrl + 'checkPassword', param)
+                this.modal.checkPasswordModal = false
+                if (this.checkPasswordType === 'removeReceivable') {
+                    await this.$http.post(apiUrl + 'removeReceivable', this.removeRow)
+                    this.$Message.success('remove receivable success')
+                    this.getReceivedData()
+                } else if (this.checkPasswordType === 'removeReceived') {
+                    await this.$http.post(apiUrl + 'removeReceived', this.removeRow)
+                    this.$Message.success('remove received success')
+                    this.getCompleteData()
+                }
+            } catch (error) {
+                this.$commonact.fault(error)
+            }
+        } else {
+            return this.$Message.error('Please enter right password')
+        }
       },
     }
   }
