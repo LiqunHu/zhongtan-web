@@ -43,6 +43,9 @@
                         <div class="form-group m-r-2">
                             <button type="button" class="btn btn-success" @click="skip2Received()" :disabled="buttonAuth.sendReceivable"><i class="fa fa-angle-right"></i> Skip To Received</button>
                         </div> -->
+                        <div class="form-group m-r-2">
+                            <button type="button" class="btn btn-success" @click="adminSend2Finance()"><i class="fa fa-check"></i> Admin Payable</button>
+                        </div>
                     </div>
                 </div>
                 <Table stripe size="small" ref="receivableTable" :columns="receivableTable.columns" :data="receivableTable.data" :height="receivableTable.height" :border="receivableTable.data && receivableTable.data.length > 0" @on-selection-change="selectReceivableAct">
@@ -110,11 +113,19 @@
                 <div class="panel-toolbar">
                     <div class="form-inline">
                         <div class="form-group m-r-2">
+                            Receipt Date: <DatePicker type="daterange" :value="received_search_data.receipt_date" style="width:200px"  placeholder="Receipt Date" @on-change="changeReceivedReceiptDate"></DatePicker>
+                        </div>
+                        <div class="form-group m-r-2">
                             Receivable Date: <DatePicker type="daterange" :value="received_search_data.receivable_date" style="width:200px"  placeholder="Receivable Date" @on-change="changeReceivedReceivableDate"></DatePicker>
                         </div>
                         <div class="form-group m-r-2">
-                            <Select clearable v-model="received_search_data.receipt_carrier" style="width:200px"  @on-change="getReceivedData(1)">
+                            <Select placeholder="Carrier" clearable v-model="received_search_data.receipt_carrier" style="width:200px"  @on-change="getReceivedData(1)">
                                 <Option v-for="item in pagePara.RECEIPT_CARRIER" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                            </Select>
+                        </div>
+                        <div class="form-group m-r-2">
+                            <Select placeholder="Operator" clearable v-model="received_search_data.receivable_operator" style="width:200px"  @on-change="getReceivedData(1)">
+                                <Option v-for="item in pagePara.OPERATOR" :value="item.operator_id" :key="item.operator_id">{{ item.operator_name }}</Option>
                             </Select>
                         </div>
                         <div class="form-group m-r-2">
@@ -199,14 +210,22 @@
                 <div class="panel-toolbar">
                     <div class="form-inline">
                         <div class="form-group m-r-2">
+                            Receipt Date: <DatePicker type="daterange" :value="complete_search_data.receipt_date" style="width:200px"  placeholder="Receipt Date" @on-change="changeCompleteReceiptDate"></DatePicker>
+                        </div>
+                        <div class="form-group m-r-2">
                             Receivable Date: <DatePicker type="daterange" :value="complete_search_data.receivable_date" style="width:200px"  placeholder="Receivable Date" @on-change="changeCompleteReceivableDate"></DatePicker>
                         </div>
                         <div class="form-group m-r-2">
                             Received Date: <DatePicker type="daterange" :value="complete_search_data.received_date" style="width:200px"  placeholder="Received Date" @on-change="changeCompleteReceivedDate"></DatePicker>
                         </div>
                         <div class="form-group m-r-2">
-                            <Select clearable v-model="complete_search_data.receipt_carrier" style="width:200px"  @on-change="getCompleteData(1)">
+                            <Select placeholder="Carrier" clearable v-model="complete_search_data.receipt_carrier" style="width:200px"  @on-change="getCompleteData(1)">
                                 <Option v-for="item in pagePara.RECEIPT_CARRIER" :value="item.id" :key="item.id">{{ item.text }}</Option>
+                            </Select>
+                        </div>
+                        <div class="form-group m-r-2">
+                            <Select placeholder="Operator" clearable v-model="complete_search_data.receivable_operator" style="width:200px"  @on-change="getCompleteData(1)">
+                                <Option v-for="item in pagePara.OPERATOR" :value="item.operator_id" :key="item.operator_id">{{ item.operator_name }}</Option>
                             </Select>
                         </div>
                         <div class="form-group m-r-2">
@@ -589,6 +608,7 @@
             sendReceivable: true, sendReceived: true, receivedEdit: true
         },
         received_search_data: {
+            receipt_date: [moment().startOf('month').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
             receivable_date: [moment().startOf('month').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
         },
         receivedTable: {
@@ -692,6 +712,7 @@
             ]
         },
         complete_search_data: {
+            receipt_date: [moment().startOf('month').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
             receivable_date: [moment().startOf('month').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
             received_date: [moment().startOf('month').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
         },
@@ -954,6 +975,10 @@
             this.$commonact.fault(error)
         }
       },
+      changeReceivedReceiptDate: function(e) {
+        this.received_search_data.receipt_date = JSON.parse(JSON.stringify(e))
+        this.getReceivedData(1)
+      },
       changeReceivedReceivableDate: function(e) {
         this.received_search_data.receivable_date = JSON.parse(JSON.stringify(e))
         this.getReceivedData(1)
@@ -1042,6 +1067,10 @@
         } else {
             return this.$Message.error('Please select receivable order')
         }
+      },
+      changeCompleteReceiptDate: function(e) {
+        this.complete_search_data.receipt_date = JSON.parse(JSON.stringify(e))
+        this.getCompleteData(1)
       },
       changeCompleteReceivableDate: function(e) {
         this.complete_search_data.receivable_date = JSON.parse(JSON.stringify(e))
@@ -1251,6 +1280,14 @@
             return this.$Message.error('Please enter right password')
         }
       },
+      adminSend2Finance: async function() {
+        try {
+            await this.$http.post(apiUrl + 'adminSend2Finance', {})
+            this.$Message.success('success')
+        } catch (error) {
+            this.$commonact.fault(error)
+        }
+      }
     }
   }
   </script>
