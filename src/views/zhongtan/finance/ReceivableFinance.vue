@@ -447,7 +447,7 @@
                                 {{ sdItem.ought_receive_detail_fee_name }}
                             </Col>
                             <Col span="8">
-                                <InputNumber v-model="sdItem.split_detail_amount" @on-change="changeSplitDetailAmount($event, index, sIndex, sdIndex)"></InputNumber>
+                                <InputNumber :precision="2" :active-change="false" v-model="sdItem.split_detail_amount" @on-change="changeSplitDetailAmount($event, index, sIndex, sdIndex)"></InputNumber>
                             </Col>
                             <Col span="8">
                                 <span style="color:green; font-weight: bold;">{{ sdItem.ought_receive_detail_amount }}</span>
@@ -1213,13 +1213,13 @@
             let split_amount = 0
             for(let sdf of sd.split_fees) {
                 if(sdf.split_detail_amount) {
-                    split_amount += parseInt(sdf.split_detail_amount)
+                    split_amount += parseFloat(sdf.split_detail_amount)
                 }
             }
             sd.split_amount = split_amount
             total_split_amount += split_amount
         }
-        if(total_split_amount === parseInt(item.ought_receive_amount)) {
+        if(total_split_amount === parseFloat(item.ought_receive_amount)) {
             item.received_balance = true
         } else {
             item.received_balance = false
@@ -1228,20 +1228,20 @@
       },
       inputSplitDetailAmount: async function(value, index, sIndex, sdIndex) {
         let clickSplitFeeItem = this.splitReceivedList[index].split_detail[sIndex].split_fees[sdIndex]
-        clickSplitFeeItem.split_detail_amount = parseInt(clickSplitFeeItem.ought_receive_detail_amount)
+        clickSplitFeeItem.split_detail_amount = parseFloat(clickSplitFeeItem.ought_receive_detail_amount)
         let item = this.splitReceivedList[index]
         let total_split_amount = 0
         for(let sd of item.split_detail) {
             let split_amount = 0
             for(let sdf of sd.split_fees) {
                 if(sdf.split_detail_amount) {
-                    split_amount += parseInt(sdf.split_detail_amount)
+                    split_amount += parseFloat(sdf.split_detail_amount)
                 }
             }
             sd.split_amount = split_amount
             total_split_amount += split_amount
         }
-        if(total_split_amount === parseInt(item.ought_receive_amount)) {
+        if(total_split_amount === parseFloat(item.ought_receive_amount)) {
             item.received_balance = true
         } else {
             item.received_balance = false
