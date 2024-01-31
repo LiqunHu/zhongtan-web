@@ -22,12 +22,12 @@
                             Receipt Date: <DatePicker type="daterange" :value="search_data.receipt_date" style="width:200px"  placeholder="Receipt Date" @on-change="changeReceivableReceiptDate"></DatePicker>
                         </div>
                         <div class="form-group m-r-2">
-                            <Select clearable v-model="search_data.receipt_type" style="width:200px"  @on-change="getReceivableData(1)">
+                            <Select clearable v-model="search_data.receipt_type" style="width:200px">
                                 <Option v-for="item in pagePara.RECEIPT_TYPES" :value="item.value" :key="item.value">{{ item.name }}</Option>
                             </Select>
                         </div>
                         <div class="form-group m-r-2">
-                            <Select clearable v-model="search_data.receipt_carrier" style="width:200px"  @on-change="getReceivableData(1)">
+                            <Select clearable v-model="search_data.receipt_carrier" style="width:200px">
                                 <Option v-for="item in pagePara.RECEIPT_CARRIER" :value="item.id" :key="item.id">{{ item.text }}</Option>
                             </Select>
                         </div>
@@ -122,12 +122,12 @@
                             Receivable Date: <DatePicker type="daterange" :value="received_search_data.receivable_date" style="width:200px"  placeholder="Receivable Date" @on-change="changeReceivedReceivableDate"></DatePicker>
                         </div>
                         <div class="form-group m-r-2">
-                            <Select placeholder="Carrier" clearable v-model="received_search_data.receipt_carrier" style="width:160px"  @on-change="getReceivedData(1)">
+                            <Select placeholder="Carrier" clearable v-model="received_search_data.receipt_carrier" style="width:160px">
                                 <Option v-for="item in pagePara.RECEIPT_CARRIER" :value="item.id" :key="item.id">{{ item.text }}</Option>
                             </Select>
                         </div>
                         <div class="form-group m-r-2">
-                            <Select placeholder="Operator" clearable v-model="received_search_data.receivable_operator" style="width:160px"  @on-change="getReceivedData(1)">
+                            <Select placeholder="Operator" clearable v-model="received_search_data.receivable_operator" style="width:160px">
                                 <Option v-for="item in pagePara.OPERATOR" :value="item.operator_id" :key="item.operator_id">{{ item.operator_name }}</Option>
                             </Select>
                         </div>
@@ -225,12 +225,12 @@
                             Received Date: <DatePicker type="daterange" :value="complete_search_data.received_date" style="width:200px"  placeholder="Received Date" @on-change="changeCompleteReceivedDate"></DatePicker>
                         </div>
                         <div class="form-group m-r-2">
-                            <Select placeholder="Carrier" clearable v-model="complete_search_data.receipt_carrier" style="width:160px"  @on-change="getCompleteData(1)">
+                            <Select placeholder="Carrier" clearable v-model="complete_search_data.receipt_carrier" style="width:160px">
                                 <Option v-for="item in pagePara.RECEIPT_CARRIER" :value="item.id" :key="item.id">{{ item.text }}</Option>
                             </Select>
                         </div>
                         <div class="form-group m-r-2">
-                            <Select placeholder="Operator" clearable v-model="complete_search_data.receivable_operator" style="width:160px"  @on-change="getCompleteData(1)">
+                            <Select placeholder="Operator" clearable v-model="complete_search_data.receivable_operator" style="width:160px">
                                 <Option v-for="item in pagePara.OPERATOR" :value="item.operator_id" :key="item.operator_id">{{ item.operator_name }}</Option>
                             </Select>
                         </div>
@@ -862,13 +862,12 @@
       },
       changeReceivableReceiptDate: function(e) {
         this.search_data.receipt_date = JSON.parse(JSON.stringify(e))
-        this.getReceivableData(1)
       },
       getReceivableData: async function(index) {
         try {
             if (index) {
-            this.receivableTable.current = index
-            this.receivableTable.offset = (index - 1) * this.receivableTable.limit
+                this.receivableTable.current = index
+                this.receivableTable.offset = (index - 1) * this.receivableTable.limit
             }
             let searchPara = {
                 search_data: this.search_data,
@@ -986,11 +985,9 @@
       },
       changeReceivedReceiptDate: function(e) {
         this.received_search_data.receipt_date = JSON.parse(JSON.stringify(e))
-        this.getReceivedData(1)
       },
       changeReceivedReceivableDate: function(e) {
         this.received_search_data.receivable_date = JSON.parse(JSON.stringify(e))
-        this.getReceivedData(1)
       },
       getReceivedData: async function(index) {
         try {
@@ -1079,15 +1076,12 @@
       },
       changeCompleteReceiptDate: function(e) {
         this.complete_search_data.receipt_date = JSON.parse(JSON.stringify(e))
-        this.getCompleteData(1)
       },
       changeCompleteReceivableDate: function(e) {
         this.complete_search_data.receivable_date = JSON.parse(JSON.stringify(e))
-        this.getCompleteData(1)
       },
       changeCompleteReceivedDate: function(e) {
         this.complete_search_data.received_date = JSON.parse(JSON.stringify(e))
-        this.getCompleteData(1)
       },
       getCompleteData: async function(index) {
         try {
