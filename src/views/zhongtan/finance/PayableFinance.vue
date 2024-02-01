@@ -22,7 +22,7 @@
                             Receipt Date: <DatePicker type="daterange" :value="search_data.receipt_date" style="width:200px"  placeholder="Receipt Date" @on-change="changeReceivableReceiptDate"></DatePicker>
                         </div>
                         <div class="form-group m-r-2">
-                            <Select filterable clearable placeholder="Payment Items" v-model="search_data.items_type" style="width:200px"  @on-change="getPayableData(1)">
+                            <Select filterable clearable placeholder="Payment Items" v-model="search_data.items_type" style="width:200px">
                                 <Option v-for="item in pagePara.PAYMENT_ITEMS" :value="item.payment_items_code" :key="item.payment_items_code" :label="item.payment_items_name">
                                     <span style="float:left">{{ item.payment_items_name }}</span>
                                     <span style="float:right; color:black; font-weight: bold;">{{item.payment_items_code}}<span v-if="item.payment_items_type"> /{{ item.payment_items_type }}</span></span>
@@ -355,7 +355,7 @@
             payableVesselEditModal: false, u8OughtPayModal: false, u8PaymnetModal: false, checkPasswordModal: false
         },
         search_data: {
-            receipt_date: [moment().startOf('month').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
+            receipt_date: [moment().format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
             items_type: '',
             inv_cntrl: ''
         },
@@ -432,7 +432,7 @@
             sendPayable: true, sendPayment: true, editPayable: true
         },
         payment_search_data: {
-            payable_date: [moment().startOf('month').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
+            payable_date: [moment().format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
             inv_cntrl: ''
         },
         paymentTable: {
@@ -539,8 +539,8 @@
             ]
         },
         complete_search_data: {
-            payable_date: [moment().startOf('month').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
-            payment_date: [moment().startOf('month').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
+            payable_date: [moment().format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
+            payment_date: [moment().format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
             inv_cntrl: ''
         },
         completeTable: {
@@ -587,9 +587,15 @@
                     align: 'left'
                 },
                 {
-                    title: 'Payment Inv/Cntrl#	',
+                    title: 'Payment Inv/Cntrl#',
                     key: 'payment_advice_inv_cntrl',
                     width: 240,
+                    align: 'left'
+                },
+                {
+                    title: 'Documnet No.',
+                    key: 'finance_payment_documnet_no',
+                    width: 160,
                     align: 'left'
                 },
                 {
@@ -683,7 +689,6 @@
       },
       changeReceivableReceiptDate: function(e) {
         this.search_data.receipt_date = JSON.parse(JSON.stringify(e))
-        this.getPayableData(1)
       },
       getPayableData: async function(index) {
         try {
@@ -744,7 +749,6 @@
       },
       changePaymentPayableDate: function(e) {
         this.payment_search_data.payable_date = JSON.parse(JSON.stringify(e))
-        this.getPaymentData(1)
       },
       getPaymentData: async function(index) {
         try {
@@ -812,11 +816,9 @@
       },
       changeCompletePayableDate: function(e) {
         this.complete_search_data.payable_date = JSON.parse(JSON.stringify(e))
-        this.getCompleteData(1)
       },
       changeCompletePaymentDate: function(e) {
         this.complete_search_data.received_date = JSON.parse(JSON.stringify(e))
-        this.getCompleteData(1)
       },
       getCompleteData: async function(index) {
         try {
