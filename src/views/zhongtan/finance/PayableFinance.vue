@@ -818,7 +818,7 @@
         this.complete_search_data.payable_date = JSON.parse(JSON.stringify(e))
       },
       changeCompletePaymentDate: function(e) {
-        this.complete_search_data.received_date = JSON.parse(JSON.stringify(e))
+        this.complete_search_data.payment_date = JSON.parse(JSON.stringify(e))
       },
       getCompleteData: async function(index) {
         try {

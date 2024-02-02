@@ -138,7 +138,7 @@
                             <button type="button" class="btn btn-info" @click="getReceivedData(1)"><i class="fa fa-search"></i> Search</button>
                         </div>
                         <div class="form-group m-r-2">
-                            <button type="button" class="btn btn-info" @click="showReceivedBankEdit" :disabled="buttonAuth.receivedEdit"><i class="fa fa-edit"></i> Bank Edit</button>
+                            <button type="button" class="btn btn-info" @click="showReceivedBankEdit" :disabled="buttonAuth.receivedEdit"><i class="fa fa-edit"></i> Received Edit</button>
                         </div>
                         <div class="form-group m-r-2">
                             <button type="button" class="btn btn-success" @click="submitReceived()" :disabled="buttonAuth.sendReceived"><i class="fa fa-check"></i> Send Received</button>
@@ -334,7 +334,7 @@
             </TabPane>
         </Tabs>
       </panel>
-      <Modal v-model="modal.receivedBankEditModal" title="Received Bank Edit">
+      <Modal v-model="modal.receivedBankEditModal" title="Received Edit">
         <Form ref="receivedBankForm" :model="receivedBankForm" :label-width="120">
             <FormItem label="BANK INFO">
                 <Select v-model="receivedBankForm.received_bank">
@@ -343,6 +343,9 @@
                         <span style="float:right;">{{ item.bank_name }}</span>
                     </Option>
                 </Select>
+            </FormItem>
+            <FormItem label="REFERENCE NO.">
+                <Input v-model="receivedBankForm.received_reference_no" placeholder="Reference No."></Input>
             </FormItem>
         </Form>
         <div slot="footer">
@@ -684,7 +687,8 @@
             current: 1
         },
         receivedBankForm: {
-            received_bank: ''
+            received_bank: '',
+            received_reference_no: ''
         },
         watchOughtReceive: {},
         u8OughtReceiveTable: {
@@ -1033,6 +1037,12 @@
       },
       showReceivedBankEdit: async function() {
         this.receivedBankForm.received_bank = ''
+        let submit_received_list = this.$refs.receivedTable.getSelection()
+        if(submit_received_list && submit_received_list.length === 1) {
+            this.receivedBankForm.received_reference_no = submit_received_list[0].ought_receive_reference_no
+        } else {
+            this.receivedBankForm.received_reference_no = ''
+        }
         this.modal.receivedBankEditModal = true
       },
       submitReceivedBankEdit: async function() {
