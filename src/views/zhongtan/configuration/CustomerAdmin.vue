@@ -116,19 +116,22 @@
         </FormItem>
         <FormItem label="U8 CUSTOMER CODE" prop="u8_code" style="margin-bottom: 7px;">
           <Input v-if="action === 'add'" placeholder="U8 CUSTOMER CODE" v-model="workPara.u8_code"/>
-          <Input v-else placeholder="U8 CUSTOMER CODE" v-model="workPara.u8_code" :disabled="!editCustomerName"/>
+          <Input v-else placeholder="U8 CUSTOMER CODE" v-model="workPara.u8_code" :disabled="!editCustomerFinance"> 
+            <Button v-if="editCustomerFinance" slot="append" icon="ios-unlock" @click="cancelEditCustomerFinance"></Button>
+            <Button v-else slot="append" icon="ios-lock" @click="authEditCustomerFinance"></Button>
+          </Input>
         </FormItem>
         <FormItem label="U8 CUSTOMER ALIAS" prop="u8_alias" style="margin-bottom: 7px;">
           <Input v-if="action === 'add'" placeholder="U8 CUSTOMER ALIAS" v-model="workPara.u8_alias"/>
-          <Input v-else placeholder="U8 CUSTOMER ALIAS" v-model="workPara.u8_alias" :disabled="!editCustomerName"/>
+          <Input v-else placeholder="U8 CUSTOMER ALIAS" v-model="workPara.u8_alias" :disabled="!editCustomerFinance"/>
         </FormItem>
         <FormItem label="U8 VENDOR CODE" prop="u8_code" style="margin-bottom: 7px;">
           <Input v-if="action === 'add'" placeholder="U8 VENDOR CODE" v-model="workPara.u8_vendor_code"/>
-          <Input v-else placeholder="U8 VENDOR CODE" v-model="workPara.u8_vendor_code" :disabled="!editCustomerName"/>
+          <Input v-else placeholder="U8 VENDOR CODE" v-model="workPara.u8_vendor_code" :disabled="!editCustomerFinance"/>
         </FormItem>
         <FormItem label="U8 VENDOR ALIAS" prop="u8_alias" style="margin-bottom: 7px;">
           <Input v-if="action === 'add'" placeholder="U8 VENDOR ALIAS" v-model="workPara.u8_vendor_alias"/>
-          <Input v-else placeholder="U8 VENDOR ALIAS" v-model="workPara.u8_vendor_alias" :disabled="!editCustomerName"/>
+          <Input v-else placeholder="U8 VENDOR ALIAS" v-model="workPara.u8_vendor_alias" :disabled="!editCustomerFinance"/>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -285,7 +288,8 @@ export default {
       action: '',
       checkPassword: '',
       checkPasswordType: '',
-      editCustomerName: false
+      editCustomerName: false,
+      editCustomerFinance: false
     }
   },
   created() {
@@ -341,6 +345,7 @@ export default {
       this.action = 'modify'
       this.$refs.formUser.resetFields()
       this.cancelEditCustomerName()
+      this.cancelEditCustomerFinance()
       this.modal.userModal = true
     },
     submitUser: function() {
@@ -437,6 +442,8 @@ export default {
           let action = ''
           if (this.checkPasswordType === 'customerDelete' || this.checkPasswordType === 'customerNameEdit') {
             action = 'CUSTOMER_ADMIN_OPERATE'
+          } else if(this.checkPasswordType === 'customerFinanceEdit') {
+            action = 'CUSTOMER_FINANCE_OPERATE'
           }
           let param = {
             action: action,
@@ -448,6 +455,8 @@ export default {
             this.doDeleteUser()
           } else if (this.checkPasswordType === 'customerNameEdit') {
             this.editCustomerName = true
+          } else if (this.checkPasswordType === 'customerFinanceEdit') {
+            this.editCustomerFinance = true
           }
         } catch (error) {
           this.$commonact.fault(error)
@@ -463,6 +472,14 @@ export default {
     },
     cancelEditCustomerName: async function() {
       this.editCustomerName = false
+    },
+    authEditCustomerFinance: async function() {
+      this.checkPassword = ''
+      this.checkPasswordType = 'customerFinanceEdit'
+      this.modal.checkPasswordModal = true
+    },
+    cancelEditCustomerFinance: async function() {
+      this.editCustomerFinance = false
     }
   }
 }
