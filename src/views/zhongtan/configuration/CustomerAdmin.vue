@@ -19,6 +19,8 @@
           <div class="form-inline">
             <div class="input-group m-r-10">
               <input type="text" placeholder="Search Name Phone" v-model="table.userTable.search_text" class="form-control">
+              <input type="text" placeholder="Search TIN" v-model="table.userTable.search_tin" class="form-control">
+              <input type="text" placeholder="Search Finance Info" v-model="table.userTable.search_finance" class="form-control">
               <div class="input-group-append">
                 <button type="button" class="btn btn-info" @click="getUserData(1)">
                   <i class="fa fa-search"></i>
@@ -270,7 +272,9 @@ export default {
           limit: 10,
           offset: 0,
           total: 0,
-          search_text: ''
+          search_text: '',
+          search_tin: '',
+          search_finance: ''
         }
       },
       formRule: {
@@ -317,6 +321,8 @@ export default {
 
         let response = await this.$http.post(apiUrl + 'search', {
           search_text: this.table.userTable.search_text,
+          search_tin: this.table.userTable.search_tin,
+          search_finance: this.table.userTable.search_finance,
           offset: this.table.userTable.offset,
           limit: this.table.userTable.limit
         })

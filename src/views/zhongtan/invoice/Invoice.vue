@@ -398,6 +398,12 @@
                       <span slot="close">I/O</span>
                   </i-switch>
                 </template>
+                <template slot-scope="{ row, index }" slot="invoice_containers_auction">
+                  <i-switch v-model="row.invoice_containers_auction" @on-change="changeContainersAuction(row)" size="large" true-value="1" false-value="0">
+                      <span slot="open">Y</span>
+                      <span slot="close">N</span>
+                  </i-switch>
+                </template>
                 <template slot-scope="{ row, index }" slot="invoice_containers_no">
                   <Input :class="{'input-edited': row.invoice_containers_edit_info && row.invoice_containers_edit_info.invoice_containers_no}" v-model="table.containersTable.data[index].invoice_containers_no" size="small" :disabled="tableEdit"/>
                 </template>
@@ -1048,6 +1054,11 @@
                             slot: 'invoice_containers_type',
                             width: 100
                         }, {
+                            title: 'Auction Container',
+                            slot: 'invoice_containers_auction',
+                            width: 100
+                        }, 
+                        {
                             title: 'Container No',
                             slot: 'invoice_containers_no',
                             width: 150
@@ -1897,7 +1908,7 @@
                         action = 'IMPORT_DO_EDIT'
                     } else if (this.checkPasswordType === 'doDeleteMasterbl') {
                         action = 'IMPORT_RELEASE_DELETE'
-                    } else if (this.checkPasswordType === 'containersTypeChange') {
+                    } else if (this.checkPasswordType === 'containersTypeChange' || this.checkPasswordType === 'containersAuctionChange') {
                         action = 'IMPORT_SOC_EDIT'
                     } 
                     let param = {
@@ -1930,6 +1941,8 @@
                         this.deleteMasterblAct(this.workPara)
                     } else if (this.checkPasswordType === 'containersTypeChange') {
                         this.changeContainersTypeAct(this.workPara)
+                    } else if (this.checkPasswordType === 'containersAuctionChange') {
+                        this.changeContainersAuctionAct(this.workPara)
                     } else if (this.checkPasswordType === 'downLoadDoDeliveryCheck') {
                         this.downloadDoAct()
                     } 
@@ -1941,7 +1954,9 @@
                 this.modal.checkPasswordModal = false
                 this.depositEdit = false
                 this.invoiceFeeEdit = false
-                if (this.checkPasswordType === 'doDisabledChange' || this.checkPasswordType === 'containersTypeChange') {
+                if (this.checkPasswordType === 'doDisabledChange' 
+                || this.checkPasswordType === 'containersTypeChange' 
+                || this.checkPasswordType === 'containersAuctionChange') {
                     this.refreshTableData()
                 }
             },
@@ -2107,10 +2122,38 @@
                     }
                     this.refreshTableData()
                 } catch (error) {
-                    if (row.invoice_masterbi_do_disabled === 'S') {
-                        row.invoice_masterbi_do_disabled = 'C'
+                    if (row.invoice_containers_type === 'S') {
+                        row.invoice_containers_type = 'C'
                     } else {
-                        row.invoice_masterbi_do_disabled = 'S'
+                        row.invoice_containers_type = 'S'
+                    }
+                    this.$commonact.fault(error)
+                }
+            },
+            changeContainersAuction: function(item) {
+                try {
+                    this.workPara = JSON.parse(JSON.stringify(item))
+                    this.checkPassword = ''
+                    this.modal.checkPasswordModal = true
+                    this.checkPasswordType = 'containersAuctionChange'
+                } catch (error) {
+                    this.$commonact.fault(error)
+                }
+            },
+            changeContainersAuctionAct: async function(row) {
+                try {
+                    await this.$http.post(apiUrl + 'changeContainersAuction', row)
+                    if (row.invoice_containers_auction === '1') {
+                        this.$Message.success('Auction Container Success')
+                    } else {
+                        this.$Message.success('Auction Container Cancel')
+                    }
+                    this.refreshTableData()
+                } catch (error) {
+                    if (row.invoice_containers_auction === '1') {
+                        row.invoice_containers_auction = '0'
+                    } else {
+                        row.invoice_containers_auction = '1'
                     }
                     this.$commonact.fault(error)
                 }
