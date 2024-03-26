@@ -938,7 +938,6 @@
       },
       showPaymentDateEdit: async function() {
         this.paymentDateForm.finance_payment_date = moment().format('YYYY-MM-DD')
-        console.log('finance_payment_date', this.paymentDateForm.finance_payment_date)
         this.modal.paymentDateEditModal = true
       },
       paymentDateChange: async function(date) {
