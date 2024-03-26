@@ -187,6 +187,33 @@
                         </Tooltip>
                     </span>
                 </template>
+                <template slot-scope="{ row, index }" slot="Do2">
+                    <span v-if="row.invoice_masterbi_vessel_type === 'Bulk' && row.bulkFileCount <= 0">
+                        <Tooltip content="please upload file">
+                            <a href="#" class="btn btn-warning btn-icon btn-sm" @click="actDownLoadDoModalCheck(row, '2')">
+                            <i class="fa fa-object-ungroup"></i>
+                            </a>
+                        </Tooltip>
+                    </span>
+                    <span v-else>
+                        <Tooltip content="Generate Do" v-if="!row.invoice_masterbi_do_release_date">
+                            <a href="#" class="btn btn-green btn-icon btn-sm" @click="actDownLoadDoModal(row, '2')" v-if="row.invoice_masterbi_do_state">
+                            <i class="fa fa-object-ungroup"></i>
+                            </a>
+                            <a href="#" class="btn btn-info btn-icon btn-sm" @click="actDownLoadDoModalCheck(row, '2')" v-else :title="row.invoice_masterbi_do_state_message">
+                            <i class="fa fa-object-ungroup"></i>
+                            </a>
+                        </Tooltip>
+                        <Tooltip :content="row.invoice_masterbi_do_release_date_fmt" v-if="row.invoice_masterbi_do_release_date">
+                            <a href="#" class="btn btn-pink btn-icon btn-sm" @click="actDownLoadDoModal(row, '2')" v-if="row.invoice_masterbi_do_state">
+                            <i class="fa fa-object-ungroup"></i>
+                            </a>
+                            <a href="#" class="btn btn-pink btn-icon btn-sm" @click="actDownLoadDoModalCheck(row, '2')" v-else :title="row.invoice_masterbi_do_state_message">
+                            <i class="fa fa-object-ungroup"></i>
+                            </a>
+                        </Tooltip>
+                    </span>
+                </template>
                 <template slot-scope="{ row, index }" slot="Collect">
                   <a href="#" class="btn btn-info btn-xs" @click="showChangeCollectModal(row, 'PREPAID')" v-if="row.invoice_masterbi_freight == 'COLLECT'">Collect</a>
                   <a href="#" class="btn btn-indigo btn-xs" @click="showChangeCollectModal(row, 'COLLECT')" v-if="row.invoice_masterbi_freight !== 'COLLECT'">Prepaid</a>
@@ -850,6 +877,11 @@
                             width: 220
                         }, 
                         {
+                            title: 'Do2',
+                            slot: 'Do2',
+                            width: 60,
+                        }, 
+                        {
                             title: 'Nomination',
                             slot: 'invoice_masterbi_nomination',
                             width: 120
@@ -1237,7 +1269,8 @@
                     options: []
                 },
                 tableEdit: true,
-                importFileType: ''
+                importFileType: '',
+                doStyle: '1'
             }
         },
         created() {
@@ -1399,7 +1432,7 @@
                 this.table.containersTable.data = JSON.parse(JSON.stringify(data.rows))
                 this.table.containersTable.unchanged = JSON.parse(JSON.stringify(data.rows))
             },
-            actDownLoadDoModal: async function(row) {
+            actDownLoadDoModal: async function(row, doStyle = '1') {
                 await this.getPara()
                 this.workPara = JSON.parse(JSON.stringify(row))
                 this.delivery.options = JSON.parse(JSON.stringify(this.pagePara.DELIVER))
@@ -1425,10 +1458,12 @@
                 if (!this.workPara.invoice_masterbi_do_return_depot) {
                     this.workPara.invoice_masterbi_do_return_depot = 'FANTUZZI'
                 }
+                this.doStyle = doStyle
                 this.doDeliverValidToEdit = false
                 this.modal.downLoadDoModal = true
             },
-            actDownLoadDoModalCheck: function(row) {
+            actDownLoadDoModalCheck: function(row, doStyle = '1') {
+                this.doStyle = doStyle
                 this.workPara = JSON.parse(JSON.stringify(row))
                 this.checkPassword = ''
                 this.modal.checkPasswordModal = true
@@ -1458,8 +1493,14 @@
             },
             downloadDoAct: async function() {
                  try {
-                    let response = await this.$http.post(apiUrl + 'downloadDo', this.workPara)
-                    printJS(response.data.info.url)
+                    if(this.doStyle === '2') {
+                        let response = await this.$http.post(apiUrl + 'downloadDo2', this.workPara)
+                        printJS(response.data.info.url)
+                        
+                    } else {
+                        let response = await this.$http.post(apiUrl + 'downloadDo', this.workPara)
+                        printJS(response.data.info.url)
+                    }
                     this.$Message.success('do success')
                     this.modal.downLoadDoModal = false
                     this.refreshTableData()
@@ -2226,5 +2267,8 @@
 <style>
     .input-edited :nth-last-child(1){       
         color: #19be6b !important;      
+    }
+    .do2-bg {
+        background-color: #19be6b;
     }
 </style>

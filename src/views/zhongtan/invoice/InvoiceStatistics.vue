@@ -25,6 +25,12 @@
               </Select>
             </div>
             <div class="form-group m-r-2">
+              <Select clearable v-model="search_data.invoice_carrier" style="width:140px" placeholder="CARRIER">
+                <Option v-for="item in pagePara.RECEIPT_TYPE_INFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
+              </Select>
+            </div>
+            
+            <div class="form-group m-r-2">
               <Select clearable v-model="search_data.invoice_customer_id" style="width:140px" placeholder="CUSTOMER">
                 <Option v-for="item in pagePara.CUSTOMER" :value="item.user_id" :key="item.user_id">{{ item.user_name }}</Option>
               </Select>
@@ -498,6 +504,7 @@ export default {
         invoice_date: '',
         receipt_date: '',
         delivery_order_no: '',
+        invoice_carrier: ''
       },
     }
   },

@@ -114,6 +114,9 @@
                             <button type="button" class="btn btn-info" @click="getPaymentData(1)"><i class="fa fa-search"></i> Search</button>
                         </div>
                         <div class="form-group m-r-2">
+                            <button type="button" class="btn btn-info" @click="showPaymentDateEdit()" :disabled="buttonAuth.sendPayment"><i class="fa fa-edit"></i> Payment Date Edit</button>
+                        </div>
+                        <div class="form-group m-r-2">
                             <button type="button" class="btn btn-success" @click="submitPayment()" :disabled="buttonAuth.sendPayment"><i class="fa fa-check"></i> Send Payment</button>
                         </div>
                     </div>
@@ -324,6 +327,17 @@
             <Button type="primary" size="large" @click="submitPayableVesselEdit">Submit</Button>
         </div>
       </Modal>
+      <Modal v-model="modal.paymentDateEditModal" title="Payment Date Edit">
+        <Form ref="paymentDateForm" :model="paymentDateForm" :label-width="120">
+            <FormItem label="PAYMENT DATE" prop="finance_payment_date">
+                <DatePicker type="date" placeholder="Payment Date" :value="paymentDateForm.finance_payment_date" :editable="false" format="yyyy-MM-dd" @on-change="paymentDateChange" style="width:160px"></DatePicker>
+            </FormItem>
+        </Form>
+        <div slot="footer">
+            <Button type="text" size="large" @click="modal.paymentDateEditModal=false">Cancel</Button>
+            <Button type="primary" size="large" @click="submitpaymentDateEdit">Submit</Button>
+        </div>
+      </Modal>
       <Modal v-model="modal.checkPasswordModal" title="Password Check" width="600" :mask-closable="false" :closable="false">
         <Form :label-width="120">
             <FormItem v-show="false">
@@ -352,7 +366,7 @@
       return {
         pagePara: {},
         modal: {
-            payableVesselEditModal: false, u8OughtPayModal: false, u8PaymnetModal: false, checkPasswordModal: false
+            payableVesselEditModal: false, u8OughtPayModal: false, u8PaymnetModal: false, checkPasswordModal: false, paymentDateEditModal: false
         },
         search_data: {
             receipt_date: [moment().format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
@@ -447,6 +461,12 @@
                     slot: 'payment_advice_no',
                     width: 240,
                     align: 'center'
+                },
+                {
+                    title: 'Payment Date',
+                    key: 'finance_payment_date',
+                    width: 160,
+                    align: 'left'
                 },
                 {
                     title: 'Vessel/Voyage',
@@ -659,7 +679,10 @@
         },
         checkPassword: '',
         checkPasswordType: '',
-        removeRow: {}
+        removeRow: {},
+        paymentDateForm: {
+            finance_payment_date: ''
+        }
       }
     },
     created() {
@@ -911,6 +934,29 @@
             }
         } else {
             return this.$Message.error('Please enter right password')
+        }
+      },
+      showPaymentDateEdit: async function() {
+        this.paymentDateForm.finance_payment_date = moment().format('YYYY-MM-DD')
+        console.log('finance_payment_date', this.paymentDateForm.finance_payment_date)
+        this.modal.paymentDateEditModal = true
+      },
+      paymentDateChange: async function(date) {
+        this.paymentDateForm.finance_payment_date = date
+      },
+      submitpaymentDateEdit: async function() {
+        let submit_payment_list = this.$refs.paymentTable.getSelection()
+        if(submit_payment_list && submit_payment_list.length > 0) {
+            try {
+                await this.$http.post(apiUrl + 'submitPaymentInfo', {payment_list: submit_payment_list, submit_data: this.paymentDateForm})
+                this.modal.paymentDateEditModal = false
+                this.getPaymentData()
+                return this.$Message.success('Edit Payment success')
+            } catch (error) {
+                return this.$commonact.fault(error)
+            }
+        } else {
+            return this.$Message.error('Please select payment order')
         }
       },
     }
