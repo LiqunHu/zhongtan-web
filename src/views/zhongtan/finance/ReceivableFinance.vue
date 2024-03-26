@@ -83,7 +83,7 @@
                             [{{ row.parent_code }}]
                         </span>
                         <span style="float: right;">
-                            <Poptip placement="right" width="300">
+                            <Poptip placement="right" width="300" :transfer="true">
                                 <a  href="#" class="btn btn-icon btn-sm">
                                     <i class="fa fa-list"/>
                                 </a>
