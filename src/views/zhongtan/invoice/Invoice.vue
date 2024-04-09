@@ -1971,7 +1971,7 @@
                     } else if (this.checkPasswordType === 'doDeliverValidToEdit') {
                         this.doDeliverValidToEdit = true
                     } else if (this.checkPasswordType === 'downLoadDoModalCheck') {
-                        this.actDownLoadDoModal(this.workPara)
+                        this.actDownLoadDoModal(this.workPara, this.doStyle)
                     } else if (this.checkPasswordType === 'nomination') {
                         this.changeNominationAct(this.workPara)
                     } else if (this.checkPasswordType === 'doDisabledChange') {
