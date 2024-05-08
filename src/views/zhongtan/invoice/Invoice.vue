@@ -877,11 +877,6 @@
                             width: 220
                         }, 
                         {
-                            title: 'Do2',
-                            slot: 'Do2',
-                            width: 60,
-                        }, 
-                        {
                             title: 'Nomination',
                             slot: 'invoice_masterbi_nomination',
                             width: 120
@@ -894,11 +889,18 @@
                             title: 'Invoice',
                             slot: 'Invoice',
                             width: 80
-                        }, {
+                        }, 
+                        {
                             title: 'Do',
-                            slot: 'Do',
-                            width: 60
-                        }, {
+                            slot: 'Do2',
+                            width: 60,
+                        }, 
+                        // {
+                        //     title: 'Do',
+                        //     slot: 'Do',
+                        //     width: 60
+                        // },
+                         {
                             title: 'Freight Terms',
                             slot: 'Collect',
                             width: 120
