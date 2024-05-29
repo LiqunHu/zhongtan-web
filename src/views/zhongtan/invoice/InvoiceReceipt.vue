@@ -274,7 +274,7 @@
         <Row>
           <Col>
             <FormItem label="VESSEL" prop="invoice_vessel_id">
-              <Select v-model="workPara.invoice_vessel_id">
+              <Select v-model="workPara.invoice_vessel_id" filterable clearable>
                 <Option v-for="item in pagePara.VESSEL_VOYAGE" :value="item.invoice_vessel_id" :key="item.invoice_vessel_id">{{ item.invoice_vessel }}</Option>
               </Select>
             </FormItem>
