@@ -612,7 +612,7 @@ export default {
       }
     },
     searchDataChange: async function(date) {
-      this.search_data.loading_date = JSON.parse(JSON.stringify(date))
+      this.search_data.etd_date = JSON.parse(JSON.stringify(date))
     },
     demurrageExport: async function() {
       this.checkPassword = ''
