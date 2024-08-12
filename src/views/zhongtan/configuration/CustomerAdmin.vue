@@ -492,19 +492,29 @@ export default {
       }
     },
     changeBlacklist: async function(row) {
+      this.workPara = JSON.parse(JSON.stringify(row))
+      if(row.user_blacklist === '1') {
+        this.submitChangeBlacklist()
+      } else {
+        this.checkPassword = ''
+        this.checkPasswordType = 'removeBlacklist'
+        this.modal.checkPasswordModal = true
+      }
+    },
+    submitChangeBlacklist: async function() {
       try {
-        await this.$http.post(apiUrl + 'changeBlacklist', row)
-        if(row.user_blacklist === '1'){
+        await this.$http.post(apiUrl + 'changeBlacklist', this.workPara)
+        if(this.workPara.user_blacklist === '1'){
           this.$Message.success('add blacklist Success')
         } else {
           this.$Message.success('remove blacklist Success')
         }
         this.getUserData()
       } catch (error) {
-        if(row.user_blacklist === '1'){
-          row.user_blacklist = '0'
+        if(this.workPara.user_blacklist === '1'){
+          this.workPara.user_blacklist = '0'
         } else {
-          row.user_blacklist = '1'
+          this.workPara.user_blacklist = '1'
         }
         this.$commonact.fault(error)
       }
@@ -551,6 +561,8 @@ export default {
             action = 'CUSTOMER_ADMIN_OPERATE'
           } else if(this.checkPasswordType === 'customerFinanceEdit') {
             action = 'CUSTOMER_FINANCE_OPERATE'
+          } else if(this.checkPasswordType === 'removeBlacklist') {
+            action = 'CUSTOMER_REMOVE_BLACKLIST'
           }
           let param = {
             action: action,
@@ -564,8 +576,13 @@ export default {
             this.editCustomerName = true
           } else if (this.checkPasswordType === 'customerFinanceEdit') {
             this.editCustomerFinance = true
+          } else if (this.checkPasswordType === 'removeBlacklist') {
+            this.submitChangeBlacklist()
           }
         } catch (error) {
+          if (this.checkPasswordType === 'removeBlacklist') {
+            this.workPara.user_blacklist = '0'
+          }
           this.$commonact.fault(error)
         }
       } else {
