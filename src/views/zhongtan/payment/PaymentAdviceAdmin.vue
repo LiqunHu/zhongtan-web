@@ -51,6 +51,9 @@
                 <Option v-for="item in pagePara.VESSELS" :value="item.vessel_voyage" :key="item.vessel_voyage">{{ item.vessel_voyage }}</Option>
               </Select>
             </div>
+            <div class="form-group m-r-2">
+              <DatePicker type="daterange" :value="search_data.payment_date" placeholder="PAYMENT MANAGER" style="width: 200px"></DatePicker>
+            </div>
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="getPaymentAdviceData(1)">
                 <i class="fa fa-search"></i>
@@ -216,6 +219,7 @@
 <script>
 import PageOptions from '../../../config/PageOptions.vue'
 const common = require('@/lib/common')
+const moment = require('moment')
 const apiUrl = '/api/zhongtan/payment/PaymentAdviceAdmin/'
 
 export default {
@@ -296,6 +300,11 @@ export default {
               width: 200,
               key: 'payment_advice_create_at'
             },
+            {
+              title: 'Last At',
+              width: 200,
+              key: 'last_time'
+            },
           ],
           pageSizeOpts: [20, 40, 60, 80, 100],
           data: [],
@@ -312,7 +321,8 @@ export default {
         payment_advice_items: '',
         payment_advice_inv_cntrl: '',
         payment_advice_beneficiary: '',
-        payment_advice_remarks: ''
+        payment_advice_remarks: '',
+        payment_date: [moment().subtract(30, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
       },
       formRule: {
         rulePaymentAdviceModal: {
@@ -485,9 +495,10 @@ export default {
         try {
           let act = ''
           if (this.checkPasswordType === 'paymentAdviceModify' 
-              || this.checkPasswordType === 'paymentAdviceDelete' 
-              || this.checkPasswordType === 'paymentAdviceExport') {
+              || this.checkPasswordType === 'paymentAdviceDelete' ) {
             act = 'PAYMENT_ADVICE_ACTION'
+          } else if (this.checkPasswordType === 'paymentAdviceExport') {
+            act = 'PAYMENT_ADVICE_EXPORT'
           }
           let param = {
             action: act,
