@@ -52,7 +52,7 @@
               </Select>
             </div>
             <div class="form-group m-r-2">
-              <DatePicker type="daterange" :value="search_data.payment_date" placeholder="PAYMENT MANAGER" style="width: 200px"></DatePicker>
+              <DatePicker type="daterange" :value="search_data.payment_date" placeholder="PAYMENT MANAGER" style="width: 200px" @on-change="searchPaymnetDate"></DatePicker>
             </div>
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="getPaymentAdviceData(1)">
@@ -583,7 +583,10 @@ export default {
         return ext.toLocaleUpperCase()
       }
       return ext
-    }
+    },
+    searchPaymnetDate: function(e) {
+        this.search_data.payment_date = JSON.parse(JSON.stringify(e))
+    },
   }
 }
 </script>
