@@ -115,7 +115,7 @@
           </span>
         </template>
       </Table>
-      <Page class="m-t-10" :total="table.paymentAdvice.total" :current="table.paymentAdvice.current" :pageSizeOpts = "table.paymentAdvice.pageSizeOpts" :page-size="table.paymentAdvice.limit" @on-change="getPaymentAdviceData"/>
+      <Page class="m-t-10" :total="table.paymentAdvice.total" :current="table.paymentAdvice.current" :pageSizeOpts = "table.paymentAdvice.pageSizeOpts" :page-size="table.paymentAdvice.limit" show-total show-sizer show-elevator @on-change="getPaymentAdviceData" @on-page-size-change="changePaymentAdvicPageSize"/>
     </panel>
     <Modal v-model="modal.paymentAdviceModal" :title="action==='add' ? 'Add Payment Advice' : 'Edit Payment Advice'" width="600px;">
       <Form :model="workPara" :label-width="160" :rules="formRule.rulePaymentAdviceModal" ref="formPaymentAdvice" style="padding-right: 50px;">
@@ -361,6 +361,10 @@ export default {
     initPage()
   },
   methods: {
+    changePaymentAdvicPageSize: async function(pageSize) {
+      this.table.paymentAdvice.limit = pageSize
+      this.getPaymentAdviceData(1)
+    },
     getPaymentAdviceData: async function(index) {
       try {
         if (index) {
