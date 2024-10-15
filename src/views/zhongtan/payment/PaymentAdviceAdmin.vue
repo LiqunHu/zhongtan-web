@@ -84,6 +84,7 @@
               <i class="fa fa-times"></i>
             </a>
           </div>
+          <Tag color="green" v-if="row.transfer_flg === '1'">Transfer</Tag>
         </template>
         <template slot-scope="{ row, index }" slot="payment_advice_no">
           {{row.payment_advice_no}}
@@ -144,6 +145,9 @@
         </FormItem>
         <FormItem label="INV/CNTRL#" prop="payment_advice_inv_cntrl">
           <Input placeholder="INV/CNTRL" v-model="workPara.payment_advice_inv_cntrl"/>
+        </FormItem>
+        <FormItem label="CONTAINER No.#" prop="payment_advice_container_no">
+          <Input placeholder="CONTAINER No." v-model="workPara.payment_advice_container_no"/>
         </FormItem>
         <FormItem label="BENEFICIARY" prop="payment_advice_beneficiary">
           <Select placeholder="BENEFICIARY" clearable filterable v-model="workPara.payment_advice_beneficiary" @on-change="changeBeneficiary">
@@ -264,6 +268,11 @@ export default {
               title: 'INV/CNTRL#',
               width: 200,
               key: 'payment_advice_inv_cntrl'
+            },
+            {
+              title: 'CONTAINER No.#',
+              width: 200,
+              key: 'payment_advice_container_no'
             },
             {
               title: 'BENEFICIARY',
