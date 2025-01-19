@@ -21,6 +21,9 @@
               <input type="text" placeholder="Invoice No." v-model.trim="search_data.unusual_invoice_no" class="form-control">
             </div>
             <div class="input-group m-r-2">
+              <DatePicker type="daterange" :value="search_data.unusual_invoice_date" placeholder="Invoice Date" style="width: 200px" @on-change="searchInvoceRangeAct"></DatePicker>
+            </div>
+            <div class="input-group m-r-2">
               <Select placeholder="CARGO TYPE" clearable filterable v-model="search_data.unusual_invoice_cargo_type">
                 <Option v-for="item in pagePara.CARGO_TYPE" :value="item.id" :key="item.id">{{ item.text }}</Option>
               </Select>
@@ -75,7 +78,7 @@
           </a>
         </template>
       </Table>
-      <Page class="m-t-10" :total="table.unusualInvoice.total" :page-size="table.unusualInvoice.limit" @on-change="getUnusualInvoiceData"/>
+      <Page class="m-t-10" :total="table.unusualInvoice.total" :page-size="table.unusualInvoice.limit" :pageSizeOpts = "table.unusualInvoice.pageSizeOpts" show-total show-sizer show-elevator @on-change="getUnusualInvoiceData" @on-page-size-change="changeUnusualInvoicePageSize"/>
     </panel>
     <Modal v-model="modal.unusualInvoiceModal" title="Payment Advice" width="600px;">
       <Form :model="workPara" :label-width="160" :rules="formRule.ruleUnusualInvoiceModal" ref="formUnusualInvoice" style="padding-right: 50px;">
@@ -139,6 +142,7 @@
 <script>
 import PageOptions from '../../../config/PageOptions.vue'
 const common = require('@/lib/common')
+const moment = require('moment')
 const apiUrl = '/api/zhongtan/payment/UnusualInvoice/'
 
 export default {
@@ -165,17 +169,23 @@ export default {
               slot: 'unusual_invoice_no',
             },
             {
+              title: 'INVOICE Date',
+              width: 180,
+              key: 'unusual_invoice_date',
+            },
+            {
               title: 'INVOICE PARTY',
+              width: 240,
               key: 'unusual_invoice_party_name'
             },
             {
               title: 'VESSEL/VOYOGE',
-              width: 160,
+              width: 200,
               key: 'unusual_invoice_vessel_voyage'
             },
             {
               title: 'ITEMS',
-              width: 180,
+              width: 200,
               key: 'unusual_invoice_items_name'
             },
             {
@@ -198,9 +208,11 @@ export default {
           limit: 10,
           offset: 0,
           total: 0,
+          pageSizeOpts: [10, 20, 40, 60, 80, 100]
         }
       },
       search_data: {
+        unusual_invoice_date: [moment().subtract(30, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
         unusual_invoice_party: '',
         unusual_invoice_items: '',
         unusual_invoice_cargo_type: '',
@@ -240,6 +252,13 @@ export default {
     initPage()
   },
   methods: {
+    searchInvoceRangeAct: function(e) {
+      this.search_data.unusual_invoice_date = JSON.parse(JSON.stringify(e))
+    },
+    changeUnusualInvoicePageSize: async function(pageSize) {
+      this.table.unusualInvoice.limit = pageSize
+      this.getUnusualInvoiceData(1)
+    },
     getUnusualInvoiceData: async function(index) {
       try {
         if (index) {

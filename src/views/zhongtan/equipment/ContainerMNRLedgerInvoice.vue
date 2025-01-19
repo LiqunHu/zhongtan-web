@@ -26,6 +26,12 @@
               </Select>
             </div>
             <div class="form-group m-r-2">
+                <Select v-model="search_data.is_paid" clearable placeholder="PAID" style="width: 120px;">
+                  <Option value="1">MNR PAID</Option>
+                  <Option value="0">MNR UNPAID</Option>
+                </Select>
+              </div>
+            <div class="form-group m-r-2">
               <input type="text" class="form-control" v-model="search_data.mnr_ledger_bl" placeholder="BL#" style="width: 200px" />
             </div>
             <div class="form-group m-r-2">
@@ -397,7 +403,8 @@ export default {
       search_data: {
         date: [moment().startOf('month').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
         mnr_ledger_bl: '',
-        container_no: ''
+        container_no: '',
+        is_paid: ''
       },
       act_type: 'create',
       modal_title:{

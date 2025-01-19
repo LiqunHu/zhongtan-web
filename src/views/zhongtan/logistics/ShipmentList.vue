@@ -25,9 +25,9 @@
           <div class="form-inline">
             <div class="input-group m-r-10">
               <input type="text" placeholder="B/L#" v-model.trim="searchPara.shipment_list_bill_no" style="width:180px" class="form-control">
-              <Select v-model="searchPara.shipment_list_business_type" clearable placeholder="BUSINESS TYPE" style="width:180px">
+              <!-- <Select v-model="searchPara.shipment_list_business_type" clearable placeholder="BUSINESS TYPE" style="width:180px">
                 <Option v-for="item in businessTypeFilter" :value="item.id" :key="item.id">{{ item.text }}</Option>
-              </Select>
+              </Select> -->
               <Select v-model="searchPara.shipment_list_cargo_type" clearable placeholder="CARGO TYPE" style="width:180px">
                 <Option v-for="item in cargoTypeFilter" :value="item.id" :key="item.id">{{ item.text }}</Option>
               </Select>
@@ -54,52 +54,104 @@
           </div>
         </div>
       </template>
-      <Table stripe ref="shipmentTable" :row-class-name="freightRowClassName" :columns="table.shipmentTable.rows" :data="table.shipmentTable.data" :height="table.shipmentTable.height">
-        <template slot-scope="{ row, index }" slot="shipment_list_cargo_type">
-          <span v-if="row.shipment_list_business_type === 'I' && row.shipment_list_cargo_type === 'LOCAL'">
-            IMPORT
-          </span>
-          <span v-else>
-            {{row.shipment_list_cargo_type}}
-          </span>
-        </template>
-        <template slot-scope="{ row, index }" slot="shipment_list_in_date">
-          <span v-if="row.shipment_list_business_type === 'I'">
-            {{row.shipment_list_discharge_date}}
-          </span>
-          <span v-else>
-            {{row.shipment_list_depot_gate_out_date}}
-          </span>
-        </template>
-        <template slot-scope="{ row, index }" slot="shipment_list_vessel_ata_etd">
-          <span v-if="row.shipment_list_business_type === 'I'">
-            {{row.shipment_list_vessel_ata}}
-          </span>
-          <span v-else>
-            {{row.shipment_list_vessel_etd}}
-          </span>
-        </template>
-        <template slot-scope="{ row, index }" slot="shipment_list_out_date">
-          <span v-if="row.shipment_list_business_type === 'I'">
-            {{row.shipment_list_empty_return_date}}
-          </span>
-          <span v-else>
-            {{row.shipment_list_loading_date}}
-          </span>
-        </template>
-        <template slot-scope="{ row, index }" slot="action">
-          <a href="#" class="btn btn-info btn-icon btn-sm" @click="editShipmentModal(row)">
-            <i class="fa fa-edit"></i>
-          </a>
-          <a href="#" class="btn btn-success btn-icon btn-sm" @click="refreshShipment(row)">
-            <Icon type="ios-refresh" size="22"></Icon>
-          </a>
-          <a href="#" class="btn btn-danger btn-icon btn-sm" @click="deleteShipment(row)">
-            <i class="fa fa-times"></i>
-          </a>
-        </template>
-      </Table>
-      <Page class="m-t-10" :total="table.shipmentTable.total" :current="table.shipmentTable.current" :pageSizeOpts = "table.shipmentTable.pageSizeOpts" show-total show-sizer :page-size="table.shipmentTable.limit" @on-change="getPortData"/>
+      <Tabs v-model="currentTab" :animated="false" @on-click="changeTab">
+        <TabPane label="Import" name="Import">
+          <Table stripe ref="shipmentTable" :row-class-name="freightRowClassName" :columns="table.shipmentTable.rows" :data="table.shipmentTable.data" :height="table.shipmentTable.height">
+            <template slot-scope="{ row, index }" slot="shipment_list_cargo_type">
+              <span v-if="row.shipment_list_business_type === 'I' && row.shipment_list_cargo_type === 'LOCAL'">
+                IMPORT
+              </span>
+              <span v-else>
+                {{row.shipment_list_cargo_type}}
+              </span>
+            </template>
+            <template slot-scope="{ row, index }" slot="shipment_list_in_date">
+              <span v-if="row.shipment_list_business_type === 'I'">
+                {{row.shipment_list_discharge_date}}
+              </span>
+              <span v-else>
+                {{row.shipment_list_depot_gate_out_date}}
+              </span>
+            </template>
+            <template slot-scope="{ row, index }" slot="shipment_list_vessel_ata_etd">
+              <span v-if="row.shipment_list_business_type === 'I'">
+                {{row.shipment_list_vessel_ata}}
+              </span>
+              <span v-else>
+                {{row.shipment_list_vessel_etd}}
+              </span>
+            </template>
+            <template slot-scope="{ row, index }" slot="shipment_list_out_date">
+              <span v-if="row.shipment_list_business_type === 'I'">
+                {{row.shipment_list_empty_return_date}}
+              </span>
+              <span v-else>
+                {{row.shipment_list_loading_date}}
+              </span>
+            </template>
+            <template slot-scope="{ row, index }" slot="action">
+              <a href="#" class="btn btn-info btn-icon btn-sm" @click="editShipmentModal(row)">
+                <i class="fa fa-edit"></i>
+              </a>
+              <a href="#" class="btn btn-success btn-icon btn-sm" @click="refreshShipment(row)">
+                <Icon type="ios-refresh" size="22"></Icon>
+              </a>
+              <a href="#" class="btn btn-danger btn-icon btn-sm" @click="deleteShipment(row)">
+                <i class="fa fa-times"></i>
+              </a>
+            </template>
+          </Table>
+          <Page class="m-t-10" :total="table.shipmentTable.total" :current="table.shipmentTable.current" :pageSizeOpts = "table.shipmentTable.pageSizeOpts" show-total show-sizer :page-size="table.shipmentTable.limit" @on-change="getPortData"/>
+        </TabPane>
+        <TabPane label="Export" name="Export">
+          <Table stripe ref="shipmentExportTable" :row-class-name="freightRowClassName" :columns="table.shipmentExportTable.rows" :data="table.shipmentExportTable.data" :height="table.shipmentExportTable.height">
+            <template slot-scope="{ row, index }" slot="shipment_list_cargo_type">
+              <span v-if="row.shipment_list_business_type === 'I' && row.shipment_list_cargo_type === 'LOCAL'">
+                IMPORT
+              </span>
+              <span v-else>
+                {{row.shipment_list_cargo_type}}
+              </span>
+            </template>
+            <template slot-scope="{ row, index }" slot="shipment_list_in_date">
+              <span v-if="row.shipment_list_business_type === 'I'">
+                {{row.shipment_list_discharge_date}}
+              </span>
+              <span v-else>
+                {{row.shipment_list_depot_gate_out_date}}
+              </span>
+            </template>
+            <template slot-scope="{ row, index }" slot="shipment_list_vessel_ata_etd">
+              <span v-if="row.shipment_list_business_type === 'I'">
+                {{row.shipment_list_vessel_ata}}
+              </span>
+              <span v-else>
+                {{row.shipment_list_vessel_etd}}
+              </span>
+            </template>
+            <template slot-scope="{ row, index }" slot="shipment_list_out_date">
+              <span v-if="row.shipment_list_business_type === 'I'">
+                {{row.shipment_list_empty_return_date}}
+              </span>
+              <span v-else>
+                {{row.shipment_list_loading_date}}
+              </span>
+            </template>
+            <template slot-scope="{ row, index }" slot="action">
+              <a href="#" class="btn btn-info btn-icon btn-sm" @click="editShipmentModal(row)">
+                <i class="fa fa-edit"></i>
+              </a>
+              <a href="#" class="btn btn-success btn-icon btn-sm" @click="refreshShipment(row)">
+                <Icon type="ios-refresh" size="22"></Icon>
+              </a>
+              <a href="#" class="btn btn-danger btn-icon btn-sm" @click="deleteShipment(row)">
+                <i class="fa fa-times"></i>
+              </a>
+            </template>
+          </Table>
+          <Page class="m-t-10" :total="table.shipmentExportTable.total" :current="table.shipmentExportTable.current" :pageSizeOpts = "table.shipmentExportTable.pageSizeOpts" show-total show-sizer :page-size="table.shipmentExportTable.limit" @on-change="getPortData"/>
+        </TabPane>
+      </Tabs>
     </panel>
     <Modal v-model="modal.addShipmentModal" title="Add Shipment List" width="1000">
       <Form ref="addShipment" :model="addSearchData" :label-width="120" :rules="addSearchRule" inline>
@@ -179,7 +231,18 @@
           {{workPara.shipment_list_loading_date}}
         </FormItem>
         <FormItem label="POL#" style="margin-bottom:0px;">
-          <Input placeholder="PORT OF LOADING" v-model.trim="workPara.shipment_list_port_of_loading" disabled/>
+          <template v-if="workPara.shipment_list_business_type === 'E'">
+            <Input v-if="workPara.shipment_list_port_of_loading_edit !== '1'" placeholder="PORT OF LOADING" v-model.trim="workPara.shipment_list_port_of_loading" disabled style="width:250px;"/>
+            <Select v-else v-model="workPara.shipment_list_port_of_loading" clearable placeholder="POL" style="width:250px;">
+              <Option v-for="pol in workPara.selected_pol_list" :value="pol" :key="pol">{{ pol }}</Option>
+            </Select>
+            <a href="#" class="btn btn-info btn-icon btn-sm" @click="workPara.shipment_list_port_of_loading_edit = '1'">
+            <i class="fa fa-edit"></i>
+          </a>
+          </template>
+          <template v-else>
+            <Input placeholder="PORT OF LOADING" v-model.trim="workPara.shipment_list_port_of_loading" disabled/>
+          </template>
         </FormItem>
         <FormItem label="POD#" style="margin-bottom:0px;">
           <Input placeholder="PORT OF DESTINATION" v-model.trim="workPara.shipment_list_port_of_destination" disabled/>
@@ -259,6 +322,171 @@ export default {
       modal: { addShipmentModal: false, editShipmentModal: false, checkPasswordModal: false },
       table: {
         shipmentTable: {
+          rows: [
+            {
+              type: 'index',
+              width: 60,
+              align: 'center'
+            },
+            {
+              title: 'Action',
+              slot: 'action',
+              width: 120
+            },
+            {
+              title: 'TYPE',
+              key: 'shipment_list_business_type',
+              width: 80,
+              align: 'center'
+            },
+            {
+              title: 'B/L#',
+              key: 'shipment_list_bill_no',
+              width: 180,
+              align: 'center'
+            },
+            {
+              title: 'CNTR OWNER',
+              key: 'shipment_list_cntr_owner',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'SIZE TYPE',
+              key: 'shipment_list_size_type',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'CONTAINER#',
+              key: 'shipment_list_container_no',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'CARGO TYPE',
+              slot: 'shipment_list_cargo_type',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'VENDOR',
+              key: 'shipment_list_vendor_name',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'POL#',
+              key: 'shipment_list_port_of_loading',
+              width: 200,
+              align: 'center'
+            },
+            {
+              title: 'POD#',
+              key: 'shipment_list_port_of_destination',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'DISCHARGE/GATE OUT',
+              slot: 'shipment_list_in_date',
+              width: 200,
+              align: 'center'
+            },
+            {
+              title: 'VESSEL ATA/ETD',
+              slot: 'shipment_list_vessel_ata_etd',
+              width: 200,
+              align: 'center'
+            },
+            {
+              title: 'EMPTY RETURN/LOADING',
+              slot: 'shipment_list_out_date',
+              width: 240,
+              align: 'center'
+            },
+            {
+              title: 'CARGO WEIGHT',
+              key: 'shipment_list_cargo_weight',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'DAR CUSTOMS RELEASE DATE',
+              key: 'shipment_list_dar_customs_release_date',
+              width: 240,
+              align: 'center'
+            },
+            {
+              title: 'TRUCK DEPARTURE DATE',
+              key: 'shipment_list_truck_departure_date',
+              width: 210,
+              align: 'center'
+            },
+            {
+              title: 'TRUCK PLATE#',
+              key: 'shipment_list_truck_plate',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'ATA TZ BORDER',
+              key: 'shipment_list_ata_tz_border',
+              width: 200,
+              align: 'center'
+            },
+            {
+              title: 'ATA FOREIGN BORDER',
+              key: 'shipment_list_ata_foreing_border',
+              width: 200,
+              align: 'center'
+            },
+            {
+              title: 'BORDER RELEASE DATE',
+              key: 'shipment_list_border_release_date',
+              width: 200,
+              align: 'center'
+            },
+            {
+              title: 'ATA DESTINATION',
+              key: 'shipment_list_ata_destination',
+              width: 200,
+              align: 'center'
+            },
+            {
+              title: 'DELIVERY (UNLOADING) DATE',
+              key: 'shipment_list_delivery_date',
+              width: 250,
+              align: 'center'
+            },
+            {
+              title: 'REMARK',
+              key: 'shipment_list_remark',
+              width: 150,
+              align: 'center'
+            },
+            {
+              title: 'VESSEL NAME',
+              key: 'shipment_list_vessel_name',
+              width: 200,
+              align: 'center'
+            },
+            {
+              title: 'VESSEL VOYAGE',
+              key: 'shipment_list_vessel_voyage',
+              width: 200,
+              align: 'center'
+            }
+          ],
+          pageSizeOpts: [40, 60, 80, 100],
+          data: [],
+          height: common.getTableHeight() - 100,
+          limit: 40,
+          offset: 0,
+          total: 0,
+          current: 1
+        },
+        shipmentExportTable: {
           rows: [
             {
               type: 'index',
@@ -555,7 +783,9 @@ export default {
       addSearchRule: {
         bill_no: [{ required: true, trigger: 'blur', message: 'Enter B/L#' }]
       },
-      checkPassword: ''
+      checkPassword: '',
+      currentTab: 'Import',
+      selectedPolList: []
     }
   },
   created() {
@@ -581,14 +811,20 @@ export default {
           this.table.shipmentTable.offset = (index - 1) * this.table.shipmentTable.limit
           this.table.shipmentTable.current = index
         }
+        this.searchPara.currentTab = this.currentTab
         let response = await this.$http.post(apiUrl + 'search', {
           searchPara: this.searchPara,
           offset: this.table.shipmentTable.offset,
           limit: this.table.shipmentTable.limit
         })
         let data = response.data.info
-        this.table.shipmentTable.total = data.total
-        this.table.shipmentTable.data = JSON.parse(JSON.stringify(data.rows))
+        if(this.currentTab === 'Import') {
+          this.table.shipmentTable.total = data.total
+          this.table.shipmentTable.data = JSON.parse(JSON.stringify(data.rows))
+        } else {
+          this.table.shipmentExportTable.total = data.total
+          this.table.shipmentExportTable.data = JSON.parse(JSON.stringify(data.rows))
+        }
       } catch (error) {
         this.$commonact.fault(error)
       }
@@ -806,6 +1042,9 @@ export default {
       } catch (error) {
         this.$commonact.fault(error)
       }
+    },
+    changeTab() {
+      this.getPortData(1)
     }
   }
 }

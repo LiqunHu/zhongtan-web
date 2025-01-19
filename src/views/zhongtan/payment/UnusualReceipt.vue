@@ -21,7 +21,13 @@
               <input type="text" placeholder="Invoice No." v-model.trim="search_data.unusual_invoice_no" class="form-control">
             </div>
             <div class="input-group m-r-2">
+              <DatePicker type="daterange" :value="search_data.unusual_invoice_date" placeholder="Invoice Date" style="width: 180px" @on-change="searchInvoceRangeAct"></DatePicker>
+            </div>
+            <div class="input-group m-r-2">
               <input type="text" placeholder="Receipt No." v-model.trim="search_data.unusual_receipt_no" class="form-control">
+            </div>
+            <div class="input-group m-r-2">
+              <DatePicker type="daterange" :value="search_data.unusual_receipt_date" placeholder="Invoice Date" style="width: 180px" @on-change="searchReceiptRangeAct"></DatePicker>
             </div>
             <div class="input-group m-r-2">
               <Select placeholder="CARGO TYPE" clearable filterable v-model="search_data.unusual_invoice_cargo_type">
@@ -72,7 +78,7 @@
           </a>
         </template>
       </Table>
-      <Page class="m-t-10" :total="table.unusualReceipt.total" :page-size="table.unusualReceipt.limit" @on-change="getUnusualReceiptData"/>
+      <Page class="m-t-10" :total="table.unusualReceipt.total" :page-size="table.unusualReceipt.limit" :pageSizeOpts = "table.unusualReceipt.pageSizeOpts" show-total show-sizer show-elevator @on-change="getUnusualReceiptData" @on-page-size-change="changeUnusualReceiptPageSize"/>
     </panel>
     <Modal v-model="modal.receiptModal" title="RECEIPT" width="600">
       <Form ref="receiptForm" :model="workPara" :label-width="150" style="padding-right: 80px;">
@@ -139,6 +145,7 @@
 import PageOptions from '../../../config/PageOptions.vue'
 import printJS from 'print-js'
 const common = require('@/lib/common')
+const moment = require('moment')
 const apiUrl = '/api/zhongtan/payment/UnusualReceipt/'
 
 export default {
@@ -160,12 +167,23 @@ export default {
               slot: 'unusual_receipt_no',
             },
             {
+              title: 'RECEIPT Date',
+              width: 180,
+              key: 'unusual_receipt_date',
+            },
+            {
               title: 'INVOICE NO.',
               width: 180,
               slot: 'unusual_invoice_no',
             },
             {
+              title: 'INVOICE Date',
+              width: 180,
+              key: 'unusual_invoice_date',
+            },
+            {
               title: 'INVOICE PARTY',
+              width: 200,
               key: 'unusual_invoice_party_name'
             },
             {
@@ -198,9 +216,14 @@ export default {
           limit: 10,
           offset: 0,
           total: 0,
+          pageSizeOpts: [10, 20, 40, 60, 80, 100]
         }
       },
       search_data: {
+        unusual_invoice_no: '',
+        unusual_invoice_date: [moment().subtract(30, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
+        unusual_receipt_no: '',
+        unusual_receipt_date: [],
         unusual_invoice_party: '',
         unusual_invoice_items: '',
         unusual_invoice_cargo_type: '',
@@ -231,6 +254,16 @@ export default {
     initPage()
   },
   methods: {
+    searchInvoceRangeAct: function(e) {
+      this.search_data.unusual_invoice_date = JSON.parse(JSON.stringify(e))
+    },
+    searchReceiptRangeAct: function(e) {
+      this.search_data.unusual_receipt_date = JSON.parse(JSON.stringify(e))
+    },
+    changeUnusualReceiptPageSize: async function(pageSize) {
+      this.table.unusualReceipt.limit = pageSize
+      this.getUnusualReceiptData(1)
+    },
     getUnusualReceiptData: async function(index) {
       try {
         if (index) {
