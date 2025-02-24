@@ -245,7 +245,15 @@
           </template>
         </FormItem>
         <FormItem label="POD#" style="margin-bottom:0px;">
-          <Input placeholder="PORT OF DESTINATION" v-model.trim="workPara.shipment_list_port_of_destination" disabled/>
+          <template v-if="workPara.shipment_list_business_type === 'E'">
+            <Input v-if="workPara.shipment_list_port_of_loading_edit !== '1'" placeholder="PORT OF DESTINATION" v-model.trim="workPara.shipment_list_port_of_destination" disabled style="width:250px;"/>
+            <Select v-else v-model="workPara.shipment_list_port_of_destination" clearable placeholder="POD" style="width:250px;">
+              <Option v-for="pod in workPara.selected_pod_list" :value="pod" :key="pod">{{ pod }}</Option>
+            </Select>
+          </template>
+          <template v-else>
+            <Input placeholder="PORT OF DESTINATION" v-model.trim="workPara.shipment_list_port_of_destination" disabled/>
+          </template>
         </FormItem>
         <FormItem style="margin-bottom:0px;">
           <span slot="label"><i class="fa fa-lock" style="color: red;" v-if="workPara.shipment_list_dar_customs_release_date"></i> DAR CUSTOMS RELEASE DATE</span>
