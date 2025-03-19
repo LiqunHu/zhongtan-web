@@ -153,7 +153,7 @@
         </TabPane>
       </Tabs>
     </panel>
-    <Modal v-model="modal.addShipmentModal" title="Add Shipment List" width="1000">
+    <Modal v-model="modal.addShipmentModal" title="Add Shipment List" width="1400">
       <Form ref="addShipment" :model="addSearchData" :label-width="120" :rules="addSearchRule" inline>
         <FormItem label="B/L#" prop="bill_no">
           <Input placeholder="B/L#" v-model="addSearchData.bill_no"/>
@@ -484,6 +484,24 @@ export default {
               key: 'shipment_list_vessel_voyage',
               width: 200,
               align: 'center'
+            },
+            {
+              title: 'EXPORTER NAME',
+              key: 'shipment_list_exporter_name',
+              width: 200,
+              align: 'center'
+            },
+            {
+              title: 'CONSIGNEE NAME',
+              key: 'shipment_list_consignee_name',
+              width: 200,
+              align: 'center'
+            },
+            {
+              title: 'NOTIFY NAME',
+              key: 'shipment_list_notify_name',
+              width: 200,
+              align: 'center'
             }
           ],
           pageSizeOpts: [40, 60, 80, 100],
@@ -755,6 +773,24 @@ export default {
               width: 200,
               align: 'center'
             },
+            {
+              title: 'EXPORTER NAME',
+              key: 'shipment_list_exporter_name',
+              width: 200,
+              align: 'center'
+            },
+            {
+              title: 'CONSIGNEE NAME',
+              key: 'shipment_list_consignee_name',
+              width: 200,
+              align: 'center'
+            },
+            {
+              title: 'NOTIFY NAME',
+              key: 'shipment_list_notify_name',
+              width: 200,
+              align: 'center'
+            }
           ],
           data: [],
           total: 0
