@@ -307,6 +307,12 @@
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_loading">
                     <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_loading}" v-model="table.masterbiTable.data[index].invoice_masterbi_loading" size="small" :disabled="tableEdit"/>
                     </template>
+                <template slot-scope="{ row, index }" slot="invoice_masterbi_discharge">
+                    <span v-if="tableEdit">{{ table.masterbiTable.data[index].invoice_masterbi_discharge }}</span> 
+                    <i-select v-else v-model="table.masterbiTable.data[index].invoice_masterbi_discharge" >
+                        <i-option v-for="item in pagePara.POD" :value="item.id" :key="item.id" :label="item.id"></i-option>
+                    </i-select>
+                </template>
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_container_no">
                     <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_container_no}" v-model="table.masterbiTable.data[index].invoice_masterbi_container_no" size="small" :disabled="tableEdit"/>
                     </template>
@@ -624,14 +630,24 @@
             </FormItem>
             </Col>
             <Col span="12">
-            <FormItem label="Destination" style="margin-bottom: 0px;">
-                <span> {{ workPara.invoice_masterbi_destination }}</span>
+            <FormItem label="Port of Discharge" style="margin-bottom: 0px;">
+                <span> {{ workPara.invoice_masterbi_discharge }}</span>
             </FormItem>
             </Col>
         </Row>
-        <FormItem label="Container Size" style="margin-bottom: 0px;" v-if="workPara.invoice_masterbi_vessel_type !== 'Bulk'">
-            <span style='white-space:pre;'> {{ workPara.container_size_type }}</span>
-        </FormItem>
+        <Row>
+            <Col span="12">
+                <FormItem label="Place of Destination" style="margin-bottom: 0px;">
+                    <span> {{ workPara.invoice_masterbi_destination }}</span>
+                </FormItem>
+            </Col>
+            <Col span="12">
+            <FormItem label="Container Size" style="margin-bottom: 0px;" v-if="workPara.invoice_masterbi_vessel_type !== 'Bulk'">
+                <span style='white-space:pre;'> {{ workPara.container_size_type }}</span>
+            </FormItem>
+            </Col>
+        </Row>
+        
         <Checkbox v-model="depositEdit" v-if="deposit.depositType=='Container Deposit'" style="position: absolute; top: 366px; right: 20px;" @on-change="changeDepositEdit">EDIT</Checkbox>
         <Checkbox v-model="invoiceFeeEdit" v-if="deposit.depositType=='Invoice Fee'" style="position: absolute; top: 366px; right: 20px;" @on-change="changeInvoiceFeeEdit">EDIT</Checkbox>
         <Tabs ref="depositTabs" active-key="Container Deposit" @on-click="currentFeeTabChanged">
@@ -931,6 +947,10 @@
                         }, {
                             title: 'Port of Loading',
                             slot: 'invoice_masterbi_loading',
+                            width: 130
+                        }, {
+                            title: 'Port of Discharge',
+                            slot: 'invoice_masterbi_discharge',
                             width: 130
                         }, {
                             title: 'Number of Containers',
