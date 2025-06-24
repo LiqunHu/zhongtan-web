@@ -18,7 +18,7 @@
         <div class="panel-toolbar">
           <div class="form-inline">
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.masterbl_bl" placeholder="#M B/L No" style="width: 140px" />
+              <input type="text" class="form-control" v-model="search_data.masterbl_bl" placeholder="#M B/L No" style="width: 200px" />
             </div>
             <div class="form-group m-r-2">
               <Select v-model="search_data.charge_status" placeholder="Charge Status" clearable style="width:140px">
@@ -26,18 +26,25 @@
               </Select>
             </div>
             <div class="form-group m-r-2">
-              <Select v-model="search_data.vessel_id" placeholder="Select Vessel" clearable filterable style="width:140px">
+              <Select v-model="search_data.bl_carrier" placeholder="BL Carrier" clearable style="width:140px">
+                <Option v-for="item in carrierList" :value="item.id" :key="item.id">{{ item.text }}</Option>
+              </Select>
+            </div>
+            <div class="form-group m-r-2">
+              <Select v-model="search_data.vessel_id" placeholder="Select Vessel" clearable filterable style="width:240px">
                 <Option v-for="item in pagePara.VESSELS" :value="item.export_vessel_id" :key="item.export_vessel_id">{{ item.export_vessel_name + '/' + item.export_vessel_voyage }}</Option>
               </Select>
             </div>
             <div class="form-group m-r-2">
-              <DatePicker type="daterange" :value="search_data.etd_date" placeholder="ETD Date" style="width: 140px" @on-change="searchETDData"></DatePicker>
+              <DatePicker type="daterange" :value="search_data.etd_date" placeholder="ETD Date" style="width:240px" @on-change="searchETDData"></DatePicker>
             </div>
             <div class="form-group m-r-2">
-              <Select v-model="search_data.receivable_agent" placeholder="Select Agent" clearable filterable style="width:140px">
+              <Select v-model="search_data.receivable_agent" placeholder="Select Agent" clearable filterable style="width:240px">
                 <Option v-for="item in pagePara.AGENTS" :value="item.user_id" :key="item.user_id">{{ item.user_name }}</Option>
               </Select>
             </div>
+          </div>
+          <div class="form-inline" style="margin-top: 5px;">
             <div class="form-group m-r-2">
               <Select v-model="search_data.bgf_flg" placeholder="Select BGF" clearable filterable style="width:140px">
                 <Option value="1" key="1">BGF</Option>
@@ -45,7 +52,7 @@
               </Select>
             </div>
             <div class="form-group m-r-2">
-              <Select v-model="search_data.sales_code" placeholder="Sales Code" filterable clearable>
+              <Select v-model="search_data.sales_code" placeholder="Sales Code" filterable clearable style="width:240px">
                 <Option v-for="(item, index) in pagePara.SALES_CODE" :value="item.user_code" :key="index" :label="item.user_code">
                   <span>{{item.user_code}}</span>
                   <span style="float: right;">{{item.user_name}}</span>
@@ -53,7 +60,7 @@
               </Select>
             </div>
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.shipper" placeholder="Shipper" style="width: 140px" />
+              <input type="text" class="form-control" v-model="search_data.shipper" placeholder="Shipper" style="width: 240px" />
             </div>
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="getTableData(1)">
@@ -65,11 +72,6 @@
                 <i class="fa fa-download" style="padding-right:7px;"></i> Export
               </button>
             </div>
-            <!-- <div class="form-group m-r-10">
-              <button type="button" class="btn btn-info" @click="loadingListAct()"> 
-                <i class="fa fa-upload" style="padding-right:7px;"></i> Loading List
-              </button>
-            </div> -->
           </div>
         </div>
       </template>
@@ -159,7 +161,7 @@
         </template>
       </Table>
       <Row>
-        <Col span="8">
+        <Col span="18">
           <Page class="m-t-10" :current="table.containerTable.current" :total="table.containerTable.total" show-sizer show-total :page-size="table.containerTable.limit" @on-change="getTableData" @on-page-size-change="resetTableSizer"/>
         </Col>
         <Col span="6"> 
@@ -227,6 +229,10 @@ export default {
       chargeStatus: [
         { id: 'RELEASE', text: 'RELEASE' },
         { id: 'HOLD', text: 'HOLD' }
+      ],
+      carrierList: [
+        { id: 'COSCO', text: 'COSCO' },
+        { id: 'OOCL', text: 'OOCL' }
       ],
       pagePara: {},
       table: {
@@ -325,7 +331,7 @@ export default {
           ],
           data: [],
           unchanged: [],
-          height: common.getTableHeight(),
+          height: common.getTableHeight() - 60,
           current: 1,
           limit: 10,
           offset: 0,
@@ -355,6 +361,7 @@ export default {
       search_data: {
         masterbl_bl: '',
         charge_status: '',
+        bl_carrier: '',
         vessel_id: '',
         etd_date: '',
         receivable_agent: '',

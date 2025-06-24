@@ -27,11 +27,14 @@
               <input type="text" class="form-control" v-model="search_data.invoice_containers_no" placeholder="Container No" style="width: 160px" />
             </div>
             <div class="form-group m-r-2">
-                <input type="text" class="form-control" v-model="search_data.invoice_no" placeholder="Invoice No" style="width: 160px" />
-              </div>
-              <div class="form-group m-r-2">
-                <input type="text" class="form-control" v-model="search_data.receipt_no" placeholder="Receipt No" style="width: 160px" />
-              </div>
+              <input type="text" class="form-control" v-model="search_data.invoice_no" placeholder="Invoice No" style="width: 160px" />
+            </div>
+            <div class="form-group m-r-2">
+              <input type="text" class="form-control" v-model="search_data.reference_no" placeholder="Reference No" style="width: 160px" />
+            </div>
+            <div class="form-group m-r-2">
+              <input type="text" class="form-control" v-model="search_data.receipt_no" placeholder="Receipt No" style="width: 160px" />
+            </div>
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="getTableData">
                 <i class="fa fa-search"></i> Search
@@ -290,7 +293,10 @@ export default {
       search_data: {
         invoice_vessel_name: '',
         invoice_containers_bl: '',
-        invoice_containers_no: ''
+        invoice_containers_no: '',
+        invoice_no: '',
+        reference_no: '',
+        receipt_no: ''
       },
       receiptForm: {
         file_id: '',

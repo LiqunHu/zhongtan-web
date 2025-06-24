@@ -56,7 +56,8 @@
                     <Option v-for="item in cargoTypeFilter" :value="item.id" :key="item.id">{{ item.text }}</Option>
                   </Select>
                   <DatePicker type="daterange" :value="searchPara.shipment_list_in_date" placeholder="DISCHARGE/GATE OUT" @on-change="searchInDateChange" format="yyyy-MM-dd" style="margin-right:7px;"></DatePicker>
-                  <DatePicker type="daterange" :value="searchPara.shipment_list_out_date" placeholder="EMPTY RETURN/LOADING" @on-change="searchOutDateChange" format="yyyy-MM-dd"></DatePicker>
+                  <DatePicker type="daterange" :value="searchPara.shipment_list_out_date" placeholder="EMPTY RETURN/LOADING" @on-change="searchOutDateChange" format="yyyy-MM-dd" style="margin-right:7px;"></DatePicker>
+                  <DatePicker type="daterange" :value="searchPara.shipment_list_receipt_date" placeholder="RECEIPT DATE" @on-change="searchReceiptChange" format="yyyy-MM-dd"></DatePicker>
                 </div>
               </div>
             </Row>
@@ -536,6 +537,9 @@ export default {
     },
     searchOutDateChange: async function(e) {
       this.searchPara.shipment_list_out_date = JSON.parse(JSON.stringify(e))
+    },
+    searchReceiptChange: async function(e) {
+      this.searchPara.shipment_list_receipt_date = JSON.parse(JSON.stringify(e))
     },
     undoFreight: async function(row) {
       this.workPara = JSON.parse(JSON.stringify(row))

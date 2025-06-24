@@ -30,6 +30,9 @@
               <input type="text" class="form-control" v-model="vessel.search_data.invoice_no" placeholder="Invoice No" style="width: 200px" />
             </div>
             <div class="form-group m-r-2">
+              <input type="text" class="form-control" v-model="vessel.search_data.reference_no" placeholder="Refeence No" style="width: 200px" />
+            </div>
+            <div class="form-group m-r-2">
               <input type="text" class="form-control" v-model="vessel.search_data.receipt_no" placeholder="Receipt No" style="width: 200px" />
             </div>
             <div class="form-group m-r-10">
@@ -775,7 +778,9 @@ export default {
           ],
           vesselName: '',
           bl: '',
-          invoice_no: ''
+          invoice_no: '',
+          reference_no: '',
+          receipt_no: ''
         },
         current: '',
         height: common.getTableHeight()
@@ -829,6 +834,7 @@ export default {
           bl: this.vessel.search_data.bl,
           invoice_no: this.vessel.search_data.invoice_no,
           receipt_no: this.vessel.search_data.receipt_no,
+          reference_no: this.vessel.search_data.reference_no,
           limit: 10,
           offset: 0
         }
@@ -872,6 +878,7 @@ export default {
         bl: this.vessel.search_data.bl,
         invoice_no: this.vessel.search_data.invoice_no,
         receipt_no: this.vessel.search_data.receipt_no,
+        reference_no: this.vessel.search_data.reference_no,
         offset: this.table.masterbiTable.offset,
         limit: this.table.masterbiTable.limit
       }
@@ -1047,7 +1054,7 @@ export default {
           this.workPara.invoice_masterbi_receipt_amount_rate = this.workPara.invoice_masterbi_receipt_amount
         } else {
           try {
-            let response = await this.$http.post(apiUrl + 'changeReceiptCurrency', { usd_amount: this.workPara.invoice_masterbi_receipt_amount })
+            let response = await this.$http.post(apiUrl + 'changeReceiptCurrency', { checkType: this.checkType, invoice_masterbi_id: this.workPara.invoice_masterbi_id, usd_amount: this.workPara.invoice_masterbi_receipt_amount })
             if(response.data.info) {
               this.workPara.invoice_masterbi_receipt_amount_rate = formatCurrency(response.data.info)
             }

@@ -17,31 +17,36 @@
         <div class="panel-toolbar">
           <div class="form-inline">
             <div class="form-group m-r-2">
-              <DatePicker type="daterange" :value="search_data.date_range" placeholder="Vessel Date" style="width: 160px" @on-change="searchRangeAct"></DatePicker>
+              <DatePicker type="daterange" :value="search_data.date_range" placeholder="Vessel Date" style="width:140px" @on-change="searchRangeAct"></DatePicker>
             </div>
             <div class="form-group m-r-2">
-              <Select clearable v-model="search_data.vessel_id" filterable placeholder="Vessel Voyage" style="width:160px">
+              <Select clearable v-model="search_data.vessel_id" filterable placeholder="Vessel Voyage" style="width:140px">
                 <Option v-for="item in pagePara.VESSEL_VOYAGES" :value="item.export_vessel_id" :key="item.export_vessel_id">{{ item.export_vessel_voyage }}</Option>
               </Select>
             </div>
             <div class="form-group m-r-2">
-              <Select clearable v-model="search_data.firm_booking" filterable placeholder="FIRM BK" style="width:160px">
+              <Select v-model="search_data.bl_carrier" placeholder="BL Carrier" clearable style="width:140px">
+                <Option v-for="item in carrierList" :value="item.id" :key="item.id">{{ item.text }}</Option>
+              </Select>
+            </div>
+            <div class="form-group m-r-2">
+              <Select clearable v-model="search_data.firm_booking" filterable placeholder="FIRM BK" style="width:140px">
                 <Option v-for="item in firm_booking_filter" :value="item.id" :key="item.id">{{ item.text }}</Option>
               </Select>
             </div>
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.masterbi_bl" placeholder="B/L No" style="width: 160px" />
+              <input type="text" class="form-control" v-model="search_data.masterbi_bl" placeholder="B/L No" style="width: 140px" />
             </div>
             <div class="form-group m-r-2">
-              <Select v-model="search_data.forwarder" filterable clearable :remote-method="remoteEmptyReleaseAgent" placeholder="FORWARDER" style="width: 160px">
+              <Select v-model="search_data.forwarder" filterable clearable :remote-method="remoteEmptyReleaseAgent" placeholder="FORWARDER" style="width: 140px">
                 <Option v-for="(item, index) in emptyReleaseAgent" :value="item.user_name" :key="index" :label="item.user_name"></Option>
               </Select>
             </div>
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.shipper" placeholder="SHIPPER" style="width: 160px" />
+              <input type="text" class="form-control" v-model="search_data.shipper" placeholder="SHIPPER" style="width: 140px" />
             </div>
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.consignee" placeholder="CONSIGNEE" style="width: 160px" />
+              <input type="text" class="form-control" v-model="search_data.consignee" placeholder="CONSIGNEE" style="width: 140px" />
             </div>
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="searchDataAct">
@@ -373,6 +378,10 @@ export default {
   name: 'BookingLoadControl',
   data: function() {
     return {
+      carrierList: [
+        { id: 'COSCO', text: 'COSCO' },
+        { id: 'OOCL', text: 'OOCL' }
+      ],
       modal: { bookingModal: false, checkPasswordModal: false, emptyReleaseModal: false, bookingEditModal: false, bkCancellationFeeModal: false },
       headers: common.uploadHeaders(),
       vesselHeight: common.getTableHeight(),
@@ -383,7 +392,8 @@ export default {
         vessel_id: '',
         masterbi_bl: '',
         firm_booking: '',
-        export_vessel_id: ''
+        export_vessel_id: '',
+        bl_carrier: ''
       },
       pagePara: {},
       workPara: {},

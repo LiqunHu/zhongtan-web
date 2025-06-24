@@ -77,10 +77,21 @@
             <i class="fa fa-times"></i>
           </a>
         </template>
+        <template slot-scope="{ row, index }" slot="atta_files">
+          <span v-if="row.atta_files">
+            <a v-for="(item, index) in row.atta_files" v-bind:key="index" :href="item.uploadfile_url" target="_blank">
+              <i class="fa fa-file-pdf" style="color:purple; font-size: 18px; margin-right: 7px;" v-if="getFileExtension(item.uploadfile_url) === 'PDF'"></i>
+              <i class="fa fa-file-excel" style="color:blue; font-size: 18px; margin-right: 7px;" v-else-if="getFileExtension(item.uploadfile_url) === 'XLS' || getFileExtension(item.uploadfile_url) === 'XLSX'"></i>
+              <i class="fa fa-file-word" style="color:aqua; font-size: 18px; margin-right: 7px;" v-else-if="getFileExtension(item.uploadfile_url) === 'DOC' || getFileExtension(item.uploadfile_url) === 'DOCX'"></i>
+              <i class="fa fa-envelope" style="color:green; font-size: 18px; margin-right: 7px;" v-else-if="getFileExtension(item.uploadfile_url) === 'EML'"></i>
+              <i class="fa fa-download" style="color:orange; font-size: 18px; margin-right: 7px;" v-else></i>
+            </a>
+          </span>
+        </template>
       </Table>
       <Page class="m-t-10" :total="table.unusualInvoice.total" :page-size="table.unusualInvoice.limit" :pageSizeOpts = "table.unusualInvoice.pageSizeOpts" show-total show-sizer show-elevator @on-change="getUnusualInvoiceData" @on-page-size-change="changeUnusualInvoicePageSize"/>
     </panel>
-    <Modal v-model="modal.unusualInvoiceModal" title="Payment Advice" width="600px;">
+    <Modal v-model="modal.unusualInvoiceModal" title="Unusual Invoice" width="600px;">
       <Form :model="workPara" :label-width="160" :rules="formRule.ruleUnusualInvoiceModal" ref="formUnusualInvoice" style="padding-right: 50px;">
         <FormItem label="Invoice Party" prop="unusual_invoice_party">
           <Select placeholder="Invoice Party" clearable filterable v-model="workPara.unusual_invoice_party" @on-change="changeInvoiceParty">
@@ -116,6 +127,20 @@
         </FormItem>
         <FormItem label="AMOUNT" prop="unusual_invoice_amount">
           <Input placeholder="AMOUNT" v-model="workPara.unusual_invoice_amount" @keyup.native='keyupNumberFormat($event, "unusual_invoice_amount")'></INput>
+        </FormItem>
+        <FormItem label="Attachment">
+          <Upload
+            ref="upload"
+            :headers="uploadHeaders"
+            :on-success="handleUploadSuccess"
+            :on-remove="handleUploadRemove"
+            type="drag"
+            action="/api/zhongtan/payment/UnusualInvoice/upload">
+            <div style="padding: 20px 0">
+                <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+                <p>Click or drag files here to upload</p>
+            </div>
+          </Upload>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -202,6 +227,11 @@ export default {
               title: 'Amount',
               width: 160,
               key: 'unusual_invoice_amount'
+            },
+            {
+              title: 'ATTACHMENT',
+              width: 200,
+              slot: 'atta_files'
             }
           ],
           data: [],
@@ -283,8 +313,10 @@ export default {
         unusual_invoice_items: '',
         unusual_invoice_cargo_type: '',
         unusual_invoice_bl: '',
-        unusual_invoice_amount: ''
+        unusual_invoice_amount: '',
+        unusual_atta_files: []
       }
+      this.$refs.upload.fileList = []
     },
     addUnusualInvoiceModal: async function() {
       this.resetWorkPara()
@@ -312,6 +344,8 @@ export default {
       delete actrow._rowKey
       this.oldPara = JSON.parse(JSON.stringify(actrow))
       this.workPara = JSON.parse(JSON.stringify(actrow))
+      this.workPara.unusual_atta_files = []
+      this.$refs.upload.fileList = []
       this.action = 'modify'
       this.modal.unusualInvoiceModal = true
     },
@@ -439,6 +473,22 @@ export default {
       } else {
           this.workPara[key] = ''
       }
+    },
+    handleUploadSuccess(res, file, fileList) {
+      file.url = res.info.url
+      file.name = res.info.name
+      this.workPara.unusual_atta_files = JSON.parse(JSON.stringify(this.$refs.upload.fileList))
+    },
+    handleUploadRemove(file, fileList) {
+      const index = this.workPara.unusual_atta_files.indexOf(file)
+      this.workPara.unusual_atta_files.splice(index, 1)
+    },
+    getFileExtension: function(filename){
+      let ext = /[.]/.exec(filename) ? /[^.]+$/.exec(filename)[0] : ''
+      if(ext) {
+        return ext.toLocaleUpperCase()
+      }
+      return ext
     }
   }
 }

@@ -29,6 +29,9 @@
               <input type="text" class="form-control" v-model="search_data.invoice_no" placeholder="INVOICE No" style="width: 200px" />
             </div>
             <div class="form-group m-r-2">
+              <input type="text" class="form-control" v-model="search_data.reference_no" placeholder="REFERENCE No" style="width: 200px" />
+            </div>
+            <div class="form-group m-r-2">
               <input type="text" class="form-control" v-model="search_data.receipt_no" placeholder="RECEIPT No" style="width: 200px" />
             </div>
             <div class="form-group m-r-10">
@@ -247,7 +250,9 @@ export default {
         vessel_name: '',
         invoice_no: '',
         masterbi_bl: '',
-        export_vessel_id: ''
+        export_vessel_id: '',
+        reference_no: '',
+        receipt_no: ''
       },
       vesselData: [],
       blTable: {

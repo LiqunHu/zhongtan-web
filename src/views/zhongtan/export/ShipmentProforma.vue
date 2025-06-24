@@ -29,6 +29,11 @@
               <input type="text" class="form-control" v-model="search_data.vessel_name" placeholder="Vessel Name" style="width: 200px" />
             </div>
             <div class="form-group m-r-2">
+              <Select v-model="search_data.bl_carrier" placeholder="BL Carrier" clearable style="width:140px">
+                <Option v-for="item in carrierList" :value="item.id" :key="item.id">{{ item.text }}</Option>
+              </Select>
+            </div>
+            <div class="form-group m-r-2">
               <input type="text" class="form-control" v-model="search_data.masterbi_bl" placeholder="B/L No" style="width: 200px" />
             </div>
             <div class="form-group m-r-2">
@@ -313,6 +318,10 @@ export default {
       modal: { bookingModal: false, importModal: false, checkPasswordModal: false, emptyReleaseModal: false, bookingEditModal: false, shipmentModal:  false},
       headers: common.uploadHeaders(),
       vesselHeight: common.getTableHeight(),
+      carrierList: [
+        { id: 'COSCO', text: 'COSCO' },
+        { id: 'OOCL', text: 'OOCL' }
+      ],
       search_data: {
         date_range: [moment().subtract(30, 'days').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD')],
         etd_start_date: '',
@@ -321,7 +330,8 @@ export default {
         masterbi_bl: '',
         export_vessel_id: '',
         shipper_company: '',
-        consignee_company: ''
+        consignee_company: '',
+        bl_carrier: ''
       },
       pagePara: {},
       workPara: {},
