@@ -96,8 +96,11 @@
                   </Option>
                 </Select>
               </div>
-
-              
+              <div class="form-group m-r-2">
+                <Select clearable v-model="search_data.invoice_pod" style="width:140px" placeholder="Place of Destination" filterable>
+                  <Option v-for="item in pagePara.POD" :value="item.id" :key="item.id">{{ item.id }}</Option>
+                </Select>
+              </div>
             </div>
           </row>
         </div>

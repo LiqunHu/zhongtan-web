@@ -20,18 +20,18 @@
               ATA&nbsp;&nbsp;<DatePicker type="daterange" :value="search_data.ata_date" placeholder="ATA Date" style="width: 140px" @on-change="searchAtaDate"></DatePicker>
             </div>
             <div class="form-group m-r-2">
-              <Select clearable v-model="search_data.invoice_vessel_id" style="width:140px" placeholder="VESSEL">
+              <Select clearable v-model="search_data.invoice_vessel_id" style="width:140px" placeholder="VESSEL" filterable>
                 <Option v-for="item in pagePara.VESSEL_VOYAGE" :value="item.invoice_vessel_id" :key="item.invoice_vessel_id">{{ item.invoice_vessel }}</Option>
               </Select>
             </div>
             <div class="form-group m-r-2">
-              <Select clearable v-model="search_data.invoice_carrier" style="width:140px" placeholder="CARRIER">
+              <Select clearable v-model="search_data.invoice_carrier" style="width:140px" placeholder="CARRIER" >
                 <Option v-for="item in pagePara.RECEIPT_TYPE_INFO" :value="item.id" :key="item.id">{{ item.text }}</Option>
               </Select>
             </div>
             
             <div class="form-group m-r-2">
-              <Select clearable v-model="search_data.invoice_customer_id" style="width:140px" placeholder="CUSTOMER">
+              <Select clearable v-model="search_data.invoice_customer_id" style="width:140px" placeholder="CUSTOMER" filterable>
                 <Option v-for="item in pagePara.CUSTOMER" :value="item.user_id" :key="item.user_id">{{ item.user_name }}</Option>
               </Select>
             </div>
@@ -49,6 +49,11 @@
             </div>
             <div class="form-group m-r-2">
               <input clearable type="text" class="form-control" v-model="search_data.bl" placeholder="B/L No" style="width: 140px" />
+            </div>
+            <div class="form-group m-r-2">
+              <Select clearable v-model="search_data.invoice_pod" style="width:140px" placeholder="Place of Destination" filterable>
+                <Option v-for="item in pagePara.POD" :value="item.id" :key="item.id">{{ item.id }}</Option>
+              </Select>
             </div>
             <div class="form-group m-r-2">
               <input clearable type="text" class="form-control" v-model="search_data.delivery_order_no" placeholder="Delivery Order No." style="width: 140px" />
