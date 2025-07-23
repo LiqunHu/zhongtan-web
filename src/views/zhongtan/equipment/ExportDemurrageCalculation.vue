@@ -18,18 +18,28 @@
         <div class="panel-toolbar">
           <div class="form-inline">
             <div class="form-group m-r-2">
-              <Select v-model="search_data.export_vessel_id" clearable filterable style="width:200px">
+              <Select v-model="search_data.export_vessel_id" clearable filterable style="width:160px">
                 <Option v-for="item in pagePara.VESSELS" :value="item.export_vessel_id" :key="item.export_vessel_id">{{ item.export_vessel }}</Option>
               </Select>
             </div>
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.export_container_bl" placeholder="#M B/L No" style="width: 200px" />
+              <input type="text" class="form-control" v-model="search_data.export_container_bl" placeholder="#M B/L No" style="width: 160px" />
             </div>
             <div class="form-group m-r-2">
-              <input type="text" class="form-control" v-model="search_data.export_container_no" placeholder="Container No" style="width: 200px" />
+              <input type="text" class="form-control" v-model="search_data.export_container_no" placeholder="Container No" style="width: 160px" />
             </div>
             <div class="form-group m-r-2">
               <DatePicker type="daterange" placeholder="ETD Date" v-model="search_data.etd_date" format="yyyy-MM-dd" @on-change="searchDataChange" style="width:200px"></DatePicker>
+            </div>
+            <div class="form-group m-r-2" style="margin-left: 10px;">
+              <Checkbox label="EMPTY GATE OUT" v-model="search_data.empty_gate_out" :true-value	='1' :false-value	='0'>
+                <span>EMPTY GATEOUT</span>
+              </Checkbox>
+            </div>
+            <div class="form-group m-r-2">
+              <Checkbox label="EMPTY GATE IN" v-model="search_data.empty_gate_in" :true-value	='1' :false-value	='0'>
+                <span>EMPTY GATEIN</span>
+              </Checkbox>
             </div>
             <div class="form-group m-r-10">
               <button type="button" class="btn btn-info" @click="getTableData(1)"><i class="fa fa-search"></i> Search </button>
@@ -289,7 +299,9 @@ export default {
         export_vessel_id: '',
         export_container_bl: '',
         export_container_no: '',
-        etd_date: []
+        etd_date: [],
+        empty_gate_out: 0,
+        empty_gate_in: 0
       },
       overdueChargeFormOld: {},
       overdueChargeForm: {},
