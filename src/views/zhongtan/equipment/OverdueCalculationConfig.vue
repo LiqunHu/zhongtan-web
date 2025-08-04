@@ -59,6 +59,9 @@
                     <div class="form-group m-r-10">
                         <button type="button" class="btn btn-info" @click="addChageRuleModal">ADD</button>
                     </div>
+                    <div class="form-group m-r-10">
+                        <button type="button" class="btn btn-danger" @click="recalculateDemurrage">RECALCULATE</button>
+                    </div>
                 </div>
             </div>
         </template>
@@ -372,6 +375,10 @@ export default {
         this.resetChageRuleForm()
         this.modalStatus = 'create'
         this.modal.chargeRuleModal = true
+    },
+    recalculateDemurrage: async function() {
+        await this.$http.post(apiUrl + 'recalculate',  { })
+        this.$Message.success('Recalculate Success')
     },
     changeBusinessType: function(e) {
         if(this.chargeRuleForm.overdue_charge_business_type === 'I') {
