@@ -85,7 +85,7 @@
                 <a href="#" class="btn btn-info btn-icon btn-sm" @click="addConTypeDetail(item, 'COSCO')">
                   <i class="fa fa-indent"></i>
                 </a>
-                <a href="#" class="btn btn-danger btn-icon btn-sm" @click="banConTypeDetail(item, 'COSCO')" title="ban container type">
+                <a href="#" class="btn btn-danger btn-icon btn-sm" @click="addConTypeBan(item, 'COSCO')" title="ban container type">
                   <i class="fa fa-ban"></i>
                 </a>
               </Col>
@@ -119,7 +119,7 @@
                 <a href="#" class="btn btn-info btn-icon btn-sm" @click="addConTypeDetail(item, 'OOCL')">
                   <i class="fa fa-indent"></i>
                 </a>
-                <a href="#" class="btn btn-danger btn-icon btn-sm" @click="banConTypeDetail(item, 'OOCL')" title="ban container type">
+                <a href="#" class="btn btn-danger btn-icon btn-sm" @click="addConTypeBan(item, 'OOCL')" title="ban container type">
                   <i class="fa fa-ban"></i>
                 </a>
               </Col>
@@ -412,13 +412,13 @@ export default {
       }
       this.modal.conTypeDetailModal = false
     },
-    banConTypeDetail: async function(obj, type) {
+    addConTypeBan: async function(obj, type) {
       this.conWorkPara = JSON.parse(JSON.stringify(obj))
       this.conWorkPara.carrier = type
       let bans = []
       if(obj.bans && obj.bans.length > 0) {
-        for(let o of obj.details) {
-          bans.push(o.con_type)
+        for(let o of obj.bans) {
+          bans.push(o)
         }
       }
       this.conWorkPara.bans = bans
