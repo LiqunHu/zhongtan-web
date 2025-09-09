@@ -37,6 +37,7 @@
               <Col v-for="(item, index) in row.allot_depot_rules.COSCO" :key="index" span="8">
                 {{item.depot_name}} : {{item.depot_percent}}%<br/>
                 <Tag  v-for="(sub, index) in item.details" :key="index">{{sub.con_type}}[{{sub.con_name}}] : {{sub.con_type_percent}}%</Tag>
+                <Tag color="error" v-for="(sub, index) in item.bans" :key="index">{{sub}}</Tag>
               </Col>
             </Row>
           </Card>
@@ -46,6 +47,7 @@
               <Col v-for="(item, index) in row.allot_depot_rules.OOCL" :key="index" span="8">
                 {{item.depot_name}} : {{item.depot_percent}}%<br/>
                 <Tag  v-for="(sub, index) in item.details" :key="index">{{sub.con_type}}[{{sub.con_name}}] : {{sub.con_type_percent}}%</Tag>
+                <Tag color="error" v-for="(sub, index) in item.bans" :key="index">{{sub}}</Tag>
               </Col>
             </Row>
           </Card>
@@ -83,11 +85,19 @@
                 <a href="#" class="btn btn-info btn-icon btn-sm" @click="addConTypeDetail(item, 'COSCO')">
                   <i class="fa fa-indent"></i>
                 </a>
+                <a href="#" class="btn btn-danger btn-icon btn-sm" @click="banConTypeDetail(item, 'COSCO')" title="ban container type">
+                  <i class="fa fa-ban"></i>
+                </a>
               </Col>
             </Row>
             <Row v-if="item.details">
               <Col span="24">
                 <Tag  v-for="(sub, index) in item.details" :key="index">{{sub.con_type}}[{{sub.con_name}}] : {{sub.con_type_percent}}%</Tag>
+              </Col>
+            </Row>
+            <Row v-if="item.bans">
+              <Col span="24">
+                <Tag color="error" v-for="(sub, index) in item.bans" :key="index">{{sub}}</Tag>
               </Col>
             </Row>
           </FormItem>
@@ -108,6 +118,9 @@
               <Col span="12" v-if="item.depot_percent > 0">
                 <a href="#" class="btn btn-info btn-icon btn-sm" @click="addConTypeDetail(item, 'OOCL')">
                   <i class="fa fa-indent"></i>
+                </a>
+                <a href="#" class="btn btn-danger btn-icon btn-sm" @click="banConTypeDetail(item, 'OOCL')" title="ban container type">
+                  <i class="fa fa-ban"></i>
                 </a>
               </Col>
             </Row>
@@ -169,6 +182,19 @@
         <Button type="primary" size="large" @click="submitConTypeDetail">Submit</Button>
       </div>
     </Modal>
+     <Modal v-model="modal.conTypeBanModal" title="Ban Container Type">
+      <Form :model="conWorkPara">
+        <CheckboxGroup v-model="conWorkPara.bans">
+            <Checkbox v-for="(item, index) in pagePara.CONTAINER_SIZE" :key="index" :label="item.container_size_code">
+              <span>{{item.container_size_code}}[{{item.container_size_name}}]</span>
+            </Checkbox>
+        </CheckboxGroup>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="modal.conTypeBanModal=false">Cancel</Button>
+        <Button type="primary" size="large" @click="submitConTypeBan">Submit</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
@@ -179,7 +205,7 @@ export default {
   name: 'AllotDepotConfig',
   data: function() {
     return {
-      modal: { configModal: false, handleModal: false, conTypeDetailModal: false },
+      modal: { configModal: false, handleModal: false, conTypeDetailModal: false, conTypeBanModal: false },
       table: {
         userTable: {
           rows: [
@@ -385,6 +411,33 @@ export default {
         }
       }
       this.modal.conTypeDetailModal = false
+    },
+    banConTypeDetail: async function(obj, type) {
+      this.conWorkPara = JSON.parse(JSON.stringify(obj))
+      this.conWorkPara.carrier = type
+      let bans = []
+      if(obj.bans && obj.bans.length > 0) {
+        for(let o of obj.details) {
+          bans.push(o.con_type)
+        }
+      }
+      this.conWorkPara.bans = bans
+      this.modal.conTypeBanModal = true
+    },
+    submitConTypeBan: async function() {
+      let bans = []
+      if(this.conWorkPara.bans) {
+        for(let b of this.conWorkPara.bans) {
+          bans.push(b)
+        }
+      }
+      for(let r of this.workPara.allot_depot_rules[this.conWorkPara.carrier]) {
+        if(r.depot_name === this.conWorkPara.depot_name) {
+          r.bans = bans
+          break
+        }
+      }
+      this.modal.conTypeBanModal = false
     }
   }
 }
