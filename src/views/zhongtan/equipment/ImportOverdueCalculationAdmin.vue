@@ -149,7 +149,7 @@
           </a>
         </template>
       </Table>
-      <Page class="m-t-10" :total="table.containerTable.total" show-sizer show-total :page-size="table.containerTable.limit" @on-change="getTableData" @on-page-size-change="resetTableSizer"/>
+      <Page class="m-t-10" :total="table.containerTable.total" show-sizer show-total :page-size="table.containerTable.limit" :page-size-opts="table.containerTable.size_opts" :current="table.containerTable.page" @on-change="getTableData" @on-page-size-change="resetTableSizer"/>
       <Modal v-model="modal.calculationModal" title="Overdue Calculation" width="640">
         <Form ref="overdueChargeForm" :model="overdueChargeForm" :label-width="150" style="padding-right: 80px;">
           <FormItem label="Discharge Date">
@@ -466,9 +466,10 @@ export default {
           data: [],
           unchanged: [],
           height: common.getTableHeight(),
-          limit: 10,
+          limit: 60,
           offset: 0,
-          total: 0
+          total: 0,
+          size_opts: [60, 80, 100, 200]
         },
         filesTable: {
           columns: [
