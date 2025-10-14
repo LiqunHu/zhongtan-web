@@ -205,6 +205,7 @@
                 ref="upload"
                 :headers="uploadHeaders"
                 :on-success="handleUploadSuccess"
+                :on-error="handleError"
                 :on-remove="handleUploadRemove"
                 type="drag"
                 action="/api/zhongtan/equipment/ContainerMNRLedgerInvoice/upload">
@@ -546,6 +547,23 @@ export default {
       file.name = res.info.name
       this.containerForm.mnr_attachments = JSON.parse(JSON.stringify(this.$refs.upload.fileList))
     },
+    handleError(err, res, file) {
+      console.log(err)
+      let msg = ''
+      if(res && res.msg) {
+        msg = res.msg
+      } else {
+        msg = 'unknown error'
+      }
+      let name = ''
+      if(file && file.name) {
+        name = file.name
+      }
+      this.$Notice.error({
+        title: 'Upload Failed',
+        desc: 'File: ' + name + msg
+      })
+    },    
     handleUploadRemove(file, fileList) {
         const index = this.containerForm.mnr_attachments.indexOf(file)
         this.containerForm.mnr_attachments.splice(index, 1)

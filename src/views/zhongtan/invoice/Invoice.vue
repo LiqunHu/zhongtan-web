@@ -498,7 +498,17 @@
             <div v-for="f in files.fileList" v-bind:key="f.name" class="upload-list">
                 <Icon type="ios-document" size="60" />
             </div>
-            <Upload ref="upload" :headers="headers" :show-upload-list="false" :on-success="handleSuccess" :format="['xlsx']" :max-size="5120" :on-format-error="handleFormatError" :on-exceeded-size="handleMaxSize" type="drag" action="/api/zhongtan/invoice/Invoice/upload"
+            <Upload ref="upload" 
+                :headers="headers" 
+                :show-upload-list="false" 
+                :on-success="handleSuccess" 
+                :on-error="handleError"
+                :format="['xlsx']" 
+                :max-size="5120" 
+                :on-format-error="handleFormatError" 
+                :on-exceeded-size="handleMaxSize" 
+                type="drag" 
+                action="/api/zhongtan/invoice/Invoice/upload"
                 style="display: inline-block;width:58px;">
                 <div style="width: 58px;height:58px;line-height: 58px;">
                     <Icon type="md-add" size="20"></Icon>
@@ -665,6 +675,7 @@
                         ref="uploadDeposit"
                         :headers="headers"
                         :on-success="handleUploadDepositSuccess"
+                        :on-error="handleError"
                         :on-remove="handleUploadDepositRemove"
                         type="drag"
                         action="/api/zhongtan/invoice/Invoice/upload">
@@ -684,6 +695,7 @@
                         multiple
                         :headers="headers"
                         :on-success="handleUploadBulkFileSuccess"
+                        :on-error="handleError"
                         :on-remove="handleUploadBulkFileRemove"
                         type="drag"
                         action="/api/zhongtan/invoice/Invoice/upload">
@@ -1323,6 +1335,23 @@
                 file.url = res.info.url
                 file.name = res.info.name
                 this.files.fileList = JSON.parse(JSON.stringify(this.$refs.upload.fileList))
+            },
+            handleError(err, res, file) {
+                console.log(err)
+                let msg = ''
+                if(res && res.msg) {
+                    msg = res.msg
+                } else {
+                    msg = 'unknown error'
+                }
+                let name = ''
+                if(file && file.name) {
+                    name = file.name
+                }
+                this.$Notice.error({
+                    title: 'Upload Failed',
+                    desc: 'File: ' + name + msg
+                })
             },
             handleImportbefore(file) {
                 this.$Spin.show()

@@ -173,6 +173,7 @@
             ref="upload"
             :headers="uploadHeaders"
             :on-success="handleUploadSuccess"
+            :on-error="handleError"
             :on-remove="handleUploadRemove"
             type="drag"
             action="/api/zhongtan/payment/PaymentAdvice/upload">
@@ -538,6 +539,23 @@ export default {
       file.url = res.info.url
       file.name = res.info.name
       this.workPara.payment_atta_files = JSON.parse(JSON.stringify(this.$refs.upload.fileList))
+    },
+    handleError(err, res, file) {
+      console.log(err)
+      let msg = ''
+      if(res && res.msg) {
+        msg = res.msg
+      } else {
+        msg = 'unknown error'
+      }
+      let name = ''
+      if(file && file.name) {
+        name = file.name
+      }
+      this.$Notice.error({
+        title: 'Upload Failed',
+        desc: 'File: ' + name + msg
+      })
     },
     handleUploadRemove(file, fileList) {
       const index = this.workPara.payment_atta_files.indexOf(file)

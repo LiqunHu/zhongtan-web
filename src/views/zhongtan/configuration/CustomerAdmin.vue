@@ -171,9 +171,10 @@
                 ref="upload"
                 :headers="uploadHeaders"
                 :on-success="handleUploadSuccess"
+                :on-error="handleError"
                 :on-remove="handleUploadRemove"
                 type="drag"
-                action="/api/zhongtan/payment/PaymentAdvice/upload">
+                action="/api/zhongtan/configuration/CustomerAdmin/upload">
                 <div style="padding: 20px 0">
                     <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
                     <p>Click or drag files here to upload</p>
@@ -609,6 +610,22 @@ export default {
       file.url = res.info.url
       file.name = res.info.name
       this.workPara.customer_atta_files = JSON.parse(JSON.stringify(this.$refs.upload.fileList))
+    },
+    handleError(err, res, file) {
+      let msg = ''
+      if(res && res.msg) {
+        msg = res.msg
+      } else {
+        msg = 'unknown error'
+      }
+      let name = ''
+      if(file && file.name) {
+        name = file.name
+      }
+      this.$Notice.error({
+        title: 'Upload Failed',
+        desc: 'File: ' + name + msg
+      })
     },
     handleUploadRemove(file, fileList) {
       const index = this.workPara.customer_atta_files.indexOf(file)

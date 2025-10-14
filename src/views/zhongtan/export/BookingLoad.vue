@@ -206,6 +206,7 @@
             :headers="headers"
             :show-upload-list="false"
             :on-success="handleSuccess"
+            :on-error="handleError"
             :format="['pdf', 'PDF']"
             :max-size="5120"
             :on-format-error="handleFormatError"
@@ -759,6 +760,23 @@ export default {
       file.url = res.info.url
       file.name = res.info.name
       this.files.fileList = JSON.parse(JSON.stringify(this.$refs.upload.fileList))
+    },
+    handleError(err, res, file) {
+      console.log(err)
+      let msg = ''
+      if(res && res.msg) {
+        msg = res.msg
+      } else {
+        msg = 'unknown error'
+      }
+      let name = ''
+      if(file && file.name) {
+        name = file.name
+      }
+      this.$Notice.error({
+        title: 'Upload Failed',
+        desc: 'File: ' + name + msg
+      })
     },
     handleFormatError(file) {
       this.$Notice.warning({

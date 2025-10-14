@@ -380,6 +380,7 @@
             ref="upload"
             :headers="uploadHeaders"
             :on-success="handleUploadSuccess"
+            :on-error="handleError"
             :on-remove="handleUploadRemove"
             type="drag"
             action="/api/zhongtan/logistics/ShipmentNote/upload">
@@ -412,6 +413,7 @@
             ref="uploadFull"
             :headers="uploadHeaders"
             :on-success="handleUploadFullSuccess"
+            :on-error="handleError"
             :on-remove="handleUploadFullRemove"
             type="drag"
             action="/api/zhongtan/logistics/ShipmentNote/upload">
@@ -440,6 +442,7 @@
             ref="uploadBalance"
             :headers="uploadHeaders"
             :on-success="handleUploadBalanceSuccess"
+            :on-error="handleError"
             :on-remove="handleUploadBalanceRemove"
             type="drag"
             action="/api/zhongtan/logistics/ShipmentNote/upload">
@@ -482,6 +485,7 @@
             ref="uploadAdvance"
             :headers="uploadHeaders"
             :on-success="handleUploadAdvanceSuccess"
+            :on-error="handleError"
             :on-remove="handleUploadAdvanceRemove"
             type="drag"
             action="/api/zhongtan/logistics/ShipmentNote/upload">
@@ -1635,6 +1639,23 @@ export default {
       file.url = res.info.url
       file.name = res.info.name
       this.paymentAdvanceForm.payment_advance_files = JSON.parse(JSON.stringify(this.$refs.uploadAdvance.fileList))
+    },
+    handleError(err, res, file) {
+      console.log(err)
+      let msg = ''
+      if(res && res.msg) {
+        msg = res.msg
+      } else {
+        msg = 'unknown error'
+      }
+      let name = ''
+      if(file && file.name) {
+        name = file.name
+      }
+      this.$Notice.error({
+        title: 'Upload Failed',
+        desc: 'File: ' + name + msg
+      })
     },
     handleUploadAdvanceRemove(file, fileList) {
       const index = this.paymentAdvanceForm.payment_advance_files.indexOf(file)
