@@ -548,7 +548,6 @@ export default {
       this.containerForm.mnr_attachments = JSON.parse(JSON.stringify(this.$refs.upload.fileList))
     },
     handleError(err, res, file) {
-      console.log(err)
       let msg = ''
       if(res && res.msg) {
         msg = res.msg

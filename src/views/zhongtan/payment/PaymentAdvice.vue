@@ -541,7 +541,6 @@ export default {
       this.workPara.payment_atta_files = JSON.parse(JSON.stringify(this.$refs.upload.fileList))
     },
     handleError(err, res, file) {
-      console.log(err)
       let msg = ''
       if(res && res.msg) {
         msg = res.msg

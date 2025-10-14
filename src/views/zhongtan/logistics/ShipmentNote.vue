@@ -1641,7 +1641,6 @@ export default {
       this.paymentAdvanceForm.payment_advance_files = JSON.parse(JSON.stringify(this.$refs.uploadAdvance.fileList))
     },
     handleError(err, res, file) {
-      console.log(err)
       let msg = ''
       if(res && res.msg) {
         msg = res.msg

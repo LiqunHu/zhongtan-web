@@ -718,7 +718,6 @@ export default {
       this.files.fileListShipment = JSON.parse(JSON.stringify(this.$refs.uploadShipment.fileList))
     },
     handleError(err, res, file) {
-      console.log(err)
       let msg = ''
       if(res && res.msg) {
         msg = res.msg

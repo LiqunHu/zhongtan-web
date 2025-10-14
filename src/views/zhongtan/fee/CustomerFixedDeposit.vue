@@ -562,7 +562,6 @@ export default {
       this.depositForm.deposit_guarantee_letter_list = JSON.parse(JSON.stringify(this.$refs.upload.fileList))
     },
     handleError(err, res, file) {
-      console.log(err)
       let msg = ''
       if(res && res.msg) {
         msg = res.msg
