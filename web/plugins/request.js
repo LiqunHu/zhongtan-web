@@ -5,7 +5,7 @@ let axiosConfig = {
   baseURL: 'http://127.0.0.1:9090/',
   // baseURL: 'http://119.3.9.128:8081/',
   // baseURL: 'http://119.3.22.172/',
-  timeout: 180000 // request timeout
+  timeout: 600000 // request timeout
 }
 
 // if (process.env.NODE_ENV !== 'production') {

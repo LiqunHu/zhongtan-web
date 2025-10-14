@@ -60,7 +60,7 @@ Vue.config.productionTip = false
 
 // axios
 let axiosConfig = {
-  timeout: 500000 // request timeout
+  timeout: 600000 // request timeout
 }
 
 // if (process.env.NODE_ENV !== 'production') {
