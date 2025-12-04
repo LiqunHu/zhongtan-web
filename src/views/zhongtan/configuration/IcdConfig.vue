@@ -51,16 +51,31 @@
         <FormItem label="Icd Code" prop="icd_code">
           <Input placeholder="Icd Code" v-model.trim="workPara.icd_code"/>
         </FormItem>
-        <FormItem label="Icd Email">
-          <Input placeholder="Icd Email" v-model.trim="workPara.icd_email"/>
-        </FormItem>
         <FormItem label="Icd Tel">
           <Input placeholder="Icd Tel" v-model.trim="workPara.icd_tel"/>
         </FormItem>
         <FormItem label="Icd Edi Type">
-          <Select v-model="workPara.icd_edi_type">
+          <Select v-model="workPara.icd_edi_type" @on-change="changeIcdEdiType">
             <Option v-for="item in pagePara.ICD_EDI_TYPE" :value="item.id" :key="item.id">{{ item.text }}</Option>
           </Select>
+        </FormItem>
+        <FormItem label="Icd Email">
+          <Input placeholder="Icd Email" v-model.trim="workPara.icd_email"/>
+        </FormItem>
+        <FormItem label="SFTP Server" v-if="workPara.icd_edi_type == 'SFTP'">
+          <Input placeholder="SFTP Server" v-model.trim="workPara.icd_server_name"/>
+        </FormItem>
+        <FormItem label="SFTP Port" v-if="workPara.icd_edi_type == 'SFTP'">
+          <Input placeholder="SFTP Port" v-model.trim="workPara.icd_server_port"/>
+        </FormItem>
+        <FormItem label="SFTP Username" v-if="workPara.icd_edi_type == 'SFTP'">
+          <Input placeholder="SFTP Username" v-model.trim="workPara.icd_server_username"/>
+        </FormItem>
+        <FormItem label="SFTP Password" v-if="workPara.icd_edi_type == 'SFTP'">
+          <Input placeholder="SFTP Password" v-model.trim="workPara.icd_server_password"/>
+        </FormItem>
+        <FormItem label="SFTP Upload Path" v-if="workPara.icd_edi_type == 'SFTP'">
+          <Input placeholder="SFTP Upload Path" v-model.trim="workPara.icd_server_path"/>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -100,6 +115,10 @@ export default {
             {
               title: 'Icd Email',
               key: 'icd_email'
+            },
+            {
+              title: 'Icd SFTP',
+              key: 'icd_sftp_info'
             },
             {
               title: 'Icd Tel',
@@ -183,6 +202,9 @@ export default {
       this.action = 'modify'
       this.$refs.formIcd.resetFields()
       this.modal.icdModal = true
+    },
+    changeIcdEdiType: function(val) {
+      
     },
     submitIcd: function() {
       this.$refs.formIcd.validate(async valid => {
