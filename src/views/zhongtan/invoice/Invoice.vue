@@ -280,11 +280,11 @@
                         <i class="fa fa-download"></i>
                     </a>
                 </template>
-                <template slot-scope="{ row, index }" slot="SFTP">
+                <!-- <template slot-scope="{ row, index }" slot="SFTP">
                     <a href="#" class="btn btn-danger btn-icon btn-sm" @click="doSftpTest(row, index)">
                         <i class="fa fa-file-upload"></i>
                     </a>
-                </template>
+                </template> -->
                 <template slot-scope="{ row, index }" slot="invoice_masterbi_cargo_type">
                     <!-- <Input :class="{'input-edited': row.invoice_masterbi_edit_info && row.invoice_masterbi_edit_info.invoice_masterbi_cargo_type}" v-model="table.masterbiTable.data[index].invoice_masterbi_cargo_type" size="small" :disabled="tableEdit"/> -->
                     <i-select v-model="table.masterbiTable.data[index].invoice_masterbi_cargo_type" :disabled="tableEdit">
@@ -945,11 +945,12 @@
                             title: 'Deposit Attachment',
                             slot: 'deposit_attachment',
                             width: 100
-                        }, {
-                            title: 'SFTP-TEST',
-                            slot: 'SFTP',
-                            width: 120,
                         }, 
+                        // {
+                        //     title: 'SFTP-TEST',
+                        //     slot: 'SFTP',
+                        //     width: 120,
+                        // }, 
                         {
                             title: 'Cargo Classification',
                             slot: 'invoice_masterbi_cargo_type',
@@ -1813,18 +1814,18 @@
                     }
                 })
             },
-            doSftpTest: async function(row, index) {
-                this.$commonact.confirm(`This is a test function, please do not operate!!!!!!`, async() => {
-                    try {
-                        await this.$http.post(apiUrl + 'doSftpTest', {
-                            invoice_masterbi_id: row.invoice_masterbi_id
-                        })
-                        this.$Message.success('SFTP upload Success')
-                    } catch (error) {
-                        this.$commonact.fault(error)
-                    }
-                })
-            },
+            // doSftpTest: async function(row, index) {
+            //     this.$commonact.confirm(`This is a test function, please do not operate!!!!!!`, async() => {
+            //         try {
+            //             await this.$http.post(apiUrl + 'doSftpTest', {
+            //                 invoice_masterbi_id: row.invoice_masterbi_id
+            //             })
+            //             this.$Message.success('SFTP upload Success')
+            //         } catch (error) {
+            //             this.$commonact.fault(error)
+            //         }
+            //     })
+            // },
             searchFixedDeposit: async function() {
                 try {
                     let response = await this.$http.post(apiUrl + 'searchFixedDeposit', _.extend(this.workPara, this.deposit))
